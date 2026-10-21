@@ -22,6 +22,12 @@
 *.cywrk.*
 *.cyprj.*
 
+# PSoC Creator: Build-Berichte
+*.cycdx
+*.rpt
+*.svd
+*_timing.html
+
 # Temp-Dateien
 *.bak
 *.tmp
