@@ -2,14 +2,27 @@
 # Build-Ausgaben
 **/Debug/
 **/Release/
+**/CortexM3/
+**/codegentemp/
 
 # Kompilierte Dateien
 *.o
 *.d
 *.elf
 *.map
+*.lst
 
-# Temp Dateien
+# PSoC Creator: Logs, Fitter-Ergebnis, Backups, Exporte
+*.log
+*.cyfit
+**/Backup/
+**/Export/
+
+# PSoC Creator: persönliche Einstellungen pro Benutzer
+*.cywrk.*
+*.cyprj.*
+
+# Temp-Dateien
 *.bak
 *.tmp
 *~
