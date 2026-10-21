@@ -1,0 +1,19 @@
+
+# Build-Ausgaben
+**/Debug/
+**/Release/
+
+# Kompilierte Dateien
+*.o
+*.d
+*.elf
+*.map
+
+# Temp Dateien
+*.bak
+*.tmp
+*~
+
+# Betriebssystem-Dateien
+.DS_Store
+Thumbs.db
