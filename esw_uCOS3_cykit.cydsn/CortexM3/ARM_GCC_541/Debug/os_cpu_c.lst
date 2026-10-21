@@ -1,0 +1,3916 @@
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"os_cpu_c.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.OSIdleTaskHook,"ax",%progbits
+  20              		.align	2
+  21              		.global	OSIdleTaskHook
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	OSIdleTaskHook, %function
+  25              	OSIdleTaskHook:
+  26              	.LFB1:
+  27              		.file 1 "uCOS-III\\Ports\\ARM-Cortex-M3\\Generic\\GNU\\os_cpu_c.c"
+   1:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*
+   2:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+   3:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                                                uC/OS-III
+   4:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                                          The Real-Time Kernel
+   5:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+   6:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+   7:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                           (c) Copyright 2009-2010; Micrium, Inc.; Weston, FL
+   8:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                    All rights reserved.  Protected by international copyright laws.
+   9:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+  10:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                                           ARM Cortex-M3 Port
+  11:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+  12:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * File      : OS_CPU_C.C
+  13:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Version   : V3.01.2
+  14:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * By        : JJL
+  15:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *             FT
+  16:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+  17:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * LICENSING TERMS:
+  18:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * ---------------
+  19:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *             uC/OS-III is provided in source form to registered licensees ONLY.  It is 
+  20:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *             illegal to distribute this source code to any third party unless you receive 
+  21:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *             written permission by an authorized Micrium representative.  Knowledge of 
+  22:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *             the source code may NOT be used to develop a similar product.
+  23:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+  24:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *             Please help us continue to provide the Embedded community with the finest
+  25:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *             software available.  Your honesty is greatly appreciated.
+  26:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+  27:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *             You can contact us at www.micrium.com.
+  28:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+  29:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * For       : ARMv7M Cortex-M3
+  30:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Mode      : Thumb2
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 2
+
+
+  31:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Toolchain : GNU C Compiler
+  32:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+  33:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** */
+  34:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+  35:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #define   OS_CPU_GLOBALS
+  36:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+  37:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #ifdef VSC_INCLUDE_SOURCE_FILE_NAMES
+  38:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** const  CPU_CHAR  *os_cpu_c__c = "$Id: $";
+  39:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #endif
+  40:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+  41:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*$PAGE*/
+  42:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*
+  43:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+  44:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                                             INCLUDE FILES
+  45:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+  46:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** */
+  47:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+  48:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #include  <os.h>
+  49:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+  50:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*
+  51:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+  52:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                                           IDLE TASK HOOK
+  53:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+  54:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Description: This function is called by the idle task.  This hook has been added to allow you to 
+  55:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *              such things as STOP the CPU to conserve power.
+  56:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+  57:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Arguments  : None.
+  58:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+  59:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Note(s)    : None.
+  60:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+  61:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** */
+  62:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+  63:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** void  OSIdleTaskHook (void)
+  64:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** {
+  28              		.loc 1 64 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+  65:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #if OS_CFG_APP_HOOKS_EN > 0u
+  66:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     if (OS_AppIdleTaskHookPtr != (OS_APP_HOOK_VOID)0) {
+  36              		.loc 1 66 0
+  37 0002 024B     		ldr	r3, .L4
+  38 0004 1B68     		ldr	r3, [r3]
+  39 0006 03B1     		cbz	r3, .L1
+  67:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****         (*OS_AppIdleTaskHookPtr)();
+  40              		.loc 1 67 0
+  41 0008 9847     		blx	r3
+  42              	.LVL0:
+  43              	.L1:
+  44 000a 08BD     		pop	{r3, pc}
+  45              	.L5:
+  46              		.align	2
+  47              	.L4:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 3
+
+
+  48 000c 00000000 		.word	OS_AppIdleTaskHookPtr
+  49              		.cfi_endproc
+  50              	.LFE1:
+  51              		.size	OSIdleTaskHook, .-OSIdleTaskHook
+  52              		.section	.text.OSInitHook,"ax",%progbits
+  53              		.align	2
+  54              		.global	OSInitHook
+  55              		.thumb
+  56              		.thumb_func
+  57              		.type	OSInitHook, %function
+  58              	OSInitHook:
+  59              	.LFB2:
+  68:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     }
+  69:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #endif
+  70:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** }
+  71:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+  72:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+  73:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*$PAGE*/
+  74:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*
+  75:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+  76:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                                       OS INITIALIZATION HOOK
+  77:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+  78:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Description: This function is called by OSInit() at the beginning of OSInit().
+  79:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+  80:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Arguments  : None.
+  81:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+  82:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Note(s)    : None.
+  83:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+  84:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** */
+  85:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+  86:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** void  OSInitHook (void)
+  87:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** {
+  60              		.loc 1 87 0
+  61              		.cfi_startproc
+  62              		@ args = 0, pretend = 0, frame = 0
+  63              		@ frame_needed = 0, uses_anonymous_args = 0
+  64              		@ link register save eliminated.
+  65 0000 10B4     		push	{r4}
+  66              		.cfi_def_cfa_offset 4
+  67              		.cfi_offset 4, -4
+  88:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     CPU_STK_SIZE   i;
+  89:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     CPU_STK       *p_stk;
+  90:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+  91:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+  92:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     p_stk = OSCfg_ISRStkBasePtr;                            /* Clear the ISR stack                 
+  68              		.loc 1 92 0
+  69 0002 0B4B     		ldr	r3, .L10
+  70 0004 1C68     		ldr	r4, [r3]
+  71              	.LVL1:
+  72 0006 2246     		mov	r2, r4
+  93:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     for (i = 0u; i < OSCfg_ISRStkSize; i++) {
+  73              		.loc 1 93 0
+  74 0008 0023     		movs	r3, #0
+  75 000a 03E0     		b	.L7
+  76              	.LVL2:
+  77              	.L8:
+  94:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****         *p_stk++ = (CPU_STK)0u;
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 4
+
+
+  78              		.loc 1 94 0 discriminator 3
+  79 000c 0020     		movs	r0, #0
+  80 000e 1060     		str	r0, [r2]
+  93:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     for (i = 0u; i < OSCfg_ISRStkSize; i++) {
+  81              		.loc 1 93 0 discriminator 3
+  82 0010 0133     		adds	r3, r3, #1
+  83              	.LVL3:
+  84              		.loc 1 94 0 discriminator 3
+  85 0012 0432     		adds	r2, r2, #4
+  86              	.LVL4:
+  87              	.L7:
+  93:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     for (i = 0u; i < OSCfg_ISRStkSize; i++) {
+  88              		.loc 1 93 0 discriminator 1
+  89 0014 0748     		ldr	r0, .L10+4
+  90 0016 0168     		ldr	r1, [r0]
+  91 0018 8B42     		cmp	r3, r1
+  92 001a F7D3     		bcc	.L8
+  95:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     }
+  96:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     OS_CPU_ExceptStkBase = (CPU_STK *)(OSCfg_ISRStkBasePtr + OSCfg_ISRStkSize - 1u);
+  93              		.loc 1 96 0
+  94 001c 01F18041 		add	r1, r1, #1073741824
+  95 0020 0139     		subs	r1, r1, #1
+  96 0022 04EB8101 		add	r1, r4, r1, lsl #2
+  97 0026 044B     		ldr	r3, .L10+8
+  98              	.LVL5:
+  99 0028 1960     		str	r1, [r3]
+  97:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** }
+ 100              		.loc 1 97 0
+ 101 002a 10BC     		pop	{r4}
+ 102              		.cfi_restore 4
+ 103              		.cfi_def_cfa_offset 0
+ 104 002c 7047     		bx	lr
+ 105              	.L11:
+ 106 002e 00BF     		.align	2
+ 107              	.L10:
+ 108 0030 00000000 		.word	OSCfg_ISRStkBasePtr
+ 109 0034 00000000 		.word	OSCfg_ISRStkSize
+ 110 0038 00000000 		.word	OS_CPU_ExceptStkBase
+ 111              		.cfi_endproc
+ 112              	.LFE2:
+ 113              		.size	OSInitHook, .-OSInitHook
+ 114              		.section	.text.OSStatTaskHook,"ax",%progbits
+ 115              		.align	2
+ 116              		.global	OSStatTaskHook
+ 117              		.thumb
+ 118              		.thumb_func
+ 119              		.type	OSStatTaskHook, %function
+ 120              	OSStatTaskHook:
+ 121              	.LFB3:
+  98:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+  99:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 100:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*$PAGE*/
+ 101:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*
+ 102:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 103:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                                         STATISTIC TASK HOOK
+ 104:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 105:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Description: This function is called every second by uC/OS-III's statistics task.  This allows yo
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 5
+
+
+ 106:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *              application to add functionality to the statistics task.
+ 107:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 108:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Arguments  : None.
+ 109:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 110:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Note(s)    : None.
+ 111:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 112:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** */
+ 113:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 114:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** void  OSStatTaskHook (void)
+ 115:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** {
+ 122              		.loc 1 115 0
+ 123              		.cfi_startproc
+ 124              		@ args = 0, pretend = 0, frame = 0
+ 125              		@ frame_needed = 0, uses_anonymous_args = 0
+ 126 0000 08B5     		push	{r3, lr}
+ 127              		.cfi_def_cfa_offset 8
+ 128              		.cfi_offset 3, -8
+ 129              		.cfi_offset 14, -4
+ 116:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #if OS_CFG_APP_HOOKS_EN > 0u
+ 117:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     if (OS_AppStatTaskHookPtr != (OS_APP_HOOK_VOID)0) {
+ 130              		.loc 1 117 0
+ 131 0002 024B     		ldr	r3, .L15
+ 132 0004 1B68     		ldr	r3, [r3]
+ 133 0006 03B1     		cbz	r3, .L12
+ 118:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****         (*OS_AppStatTaskHookPtr)();
+ 134              		.loc 1 118 0
+ 135 0008 9847     		blx	r3
+ 136              	.LVL6:
+ 137              	.L12:
+ 138 000a 08BD     		pop	{r3, pc}
+ 139              	.L16:
+ 140              		.align	2
+ 141              	.L15:
+ 142 000c 00000000 		.word	OS_AppStatTaskHookPtr
+ 143              		.cfi_endproc
+ 144              	.LFE3:
+ 145              		.size	OSStatTaskHook, .-OSStatTaskHook
+ 146              		.section	.text.OSTaskCreateHook,"ax",%progbits
+ 147              		.align	2
+ 148              		.global	OSTaskCreateHook
+ 149              		.thumb
+ 150              		.thumb_func
+ 151              		.type	OSTaskCreateHook, %function
+ 152              	OSTaskCreateHook:
+ 153              	.LFB4:
+ 119:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     }
+ 120:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #endif
+ 121:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** }
+ 122:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 123:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 124:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*$PAGE*/
+ 125:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*
+ 126:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 127:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                                          TASK CREATION HOOK
+ 128:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 129:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Description: This function is called when a task is created.
+ 130:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 6
+
+
+ 131:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Arguments  : p_tcb        Pointer to the task control block of the task being created.
+ 132:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 133:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Note(s)    : None.
+ 134:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 135:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** */
+ 136:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 137:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** void  OSTaskCreateHook (OS_TCB  *p_tcb)
+ 138:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** {
+ 154              		.loc 1 138 0
+ 155              		.cfi_startproc
+ 156              		@ args = 0, pretend = 0, frame = 0
+ 157              		@ frame_needed = 0, uses_anonymous_args = 0
+ 158              	.LVL7:
+ 159 0000 08B5     		push	{r3, lr}
+ 160              		.cfi_def_cfa_offset 8
+ 161              		.cfi_offset 3, -8
+ 162              		.cfi_offset 14, -4
+ 139:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #if OS_CFG_APP_HOOKS_EN > 0u
+ 140:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     if (OS_AppTaskCreateHookPtr != (OS_APP_HOOK_TCB)0) {
+ 163              		.loc 1 140 0
+ 164 0002 024B     		ldr	r3, .L20
+ 165 0004 1B68     		ldr	r3, [r3]
+ 166 0006 03B1     		cbz	r3, .L17
+ 141:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****         (*OS_AppTaskCreateHookPtr)(p_tcb);
+ 167              		.loc 1 141 0
+ 168 0008 9847     		blx	r3
+ 169              	.LVL8:
+ 170              	.L17:
+ 171 000a 08BD     		pop	{r3, pc}
+ 172              	.L21:
+ 173              		.align	2
+ 174              	.L20:
+ 175 000c 00000000 		.word	OS_AppTaskCreateHookPtr
+ 176              		.cfi_endproc
+ 177              	.LFE4:
+ 178              		.size	OSTaskCreateHook, .-OSTaskCreateHook
+ 179              		.section	.text.OSTaskDelHook,"ax",%progbits
+ 180              		.align	2
+ 181              		.global	OSTaskDelHook
+ 182              		.thumb
+ 183              		.thumb_func
+ 184              		.type	OSTaskDelHook, %function
+ 185              	OSTaskDelHook:
+ 186              	.LFB5:
+ 142:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     }
+ 143:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #else
+ 144:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     (void)p_tcb;                                            /* Prevent compiler warning            
+ 145:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #endif
+ 146:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** }
+ 147:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 148:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 149:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*$PAGE*/
+ 150:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*
+ 151:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 152:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                                           TASK DELETION HOOK
+ 153:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 154:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Description: This function is called when a task is deleted.
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 7
+
+
+ 155:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 156:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Arguments  : p_tcb        Pointer to the task control block of the task being deleted.
+ 157:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 158:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Note(s)    : None.
+ 159:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 160:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** */
+ 161:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 162:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** void  OSTaskDelHook (OS_TCB  *p_tcb)
+ 163:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** {
+ 187              		.loc 1 163 0
+ 188              		.cfi_startproc
+ 189              		@ args = 0, pretend = 0, frame = 0
+ 190              		@ frame_needed = 0, uses_anonymous_args = 0
+ 191              	.LVL9:
+ 192 0000 08B5     		push	{r3, lr}
+ 193              		.cfi_def_cfa_offset 8
+ 194              		.cfi_offset 3, -8
+ 195              		.cfi_offset 14, -4
+ 164:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #if OS_CFG_APP_HOOKS_EN > 0u
+ 165:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     if (OS_AppTaskDelHookPtr != (OS_APP_HOOK_TCB)0) {
+ 196              		.loc 1 165 0
+ 197 0002 024B     		ldr	r3, .L25
+ 198 0004 1B68     		ldr	r3, [r3]
+ 199 0006 03B1     		cbz	r3, .L22
+ 166:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****         (*OS_AppTaskDelHookPtr)(p_tcb);
+ 200              		.loc 1 166 0
+ 201 0008 9847     		blx	r3
+ 202              	.LVL10:
+ 203              	.L22:
+ 204 000a 08BD     		pop	{r3, pc}
+ 205              	.L26:
+ 206              		.align	2
+ 207              	.L25:
+ 208 000c 00000000 		.word	OS_AppTaskDelHookPtr
+ 209              		.cfi_endproc
+ 210              	.LFE5:
+ 211              		.size	OSTaskDelHook, .-OSTaskDelHook
+ 212              		.section	.text.OSTaskReturnHook,"ax",%progbits
+ 213              		.align	2
+ 214              		.global	OSTaskReturnHook
+ 215              		.thumb
+ 216              		.thumb_func
+ 217              		.type	OSTaskReturnHook, %function
+ 218              	OSTaskReturnHook:
+ 219              	.LFB6:
+ 167:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     }
+ 168:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #else
+ 169:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     (void)p_tcb;                                            /* Prevent compiler warning            
+ 170:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #endif
+ 171:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** }
+ 172:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 173:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 174:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*$PAGE*/
+ 175:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*
+ 176:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 177:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                                            TASK RETURN HOOK
+ 178:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 8
+
+
+ 179:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Description: This function is called if a task accidentally returns.  In other words, a task shou
+ 180:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *              either be an infinite loop or delete itself when done.
+ 181:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 182:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Arguments  : p_tcb        Pointer to the task control block of the task that is returning.
+ 183:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 184:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Note(s)    : None.
+ 185:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 186:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** */
+ 187:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 188:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** void  OSTaskReturnHook (OS_TCB  *p_tcb)
+ 189:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** {
+ 220              		.loc 1 189 0
+ 221              		.cfi_startproc
+ 222              		@ args = 0, pretend = 0, frame = 0
+ 223              		@ frame_needed = 0, uses_anonymous_args = 0
+ 224              	.LVL11:
+ 225 0000 08B5     		push	{r3, lr}
+ 226              		.cfi_def_cfa_offset 8
+ 227              		.cfi_offset 3, -8
+ 228              		.cfi_offset 14, -4
+ 190:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #if OS_CFG_APP_HOOKS_EN > 0u
+ 191:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     if (OS_AppTaskReturnHookPtr != (OS_APP_HOOK_TCB)0) {
+ 229              		.loc 1 191 0
+ 230 0002 024B     		ldr	r3, .L30
+ 231 0004 1B68     		ldr	r3, [r3]
+ 232 0006 03B1     		cbz	r3, .L27
+ 192:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****         (*OS_AppTaskReturnHookPtr)(p_tcb);
+ 233              		.loc 1 192 0
+ 234 0008 9847     		blx	r3
+ 235              	.LVL12:
+ 236              	.L27:
+ 237 000a 08BD     		pop	{r3, pc}
+ 238              	.L31:
+ 239              		.align	2
+ 240              	.L30:
+ 241 000c 00000000 		.word	OS_AppTaskReturnHookPtr
+ 242              		.cfi_endproc
+ 243              	.LFE6:
+ 244              		.size	OSTaskReturnHook, .-OSTaskReturnHook
+ 245              		.section	.text.OSTaskStkInit,"ax",%progbits
+ 246              		.align	2
+ 247              		.global	OSTaskStkInit
+ 248              		.thumb
+ 249              		.thumb_func
+ 250              		.type	OSTaskStkInit, %function
+ 251              	OSTaskStkInit:
+ 252              	.LFB7:
+ 193:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     }
+ 194:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #else
+ 195:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     (void)p_tcb;                                            /* Prevent compiler warning            
+ 196:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #endif
+ 197:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** }
+ 198:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 199:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 200:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*$PAGE*/
+ 201:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*
+ 202:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 9
+
+
+ 203:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                                       INITIALIZE A TASK'S STACK
+ 204:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 205:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Description: This function is called by OS_Task_Create() or OSTaskCreateExt() to initialize the s
+ 206:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *              frame of the task being created. This function is highly processor specific.
+ 207:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 208:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Arguments  : p_task       Pointer to the task entry point address.
+ 209:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 210:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *              p_arg        Pointer to a user supplied data area that will be passed to the task
+ 211:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                               when the task first executes.
+ 212:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 213:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *              p_stk_base   Pointer to the base address of the stack.
+ 214:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 215:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *              stk_size     Size of the stack, in number of CPU_STK elements.
+ 216:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 217:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *              opt          Options used to alter the behavior of OS_Task_StkInit().
+ 218:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                            (see OS.H for OS_TASK_OPT_xxx).
+ 219:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 220:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Returns    : Always returns the location of the new top-of-stack' once the processor registers ha
+ 221:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *              been placed on the stack in the proper order.
+ 222:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 223:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Note(s)    : 1) Interrupts are enabled when task starts executing.
+ 224:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 225:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *              2) All tasks run in Thread mode, using process stack.
+ 226:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 227:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** */
+ 228:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 229:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** CPU_STK  *OSTaskStkInit (OS_TASK_PTR    p_task,
+ 230:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****                          void          *p_arg,
+ 231:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****                          CPU_STK       *p_stk_base,
+ 232:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****                          CPU_STK       *p_stk_limit,
+ 233:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****                          CPU_STK_SIZE   stk_size,
+ 234:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****                          OS_OPT         opt)
+ 235:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** {
+ 253              		.loc 1 235 0
+ 254              		.cfi_startproc
+ 255              		@ args = 8, pretend = 0, frame = 0
+ 256              		@ frame_needed = 0, uses_anonymous_args = 0
+ 257              		@ link register save eliminated.
+ 258              	.LVL13:
+ 259 0000 10B4     		push	{r4}
+ 260              		.cfi_def_cfa_offset 4
+ 261              		.cfi_offset 4, -4
+ 236:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     CPU_STK  *p_stk;
+ 237:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 238:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 239:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     (void)opt;                                              /* Prevent compiler warning            
+ 240:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 241:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     p_stk = &p_stk_base[stk_size];                          /* Load stack pointer                  
+ 262              		.loc 1 241 0
+ 263 0002 019C     		ldr	r4, [sp, #4]
+ 264 0004 02EB8402 		add	r2, r2, r4, lsl #2
+ 265              	.LVL14:
+ 242:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****                                                             /* Registers stacked as if auto-saved o
+ 243:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)0x01000000u;                        /* xPSR                                
+ 266              		.loc 1 243 0
+ 267 0008 4FF08074 		mov	r4, #16777216
+ 268 000c 42F8044C 		str	r4, [r2, #-4]
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 10
+
+
+ 269              	.LVL15:
+ 244:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)p_task;                             /* Entry Point                         
+ 270              		.loc 1 244 0
+ 271 0010 42F8080C 		str	r0, [r2, #-8]
+ 272              	.LVL16:
+ 245:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)OS_TaskReturn;                      /* R14 (LR)                            
+ 273              		.loc 1 245 0
+ 274 0014 1B48     		ldr	r0, .L34
+ 275              	.LVL17:
+ 276 0016 42F80C0C 		str	r0, [r2, #-12]
+ 277              	.LVL18:
+ 246:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)0x12121212u;                        /* R12                                 
+ 278              		.loc 1 246 0
+ 279 001a 4FF01230 		mov	r0, #303174162
+ 280 001e 42F8100C 		str	r0, [r2, #-16]
+ 281              	.LVL19:
+ 247:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)0x03030303u;                        /* R3                                  
+ 282              		.loc 1 247 0
+ 283 0022 4FF00330 		mov	r0, #50529027
+ 284 0026 42F8140C 		str	r0, [r2, #-20]
+ 285              	.LVL20:
+ 248:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)0x02020202u;                        /* R2                                  
+ 286              		.loc 1 248 0
+ 287 002a 4FF00230 		mov	r0, #33686018
+ 288 002e 42F8180C 		str	r0, [r2, #-24]
+ 289              	.LVL21:
+ 249:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)p_stk_limit;                        /* R1                                  
+ 290              		.loc 1 249 0
+ 291 0032 42F81C3C 		str	r3, [r2, #-28]
+ 292              	.LVL22:
+ 250:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)p_arg;                              /* R0 : argument                       
+ 293              		.loc 1 250 0
+ 294 0036 42F8201C 		str	r1, [r2, #-32]
+ 295              	.LVL23:
+ 251:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****                                                             /* Remaining registers saved on process
+ 252:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)0x11111111u;                        /* R11                                 
+ 296              		.loc 1 252 0
+ 297 003a 4FF01133 		mov	r3, #286331153
+ 298              	.LVL24:
+ 299 003e 42F8243C 		str	r3, [r2, #-36]
+ 300              	.LVL25:
+ 253:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)0x10101010u;                        /* R10                                 
+ 301              		.loc 1 253 0
+ 302 0042 4FF01033 		mov	r3, #269488144
+ 303 0046 42F8283C 		str	r3, [r2, #-40]
+ 304              	.LVL26:
+ 254:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)0x09090909u;                        /* R9                                  
+ 305              		.loc 1 254 0
+ 306 004a 4FF00933 		mov	r3, #151587081
+ 307 004e 42F82C3C 		str	r3, [r2, #-44]
+ 308              	.LVL27:
+ 255:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)0x08080808u;                        /* R8                                  
+ 309              		.loc 1 255 0
+ 310 0052 4FF00833 		mov	r3, #134744072
+ 311 0056 42F8303C 		str	r3, [r2, #-48]
+ 312              	.LVL28:
+ 256:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)0x07070707u;                        /* R7                                  
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 11
+
+
+ 313              		.loc 1 256 0
+ 314 005a 4FF00733 		mov	r3, #117901063
+ 315 005e 42F8343C 		str	r3, [r2, #-52]
+ 316              	.LVL29:
+ 257:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)0x06060606u;                        /* R6                                  
+ 317              		.loc 1 257 0
+ 318 0062 4FF00633 		mov	r3, #101058054
+ 319 0066 42F8383C 		str	r3, [r2, #-56]
+ 320              	.LVL30:
+ 258:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)0x05050505u;                        /* R5                                  
+ 321              		.loc 1 258 0
+ 322 006a 4FF00533 		mov	r3, #84215045
+ 323 006e 42F83C3C 		str	r3, [r2, #-60]
+ 324              	.LVL31:
+ 259:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     *--p_stk = (CPU_STK)0x04040404u;                        /* R4                                  
+ 325              		.loc 1 259 0
+ 326 0072 4FF00433 		mov	r3, #67372036
+ 327 0076 42F8403C 		str	r3, [r2, #-64]
+ 260:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 261:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     return (p_stk);
+ 262:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** }
+ 328              		.loc 1 262 0
+ 329 007a A2F14000 		sub	r0, r2, #64
+ 330              	.LVL32:
+ 331 007e 10BC     		pop	{r4}
+ 332              		.cfi_restore 4
+ 333              		.cfi_def_cfa_offset 0
+ 334              	.LVL33:
+ 335 0080 7047     		bx	lr
+ 336              	.L35:
+ 337 0082 00BF     		.align	2
+ 338              	.L34:
+ 339 0084 00000000 		.word	OS_TaskReturn
+ 340              		.cfi_endproc
+ 341              	.LFE7:
+ 342              		.size	OSTaskStkInit, .-OSTaskStkInit
+ 343              		.section	.text.OSTaskSwHook,"ax",%progbits
+ 344              		.align	2
+ 345              		.global	OSTaskSwHook
+ 346              		.thumb
+ 347              		.thumb_func
+ 348              		.type	OSTaskSwHook, %function
+ 349              	OSTaskSwHook:
+ 350              	.LFB8:
+ 263:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 264:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 265:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*$PAGE*/
+ 266:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*
+ 267:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 268:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                                           TASK SWITCH HOOK
+ 269:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 270:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Description: This function is called when a task switch is performed.  This allows you to perform
+ 271:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *              operations during a context switch.
+ 272:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 273:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Arguments  : None.
+ 274:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 275:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Note(s)    : 1) Interrupts are disabled during this call.
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 12
+
+
+ 276:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *              2) It is assumed that the global pointer 'OSTCBHighRdyPtr' points to the TCB of the 
+ 277:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                 that will be 'switched in' (i.e. the highest priority task) and, 'OSTCBCurPtr' po
+ 278:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                 to the task being switched out (i.e. the preempted task).
+ 279:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 280:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** */
+ 281:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 282:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** void  OSTaskSwHook (void)
+ 283:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** {
+ 351              		.loc 1 283 0
+ 352              		.cfi_startproc
+ 353              		@ args = 0, pretend = 0, frame = 0
+ 354              		@ frame_needed = 0, uses_anonymous_args = 0
+ 355 0000 10B5     		push	{r4, lr}
+ 356              		.cfi_def_cfa_offset 8
+ 357              		.cfi_offset 4, -8
+ 358              		.cfi_offset 14, -4
+ 284:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #if OS_CFG_TASK_PROFILE_EN > 0u
+ 285:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     CPU_TS  ts;
+ 286:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #endif
+ 287:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #ifdef  CPU_CFG_INT_DIS_MEAS_EN
+ 288:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     CPU_TS  int_dis_time;
+ 289:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #endif
+ 290:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 291:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 292:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 293:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #if OS_CFG_APP_HOOKS_EN > 0u
+ 294:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     if (OS_AppTaskSwHookPtr != (OS_APP_HOOK_VOID)0) {
+ 359              		.loc 1 294 0
+ 360 0002 0C4B     		ldr	r3, .L40
+ 361 0004 1B68     		ldr	r3, [r3]
+ 362 0006 03B1     		cbz	r3, .L37
+ 295:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****         (*OS_AppTaskSwHookPtr)();
+ 363              		.loc 1 295 0
+ 364 0008 9847     		blx	r3
+ 365              	.LVL34:
+ 366              	.L37:
+ 296:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     }
+ 297:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #endif
+ 298:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 299:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #if OS_CFG_TASK_PROFILE_EN > 0u
+ 300:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     ts = OS_TS_GET();
+ 367              		.loc 1 300 0
+ 368 000a FFF7FEFF 		bl	CPU_TS_TmrRd
+ 369              	.LVL35:
+ 301:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     if (OSTCBCurPtr != OSTCBHighRdyPtr) {
+ 370              		.loc 1 301 0
+ 371 000e 0A4B     		ldr	r3, .L40+4
+ 372 0010 1A68     		ldr	r2, [r3]
+ 373 0012 0A4B     		ldr	r3, .L40+8
+ 374 0014 1968     		ldr	r1, [r3]
+ 375 0016 8A42     		cmp	r2, r1
+ 376 0018 09D0     		beq	.L38
+ 302:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****         OSTCBCurPtr->CyclesDelta  = ts - OSTCBCurPtr->CyclesStart;
+ 377              		.loc 1 302 0
+ 378 001a D2F89830 		ldr	r3, [r2, #152]
+ 379 001e C31A     		subs	r3, r0, r3
+ 380 0020 C2F89430 		str	r3, [r2, #148]
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 13
+
+
+ 303:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****         OSTCBCurPtr->CyclesTotal += (OS_CYCLES)OSTCBCurPtr->CyclesDelta;
+ 381              		.loc 1 303 0
+ 382 0024 D2F89C40 		ldr	r4, [r2, #156]
+ 383 0028 2344     		add	r3, r3, r4
+ 384 002a C2F89C30 		str	r3, [r2, #156]
+ 385              	.L38:
+ 304:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     }
+ 305:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 306:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     OSTCBHighRdyPtr->CyclesStart = ts;
+ 386              		.loc 1 306 0
+ 387 002e C1F89800 		str	r0, [r1, #152]
+ 388 0032 10BD     		pop	{r4, pc}
+ 389              	.L41:
+ 390              		.align	2
+ 391              	.L40:
+ 392 0034 00000000 		.word	OS_AppTaskSwHookPtr
+ 393 0038 00000000 		.word	OSTCBCurPtr
+ 394 003c 00000000 		.word	OSTCBHighRdyPtr
+ 395              		.cfi_endproc
+ 396              	.LFE8:
+ 397              		.size	OSTaskSwHook, .-OSTaskSwHook
+ 398              		.section	.text.OSTimeTickHook,"ax",%progbits
+ 399              		.align	2
+ 400              		.global	OSTimeTickHook
+ 401              		.thumb
+ 402              		.thumb_func
+ 403              		.type	OSTimeTickHook, %function
+ 404              	OSTimeTickHook:
+ 405              	.LFB9:
+ 307:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #endif
+ 308:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 309:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #ifdef  CPU_CFG_INT_DIS_MEAS_EN
+ 310:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     int_dis_time = CPU_IntDisMeasMaxCurReset();             /* Keep track of per-task interrupt dis
+ 311:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     if (OSTCBCurPtr->IntDisTimeMax < int_dis_time) {
+ 312:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****         OSTCBCurPtr->IntDisTimeMax = int_dis_time;
+ 313:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     }
+ 314:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #endif
+ 315:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 316:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #if OS_CFG_SCHED_LOCK_TIME_MEAS_EN > 0u
+ 317:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****                                                             /* Keep track of per-task scheduler loc
+ 318:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     if (OSTCBCurPtr->SchedLockTimeMax < OSSchedLockTimeMaxCur) {
+ 319:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****         OSTCBCurPtr->SchedLockTimeMax = OSSchedLockTimeMaxCur;
+ 320:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     }
+ 321:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     OSSchedLockTimeMaxCur = (CPU_TS)0;                      /* Reset the per-task value            
+ 322:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #endif
+ 323:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** }
+ 324:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 325:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 326:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*$PAGE*/
+ 327:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*
+ 328:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 329:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                                              TICK HOOK
+ 330:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 331:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Description: This function is called every tick.
+ 332:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 333:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Arguments  : None.
+ 334:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 14
+
+
+ 335:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Note(s)    : 1) This function is assumed to be called from the Tick ISR.
+ 336:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 337:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** */
+ 338:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 339:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** void  OSTimeTickHook (void)
+ 340:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** {
+ 406              		.loc 1 340 0
+ 407              		.cfi_startproc
+ 408              		@ args = 0, pretend = 0, frame = 0
+ 409              		@ frame_needed = 0, uses_anonymous_args = 0
+ 410 0000 08B5     		push	{r3, lr}
+ 411              		.cfi_def_cfa_offset 8
+ 412              		.cfi_offset 3, -8
+ 413              		.cfi_offset 14, -4
+ 341:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #if OS_CFG_APP_HOOKS_EN > 0u
+ 342:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     if (OS_AppTimeTickHookPtr != (OS_APP_HOOK_VOID)0) {
+ 414              		.loc 1 342 0
+ 415 0002 024B     		ldr	r3, .L45
+ 416 0004 1B68     		ldr	r3, [r3]
+ 417 0006 03B1     		cbz	r3, .L42
+ 343:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****         (*OS_AppTimeTickHookPtr)();
+ 418              		.loc 1 343 0
+ 419 0008 9847     		blx	r3
+ 420              	.LVL36:
+ 421              	.L42:
+ 422 000a 08BD     		pop	{r3, pc}
+ 423              	.L46:
+ 424              		.align	2
+ 425              	.L45:
+ 426 000c 00000000 		.word	OS_AppTimeTickHookPtr
+ 427              		.cfi_endproc
+ 428              	.LFE9:
+ 429              		.size	OSTimeTickHook, .-OSTimeTickHook
+ 430              		.section	.text.OS_CPU_SysTickHandler,"ax",%progbits
+ 431              		.align	2
+ 432              		.global	OS_CPU_SysTickHandler
+ 433              		.thumb
+ 434              		.thumb_func
+ 435              		.type	OS_CPU_SysTickHandler, %function
+ 436              	OS_CPU_SysTickHandler:
+ 437              	.LFB10:
+ 344:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     }
+ 345:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** #endif
+ 346:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** }
+ 347:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 348:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 349:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*$PAGE*/
+ 350:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*
+ 351:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 352:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                                          SYS TICK HANDLER
+ 353:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 354:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Description: Handle the system tick (SysTick) interrupt, which is used to generate the uC/OS-II t
+ 355:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *              interrupt.
+ 356:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 357:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Arguments  : None.
+ 358:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 359:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Note(s)    : 1) This function MUST be placed on entry 15 of the Cortex-M3 vector table.
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 15
+
+
+ 360:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 361:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** */
+ 362:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 363:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** void  OS_CPU_SysTickHandler (void)
+ 364:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** {
+ 438              		.loc 1 364 0
+ 439              		.cfi_startproc
+ 440              		@ args = 0, pretend = 0, frame = 0
+ 441              		@ frame_needed = 0, uses_anonymous_args = 0
+ 442 0000 08B5     		push	{r3, lr}
+ 443              		.cfi_def_cfa_offset 8
+ 444              		.cfi_offset 3, -8
+ 445              		.cfi_offset 14, -4
+ 446              	.LVL37:
+ 365:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     CPU_SR_ALLOC();
+ 366:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 367:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 368:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     CPU_CRITICAL_ENTER();
+ 447              		.loc 1 368 0
+ 448 0002 FFF7FEFF 		bl	CPU_SR_Save
+ 449              	.LVL38:
+ 369:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     OSIntNestingCtr++;                                      /* Tell uC/OS-III that we are starting 
+ 450              		.loc 1 369 0
+ 451 0006 054A     		ldr	r2, .L49
+ 452 0008 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 453 000a 0133     		adds	r3, r3, #1
+ 454 000c 1370     		strb	r3, [r2]
+ 370:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     CPU_CRITICAL_EXIT();
+ 455              		.loc 1 370 0
+ 456 000e FFF7FEFF 		bl	CPU_SR_Restore
+ 457              	.LVL39:
+ 371:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 372:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     OSTimeTick();                                           /* Call uC/OS-III's OSTimeTick()       
+ 458              		.loc 1 372 0
+ 459 0012 FFF7FEFF 		bl	OSTimeTick
+ 460              	.LVL40:
+ 373:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 374:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     OSIntExit();                                            /* Tell uC/OS-III that we are leaving t
+ 461              		.loc 1 374 0
+ 462 0016 FFF7FEFF 		bl	OSIntExit
+ 463              	.LVL41:
+ 464 001a 08BD     		pop	{r3, pc}
+ 465              	.L50:
+ 466              		.align	2
+ 467              	.L49:
+ 468 001c 00000000 		.word	OSIntNestingCtr
+ 469              		.cfi_endproc
+ 470              	.LFE10:
+ 471              		.size	OS_CPU_SysTickHandler, .-OS_CPU_SysTickHandler
+ 472              		.section	.text.OS_CPU_SysTickInit,"ax",%progbits
+ 473              		.align	2
+ 474              		.global	OS_CPU_SysTickInit
+ 475              		.thumb
+ 476              		.thumb_func
+ 477              		.type	OS_CPU_SysTickInit, %function
+ 478              	OS_CPU_SysTickInit:
+ 479              	.LFB11:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 16
+
+
+ 375:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** }
+ 376:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 377:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 378:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*$PAGE*/
+ 379:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** /*
+ 380:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 381:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *                                         INITIALIZE SYS TICK
+ 382:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 383:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Description: Initialize the SysTick.
+ 384:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 385:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Arguments  : cnts         Number of SysTick counts between two OS tick interrupts.
+ 386:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** *
+ 387:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** * Note(s)    : 1) This function MUST be called after OSStart() & after processor initialization.
+ 388:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** ***************************************************************************************************
+ 389:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** */
+ 390:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 391:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** void  OS_CPU_SysTickInit (CPU_INT32U  cnts)
+ 392:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** {
+ 480              		.loc 1 392 0
+ 481              		.cfi_startproc
+ 482              		@ args = 0, pretend = 0, frame = 0
+ 483              		@ frame_needed = 0, uses_anonymous_args = 0
+ 484              		@ link register save eliminated.
+ 485              	.LVL42:
+ 393:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     CPU_INT32U  prio;
+ 394:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 395:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 396:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     CPU_REG_NVIC_ST_RELOAD = cnts - 1u;
+ 486              		.loc 1 396 0
+ 487 0000 0138     		subs	r0, r0, #1
+ 488              	.LVL43:
+ 489 0002 084B     		ldr	r3, .L52
+ 490 0004 1860     		str	r0, [r3]
+ 397:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 398:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****                                                             /* Set SysTick handler prio.           
+ 399:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     prio  = CPU_REG_NVIC_SHPRI3;
+ 491              		.loc 1 399 0
+ 492 0006 084A     		ldr	r2, .L52+4
+ 493 0008 1368     		ldr	r3, [r2]
+ 494              	.LVL44:
+ 400:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     prio &= DEF_BIT_FIELD(24, 0);
+ 495              		.loc 1 400 0
+ 496 000a 23F07F43 		bic	r3, r3, #-16777216
+ 497              	.LVL45:
+ 401:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     prio |= DEF_BIT_MASK(OS_CPU_CFG_SYSTICK_PRIO, 24);
+ 402:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 403:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     CPU_REG_NVIC_SHPRI3 = prio;
+ 498              		.loc 1 403 0
+ 499 000e 1360     		str	r3, [r2]
+ 404:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c **** 
+ 405:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****                                                             /* Enable timer.                       
+ 406:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     CPU_REG_NVIC_ST_CTRL |= CPU_REG_NVIC_ST_CTRL_CLKSOURCE |
+ 500              		.loc 1 406 0
+ 501 0010 064B     		ldr	r3, .L52+8
+ 502              	.LVL46:
+ 503 0012 1A68     		ldr	r2, [r3]
+ 504              	.LVL47:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 17
+
+
+ 505 0014 42F00502 		orr	r2, r2, #5
+ 506 0018 1A60     		str	r2, [r3]
+ 507              	.LVL48:
+ 407:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****                             CPU_REG_NVIC_ST_CTRL_ENABLE;
+ 408:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****                                                             /* Enable timer interrupt.             
+ 409:uCOS-III\Ports\ARM-Cortex-M3\Generic\GNU/os_cpu_c.c ****     CPU_REG_NVIC_ST_CTRL |= CPU_REG_NVIC_ST_CTRL_TICKINT;
+ 508              		.loc 1 409 0
+ 509 001a 1A68     		ldr	r2, [r3]
+ 510 001c 42F00202 		orr	r2, r2, #2
+ 511 0020 1A60     		str	r2, [r3]
+ 512 0022 7047     		bx	lr
+ 513              	.L53:
+ 514              		.align	2
+ 515              	.L52:
+ 516 0024 14E000E0 		.word	-536813548
+ 517 0028 20ED00E0 		.word	-536810208
+ 518 002c 10E000E0 		.word	-536813552
+ 519              		.cfi_endproc
+ 520              	.LFE11:
+ 521              		.size	OS_CPU_SysTickInit, .-OS_CPU_SysTickInit
+ 522              		.comm	OS_CPU_ExceptStkBase,4,4
+ 523              		.text
+ 524              	.Letext0:
+ 525              		.file 2 ".\\uC-CPU\\ARM-Cortex-M3\\GNU/cpu.h"
+ 526              		.file 3 ".\\uC-CPU/cpu_core.h"
+ 527              		.file 4 ".\\uCOS-III\\Source/os_type.h"
+ 528              		.file 5 ".\\uCOS-III\\Source/os.h"
+ 529              		.file 6 ".\\uCOS-III\\Ports\\ARM-Cortex-M3\\Generic\\GNU/os_cpu.h"
+ 530              		.section	.debug_info,"",%progbits
+ 531              	.Ldebug_info0:
+ 532 0000 1B0A0000 		.4byte	0xa1b
+ 533 0004 0400     		.2byte	0x4
+ 534 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 535 000a 04       		.byte	0x4
+ 536 000b 01       		.uleb128 0x1
+ 537 000c 63020000 		.4byte	.LASF162
+ 538 0010 0C       		.byte	0xc
+ 539 0011 58000000 		.4byte	.LASF163
+ 540 0015 07000000 		.4byte	.LASF164
+ 541 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 542 001d 00000000 		.4byte	0
+ 543 0021 00000000 		.4byte	.Ldebug_line0
+ 544 0025 02       		.uleb128 0x2
+ 545 0026 0D030000 		.4byte	.LASF2
+ 546 002a 02       		.byte	0x2
+ 547 002b 76       		.byte	0x76
+ 548 002c 30000000 		.4byte	0x30
+ 549 0030 03       		.uleb128 0x3
+ 550 0031 01       		.byte	0x1
+ 551 0032 08       		.byte	0x8
+ 552 0033 CD030000 		.4byte	.LASF0
+ 553 0037 03       		.uleb128 0x3
+ 554 0038 01       		.byte	0x1
+ 555 0039 08       		.byte	0x8
+ 556 003a 1D070000 		.4byte	.LASF1
+ 557 003e 02       		.uleb128 0x2
+ 558 003f 37020000 		.4byte	.LASF3
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 18
+
+
+ 559 0043 02       		.byte	0x2
+ 560 0044 78       		.byte	0x78
+ 561 0045 37000000 		.4byte	0x37
+ 562 0049 03       		.uleb128 0x3
+ 563 004a 01       		.byte	0x1
+ 564 004b 06       		.byte	0x6
+ 565 004c A3070000 		.4byte	.LASF4
+ 566 0050 02       		.uleb128 0x2
+ 567 0051 C7040000 		.4byte	.LASF5
+ 568 0055 02       		.byte	0x2
+ 569 0056 7A       		.byte	0x7a
+ 570 0057 5B000000 		.4byte	0x5b
+ 571 005b 03       		.uleb128 0x3
+ 572 005c 02       		.byte	0x2
+ 573 005d 07       		.byte	0x7
+ 574 005e B5070000 		.4byte	.LASF6
+ 575 0062 03       		.uleb128 0x3
+ 576 0063 02       		.byte	0x2
+ 577 0064 05       		.byte	0x5
+ 578 0065 82050000 		.4byte	.LASF7
+ 579 0069 02       		.uleb128 0x2
+ 580 006a BD000000 		.4byte	.LASF8
+ 581 006e 02       		.byte	0x2
+ 582 006f 7C       		.byte	0x7c
+ 583 0070 74000000 		.4byte	0x74
+ 584 0074 03       		.uleb128 0x3
+ 585 0075 04       		.byte	0x4
+ 586 0076 07       		.byte	0x7
+ 587 0077 62060000 		.4byte	.LASF9
+ 588 007b 04       		.uleb128 0x4
+ 589 007c 04       		.byte	0x4
+ 590 007d 05       		.byte	0x5
+ 591 007e 696E7400 		.ascii	"int\000"
+ 592 0082 03       		.uleb128 0x3
+ 593 0083 08       		.byte	0x8
+ 594 0084 07       		.byte	0x7
+ 595 0085 0C020000 		.4byte	.LASF10
+ 596 0089 03       		.uleb128 0x3
+ 597 008a 08       		.byte	0x8
+ 598 008b 05       		.byte	0x5
+ 599 008c 80040000 		.4byte	.LASF11
+ 600 0090 03       		.uleb128 0x3
+ 601 0091 04       		.byte	0x4
+ 602 0092 04       		.byte	0x4
+ 603 0093 CD010000 		.4byte	.LASF12
+ 604 0097 03       		.uleb128 0x3
+ 605 0098 08       		.byte	0x8
+ 606 0099 04       		.byte	0x4
+ 607 009a E6070000 		.4byte	.LASF13
+ 608 009e 02       		.uleb128 0x2
+ 609 009f 4E000000 		.4byte	.LASF14
+ 610 00a3 02       		.byte	0x2
+ 611 00a4 87       		.byte	0x87
+ 612 00a5 A9000000 		.4byte	0xa9
+ 613 00a9 05       		.uleb128 0x5
+ 614 00aa 69000000 		.4byte	0x69
+ 615 00ae 06       		.uleb128 0x6
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 19
+
+
+ 616 00af 04       		.byte	0x4
+ 617 00b0 B4000000 		.4byte	0xb4
+ 618 00b4 07       		.uleb128 0x7
+ 619 00b5 06       		.uleb128 0x6
+ 620 00b6 04       		.byte	0x4
+ 621 00b7 BB000000 		.4byte	0xbb
+ 622 00bb 08       		.uleb128 0x8
+ 623 00bc C6000000 		.4byte	0xc6
+ 624 00c0 09       		.uleb128 0x9
+ 625 00c1 C6000000 		.4byte	0xc6
+ 626 00c5 00       		.byte	0
+ 627 00c6 0A       		.uleb128 0xa
+ 628 00c7 04       		.byte	0x4
+ 629 00c8 02       		.uleb128 0x2
+ 630 00c9 D6060000 		.4byte	.LASF15
+ 631 00cd 02       		.byte	0x2
+ 632 00ce B5       		.byte	0xb5
+ 633 00cf 69000000 		.4byte	0x69
+ 634 00d3 02       		.uleb128 0x2
+ 635 00d4 3F080000 		.4byte	.LASF16
+ 636 00d8 02       		.byte	0x2
+ 637 00d9 D9       		.byte	0xd9
+ 638 00da 69000000 		.4byte	0x69
+ 639 00de 02       		.uleb128 0x2
+ 640 00df 16030000 		.4byte	.LASF17
+ 641 00e3 02       		.byte	0x2
+ 642 00e4 DA       		.byte	0xda
+ 643 00e5 C8000000 		.4byte	0xc8
+ 644 00e9 0B       		.uleb128 0xb
+ 645 00ea 09040000 		.4byte	.LASF18
+ 646 00ee 02       		.byte	0x2
+ 647 00ef 2901     		.2byte	0x129
+ 648 00f1 69000000 		.4byte	0x69
+ 649 00f5 03       		.uleb128 0x3
+ 650 00f6 04       		.byte	0x4
+ 651 00f7 05       		.byte	0x5
+ 652 00f8 AD050000 		.4byte	.LASF19
+ 653 00fc 03       		.uleb128 0x3
+ 654 00fd 04       		.byte	0x4
+ 655 00fe 07       		.byte	0x7
+ 656 00ff C4060000 		.4byte	.LASF20
+ 657 0103 03       		.uleb128 0x3
+ 658 0104 08       		.byte	0x8
+ 659 0105 04       		.byte	0x4
+ 660 0106 47050000 		.4byte	.LASF21
+ 661 010a 03       		.uleb128 0x3
+ 662 010b 04       		.byte	0x4
+ 663 010c 07       		.byte	0x7
+ 664 010d BB060000 		.4byte	.LASF22
+ 665 0111 02       		.uleb128 0x2
+ 666 0112 DA040000 		.4byte	.LASF23
+ 667 0116 03       		.byte	0x3
+ 668 0117 C4       		.byte	0xc4
+ 669 0118 69000000 		.4byte	0x69
+ 670 011c 02       		.uleb128 0x2
+ 671 011d 79040000 		.4byte	.LASF24
+ 672 0121 03       		.byte	0x3
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 20
+
+
+ 673 0122 C7       		.byte	0xc7
+ 674 0123 11010000 		.4byte	0x111
+ 675 0127 02       		.uleb128 0x2
+ 676 0128 B0000000 		.4byte	.LASF25
+ 677 012c 04       		.byte	0x4
+ 678 012d 30       		.byte	0x30
+ 679 012e 50000000 		.4byte	0x50
+ 680 0132 02       		.uleb128 0x2
+ 681 0133 38000000 		.4byte	.LASF26
+ 682 0137 04       		.byte	0x4
+ 683 0138 34       		.byte	0x34
+ 684 0139 69000000 		.4byte	0x69
+ 685 013d 02       		.uleb128 0x2
+ 686 013e F3060000 		.4byte	.LASF27
+ 687 0142 04       		.byte	0x4
+ 688 0143 36       		.byte	0x36
+ 689 0144 69000000 		.4byte	0x69
+ 690 0148 02       		.uleb128 0x2
+ 691 0149 C8070000 		.4byte	.LASF28
+ 692 014d 04       		.byte	0x4
+ 693 014e 38       		.byte	0x38
+ 694 014f 69000000 		.4byte	0x69
+ 695 0153 02       		.uleb128 0x2
+ 696 0154 23030000 		.4byte	.LASF29
+ 697 0158 04       		.byte	0x4
+ 698 0159 3F       		.byte	0x3f
+ 699 015a 50000000 		.4byte	0x50
+ 700 015e 02       		.uleb128 0x2
+ 701 015f 01030000 		.4byte	.LASF30
+ 702 0163 04       		.byte	0x4
+ 703 0164 40       		.byte	0x40
+ 704 0165 50000000 		.4byte	0x50
+ 705 0169 02       		.uleb128 0x2
+ 706 016a FA050000 		.4byte	.LASF31
+ 707 016e 04       		.byte	0x4
+ 708 016f 42       		.byte	0x42
+ 709 0170 3E000000 		.4byte	0x3e
+ 710 0174 02       		.uleb128 0x2
+ 711 0175 ED000000 		.4byte	.LASF32
+ 712 0179 04       		.byte	0x4
+ 713 017a 44       		.byte	0x44
+ 714 017b 50000000 		.4byte	0x50
+ 715 017f 02       		.uleb128 0x2
+ 716 0180 E7030000 		.4byte	.LASF33
+ 717 0184 04       		.byte	0x4
+ 718 0185 45       		.byte	0x45
+ 719 0186 69000000 		.4byte	0x69
+ 720 018a 02       		.uleb128 0x2
+ 721 018b 34070000 		.4byte	.LASF34
+ 722 018f 04       		.byte	0x4
+ 723 0190 47       		.byte	0x47
+ 724 0191 50000000 		.4byte	0x50
+ 725 0195 02       		.uleb128 0x2
+ 726 0196 C5010000 		.4byte	.LASF35
+ 727 019a 04       		.byte	0x4
+ 728 019b 49       		.byte	0x49
+ 729 019c 3E000000 		.4byte	0x3e
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 21
+
+
+ 730 01a0 02       		.uleb128 0x2
+ 731 01a1 5C020000 		.4byte	.LASF36
+ 732 01a5 04       		.byte	0x4
+ 733 01a6 4F       		.byte	0x4f
+ 734 01a7 69000000 		.4byte	0x69
+ 735 01ab 02       		.uleb128 0x2
+ 736 01ac 0B050000 		.4byte	.LASF37
+ 737 01b0 04       		.byte	0x4
+ 738 01b1 52       		.byte	0x52
+ 739 01b2 69000000 		.4byte	0x69
+ 740 01b6 02       		.uleb128 0x2
+ 741 01b7 2B070000 		.4byte	.LASF38
+ 742 01bb 04       		.byte	0x4
+ 743 01bc 54       		.byte	0x54
+ 744 01bd 3E000000 		.4byte	0x3e
+ 745 01c1 02       		.uleb128 0x2
+ 746 01c2 F1020000 		.4byte	.LASF39
+ 747 01c6 04       		.byte	0x4
+ 748 01c7 56       		.byte	0x56
+ 749 01c8 3E000000 		.4byte	0x3e
+ 750 01cc 02       		.uleb128 0x2
+ 751 01cd D2040000 		.4byte	.LASF40
+ 752 01d1 04       		.byte	0x4
+ 753 01d2 58       		.byte	0x58
+ 754 01d3 69000000 		.4byte	0x69
+ 755 01d7 0B       		.uleb128 0xb
+ 756 01d8 05020000 		.4byte	.LASF41
+ 757 01dc 05       		.byte	0x5
+ 758 01dd 8202     		.2byte	0x282
+ 759 01df E3010000 		.4byte	0x1e3
+ 760 01e3 0C       		.uleb128 0xc
+ 761 01e4 42020000 		.4byte	.LASF47
+ 762 01e8 10       		.byte	0x10
+ 763 01e9 05       		.byte	0x5
+ 764 01ea 4003     		.2byte	0x340
+ 765 01ec 25020000 		.4byte	0x225
+ 766 01f0 0D       		.uleb128 0xd
+ 767 01f1 3F050000 		.4byte	.LASF42
+ 768 01f5 05       		.byte	0x5
+ 769 01f6 4103     		.2byte	0x341
+ 770 01f8 E9060000 		.4byte	0x6e9
+ 771 01fc 00       		.byte	0
+ 772 01fd 0D       		.uleb128 0xd
+ 773 01fe D1070000 		.4byte	.LASF43
+ 774 0202 05       		.byte	0x5
+ 775 0203 4203     		.2byte	0x342
+ 776 0205 C6000000 		.4byte	0xc6
+ 777 0209 04       		.byte	0x4
+ 778 020a 0D       		.uleb128 0xd
+ 779 020b 7E060000 		.4byte	.LASF44
+ 780 020f 05       		.byte	0x5
+ 781 0210 4303     		.2byte	0x343
+ 782 0212 5E010000 		.4byte	0x15e
+ 783 0216 08       		.byte	0x8
+ 784 0217 0D       		.uleb128 0xd
+ 785 0218 AF070000 		.4byte	.LASF45
+ 786 021c 05       		.byte	0x5
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 22
+
+
+ 787 021d 4403     		.2byte	0x344
+ 788 021f 1C010000 		.4byte	0x11c
+ 789 0223 0C       		.byte	0xc
+ 790 0224 00       		.byte	0
+ 791 0225 0B       		.uleb128 0xb
+ 792 0226 6B040000 		.4byte	.LASF46
+ 793 022a 05       		.byte	0x5
+ 794 022b 8402     		.2byte	0x284
+ 795 022d 31020000 		.4byte	0x231
+ 796 0231 0C       		.uleb128 0xc
+ 797 0232 36080000 		.4byte	.LASF48
+ 798 0236 10       		.byte	0x10
+ 799 0237 05       		.byte	0x5
+ 800 0238 5303     		.2byte	0x353
+ 801 023a 80020000 		.4byte	0x280
+ 802 023e 0D       		.uleb128 0xd
+ 803 023f 10040000 		.4byte	.LASF49
+ 804 0243 05       		.byte	0x5
+ 805 0244 5403     		.2byte	0x354
+ 806 0246 E9060000 		.4byte	0x6e9
+ 807 024a 00       		.byte	0
+ 808 024b 0D       		.uleb128 0xd
+ 809 024c 6E070000 		.4byte	.LASF50
+ 810 0250 05       		.byte	0x5
+ 811 0251 5503     		.2byte	0x355
+ 812 0253 E9060000 		.4byte	0x6e9
+ 813 0257 04       		.byte	0x4
+ 814 0258 0D       		.uleb128 0xd
+ 815 0259 3A030000 		.4byte	.LASF51
+ 816 025d 05       		.byte	0x5
+ 817 025e 5603     		.2byte	0x356
+ 818 0260 53010000 		.4byte	0x153
+ 819 0264 08       		.byte	0x8
+ 820 0265 0D       		.uleb128 0xd
+ 821 0266 A5000000 		.4byte	.LASF52
+ 822 026a 05       		.byte	0x5
+ 823 026b 5703     		.2byte	0x357
+ 824 026d 53010000 		.4byte	0x153
+ 825 0271 0A       		.byte	0xa
+ 826 0272 0D       		.uleb128 0xd
+ 827 0273 01080000 		.4byte	.LASF53
+ 828 0277 05       		.byte	0x5
+ 829 0278 5803     		.2byte	0x358
+ 830 027a 53010000 		.4byte	0x153
+ 831 027e 0C       		.byte	0xc
+ 832 027f 00       		.byte	0
+ 833 0280 0B       		.uleb128 0xb
+ 834 0281 77010000 		.4byte	.LASF54
+ 835 0285 05       		.byte	0x5
+ 836 0286 8E02     		.2byte	0x28e
+ 837 0288 B5000000 		.4byte	0xb5
+ 838 028c 0B       		.uleb128 0xb
+ 839 028d FD060000 		.4byte	.LASF55
+ 840 0291 05       		.byte	0x5
+ 841 0292 9002     		.2byte	0x290
+ 842 0294 98020000 		.4byte	0x298
+ 843 0298 0C       		.uleb128 0xc
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 23
+
+
+ 844 0299 00000000 		.4byte	.LASF56
+ 845 029d C0       		.byte	0xc0
+ 846 029e 05       		.byte	0x5
+ 847 029f AB03     		.2byte	0x3ab
+ 848 02a1 3C050000 		.4byte	0x53c
+ 849 02a5 0D       		.uleb128 0xd
+ 850 02a6 8E040000 		.4byte	.LASF57
+ 851 02aa 05       		.byte	0x5
+ 852 02ab AC03     		.2byte	0x3ac
+ 853 02ad EF060000 		.4byte	0x6ef
+ 854 02b1 00       		.byte	0
+ 855 02b2 0D       		.uleb128 0xd
+ 856 02b3 B4060000 		.4byte	.LASF58
+ 857 02b7 05       		.byte	0x5
+ 858 02b8 AE03     		.2byte	0x3ae
+ 859 02ba C6000000 		.4byte	0xc6
+ 860 02be 04       		.byte	0x4
+ 861 02bf 0D       		.uleb128 0xd
+ 862 02c0 EE040000 		.4byte	.LASF59
+ 863 02c4 05       		.byte	0x5
+ 864 02c5 B003     		.2byte	0x3b0
+ 865 02c7 EF060000 		.4byte	0x6ef
+ 866 02cb 08       		.byte	0x8
+ 867 02cc 0D       		.uleb128 0xd
+ 868 02cd 3F050000 		.4byte	.LASF42
+ 869 02d1 05       		.byte	0x5
+ 870 02d2 B203     		.2byte	0x3b2
+ 871 02d4 D1060000 		.4byte	0x6d1
+ 872 02d8 0C       		.byte	0xc
+ 873 02d9 0D       		.uleb128 0xd
+ 874 02da C5030000 		.4byte	.LASF60
+ 875 02de 05       		.byte	0x5
+ 876 02df B303     		.2byte	0x3b3
+ 877 02e1 D1060000 		.4byte	0x6d1
+ 878 02e5 10       		.byte	0x10
+ 879 02e6 0D       		.uleb128 0xd
+ 880 02e7 29050000 		.4byte	.LASF61
+ 881 02eb 05       		.byte	0x5
+ 882 02ec B503     		.2byte	0x3b5
+ 883 02ee D1060000 		.4byte	0x6d1
+ 884 02f2 14       		.byte	0x14
+ 885 02f3 0D       		.uleb128 0xd
+ 886 02f4 49030000 		.4byte	.LASF62
+ 887 02f8 05       		.byte	0x5
+ 888 02f9 B603     		.2byte	0x3b6
+ 889 02fb D1060000 		.4byte	0x6d1
+ 890 02ff 18       		.byte	0x18
+ 891 0300 0D       		.uleb128 0xd
+ 892 0301 3B070000 		.4byte	.LASF63
+ 893 0305 05       		.byte	0x5
+ 894 0306 B803     		.2byte	0x3b8
+ 895 0308 F5060000 		.4byte	0x6f5
+ 896 030c 1C       		.byte	0x1c
+ 897 030d 0D       		.uleb128 0xd
+ 898 030e 58040000 		.4byte	.LASF64
+ 899 0312 05       		.byte	0x5
+ 900 0313 BA03     		.2byte	0x3ba
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 24
+
+
+ 901 0315 E3060000 		.4byte	0x6e3
+ 902 0319 20       		.byte	0x20
+ 903 031a 0D       		.uleb128 0xd
+ 904 031b 51020000 		.4byte	.LASF65
+ 905 031f 05       		.byte	0x5
+ 906 0320 BC03     		.2byte	0x3bc
+ 907 0322 EF060000 		.4byte	0x6ef
+ 908 0326 24       		.byte	0x24
+ 909 0327 0D       		.uleb128 0xd
+ 910 0328 2C040000 		.4byte	.LASF66
+ 911 032c 05       		.byte	0x5
+ 912 032d C203     		.2byte	0x3c2
+ 913 032f 80020000 		.4byte	0x280
+ 914 0333 28       		.byte	0x28
+ 915 0334 0D       		.uleb128 0xd
+ 916 0335 53070000 		.4byte	.LASF67
+ 917 0339 05       		.byte	0x5
+ 918 033a C303     		.2byte	0x3c3
+ 919 033c C6000000 		.4byte	0xc6
+ 920 0340 2C       		.byte	0x2c
+ 921 0341 0D       		.uleb128 0xd
+ 922 0342 EB050000 		.4byte	.LASF68
+ 923 0346 05       		.byte	0x5
+ 924 0347 C503     		.2byte	0x3c5
+ 925 0349 D7060000 		.4byte	0x6d7
+ 926 034d 30       		.byte	0x30
+ 927 034e 0D       		.uleb128 0xd
+ 928 034f 3A010000 		.4byte	.LASF69
+ 929 0353 05       		.byte	0x5
+ 930 0354 C603     		.2byte	0x3c6
+ 931 0356 B6010000 		.4byte	0x1b6
+ 932 035a 34       		.byte	0x34
+ 933 035b 0D       		.uleb128 0xd
+ 934 035c 60040000 		.4byte	.LASF70
+ 935 0360 05       		.byte	0x5
+ 936 0361 C703     		.2byte	0x3c7
+ 937 0363 C1010000 		.4byte	0x1c1
+ 938 0367 35       		.byte	0x35
+ 939 0368 0D       		.uleb128 0xd
+ 940 0369 FF030000 		.4byte	.LASF71
+ 941 036d 05       		.byte	0x5
+ 942 036e C903     		.2byte	0x3c9
+ 943 0370 B6010000 		.4byte	0x1b6
+ 944 0374 36       		.byte	0x36
+ 945 0375 0D       		.uleb128 0xd
+ 946 0376 E1070000 		.4byte	.LASF72
+ 947 037a 05       		.byte	0x5
+ 948 037b CA03     		.2byte	0x3ca
+ 949 037d 95010000 		.4byte	0x195
+ 950 0381 37       		.byte	0x37
+ 951 0382 0D       		.uleb128 0xd
+ 952 0383 49020000 		.4byte	.LASF73
+ 953 0387 05       		.byte	0x5
+ 954 0388 CB03     		.2byte	0x3cb
+ 955 038a DE000000 		.4byte	0xde
+ 956 038e 38       		.byte	0x38
+ 957 038f 0E       		.uleb128 0xe
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 25
+
+
+ 958 0390 4F707400 		.ascii	"Opt\000"
+ 959 0394 05       		.byte	0x5
+ 960 0395 CC03     		.2byte	0x3cc
+ 961 0397 8A010000 		.4byte	0x18a
+ 962 039b 3C       		.byte	0x3c
+ 963 039c 0D       		.uleb128 0xd
+ 964 039d 41010000 		.4byte	.LASF74
+ 965 03a1 05       		.byte	0x5
+ 966 03a2 CE03     		.2byte	0x3ce
+ 967 03a4 74010000 		.4byte	0x174
+ 968 03a8 3E       		.byte	0x3e
+ 969 03a9 0E       		.uleb128 0xe
+ 970 03aa 545300   		.ascii	"TS\000"
+ 971 03ad 05       		.byte	0x5
+ 972 03ae D003     		.2byte	0x3d0
+ 973 03b0 1C010000 		.4byte	0x11c
+ 974 03b4 40       		.byte	0x40
+ 975 03b5 0D       		.uleb128 0xd
+ 976 03b6 36060000 		.4byte	.LASF75
+ 977 03ba 05       		.byte	0x5
+ 978 03bb D203     		.2byte	0x3d2
+ 979 03bd AB010000 		.4byte	0x1ab
+ 980 03c1 44       		.byte	0x44
+ 981 03c2 0D       		.uleb128 0xd
+ 982 03c3 2E030000 		.4byte	.LASF76
+ 983 03c7 05       		.byte	0x5
+ 984 03c8 D503     		.2byte	0x3d5
+ 985 03ca CC010000 		.4byte	0x1cc
+ 986 03ce 48       		.byte	0x48
+ 987 03cf 0D       		.uleb128 0xd
+ 988 03d0 83010000 		.4byte	.LASF77
+ 989 03d4 05       		.byte	0x5
+ 990 03d5 D603     		.2byte	0x3d6
+ 991 03d7 CC010000 		.4byte	0x1cc
+ 992 03db 4C       		.byte	0x4c
+ 993 03dc 0D       		.uleb128 0xd
+ 994 03dd 4C060000 		.4byte	.LASF78
+ 995 03e1 05       		.byte	0x5
+ 996 03e2 D703     		.2byte	0x3d7
+ 997 03e4 CC010000 		.4byte	0x1cc
+ 998 03e8 50       		.byte	0x50
+ 999 03e9 0D       		.uleb128 0xd
+ 1000 03ea 2B080000 		.4byte	.LASF79
+ 1001 03ee 05       		.byte	0x5
+ 1002 03ef D903     		.2byte	0x3d9
+ 1003 03f1 CC010000 		.4byte	0x1cc
+ 1004 03f5 54       		.byte	0x54
+ 1005 03f6 0D       		.uleb128 0xd
+ 1006 03f7 91000000 		.4byte	.LASF80
+ 1007 03fb 05       		.byte	0x5
+ 1008 03fc DA03     		.2byte	0x3da
+ 1009 03fe CC010000 		.4byte	0x1cc
+ 1010 0402 58       		.byte	0x58
+ 1011 0403 0D       		.uleb128 0xd
+ 1012 0404 D1070000 		.4byte	.LASF43
+ 1013 0408 05       		.byte	0x5
+ 1014 0409 DD03     		.2byte	0x3dd
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 26
+
+
+ 1015 040b C6000000 		.4byte	0xc6
+ 1016 040f 5C       		.byte	0x5c
+ 1017 0410 0D       		.uleb128 0xd
+ 1018 0411 7E060000 		.4byte	.LASF44
+ 1019 0415 05       		.byte	0x5
+ 1020 0416 DE03     		.2byte	0x3de
+ 1021 0418 5E010000 		.4byte	0x15e
+ 1022 041c 60       		.byte	0x60
+ 1023 041d 0D       		.uleb128 0xd
+ 1024 041e 27040000 		.4byte	.LASF81
+ 1025 0422 05       		.byte	0x5
+ 1026 0423 E203     		.2byte	0x3e2
+ 1027 0425 25020000 		.4byte	0x225
+ 1028 0429 64       		.byte	0x64
+ 1029 042a 0D       		.uleb128 0xd
+ 1030 042b 85030000 		.4byte	.LASF82
+ 1031 042f 05       		.byte	0x5
+ 1032 0430 E403     		.2byte	0x3e4
+ 1033 0432 1C010000 		.4byte	0x11c
+ 1034 0436 74       		.byte	0x74
+ 1035 0437 0D       		.uleb128 0xd
+ 1036 0438 75030000 		.4byte	.LASF83
+ 1037 043c 05       		.byte	0x5
+ 1038 043d E503     		.2byte	0x3e5
+ 1039 043f 1C010000 		.4byte	0x11c
+ 1040 0443 78       		.byte	0x78
+ 1041 0444 0D       		.uleb128 0xd
+ 1042 0445 1C080000 		.4byte	.LASF84
+ 1043 0449 05       		.byte	0x5
+ 1044 044a EA03     		.2byte	0x3ea
+ 1045 044c FB060000 		.4byte	0x6fb
+ 1046 0450 7C       		.byte	0x7c
+ 1047 0451 0D       		.uleb128 0xd
+ 1048 0452 9C010000 		.4byte	.LASF85
+ 1049 0456 05       		.byte	0x5
+ 1050 0457 EE03     		.2byte	0x3ee
+ 1051 0459 48010000 		.4byte	0x148
+ 1052 045d 80       		.byte	0x80
+ 1053 045e 0D       		.uleb128 0xd
+ 1054 045f D8070000 		.4byte	.LASF86
+ 1055 0463 05       		.byte	0x5
+ 1056 0464 EF03     		.2byte	0x3ef
+ 1057 0466 48010000 		.4byte	0x148
+ 1058 046a 84       		.byte	0x84
+ 1059 046b 0D       		.uleb128 0xd
+ 1060 046c E4000000 		.4byte	.LASF87
+ 1061 0470 05       		.byte	0x5
+ 1062 0471 F003     		.2byte	0x3f0
+ 1063 0473 8A010000 		.4byte	0x18a
+ 1064 0477 88       		.byte	0x88
+ 1065 0478 0D       		.uleb128 0xd
+ 1066 0479 E3040000 		.4byte	.LASF88
+ 1067 047d 05       		.byte	0x5
+ 1068 047e F403     		.2byte	0x3f4
+ 1069 0480 69010000 		.4byte	0x169
+ 1070 0484 8A       		.byte	0x8a
+ 1071 0485 0D       		.uleb128 0xd
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 27
+
+
+ 1072 0486 ED070000 		.4byte	.LASF89
+ 1073 048a 05       		.byte	0x5
+ 1074 048b F803     		.2byte	0x3f8
+ 1075 048d 27010000 		.4byte	0x127
+ 1076 0491 8C       		.byte	0x8c
+ 1077 0492 0D       		.uleb128 0xd
+ 1078 0493 21060000 		.4byte	.LASF90
+ 1079 0497 05       		.byte	0x5
+ 1080 0498 F903     		.2byte	0x3f9
+ 1081 049a 27010000 		.4byte	0x127
+ 1082 049e 8E       		.byte	0x8e
+ 1083 049f 0D       		.uleb128 0xd
+ 1084 04a0 BC010000 		.4byte	.LASF91
+ 1085 04a4 05       		.byte	0x5
+ 1086 04a5 FA03     		.2byte	0x3fa
+ 1087 04a7 32010000 		.4byte	0x132
+ 1088 04ab 90       		.byte	0x90
+ 1089 04ac 0D       		.uleb128 0xd
+ 1090 04ad 1D050000 		.4byte	.LASF92
+ 1091 04b1 05       		.byte	0x5
+ 1092 04b2 FB03     		.2byte	0x3fb
+ 1093 04b4 1C010000 		.4byte	0x11c
+ 1094 04b8 94       		.byte	0x94
+ 1095 04b9 0D       		.uleb128 0xd
+ 1096 04ba BB040000 		.4byte	.LASF93
+ 1097 04be 05       		.byte	0x5
+ 1098 04bf FC03     		.2byte	0x3fc
+ 1099 04c1 1C010000 		.4byte	0x11c
+ 1100 04c5 98       		.byte	0x98
+ 1101 04c6 0D       		.uleb128 0xd
+ 1102 04c7 09060000 		.4byte	.LASF94
+ 1103 04cb 05       		.byte	0x5
+ 1104 04cc FD03     		.2byte	0x3fd
+ 1105 04ce 3D010000 		.4byte	0x13d
+ 1106 04d2 9C       		.byte	0x9c
+ 1107 04d3 0D       		.uleb128 0xd
+ 1108 04d4 C5050000 		.4byte	.LASF95
+ 1109 04d8 05       		.byte	0x5
+ 1110 04d9 FE03     		.2byte	0x3fe
+ 1111 04db 3D010000 		.4byte	0x13d
+ 1112 04df A0       		.byte	0xa0
+ 1113 04e0 0D       		.uleb128 0xd
+ 1114 04e1 03010000 		.4byte	.LASF96
+ 1115 04e5 05       		.byte	0x5
+ 1116 04e6 0004     		.2byte	0x400
+ 1117 04e8 1C010000 		.4byte	0x11c
+ 1118 04ec A4       		.byte	0xa4
+ 1119 04ed 0D       		.uleb128 0xd
+ 1120 04ee B6050000 		.4byte	.LASF97
+ 1121 04f2 05       		.byte	0x5
+ 1122 04f3 0104     		.2byte	0x401
+ 1123 04f5 1C010000 		.4byte	0x11c
+ 1124 04f9 A8       		.byte	0xa8
+ 1125 04fa 0D       		.uleb128 0xd
+ 1126 04fb 46000000 		.4byte	.LASF98
+ 1127 04ff 05       		.byte	0x5
+ 1128 0500 0504     		.2byte	0x405
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 28
+
+
+ 1129 0502 DE000000 		.4byte	0xde
+ 1130 0506 AC       		.byte	0xac
+ 1131 0507 0D       		.uleb128 0xd
+ 1132 0508 23080000 		.4byte	.LASF99
+ 1133 050c 05       		.byte	0x5
+ 1134 050d 0604     		.2byte	0x406
+ 1135 050f DE000000 		.4byte	0xde
+ 1136 0513 B0       		.byte	0xb0
+ 1137 0514 0D       		.uleb128 0xd
+ 1138 0515 F8000000 		.4byte	.LASF100
+ 1139 0519 05       		.byte	0x5
+ 1140 051a 1104     		.2byte	0x411
+ 1141 051c D1060000 		.4byte	0x6d1
+ 1142 0520 B4       		.byte	0xb4
+ 1143 0521 0D       		.uleb128 0xd
+ 1144 0522 0F010000 		.4byte	.LASF101
+ 1145 0526 05       		.byte	0x5
+ 1146 0527 1204     		.2byte	0x412
+ 1147 0529 D1060000 		.4byte	0x6d1
+ 1148 052d B8       		.byte	0xb8
+ 1149 052e 0D       		.uleb128 0xd
+ 1150 052f 48070000 		.4byte	.LASF102
+ 1151 0533 05       		.byte	0x5
+ 1152 0534 1304     		.2byte	0x413
+ 1153 0536 E3060000 		.4byte	0x6e3
+ 1154 053a BC       		.byte	0xbc
+ 1155 053b 00       		.byte	0
+ 1156 053c 0B       		.uleb128 0xb
+ 1157 053d F0010000 		.4byte	.LASF103
+ 1158 0541 05       		.byte	0x5
+ 1159 0542 9E02     		.2byte	0x29e
+ 1160 0544 48050000 		.4byte	0x548
+ 1161 0548 0C       		.uleb128 0xc
+ 1162 0549 95040000 		.4byte	.LASF104
+ 1163 054d 08       		.byte	0x8
+ 1164 054e 05       		.byte	0x5
+ 1165 054f 1E04     		.2byte	0x41e
+ 1166 0551 7D050000 		.4byte	0x57d
+ 1167 0555 0D       		.uleb128 0xd
+ 1168 0556 90060000 		.4byte	.LASF105
+ 1169 055a 05       		.byte	0x5
+ 1170 055b 1F04     		.2byte	0x41f
+ 1171 055d D1060000 		.4byte	0x6d1
+ 1172 0561 00       		.byte	0
+ 1173 0562 0D       		.uleb128 0xd
+ 1174 0563 A5000000 		.4byte	.LASF52
+ 1175 0567 05       		.byte	0x5
+ 1176 0568 2004     		.2byte	0x420
+ 1177 056a 74010000 		.4byte	0x174
+ 1178 056e 04       		.byte	0x4
+ 1179 056f 0D       		.uleb128 0xd
+ 1180 0570 01080000 		.4byte	.LASF53
+ 1181 0574 05       		.byte	0x5
+ 1182 0575 2104     		.2byte	0x421
+ 1183 0577 74010000 		.4byte	0x174
+ 1184 057b 06       		.byte	0x6
+ 1185 057c 00       		.byte	0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 29
+
+
+ 1186 057d 0B       		.uleb128 0xb
+ 1187 057e 2A020000 		.4byte	.LASF106
+ 1188 0582 05       		.byte	0x5
+ 1189 0583 A502     		.2byte	0x2a5
+ 1190 0585 89050000 		.4byte	0x589
+ 1191 0589 0C       		.uleb128 0xc
+ 1192 058a D3010000 		.4byte	.LASF107
+ 1193 058e 20       		.byte	0x20
+ 1194 058f 05       		.byte	0x5
+ 1195 0590 DD02     		.2byte	0x2dd
+ 1196 0592 FF050000 		.4byte	0x5ff
+ 1197 0596 0D       		.uleb128 0xd
+ 1198 0597 C5030000 		.4byte	.LASF60
+ 1199 059b 05       		.byte	0x5
+ 1200 059c DE02     		.2byte	0x2de
+ 1201 059e D7060000 		.4byte	0x6d7
+ 1202 05a2 00       		.byte	0
+ 1203 05a3 0D       		.uleb128 0xd
+ 1204 05a4 3F050000 		.4byte	.LASF42
+ 1205 05a8 05       		.byte	0x5
+ 1206 05a9 DF02     		.2byte	0x2df
+ 1207 05ab D7060000 		.4byte	0x6d7
+ 1208 05af 04       		.byte	0x4
+ 1209 05b0 0D       		.uleb128 0xd
+ 1210 05b1 16050000 		.4byte	.LASF108
+ 1211 05b5 05       		.byte	0x5
+ 1212 05b6 E002     		.2byte	0x2e0
+ 1213 05b8 D1060000 		.4byte	0x6d1
+ 1214 05bc 08       		.byte	0x8
+ 1215 05bd 0D       		.uleb128 0xd
+ 1216 05be F6070000 		.4byte	.LASF109
+ 1217 05c2 05       		.byte	0x5
+ 1218 05c3 E102     		.2byte	0x2e1
+ 1219 05c5 DD060000 		.4byte	0x6dd
+ 1220 05c9 0C       		.byte	0xc
+ 1221 05ca 0D       		.uleb128 0xd
+ 1222 05cb 35050000 		.4byte	.LASF110
+ 1223 05cf 05       		.byte	0x5
+ 1224 05d0 E202     		.2byte	0x2e2
+ 1225 05d2 DD060000 		.4byte	0x6dd
+ 1226 05d6 10       		.byte	0x10
+ 1227 05d7 0D       		.uleb128 0xd
+ 1228 05d8 86060000 		.4byte	.LASF111
+ 1229 05dc 05       		.byte	0x5
+ 1230 05dd E302     		.2byte	0x2e3
+ 1231 05df C6000000 		.4byte	0xc6
+ 1232 05e3 14       		.byte	0x14
+ 1233 05e4 0D       		.uleb128 0xd
+ 1234 05e5 8C050000 		.4byte	.LASF112
+ 1235 05e9 05       		.byte	0x5
+ 1236 05ea E402     		.2byte	0x2e4
+ 1237 05ec 5E010000 		.4byte	0x15e
+ 1238 05f0 18       		.byte	0x18
+ 1239 05f1 0D       		.uleb128 0xd
+ 1240 05f2 5D050000 		.4byte	.LASF113
+ 1241 05f6 05       		.byte	0x5
+ 1242 05f7 E502     		.2byte	0x2e5
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 30
+
+
+ 1243 05f9 1C010000 		.4byte	0x11c
+ 1244 05fd 1C       		.byte	0x1c
+ 1245 05fe 00       		.byte	0
+ 1246 05ff 0B       		.uleb128 0xb
+ 1247 0600 75070000 		.4byte	.LASF114
+ 1248 0604 05       		.byte	0x5
+ 1249 0605 A602     		.2byte	0x2a6
+ 1250 0607 0B060000 		.4byte	0x60b
+ 1251 060b 0C       		.uleb128 0xc
+ 1252 060c 0F080000 		.4byte	.LASF115
+ 1253 0610 0C       		.byte	0xc
+ 1254 0611 05       		.byte	0x5
+ 1255 0612 E902     		.2byte	0x2e9
+ 1256 0614 40060000 		.4byte	0x640
+ 1257 0618 0D       		.uleb128 0xd
+ 1258 0619 1A010000 		.4byte	.LASF116
+ 1259 061d 05       		.byte	0x5
+ 1260 061e EA02     		.2byte	0x2ea
+ 1261 0620 D7060000 		.4byte	0x6d7
+ 1262 0624 00       		.byte	0
+ 1263 0625 0D       		.uleb128 0xd
+ 1264 0626 60010000 		.4byte	.LASF117
+ 1265 062a 05       		.byte	0x5
+ 1266 062b EB02     		.2byte	0x2eb
+ 1267 062d D7060000 		.4byte	0x6d7
+ 1268 0631 04       		.byte	0x4
+ 1269 0632 0D       		.uleb128 0xd
+ 1270 0633 A5000000 		.4byte	.LASF52
+ 1271 0637 05       		.byte	0x5
+ 1272 0638 EC02     		.2byte	0x2ec
+ 1273 063a 74010000 		.4byte	0x174
+ 1274 063e 08       		.byte	0x8
+ 1275 063f 00       		.byte	0
+ 1276 0640 0B       		.uleb128 0xb
+ 1277 0641 15060000 		.4byte	.LASF118
+ 1278 0645 05       		.byte	0x5
+ 1279 0646 A702     		.2byte	0x2a7
+ 1280 0648 4C060000 		.4byte	0x64c
+ 1281 064c 0C       		.uleb128 0xc
+ 1282 064d 90010000 		.4byte	.LASF119
+ 1283 0651 20       		.byte	0x20
+ 1284 0652 05       		.byte	0x5
+ 1285 0653 FF02     		.2byte	0x2ff
+ 1286 0655 A8060000 		.4byte	0x6a8
+ 1287 0659 0D       		.uleb128 0xd
+ 1288 065a 74040000 		.4byte	.LASF120
+ 1289 065e 05       		.byte	0x5
+ 1290 065f 0003     		.2byte	0x300
+ 1291 0661 7F010000 		.4byte	0x17f
+ 1292 0665 00       		.byte	0
+ 1293 0666 0D       		.uleb128 0xd
+ 1294 0667 58040000 		.4byte	.LASF64
+ 1295 066b 05       		.byte	0x5
+ 1296 066c 0103     		.2byte	0x301
+ 1297 066e E3060000 		.4byte	0x6e3
+ 1298 0672 04       		.byte	0x4
+ 1299 0673 0D       		.uleb128 0xd
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 31
+
+
+ 1300 0674 2D060000 		.4byte	.LASF121
+ 1301 0678 05       		.byte	0x5
+ 1302 0679 0203     		.2byte	0x302
+ 1303 067b FF050000 		.4byte	0x5ff
+ 1304 067f 08       		.byte	0x8
+ 1305 0680 0D       		.uleb128 0xd
+ 1306 0681 F8000000 		.4byte	.LASF100
+ 1307 0685 05       		.byte	0x5
+ 1308 0686 0403     		.2byte	0x304
+ 1309 0688 C6000000 		.4byte	0xc6
+ 1310 068c 14       		.byte	0x14
+ 1311 068d 0D       		.uleb128 0xd
+ 1312 068e 0F010000 		.4byte	.LASF101
+ 1313 0692 05       		.byte	0x5
+ 1314 0693 0503     		.2byte	0x305
+ 1315 0695 C6000000 		.4byte	0xc6
+ 1316 0699 18       		.byte	0x18
+ 1317 069a 0D       		.uleb128 0xd
+ 1318 069b 48070000 		.4byte	.LASF102
+ 1319 069f 05       		.byte	0x5
+ 1320 06a0 0603     		.2byte	0x306
+ 1321 06a2 E3060000 		.4byte	0x6e3
+ 1322 06a6 1C       		.byte	0x1c
+ 1323 06a7 00       		.byte	0
+ 1324 06a8 0B       		.uleb128 0xb
+ 1325 06a9 FA040000 		.4byte	.LASF122
+ 1326 06ad 05       		.byte	0x5
+ 1327 06ae AA02     		.2byte	0x2aa
+ 1328 06b0 AE000000 		.4byte	0xae
+ 1329 06b4 0B       		.uleb128 0xb
+ 1330 06b5 B5030000 		.4byte	.LASF123
+ 1331 06b9 05       		.byte	0x5
+ 1332 06ba AB02     		.2byte	0x2ab
+ 1333 06bc C0060000 		.4byte	0x6c0
+ 1334 06c0 06       		.uleb128 0x6
+ 1335 06c1 04       		.byte	0x4
+ 1336 06c2 C6060000 		.4byte	0x6c6
+ 1337 06c6 08       		.uleb128 0x8
+ 1338 06c7 D1060000 		.4byte	0x6d1
+ 1339 06cb 09       		.uleb128 0x9
+ 1340 06cc D1060000 		.4byte	0x6d1
+ 1341 06d0 00       		.byte	0
+ 1342 06d1 06       		.uleb128 0x6
+ 1343 06d2 04       		.byte	0x4
+ 1344 06d3 8C020000 		.4byte	0x28c
+ 1345 06d7 06       		.uleb128 0x6
+ 1346 06d8 04       		.byte	0x4
+ 1347 06d9 7D050000 		.4byte	0x57d
+ 1348 06dd 06       		.uleb128 0x6
+ 1349 06de 04       		.byte	0x4
+ 1350 06df 40060000 		.4byte	0x640
+ 1351 06e3 06       		.uleb128 0x6
+ 1352 06e4 04       		.byte	0x4
+ 1353 06e5 25000000 		.4byte	0x25
+ 1354 06e9 06       		.uleb128 0x6
+ 1355 06ea 04       		.byte	0x4
+ 1356 06eb D7010000 		.4byte	0x1d7
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 32
+
+
+ 1357 06ef 06       		.uleb128 0x6
+ 1358 06f0 04       		.byte	0x4
+ 1359 06f1 D3000000 		.4byte	0xd3
+ 1360 06f5 06       		.uleb128 0x6
+ 1361 06f6 04       		.byte	0x4
+ 1362 06f7 3C050000 		.4byte	0x53c
+ 1363 06fb 0F       		.uleb128 0xf
+ 1364 06fc A0010000 		.4byte	0x1a0
+ 1365 0700 0B070000 		.4byte	0x70b
+ 1366 0704 10       		.uleb128 0x10
+ 1367 0705 0A010000 		.4byte	0x10a
+ 1368 0709 00       		.byte	0
+ 1369 070a 00       		.byte	0
+ 1370 070b 11       		.uleb128 0x11
+ 1371 070c 6F060000 		.4byte	.LASF125
+ 1372 0710 01       		.byte	0x1
+ 1373 0711 3F       		.byte	0x3f
+ 1374 0712 00000000 		.4byte	.LFB1
+ 1375 0716 10000000 		.4byte	.LFE1-.LFB1
+ 1376 071a 01       		.uleb128 0x1
+ 1377 071b 9C       		.byte	0x9c
+ 1378 071c 12       		.uleb128 0x12
+ 1379 071d 57060000 		.4byte	.LASF127
+ 1380 0721 01       		.byte	0x1
+ 1381 0722 56       		.byte	0x56
+ 1382 0723 00000000 		.4byte	.LFB2
+ 1383 0727 3C000000 		.4byte	.LFE2-.LFB2
+ 1384 072b 01       		.uleb128 0x1
+ 1385 072c 9C       		.byte	0x9c
+ 1386 072d 4E070000 		.4byte	0x74e
+ 1387 0731 13       		.uleb128 0x13
+ 1388 0732 6900     		.ascii	"i\000"
+ 1389 0734 01       		.byte	0x1
+ 1390 0735 58       		.byte	0x58
+ 1391 0736 DE000000 		.4byte	0xde
+ 1392 073a 00000000 		.4byte	.LLST0
+ 1393 073e 14       		.uleb128 0x14
+ 1394 073f 9F000000 		.4byte	.LASF124
+ 1395 0743 01       		.byte	0x1
+ 1396 0744 59       		.byte	0x59
+ 1397 0745 EF060000 		.4byte	0x6ef
+ 1398 0749 1F000000 		.4byte	.LLST1
+ 1399 074d 00       		.byte	0
+ 1400 074e 11       		.uleb128 0x11
+ 1401 074f 68010000 		.4byte	.LASF126
+ 1402 0753 01       		.byte	0x1
+ 1403 0754 72       		.byte	0x72
+ 1404 0755 00000000 		.4byte	.LFB3
+ 1405 0759 10000000 		.4byte	.LFE3-.LFB3
+ 1406 075d 01       		.uleb128 0x1
+ 1407 075e 9C       		.byte	0x9c
+ 1408 075f 12       		.uleb128 0x12
+ 1409 0760 64030000 		.4byte	.LASF128
+ 1410 0764 01       		.byte	0x1
+ 1411 0765 89       		.byte	0x89
+ 1412 0766 00000000 		.4byte	.LFB4
+ 1413 076a 10000000 		.4byte	.LFE4-.LFB4
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 33
+
+
+ 1414 076e 01       		.uleb128 0x1
+ 1415 076f 9C       		.byte	0x9c
+ 1416 0770 91070000 		.4byte	0x791
+ 1417 0774 15       		.uleb128 0x15
+ 1418 0775 FB020000 		.4byte	.LASF130
+ 1419 0779 01       		.byte	0x1
+ 1420 077a 89       		.byte	0x89
+ 1421 077b D1060000 		.4byte	0x6d1
+ 1422 077f 4A000000 		.4byte	.LLST2
+ 1423 0783 16       		.uleb128 0x16
+ 1424 0784 0A000000 		.4byte	.LVL8
+ 1425 0788 17       		.uleb128 0x17
+ 1426 0789 01       		.uleb128 0x1
+ 1427 078a 50       		.byte	0x50
+ 1428 078b 03       		.uleb128 0x3
+ 1429 078c F3       		.byte	0xf3
+ 1430 078d 01       		.uleb128 0x1
+ 1431 078e 50       		.byte	0x50
+ 1432 078f 00       		.byte	0
+ 1433 0790 00       		.byte	0
+ 1434 0791 12       		.uleb128 0x12
+ 1435 0792 04070000 		.4byte	.LASF129
+ 1436 0796 01       		.byte	0x1
+ 1437 0797 A2       		.byte	0xa2
+ 1438 0798 00000000 		.4byte	.LFB5
+ 1439 079c 10000000 		.4byte	.LFE5-.LFB5
+ 1440 07a0 01       		.uleb128 0x1
+ 1441 07a1 9C       		.byte	0x9c
+ 1442 07a2 C3070000 		.4byte	0x7c3
+ 1443 07a6 15       		.uleb128 0x15
+ 1444 07a7 FB020000 		.4byte	.LASF130
+ 1445 07ab 01       		.byte	0x1
+ 1446 07ac A2       		.byte	0xa2
+ 1447 07ad D1060000 		.4byte	0x6d1
+ 1448 07b1 6B000000 		.4byte	.LLST3
+ 1449 07b5 16       		.uleb128 0x16
+ 1450 07b6 0A000000 		.4byte	.LVL10
+ 1451 07ba 17       		.uleb128 0x17
+ 1452 07bb 01       		.uleb128 0x1
+ 1453 07bc 50       		.byte	0x50
+ 1454 07bd 03       		.uleb128 0x3
+ 1455 07be F3       		.byte	0xf3
+ 1456 07bf 01       		.uleb128 0x1
+ 1457 07c0 50       		.byte	0x50
+ 1458 07c1 00       		.byte	0
+ 1459 07c2 00       		.byte	0
+ 1460 07c3 12       		.uleb128 0x12
+ 1461 07c4 3A040000 		.4byte	.LASF131
+ 1462 07c8 01       		.byte	0x1
+ 1463 07c9 BC       		.byte	0xbc
+ 1464 07ca 00000000 		.4byte	.LFB6
+ 1465 07ce 10000000 		.4byte	.LFE6-.LFB6
+ 1466 07d2 01       		.uleb128 0x1
+ 1467 07d3 9C       		.byte	0x9c
+ 1468 07d4 F5070000 		.4byte	0x7f5
+ 1469 07d8 15       		.uleb128 0x15
+ 1470 07d9 FB020000 		.4byte	.LASF130
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 34
+
+
+ 1471 07dd 01       		.byte	0x1
+ 1472 07de BC       		.byte	0xbc
+ 1473 07df D1060000 		.4byte	0x6d1
+ 1474 07e3 8C000000 		.4byte	.LLST4
+ 1475 07e7 16       		.uleb128 0x16
+ 1476 07e8 0A000000 		.4byte	.LVL12
+ 1477 07ec 17       		.uleb128 0x17
+ 1478 07ed 01       		.uleb128 0x1
+ 1479 07ee 50       		.byte	0x50
+ 1480 07ef 03       		.uleb128 0x3
+ 1481 07f0 F3       		.byte	0xf3
+ 1482 07f1 01       		.uleb128 0x1
+ 1483 07f2 50       		.byte	0x50
+ 1484 07f3 00       		.byte	0
+ 1485 07f4 00       		.byte	0
+ 1486 07f5 18       		.uleb128 0x18
+ 1487 07f6 60070000 		.4byte	.LASF165
+ 1488 07fa 01       		.byte	0x1
+ 1489 07fb E5       		.byte	0xe5
+ 1490 07fc EF060000 		.4byte	0x6ef
+ 1491 0800 00000000 		.4byte	.LFB7
+ 1492 0804 88000000 		.4byte	.LFE7-.LFB7
+ 1493 0808 01       		.uleb128 0x1
+ 1494 0809 9C       		.byte	0x9c
+ 1495 080a 76080000 		.4byte	0x876
+ 1496 080e 15       		.uleb128 0x15
+ 1497 080f 23020000 		.4byte	.LASF132
+ 1498 0813 01       		.byte	0x1
+ 1499 0814 E5       		.byte	0xe5
+ 1500 0815 80020000 		.4byte	0x280
+ 1501 0819 AD000000 		.4byte	.LLST5
+ 1502 081d 19       		.uleb128 0x19
+ 1503 081e AE060000 		.4byte	.LASF133
+ 1504 0822 01       		.byte	0x1
+ 1505 0823 E6       		.byte	0xe6
+ 1506 0824 C6000000 		.4byte	0xc6
+ 1507 0828 01       		.uleb128 0x1
+ 1508 0829 51       		.byte	0x51
+ 1509 082a 15       		.uleb128 0x15
+ 1510 082b 12070000 		.4byte	.LASF134
+ 1511 082f 01       		.byte	0x1
+ 1512 0830 E7       		.byte	0xe7
+ 1513 0831 EF060000 		.4byte	0x6ef
+ 1514 0835 CC000000 		.4byte	.LLST6
+ 1515 0839 15       		.uleb128 0x15
+ 1516 083a F3030000 		.4byte	.LASF135
+ 1517 083e 01       		.byte	0x1
+ 1518 083f E8       		.byte	0xe8
+ 1519 0840 EF060000 		.4byte	0x6ef
+ 1520 0844 ED000000 		.4byte	.LLST7
+ 1521 0848 15       		.uleb128 0x15
+ 1522 0849 63050000 		.4byte	.LASF136
+ 1523 084d 01       		.byte	0x1
+ 1524 084e E9       		.byte	0xe9
+ 1525 084f DE000000 		.4byte	0xde
+ 1526 0853 0C010000 		.4byte	.LLST8
+ 1527 0857 1A       		.uleb128 0x1a
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 35
+
+
+ 1528 0858 6F707400 		.ascii	"opt\000"
+ 1529 085c 01       		.byte	0x1
+ 1530 085d EA       		.byte	0xea
+ 1531 085e 8A010000 		.4byte	0x18a
+ 1532 0862 2C010000 		.4byte	.LLST9
+ 1533 0866 14       		.uleb128 0x14
+ 1534 0867 9F000000 		.4byte	.LASF124
+ 1535 086b 01       		.byte	0x1
+ 1536 086c EC       		.byte	0xec
+ 1537 086d EF060000 		.4byte	0x6ef
+ 1538 0871 4C010000 		.4byte	.LLST10
+ 1539 0875 00       		.byte	0
+ 1540 0876 1B       		.uleb128 0x1b
+ 1541 0877 4B040000 		.4byte	.LASF137
+ 1542 087b 01       		.byte	0x1
+ 1543 087c 1A01     		.2byte	0x11a
+ 1544 087e 00000000 		.4byte	.LFB8
+ 1545 0882 40000000 		.4byte	.LFE8-.LFB8
+ 1546 0886 01       		.uleb128 0x1
+ 1547 0887 9C       		.byte	0x9c
+ 1548 0888 A3080000 		.4byte	0x8a3
+ 1549 088c 1C       		.uleb128 0x1c
+ 1550 088d 747300   		.ascii	"ts\000"
+ 1551 0890 01       		.byte	0x1
+ 1552 0891 1D01     		.2byte	0x11d
+ 1553 0893 1C010000 		.4byte	0x11c
+ 1554 0897 01       		.uleb128 0x1
+ 1555 0898 50       		.byte	0x50
+ 1556 0899 1D       		.uleb128 0x1d
+ 1557 089a 0E000000 		.4byte	.LVL35
+ 1558 089e E2090000 		.4byte	0x9e2
+ 1559 08a2 00       		.byte	0
+ 1560 08a3 1E       		.uleb128 0x1e
+ 1561 08a4 3D060000 		.4byte	.LASF138
+ 1562 08a8 01       		.byte	0x1
+ 1563 08a9 5301     		.2byte	0x153
+ 1564 08ab 00000000 		.4byte	.LFB9
+ 1565 08af 10000000 		.4byte	.LFE9-.LFB9
+ 1566 08b3 01       		.uleb128 0x1
+ 1567 08b4 9C       		.byte	0x9c
+ 1568 08b5 1F       		.uleb128 0x1f
+ 1569 08b6 A6010000 		.4byte	.LASF139
+ 1570 08ba 01       		.byte	0x1
+ 1571 08bb 6B01     		.2byte	0x16b
+ 1572 08bd 00000000 		.4byte	.LFB10
+ 1573 08c1 20000000 		.4byte	.LFE10-.LFB10
+ 1574 08c5 01       		.uleb128 0x1
+ 1575 08c6 9C       		.byte	0x9c
+ 1576 08c7 00090000 		.4byte	0x900
+ 1577 08cb 20       		.uleb128 0x20
+ 1578 08cc FE010000 		.4byte	.LASF140
+ 1579 08d0 01       		.byte	0x1
+ 1580 08d1 6D01     		.2byte	0x16d
+ 1581 08d3 E9000000 		.4byte	0xe9
+ 1582 08d7 2F020000 		.4byte	.LLST11
+ 1583 08db 1D       		.uleb128 0x1d
+ 1584 08dc 06000000 		.4byte	.LVL38
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 36
+
+
+ 1585 08e0 EE090000 		.4byte	0x9ee
+ 1586 08e4 1D       		.uleb128 0x1d
+ 1587 08e5 12000000 		.4byte	.LVL39
+ 1588 08e9 FA090000 		.4byte	0x9fa
+ 1589 08ed 1D       		.uleb128 0x1d
+ 1590 08ee 16000000 		.4byte	.LVL40
+ 1591 08f2 060A0000 		.4byte	0xa06
+ 1592 08f6 1D       		.uleb128 0x1d
+ 1593 08f7 1A000000 		.4byte	.LVL41
+ 1594 08fb 120A0000 		.4byte	0xa12
+ 1595 08ff 00       		.byte	0
+ 1596 0900 1F       		.uleb128 0x1f
+ 1597 0901 92030000 		.4byte	.LASF141
+ 1598 0905 01       		.byte	0x1
+ 1599 0906 8701     		.2byte	0x187
+ 1600 0908 00000000 		.4byte	.LFB11
+ 1601 090c 30000000 		.4byte	.LFE11-.LFB11
+ 1602 0910 01       		.uleb128 0x1
+ 1603 0911 9C       		.byte	0x9c
+ 1604 0912 37090000 		.4byte	0x937
+ 1605 0916 21       		.uleb128 0x21
+ 1606 0917 8C000000 		.4byte	.LASF142
+ 1607 091b 01       		.byte	0x1
+ 1608 091c 8701     		.2byte	0x187
+ 1609 091e 69000000 		.4byte	0x69
+ 1610 0922 4E020000 		.4byte	.LLST12
+ 1611 0926 20       		.uleb128 0x20
+ 1612 0927 B0030000 		.4byte	.LASF143
+ 1613 092b 01       		.byte	0x1
+ 1614 092c 8901     		.2byte	0x189
+ 1615 092e 69000000 		.4byte	0x69
+ 1616 0932 6E020000 		.4byte	.LLST13
+ 1617 0936 00       		.byte	0
+ 1618 0937 22       		.uleb128 0x22
+ 1619 0938 99060000 		.4byte	.LASF144
+ 1620 093c 06       		.byte	0x6
+ 1621 093d 7B       		.byte	0x7b
+ 1622 093e EF060000 		.4byte	0x6ef
+ 1623 0942 05       		.uleb128 0x5
+ 1624 0943 03       		.byte	0x3
+ 1625 0944 00000000 		.4byte	OS_CPU_ExceptStkBase
+ 1626 0948 23       		.uleb128 0x23
+ 1627 0949 A3040000 		.4byte	.LASF145
+ 1628 094d 05       		.byte	0x5
+ 1629 094e 5004     		.2byte	0x450
+ 1630 0950 B4060000 		.4byte	0x6b4
+ 1631 0954 23       		.uleb128 0x23
+ 1632 0955 D2030000 		.4byte	.LASF146
+ 1633 0959 05       		.byte	0x5
+ 1634 095a 5104     		.2byte	0x451
+ 1635 095c B4060000 		.4byte	0x6b4
+ 1636 0960 23       		.uleb128 0x23
+ 1637 0961 22010000 		.4byte	.LASF147
+ 1638 0965 05       		.byte	0x5
+ 1639 0966 5204     		.2byte	0x452
+ 1640 0968 B4060000 		.4byte	0x6b4
+ 1641 096c 23       		.uleb128 0x23
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 37
+
+
+ 1642 096d 6C050000 		.4byte	.LASF148
+ 1643 0971 05       		.byte	0x5
+ 1644 0972 5404     		.2byte	0x454
+ 1645 0974 A8060000 		.4byte	0x6a8
+ 1646 0978 23       		.uleb128 0x23
+ 1647 0979 D5050000 		.4byte	.LASF149
+ 1648 097d 05       		.byte	0x5
+ 1649 097e 5504     		.2byte	0x455
+ 1650 0980 A8060000 		.4byte	0x6a8
+ 1651 0984 23       		.uleb128 0x23
+ 1652 0985 8F070000 		.4byte	.LASF150
+ 1653 0989 05       		.byte	0x5
+ 1654 098a 5604     		.2byte	0x456
+ 1655 098c A8060000 		.4byte	0x6a8
+ 1656 0990 23       		.uleb128 0x23
+ 1657 0991 97050000 		.4byte	.LASF151
+ 1658 0995 05       		.byte	0x5
+ 1659 0996 5704     		.2byte	0x457
+ 1660 0998 A8060000 		.4byte	0x6a8
+ 1661 099c 23       		.uleb128 0x23
+ 1662 099d E0010000 		.4byte	.LASF152
+ 1663 09a1 05       		.byte	0x5
+ 1664 09a2 5F04     		.2byte	0x45f
+ 1665 09a4 69010000 		.4byte	0x169
+ 1666 09a8 23       		.uleb128 0x23
+ 1667 09a9 D8000000 		.4byte	.LASF153
+ 1668 09ad 05       		.byte	0x5
+ 1669 09ae E504     		.2byte	0x4e5
+ 1670 09b0 D1060000 		.4byte	0x6d1
+ 1671 09b4 23       		.uleb128 0x23
+ 1672 09b5 C8000000 		.4byte	.LASF154
+ 1673 09b9 05       		.byte	0x5
+ 1674 09ba E604     		.2byte	0x4e6
+ 1675 09bc D1060000 		.4byte	0x6d1
+ 1676 09c0 23       		.uleb128 0x23
+ 1677 09c1 DF060000 		.4byte	.LASF155
+ 1678 09c5 05       		.byte	0x5
+ 1679 09c6 FE04     		.2byte	0x4fe
+ 1680 09c8 CC090000 		.4byte	0x9cc
+ 1681 09cc 24       		.uleb128 0x24
+ 1682 09cd EF060000 		.4byte	0x6ef
+ 1683 09d1 23       		.uleb128 0x23
+ 1684 09d2 16040000 		.4byte	.LASF156
+ 1685 09d6 05       		.byte	0x5
+ 1686 09d7 FF04     		.2byte	0x4ff
+ 1687 09d9 DD090000 		.4byte	0x9dd
+ 1688 09dd 24       		.uleb128 0x24
+ 1689 09de DE000000 		.4byte	0xde
+ 1690 09e2 25       		.uleb128 0x25
+ 1691 09e3 82070000 		.4byte	.LASF157
+ 1692 09e7 82070000 		.4byte	.LASF157
+ 1693 09eb 03       		.byte	0x3
+ 1694 09ec EC02     		.2byte	0x2ec
+ 1695 09ee 25       		.uleb128 0x25
+ 1696 09ef 54010000 		.4byte	.LASF158
+ 1697 09f3 54010000 		.4byte	.LASF158
+ 1698 09f7 02       		.byte	0x2
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 38
+
+
+ 1699 09f8 7C01     		.2byte	0x17c
+ 1700 09fa 25       		.uleb128 0x25
+ 1701 09fb 55030000 		.4byte	.LASF159
+ 1702 09ff 55030000 		.4byte	.LASF159
+ 1703 0a03 02       		.byte	0x2
+ 1704 0a04 7D01     		.2byte	0x17d
+ 1705 0a06 25       		.uleb128 0x25
+ 1706 0a07 A5030000 		.4byte	.LASF160
+ 1707 0a0b A5030000 		.4byte	.LASF160
+ 1708 0a0f 05       		.byte	0x5
+ 1709 0a10 2E07     		.2byte	0x72e
+ 1710 0a12 25       		.uleb128 0x25
+ 1711 0a13 53050000 		.4byte	.LASF161
+ 1712 0a17 53050000 		.4byte	.LASF161
+ 1713 0a1b 05       		.byte	0x5
+ 1714 0a1c 6F07     		.2byte	0x76f
+ 1715 0a1e 00       		.byte	0
+ 1716              		.section	.debug_abbrev,"",%progbits
+ 1717              	.Ldebug_abbrev0:
+ 1718 0000 01       		.uleb128 0x1
+ 1719 0001 11       		.uleb128 0x11
+ 1720 0002 01       		.byte	0x1
+ 1721 0003 25       		.uleb128 0x25
+ 1722 0004 0E       		.uleb128 0xe
+ 1723 0005 13       		.uleb128 0x13
+ 1724 0006 0B       		.uleb128 0xb
+ 1725 0007 03       		.uleb128 0x3
+ 1726 0008 0E       		.uleb128 0xe
+ 1727 0009 1B       		.uleb128 0x1b
+ 1728 000a 0E       		.uleb128 0xe
+ 1729 000b 55       		.uleb128 0x55
+ 1730 000c 17       		.uleb128 0x17
+ 1731 000d 11       		.uleb128 0x11
+ 1732 000e 01       		.uleb128 0x1
+ 1733 000f 10       		.uleb128 0x10
+ 1734 0010 17       		.uleb128 0x17
+ 1735 0011 00       		.byte	0
+ 1736 0012 00       		.byte	0
+ 1737 0013 02       		.uleb128 0x2
+ 1738 0014 16       		.uleb128 0x16
+ 1739 0015 00       		.byte	0
+ 1740 0016 03       		.uleb128 0x3
+ 1741 0017 0E       		.uleb128 0xe
+ 1742 0018 3A       		.uleb128 0x3a
+ 1743 0019 0B       		.uleb128 0xb
+ 1744 001a 3B       		.uleb128 0x3b
+ 1745 001b 0B       		.uleb128 0xb
+ 1746 001c 49       		.uleb128 0x49
+ 1747 001d 13       		.uleb128 0x13
+ 1748 001e 00       		.byte	0
+ 1749 001f 00       		.byte	0
+ 1750 0020 03       		.uleb128 0x3
+ 1751 0021 24       		.uleb128 0x24
+ 1752 0022 00       		.byte	0
+ 1753 0023 0B       		.uleb128 0xb
+ 1754 0024 0B       		.uleb128 0xb
+ 1755 0025 3E       		.uleb128 0x3e
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 39
+
+
+ 1756 0026 0B       		.uleb128 0xb
+ 1757 0027 03       		.uleb128 0x3
+ 1758 0028 0E       		.uleb128 0xe
+ 1759 0029 00       		.byte	0
+ 1760 002a 00       		.byte	0
+ 1761 002b 04       		.uleb128 0x4
+ 1762 002c 24       		.uleb128 0x24
+ 1763 002d 00       		.byte	0
+ 1764 002e 0B       		.uleb128 0xb
+ 1765 002f 0B       		.uleb128 0xb
+ 1766 0030 3E       		.uleb128 0x3e
+ 1767 0031 0B       		.uleb128 0xb
+ 1768 0032 03       		.uleb128 0x3
+ 1769 0033 08       		.uleb128 0x8
+ 1770 0034 00       		.byte	0
+ 1771 0035 00       		.byte	0
+ 1772 0036 05       		.uleb128 0x5
+ 1773 0037 35       		.uleb128 0x35
+ 1774 0038 00       		.byte	0
+ 1775 0039 49       		.uleb128 0x49
+ 1776 003a 13       		.uleb128 0x13
+ 1777 003b 00       		.byte	0
+ 1778 003c 00       		.byte	0
+ 1779 003d 06       		.uleb128 0x6
+ 1780 003e 0F       		.uleb128 0xf
+ 1781 003f 00       		.byte	0
+ 1782 0040 0B       		.uleb128 0xb
+ 1783 0041 0B       		.uleb128 0xb
+ 1784 0042 49       		.uleb128 0x49
+ 1785 0043 13       		.uleb128 0x13
+ 1786 0044 00       		.byte	0
+ 1787 0045 00       		.byte	0
+ 1788 0046 07       		.uleb128 0x7
+ 1789 0047 15       		.uleb128 0x15
+ 1790 0048 00       		.byte	0
+ 1791 0049 27       		.uleb128 0x27
+ 1792 004a 19       		.uleb128 0x19
+ 1793 004b 00       		.byte	0
+ 1794 004c 00       		.byte	0
+ 1795 004d 08       		.uleb128 0x8
+ 1796 004e 15       		.uleb128 0x15
+ 1797 004f 01       		.byte	0x1
+ 1798 0050 27       		.uleb128 0x27
+ 1799 0051 19       		.uleb128 0x19
+ 1800 0052 01       		.uleb128 0x1
+ 1801 0053 13       		.uleb128 0x13
+ 1802 0054 00       		.byte	0
+ 1803 0055 00       		.byte	0
+ 1804 0056 09       		.uleb128 0x9
+ 1805 0057 05       		.uleb128 0x5
+ 1806 0058 00       		.byte	0
+ 1807 0059 49       		.uleb128 0x49
+ 1808 005a 13       		.uleb128 0x13
+ 1809 005b 00       		.byte	0
+ 1810 005c 00       		.byte	0
+ 1811 005d 0A       		.uleb128 0xa
+ 1812 005e 0F       		.uleb128 0xf
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 40
+
+
+ 1813 005f 00       		.byte	0
+ 1814 0060 0B       		.uleb128 0xb
+ 1815 0061 0B       		.uleb128 0xb
+ 1816 0062 00       		.byte	0
+ 1817 0063 00       		.byte	0
+ 1818 0064 0B       		.uleb128 0xb
+ 1819 0065 16       		.uleb128 0x16
+ 1820 0066 00       		.byte	0
+ 1821 0067 03       		.uleb128 0x3
+ 1822 0068 0E       		.uleb128 0xe
+ 1823 0069 3A       		.uleb128 0x3a
+ 1824 006a 0B       		.uleb128 0xb
+ 1825 006b 3B       		.uleb128 0x3b
+ 1826 006c 05       		.uleb128 0x5
+ 1827 006d 49       		.uleb128 0x49
+ 1828 006e 13       		.uleb128 0x13
+ 1829 006f 00       		.byte	0
+ 1830 0070 00       		.byte	0
+ 1831 0071 0C       		.uleb128 0xc
+ 1832 0072 13       		.uleb128 0x13
+ 1833 0073 01       		.byte	0x1
+ 1834 0074 03       		.uleb128 0x3
+ 1835 0075 0E       		.uleb128 0xe
+ 1836 0076 0B       		.uleb128 0xb
+ 1837 0077 0B       		.uleb128 0xb
+ 1838 0078 3A       		.uleb128 0x3a
+ 1839 0079 0B       		.uleb128 0xb
+ 1840 007a 3B       		.uleb128 0x3b
+ 1841 007b 05       		.uleb128 0x5
+ 1842 007c 01       		.uleb128 0x1
+ 1843 007d 13       		.uleb128 0x13
+ 1844 007e 00       		.byte	0
+ 1845 007f 00       		.byte	0
+ 1846 0080 0D       		.uleb128 0xd
+ 1847 0081 0D       		.uleb128 0xd
+ 1848 0082 00       		.byte	0
+ 1849 0083 03       		.uleb128 0x3
+ 1850 0084 0E       		.uleb128 0xe
+ 1851 0085 3A       		.uleb128 0x3a
+ 1852 0086 0B       		.uleb128 0xb
+ 1853 0087 3B       		.uleb128 0x3b
+ 1854 0088 05       		.uleb128 0x5
+ 1855 0089 49       		.uleb128 0x49
+ 1856 008a 13       		.uleb128 0x13
+ 1857 008b 38       		.uleb128 0x38
+ 1858 008c 0B       		.uleb128 0xb
+ 1859 008d 00       		.byte	0
+ 1860 008e 00       		.byte	0
+ 1861 008f 0E       		.uleb128 0xe
+ 1862 0090 0D       		.uleb128 0xd
+ 1863 0091 00       		.byte	0
+ 1864 0092 03       		.uleb128 0x3
+ 1865 0093 08       		.uleb128 0x8
+ 1866 0094 3A       		.uleb128 0x3a
+ 1867 0095 0B       		.uleb128 0xb
+ 1868 0096 3B       		.uleb128 0x3b
+ 1869 0097 05       		.uleb128 0x5
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 41
+
+
+ 1870 0098 49       		.uleb128 0x49
+ 1871 0099 13       		.uleb128 0x13
+ 1872 009a 38       		.uleb128 0x38
+ 1873 009b 0B       		.uleb128 0xb
+ 1874 009c 00       		.byte	0
+ 1875 009d 00       		.byte	0
+ 1876 009e 0F       		.uleb128 0xf
+ 1877 009f 01       		.uleb128 0x1
+ 1878 00a0 01       		.byte	0x1
+ 1879 00a1 49       		.uleb128 0x49
+ 1880 00a2 13       		.uleb128 0x13
+ 1881 00a3 01       		.uleb128 0x1
+ 1882 00a4 13       		.uleb128 0x13
+ 1883 00a5 00       		.byte	0
+ 1884 00a6 00       		.byte	0
+ 1885 00a7 10       		.uleb128 0x10
+ 1886 00a8 21       		.uleb128 0x21
+ 1887 00a9 00       		.byte	0
+ 1888 00aa 49       		.uleb128 0x49
+ 1889 00ab 13       		.uleb128 0x13
+ 1890 00ac 2F       		.uleb128 0x2f
+ 1891 00ad 0B       		.uleb128 0xb
+ 1892 00ae 00       		.byte	0
+ 1893 00af 00       		.byte	0
+ 1894 00b0 11       		.uleb128 0x11
+ 1895 00b1 2E       		.uleb128 0x2e
+ 1896 00b2 00       		.byte	0
+ 1897 00b3 3F       		.uleb128 0x3f
+ 1898 00b4 19       		.uleb128 0x19
+ 1899 00b5 03       		.uleb128 0x3
+ 1900 00b6 0E       		.uleb128 0xe
+ 1901 00b7 3A       		.uleb128 0x3a
+ 1902 00b8 0B       		.uleb128 0xb
+ 1903 00b9 3B       		.uleb128 0x3b
+ 1904 00ba 0B       		.uleb128 0xb
+ 1905 00bb 27       		.uleb128 0x27
+ 1906 00bc 19       		.uleb128 0x19
+ 1907 00bd 11       		.uleb128 0x11
+ 1908 00be 01       		.uleb128 0x1
+ 1909 00bf 12       		.uleb128 0x12
+ 1910 00c0 06       		.uleb128 0x6
+ 1911 00c1 40       		.uleb128 0x40
+ 1912 00c2 18       		.uleb128 0x18
+ 1913 00c3 9642     		.uleb128 0x2116
+ 1914 00c5 19       		.uleb128 0x19
+ 1915 00c6 00       		.byte	0
+ 1916 00c7 00       		.byte	0
+ 1917 00c8 12       		.uleb128 0x12
+ 1918 00c9 2E       		.uleb128 0x2e
+ 1919 00ca 01       		.byte	0x1
+ 1920 00cb 3F       		.uleb128 0x3f
+ 1921 00cc 19       		.uleb128 0x19
+ 1922 00cd 03       		.uleb128 0x3
+ 1923 00ce 0E       		.uleb128 0xe
+ 1924 00cf 3A       		.uleb128 0x3a
+ 1925 00d0 0B       		.uleb128 0xb
+ 1926 00d1 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 42
+
+
+ 1927 00d2 0B       		.uleb128 0xb
+ 1928 00d3 27       		.uleb128 0x27
+ 1929 00d4 19       		.uleb128 0x19
+ 1930 00d5 11       		.uleb128 0x11
+ 1931 00d6 01       		.uleb128 0x1
+ 1932 00d7 12       		.uleb128 0x12
+ 1933 00d8 06       		.uleb128 0x6
+ 1934 00d9 40       		.uleb128 0x40
+ 1935 00da 18       		.uleb128 0x18
+ 1936 00db 9742     		.uleb128 0x2117
+ 1937 00dd 19       		.uleb128 0x19
+ 1938 00de 01       		.uleb128 0x1
+ 1939 00df 13       		.uleb128 0x13
+ 1940 00e0 00       		.byte	0
+ 1941 00e1 00       		.byte	0
+ 1942 00e2 13       		.uleb128 0x13
+ 1943 00e3 34       		.uleb128 0x34
+ 1944 00e4 00       		.byte	0
+ 1945 00e5 03       		.uleb128 0x3
+ 1946 00e6 08       		.uleb128 0x8
+ 1947 00e7 3A       		.uleb128 0x3a
+ 1948 00e8 0B       		.uleb128 0xb
+ 1949 00e9 3B       		.uleb128 0x3b
+ 1950 00ea 0B       		.uleb128 0xb
+ 1951 00eb 49       		.uleb128 0x49
+ 1952 00ec 13       		.uleb128 0x13
+ 1953 00ed 02       		.uleb128 0x2
+ 1954 00ee 17       		.uleb128 0x17
+ 1955 00ef 00       		.byte	0
+ 1956 00f0 00       		.byte	0
+ 1957 00f1 14       		.uleb128 0x14
+ 1958 00f2 34       		.uleb128 0x34
+ 1959 00f3 00       		.byte	0
+ 1960 00f4 03       		.uleb128 0x3
+ 1961 00f5 0E       		.uleb128 0xe
+ 1962 00f6 3A       		.uleb128 0x3a
+ 1963 00f7 0B       		.uleb128 0xb
+ 1964 00f8 3B       		.uleb128 0x3b
+ 1965 00f9 0B       		.uleb128 0xb
+ 1966 00fa 49       		.uleb128 0x49
+ 1967 00fb 13       		.uleb128 0x13
+ 1968 00fc 02       		.uleb128 0x2
+ 1969 00fd 17       		.uleb128 0x17
+ 1970 00fe 00       		.byte	0
+ 1971 00ff 00       		.byte	0
+ 1972 0100 15       		.uleb128 0x15
+ 1973 0101 05       		.uleb128 0x5
+ 1974 0102 00       		.byte	0
+ 1975 0103 03       		.uleb128 0x3
+ 1976 0104 0E       		.uleb128 0xe
+ 1977 0105 3A       		.uleb128 0x3a
+ 1978 0106 0B       		.uleb128 0xb
+ 1979 0107 3B       		.uleb128 0x3b
+ 1980 0108 0B       		.uleb128 0xb
+ 1981 0109 49       		.uleb128 0x49
+ 1982 010a 13       		.uleb128 0x13
+ 1983 010b 02       		.uleb128 0x2
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 43
+
+
+ 1984 010c 17       		.uleb128 0x17
+ 1985 010d 00       		.byte	0
+ 1986 010e 00       		.byte	0
+ 1987 010f 16       		.uleb128 0x16
+ 1988 0110 898201   		.uleb128 0x4109
+ 1989 0113 01       		.byte	0x1
+ 1990 0114 11       		.uleb128 0x11
+ 1991 0115 01       		.uleb128 0x1
+ 1992 0116 00       		.byte	0
+ 1993 0117 00       		.byte	0
+ 1994 0118 17       		.uleb128 0x17
+ 1995 0119 8A8201   		.uleb128 0x410a
+ 1996 011c 00       		.byte	0
+ 1997 011d 02       		.uleb128 0x2
+ 1998 011e 18       		.uleb128 0x18
+ 1999 011f 9142     		.uleb128 0x2111
+ 2000 0121 18       		.uleb128 0x18
+ 2001 0122 00       		.byte	0
+ 2002 0123 00       		.byte	0
+ 2003 0124 18       		.uleb128 0x18
+ 2004 0125 2E       		.uleb128 0x2e
+ 2005 0126 01       		.byte	0x1
+ 2006 0127 3F       		.uleb128 0x3f
+ 2007 0128 19       		.uleb128 0x19
+ 2008 0129 03       		.uleb128 0x3
+ 2009 012a 0E       		.uleb128 0xe
+ 2010 012b 3A       		.uleb128 0x3a
+ 2011 012c 0B       		.uleb128 0xb
+ 2012 012d 3B       		.uleb128 0x3b
+ 2013 012e 0B       		.uleb128 0xb
+ 2014 012f 27       		.uleb128 0x27
+ 2015 0130 19       		.uleb128 0x19
+ 2016 0131 49       		.uleb128 0x49
+ 2017 0132 13       		.uleb128 0x13
+ 2018 0133 11       		.uleb128 0x11
+ 2019 0134 01       		.uleb128 0x1
+ 2020 0135 12       		.uleb128 0x12
+ 2021 0136 06       		.uleb128 0x6
+ 2022 0137 40       		.uleb128 0x40
+ 2023 0138 18       		.uleb128 0x18
+ 2024 0139 9742     		.uleb128 0x2117
+ 2025 013b 19       		.uleb128 0x19
+ 2026 013c 01       		.uleb128 0x1
+ 2027 013d 13       		.uleb128 0x13
+ 2028 013e 00       		.byte	0
+ 2029 013f 00       		.byte	0
+ 2030 0140 19       		.uleb128 0x19
+ 2031 0141 05       		.uleb128 0x5
+ 2032 0142 00       		.byte	0
+ 2033 0143 03       		.uleb128 0x3
+ 2034 0144 0E       		.uleb128 0xe
+ 2035 0145 3A       		.uleb128 0x3a
+ 2036 0146 0B       		.uleb128 0xb
+ 2037 0147 3B       		.uleb128 0x3b
+ 2038 0148 0B       		.uleb128 0xb
+ 2039 0149 49       		.uleb128 0x49
+ 2040 014a 13       		.uleb128 0x13
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 44
+
+
+ 2041 014b 02       		.uleb128 0x2
+ 2042 014c 18       		.uleb128 0x18
+ 2043 014d 00       		.byte	0
+ 2044 014e 00       		.byte	0
+ 2045 014f 1A       		.uleb128 0x1a
+ 2046 0150 05       		.uleb128 0x5
+ 2047 0151 00       		.byte	0
+ 2048 0152 03       		.uleb128 0x3
+ 2049 0153 08       		.uleb128 0x8
+ 2050 0154 3A       		.uleb128 0x3a
+ 2051 0155 0B       		.uleb128 0xb
+ 2052 0156 3B       		.uleb128 0x3b
+ 2053 0157 0B       		.uleb128 0xb
+ 2054 0158 49       		.uleb128 0x49
+ 2055 0159 13       		.uleb128 0x13
+ 2056 015a 02       		.uleb128 0x2
+ 2057 015b 17       		.uleb128 0x17
+ 2058 015c 00       		.byte	0
+ 2059 015d 00       		.byte	0
+ 2060 015e 1B       		.uleb128 0x1b
+ 2061 015f 2E       		.uleb128 0x2e
+ 2062 0160 01       		.byte	0x1
+ 2063 0161 3F       		.uleb128 0x3f
+ 2064 0162 19       		.uleb128 0x19
+ 2065 0163 03       		.uleb128 0x3
+ 2066 0164 0E       		.uleb128 0xe
+ 2067 0165 3A       		.uleb128 0x3a
+ 2068 0166 0B       		.uleb128 0xb
+ 2069 0167 3B       		.uleb128 0x3b
+ 2070 0168 05       		.uleb128 0x5
+ 2071 0169 27       		.uleb128 0x27
+ 2072 016a 19       		.uleb128 0x19
+ 2073 016b 11       		.uleb128 0x11
+ 2074 016c 01       		.uleb128 0x1
+ 2075 016d 12       		.uleb128 0x12
+ 2076 016e 06       		.uleb128 0x6
+ 2077 016f 40       		.uleb128 0x40
+ 2078 0170 18       		.uleb128 0x18
+ 2079 0171 9642     		.uleb128 0x2116
+ 2080 0173 19       		.uleb128 0x19
+ 2081 0174 01       		.uleb128 0x1
+ 2082 0175 13       		.uleb128 0x13
+ 2083 0176 00       		.byte	0
+ 2084 0177 00       		.byte	0
+ 2085 0178 1C       		.uleb128 0x1c
+ 2086 0179 34       		.uleb128 0x34
+ 2087 017a 00       		.byte	0
+ 2088 017b 03       		.uleb128 0x3
+ 2089 017c 08       		.uleb128 0x8
+ 2090 017d 3A       		.uleb128 0x3a
+ 2091 017e 0B       		.uleb128 0xb
+ 2092 017f 3B       		.uleb128 0x3b
+ 2093 0180 05       		.uleb128 0x5
+ 2094 0181 49       		.uleb128 0x49
+ 2095 0182 13       		.uleb128 0x13
+ 2096 0183 02       		.uleb128 0x2
+ 2097 0184 18       		.uleb128 0x18
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 45
+
+
+ 2098 0185 00       		.byte	0
+ 2099 0186 00       		.byte	0
+ 2100 0187 1D       		.uleb128 0x1d
+ 2101 0188 898201   		.uleb128 0x4109
+ 2102 018b 00       		.byte	0
+ 2103 018c 11       		.uleb128 0x11
+ 2104 018d 01       		.uleb128 0x1
+ 2105 018e 31       		.uleb128 0x31
+ 2106 018f 13       		.uleb128 0x13
+ 2107 0190 00       		.byte	0
+ 2108 0191 00       		.byte	0
+ 2109 0192 1E       		.uleb128 0x1e
+ 2110 0193 2E       		.uleb128 0x2e
+ 2111 0194 00       		.byte	0
+ 2112 0195 3F       		.uleb128 0x3f
+ 2113 0196 19       		.uleb128 0x19
+ 2114 0197 03       		.uleb128 0x3
+ 2115 0198 0E       		.uleb128 0xe
+ 2116 0199 3A       		.uleb128 0x3a
+ 2117 019a 0B       		.uleb128 0xb
+ 2118 019b 3B       		.uleb128 0x3b
+ 2119 019c 05       		.uleb128 0x5
+ 2120 019d 27       		.uleb128 0x27
+ 2121 019e 19       		.uleb128 0x19
+ 2122 019f 11       		.uleb128 0x11
+ 2123 01a0 01       		.uleb128 0x1
+ 2124 01a1 12       		.uleb128 0x12
+ 2125 01a2 06       		.uleb128 0x6
+ 2126 01a3 40       		.uleb128 0x40
+ 2127 01a4 18       		.uleb128 0x18
+ 2128 01a5 9642     		.uleb128 0x2116
+ 2129 01a7 19       		.uleb128 0x19
+ 2130 01a8 00       		.byte	0
+ 2131 01a9 00       		.byte	0
+ 2132 01aa 1F       		.uleb128 0x1f
+ 2133 01ab 2E       		.uleb128 0x2e
+ 2134 01ac 01       		.byte	0x1
+ 2135 01ad 3F       		.uleb128 0x3f
+ 2136 01ae 19       		.uleb128 0x19
+ 2137 01af 03       		.uleb128 0x3
+ 2138 01b0 0E       		.uleb128 0xe
+ 2139 01b1 3A       		.uleb128 0x3a
+ 2140 01b2 0B       		.uleb128 0xb
+ 2141 01b3 3B       		.uleb128 0x3b
+ 2142 01b4 05       		.uleb128 0x5
+ 2143 01b5 27       		.uleb128 0x27
+ 2144 01b6 19       		.uleb128 0x19
+ 2145 01b7 11       		.uleb128 0x11
+ 2146 01b8 01       		.uleb128 0x1
+ 2147 01b9 12       		.uleb128 0x12
+ 2148 01ba 06       		.uleb128 0x6
+ 2149 01bb 40       		.uleb128 0x40
+ 2150 01bc 18       		.uleb128 0x18
+ 2151 01bd 9742     		.uleb128 0x2117
+ 2152 01bf 19       		.uleb128 0x19
+ 2153 01c0 01       		.uleb128 0x1
+ 2154 01c1 13       		.uleb128 0x13
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 46
+
+
+ 2155 01c2 00       		.byte	0
+ 2156 01c3 00       		.byte	0
+ 2157 01c4 20       		.uleb128 0x20
+ 2158 01c5 34       		.uleb128 0x34
+ 2159 01c6 00       		.byte	0
+ 2160 01c7 03       		.uleb128 0x3
+ 2161 01c8 0E       		.uleb128 0xe
+ 2162 01c9 3A       		.uleb128 0x3a
+ 2163 01ca 0B       		.uleb128 0xb
+ 2164 01cb 3B       		.uleb128 0x3b
+ 2165 01cc 05       		.uleb128 0x5
+ 2166 01cd 49       		.uleb128 0x49
+ 2167 01ce 13       		.uleb128 0x13
+ 2168 01cf 02       		.uleb128 0x2
+ 2169 01d0 17       		.uleb128 0x17
+ 2170 01d1 00       		.byte	0
+ 2171 01d2 00       		.byte	0
+ 2172 01d3 21       		.uleb128 0x21
+ 2173 01d4 05       		.uleb128 0x5
+ 2174 01d5 00       		.byte	0
+ 2175 01d6 03       		.uleb128 0x3
+ 2176 01d7 0E       		.uleb128 0xe
+ 2177 01d8 3A       		.uleb128 0x3a
+ 2178 01d9 0B       		.uleb128 0xb
+ 2179 01da 3B       		.uleb128 0x3b
+ 2180 01db 05       		.uleb128 0x5
+ 2181 01dc 49       		.uleb128 0x49
+ 2182 01dd 13       		.uleb128 0x13
+ 2183 01de 02       		.uleb128 0x2
+ 2184 01df 17       		.uleb128 0x17
+ 2185 01e0 00       		.byte	0
+ 2186 01e1 00       		.byte	0
+ 2187 01e2 22       		.uleb128 0x22
+ 2188 01e3 34       		.uleb128 0x34
+ 2189 01e4 00       		.byte	0
+ 2190 01e5 03       		.uleb128 0x3
+ 2191 01e6 0E       		.uleb128 0xe
+ 2192 01e7 3A       		.uleb128 0x3a
+ 2193 01e8 0B       		.uleb128 0xb
+ 2194 01e9 3B       		.uleb128 0x3b
+ 2195 01ea 0B       		.uleb128 0xb
+ 2196 01eb 49       		.uleb128 0x49
+ 2197 01ec 13       		.uleb128 0x13
+ 2198 01ed 3F       		.uleb128 0x3f
+ 2199 01ee 19       		.uleb128 0x19
+ 2200 01ef 02       		.uleb128 0x2
+ 2201 01f0 18       		.uleb128 0x18
+ 2202 01f1 00       		.byte	0
+ 2203 01f2 00       		.byte	0
+ 2204 01f3 23       		.uleb128 0x23
+ 2205 01f4 34       		.uleb128 0x34
+ 2206 01f5 00       		.byte	0
+ 2207 01f6 03       		.uleb128 0x3
+ 2208 01f7 0E       		.uleb128 0xe
+ 2209 01f8 3A       		.uleb128 0x3a
+ 2210 01f9 0B       		.uleb128 0xb
+ 2211 01fa 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 47
+
+
+ 2212 01fb 05       		.uleb128 0x5
+ 2213 01fc 49       		.uleb128 0x49
+ 2214 01fd 13       		.uleb128 0x13
+ 2215 01fe 3F       		.uleb128 0x3f
+ 2216 01ff 19       		.uleb128 0x19
+ 2217 0200 3C       		.uleb128 0x3c
+ 2218 0201 19       		.uleb128 0x19
+ 2219 0202 00       		.byte	0
+ 2220 0203 00       		.byte	0
+ 2221 0204 24       		.uleb128 0x24
+ 2222 0205 26       		.uleb128 0x26
+ 2223 0206 00       		.byte	0
+ 2224 0207 49       		.uleb128 0x49
+ 2225 0208 13       		.uleb128 0x13
+ 2226 0209 00       		.byte	0
+ 2227 020a 00       		.byte	0
+ 2228 020b 25       		.uleb128 0x25
+ 2229 020c 2E       		.uleb128 0x2e
+ 2230 020d 00       		.byte	0
+ 2231 020e 3F       		.uleb128 0x3f
+ 2232 020f 19       		.uleb128 0x19
+ 2233 0210 3C       		.uleb128 0x3c
+ 2234 0211 19       		.uleb128 0x19
+ 2235 0212 6E       		.uleb128 0x6e
+ 2236 0213 0E       		.uleb128 0xe
+ 2237 0214 03       		.uleb128 0x3
+ 2238 0215 0E       		.uleb128 0xe
+ 2239 0216 3A       		.uleb128 0x3a
+ 2240 0217 0B       		.uleb128 0xb
+ 2241 0218 3B       		.uleb128 0x3b
+ 2242 0219 05       		.uleb128 0x5
+ 2243 021a 00       		.byte	0
+ 2244 021b 00       		.byte	0
+ 2245 021c 00       		.byte	0
+ 2246              		.section	.debug_loc,"",%progbits
+ 2247              	.Ldebug_loc0:
+ 2248              	.LLST0:
+ 2249 0000 06000000 		.4byte	.LVL1
+ 2250 0004 0C000000 		.4byte	.LVL2
+ 2251 0008 0200     		.2byte	0x2
+ 2252 000a 30       		.byte	0x30
+ 2253 000b 9F       		.byte	0x9f
+ 2254 000c 0C000000 		.4byte	.LVL2
+ 2255 0010 28000000 		.4byte	.LVL5
+ 2256 0014 0100     		.2byte	0x1
+ 2257 0016 53       		.byte	0x53
+ 2258 0017 00000000 		.4byte	0
+ 2259 001b 00000000 		.4byte	0
+ 2260              	.LLST1:
+ 2261 001f 06000000 		.4byte	.LVL1
+ 2262 0023 0C000000 		.4byte	.LVL2
+ 2263 0027 0100     		.2byte	0x1
+ 2264 0029 54       		.byte	0x54
+ 2265 002a 0C000000 		.4byte	.LVL2
+ 2266 002e 14000000 		.4byte	.LVL4
+ 2267 0032 0300     		.2byte	0x3
+ 2268 0034 72       		.byte	0x72
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 48
+
+
+ 2269 0035 04       		.sleb128 4
+ 2270 0036 9F       		.byte	0x9f
+ 2271 0037 14000000 		.4byte	.LVL4
+ 2272 003b 3C000000 		.4byte	.LFE2
+ 2273 003f 0100     		.2byte	0x1
+ 2274 0041 52       		.byte	0x52
+ 2275 0042 00000000 		.4byte	0
+ 2276 0046 00000000 		.4byte	0
+ 2277              	.LLST2:
+ 2278 004a 00000000 		.4byte	.LVL7
+ 2279 004e 09000000 		.4byte	.LVL8-1
+ 2280 0052 0100     		.2byte	0x1
+ 2281 0054 50       		.byte	0x50
+ 2282 0055 09000000 		.4byte	.LVL8-1
+ 2283 0059 10000000 		.4byte	.LFE4
+ 2284 005d 0400     		.2byte	0x4
+ 2285 005f F3       		.byte	0xf3
+ 2286 0060 01       		.uleb128 0x1
+ 2287 0061 50       		.byte	0x50
+ 2288 0062 9F       		.byte	0x9f
+ 2289 0063 00000000 		.4byte	0
+ 2290 0067 00000000 		.4byte	0
+ 2291              	.LLST3:
+ 2292 006b 00000000 		.4byte	.LVL9
+ 2293 006f 09000000 		.4byte	.LVL10-1
+ 2294 0073 0100     		.2byte	0x1
+ 2295 0075 50       		.byte	0x50
+ 2296 0076 09000000 		.4byte	.LVL10-1
+ 2297 007a 10000000 		.4byte	.LFE5
+ 2298 007e 0400     		.2byte	0x4
+ 2299 0080 F3       		.byte	0xf3
+ 2300 0081 01       		.uleb128 0x1
+ 2301 0082 50       		.byte	0x50
+ 2302 0083 9F       		.byte	0x9f
+ 2303 0084 00000000 		.4byte	0
+ 2304 0088 00000000 		.4byte	0
+ 2305              	.LLST4:
+ 2306 008c 00000000 		.4byte	.LVL11
+ 2307 0090 09000000 		.4byte	.LVL12-1
+ 2308 0094 0100     		.2byte	0x1
+ 2309 0096 50       		.byte	0x50
+ 2310 0097 09000000 		.4byte	.LVL12-1
+ 2311 009b 10000000 		.4byte	.LFE6
+ 2312 009f 0400     		.2byte	0x4
+ 2313 00a1 F3       		.byte	0xf3
+ 2314 00a2 01       		.uleb128 0x1
+ 2315 00a3 50       		.byte	0x50
+ 2316 00a4 9F       		.byte	0x9f
+ 2317 00a5 00000000 		.4byte	0
+ 2318 00a9 00000000 		.4byte	0
+ 2319              	.LLST5:
+ 2320 00ad 00000000 		.4byte	.LVL13
+ 2321 00b1 16000000 		.4byte	.LVL17
+ 2322 00b5 0100     		.2byte	0x1
+ 2323 00b7 50       		.byte	0x50
+ 2324 00b8 16000000 		.4byte	.LVL17
+ 2325 00bc 88000000 		.4byte	.LFE7
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 49
+
+
+ 2326 00c0 0200     		.2byte	0x2
+ 2327 00c2 72       		.byte	0x72
+ 2328 00c3 78       		.sleb128 -8
+ 2329 00c4 00000000 		.4byte	0
+ 2330 00c8 00000000 		.4byte	0
+ 2331              	.LLST6:
+ 2332 00cc 00000000 		.4byte	.LVL13
+ 2333 00d0 08000000 		.4byte	.LVL14
+ 2334 00d4 0100     		.2byte	0x1
+ 2335 00d6 52       		.byte	0x52
+ 2336 00d7 08000000 		.4byte	.LVL14
+ 2337 00db 88000000 		.4byte	.LFE7
+ 2338 00df 0400     		.2byte	0x4
+ 2339 00e1 F3       		.byte	0xf3
+ 2340 00e2 01       		.uleb128 0x1
+ 2341 00e3 52       		.byte	0x52
+ 2342 00e4 9F       		.byte	0x9f
+ 2343 00e5 00000000 		.4byte	0
+ 2344 00e9 00000000 		.4byte	0
+ 2345              	.LLST7:
+ 2346 00ed 00000000 		.4byte	.LVL13
+ 2347 00f1 3E000000 		.4byte	.LVL24
+ 2348 00f5 0100     		.2byte	0x1
+ 2349 00f7 53       		.byte	0x53
+ 2350 00f8 3E000000 		.4byte	.LVL24
+ 2351 00fc 88000000 		.4byte	.LFE7
+ 2352 0100 0200     		.2byte	0x2
+ 2353 0102 72       		.byte	0x72
+ 2354 0103 64       		.sleb128 -28
+ 2355 0104 00000000 		.4byte	0
+ 2356 0108 00000000 		.4byte	0
+ 2357              	.LLST8:
+ 2358 010c 00000000 		.4byte	.LVL13
+ 2359 0110 80000000 		.4byte	.LVL33
+ 2360 0114 0200     		.2byte	0x2
+ 2361 0116 91       		.byte	0x91
+ 2362 0117 00       		.sleb128 0
+ 2363 0118 80000000 		.4byte	.LVL33
+ 2364 011c 88000000 		.4byte	.LFE7
+ 2365 0120 0200     		.2byte	0x2
+ 2366 0122 7D       		.byte	0x7d
+ 2367 0123 00       		.sleb128 0
+ 2368 0124 00000000 		.4byte	0
+ 2369 0128 00000000 		.4byte	0
+ 2370              	.LLST9:
+ 2371 012c 00000000 		.4byte	.LVL13
+ 2372 0130 80000000 		.4byte	.LVL33
+ 2373 0134 0200     		.2byte	0x2
+ 2374 0136 91       		.byte	0x91
+ 2375 0137 04       		.sleb128 4
+ 2376 0138 80000000 		.4byte	.LVL33
+ 2377 013c 88000000 		.4byte	.LFE7
+ 2378 0140 0200     		.2byte	0x2
+ 2379 0142 7D       		.byte	0x7d
+ 2380 0143 04       		.sleb128 4
+ 2381 0144 00000000 		.4byte	0
+ 2382 0148 00000000 		.4byte	0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 50
+
+
+ 2383              	.LLST10:
+ 2384 014c 08000000 		.4byte	.LVL14
+ 2385 0150 10000000 		.4byte	.LVL15
+ 2386 0154 0300     		.2byte	0x3
+ 2387 0156 72       		.byte	0x72
+ 2388 0157 7C       		.sleb128 -4
+ 2389 0158 9F       		.byte	0x9f
+ 2390 0159 10000000 		.4byte	.LVL15
+ 2391 015d 14000000 		.4byte	.LVL16
+ 2392 0161 0300     		.2byte	0x3
+ 2393 0163 72       		.byte	0x72
+ 2394 0164 78       		.sleb128 -8
+ 2395 0165 9F       		.byte	0x9f
+ 2396 0166 14000000 		.4byte	.LVL16
+ 2397 016a 1A000000 		.4byte	.LVL18
+ 2398 016e 0300     		.2byte	0x3
+ 2399 0170 72       		.byte	0x72
+ 2400 0171 74       		.sleb128 -12
+ 2401 0172 9F       		.byte	0x9f
+ 2402 0173 1A000000 		.4byte	.LVL18
+ 2403 0177 22000000 		.4byte	.LVL19
+ 2404 017b 0300     		.2byte	0x3
+ 2405 017d 72       		.byte	0x72
+ 2406 017e 70       		.sleb128 -16
+ 2407 017f 9F       		.byte	0x9f
+ 2408 0180 22000000 		.4byte	.LVL19
+ 2409 0184 2A000000 		.4byte	.LVL20
+ 2410 0188 0300     		.2byte	0x3
+ 2411 018a 72       		.byte	0x72
+ 2412 018b 6C       		.sleb128 -20
+ 2413 018c 9F       		.byte	0x9f
+ 2414 018d 2A000000 		.4byte	.LVL20
+ 2415 0191 32000000 		.4byte	.LVL21
+ 2416 0195 0300     		.2byte	0x3
+ 2417 0197 72       		.byte	0x72
+ 2418 0198 68       		.sleb128 -24
+ 2419 0199 9F       		.byte	0x9f
+ 2420 019a 32000000 		.4byte	.LVL21
+ 2421 019e 36000000 		.4byte	.LVL22
+ 2422 01a2 0300     		.2byte	0x3
+ 2423 01a4 72       		.byte	0x72
+ 2424 01a5 64       		.sleb128 -28
+ 2425 01a6 9F       		.byte	0x9f
+ 2426 01a7 36000000 		.4byte	.LVL22
+ 2427 01ab 3A000000 		.4byte	.LVL23
+ 2428 01af 0300     		.2byte	0x3
+ 2429 01b1 72       		.byte	0x72
+ 2430 01b2 60       		.sleb128 -32
+ 2431 01b3 9F       		.byte	0x9f
+ 2432 01b4 3A000000 		.4byte	.LVL23
+ 2433 01b8 42000000 		.4byte	.LVL25
+ 2434 01bc 0300     		.2byte	0x3
+ 2435 01be 72       		.byte	0x72
+ 2436 01bf 5C       		.sleb128 -36
+ 2437 01c0 9F       		.byte	0x9f
+ 2438 01c1 42000000 		.4byte	.LVL25
+ 2439 01c5 4A000000 		.4byte	.LVL26
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 51
+
+
+ 2440 01c9 0300     		.2byte	0x3
+ 2441 01cb 72       		.byte	0x72
+ 2442 01cc 58       		.sleb128 -40
+ 2443 01cd 9F       		.byte	0x9f
+ 2444 01ce 4A000000 		.4byte	.LVL26
+ 2445 01d2 52000000 		.4byte	.LVL27
+ 2446 01d6 0300     		.2byte	0x3
+ 2447 01d8 72       		.byte	0x72
+ 2448 01d9 54       		.sleb128 -44
+ 2449 01da 9F       		.byte	0x9f
+ 2450 01db 52000000 		.4byte	.LVL27
+ 2451 01df 5A000000 		.4byte	.LVL28
+ 2452 01e3 0300     		.2byte	0x3
+ 2453 01e5 72       		.byte	0x72
+ 2454 01e6 50       		.sleb128 -48
+ 2455 01e7 9F       		.byte	0x9f
+ 2456 01e8 5A000000 		.4byte	.LVL28
+ 2457 01ec 62000000 		.4byte	.LVL29
+ 2458 01f0 0300     		.2byte	0x3
+ 2459 01f2 72       		.byte	0x72
+ 2460 01f3 4C       		.sleb128 -52
+ 2461 01f4 9F       		.byte	0x9f
+ 2462 01f5 62000000 		.4byte	.LVL29
+ 2463 01f9 6A000000 		.4byte	.LVL30
+ 2464 01fd 0300     		.2byte	0x3
+ 2465 01ff 72       		.byte	0x72
+ 2466 0200 48       		.sleb128 -56
+ 2467 0201 9F       		.byte	0x9f
+ 2468 0202 6A000000 		.4byte	.LVL30
+ 2469 0206 72000000 		.4byte	.LVL31
+ 2470 020a 0300     		.2byte	0x3
+ 2471 020c 72       		.byte	0x72
+ 2472 020d 44       		.sleb128 -60
+ 2473 020e 9F       		.byte	0x9f
+ 2474 020f 72000000 		.4byte	.LVL31
+ 2475 0213 7E000000 		.4byte	.LVL32
+ 2476 0217 0300     		.2byte	0x3
+ 2477 0219 72       		.byte	0x72
+ 2478 021a 40       		.sleb128 -64
+ 2479 021b 9F       		.byte	0x9f
+ 2480 021c 7E000000 		.4byte	.LVL32
+ 2481 0220 88000000 		.4byte	.LFE7
+ 2482 0224 0100     		.2byte	0x1
+ 2483 0226 50       		.byte	0x50
+ 2484 0227 00000000 		.4byte	0
+ 2485 022b 00000000 		.4byte	0
+ 2486              	.LLST11:
+ 2487 022f 02000000 		.4byte	.LVL37
+ 2488 0233 06000000 		.4byte	.LVL38
+ 2489 0237 0200     		.2byte	0x2
+ 2490 0239 30       		.byte	0x30
+ 2491 023a 9F       		.byte	0x9f
+ 2492 023b 06000000 		.4byte	.LVL38
+ 2493 023f 11000000 		.4byte	.LVL39-1
+ 2494 0243 0100     		.2byte	0x1
+ 2495 0245 50       		.byte	0x50
+ 2496 0246 00000000 		.4byte	0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 52
+
+
+ 2497 024a 00000000 		.4byte	0
+ 2498              	.LLST12:
+ 2499 024e 00000000 		.4byte	.LVL42
+ 2500 0252 02000000 		.4byte	.LVL43
+ 2501 0256 0100     		.2byte	0x1
+ 2502 0258 50       		.byte	0x50
+ 2503 0259 02000000 		.4byte	.LVL43
+ 2504 025d 30000000 		.4byte	.LFE11
+ 2505 0261 0300     		.2byte	0x3
+ 2506 0263 70       		.byte	0x70
+ 2507 0264 01       		.sleb128 1
+ 2508 0265 9F       		.byte	0x9f
+ 2509 0266 00000000 		.4byte	0
+ 2510 026a 00000000 		.4byte	0
+ 2511              	.LLST13:
+ 2512 026e 0A000000 		.4byte	.LVL44
+ 2513 0272 12000000 		.4byte	.LVL46
+ 2514 0276 0100     		.2byte	0x1
+ 2515 0278 53       		.byte	0x53
+ 2516 0279 12000000 		.4byte	.LVL46
+ 2517 027d 14000000 		.4byte	.LVL47
+ 2518 0281 0200     		.2byte	0x2
+ 2519 0283 72       		.byte	0x72
+ 2520 0284 00       		.sleb128 0
+ 2521 0285 14000000 		.4byte	.LVL47
+ 2522 0289 1A000000 		.4byte	.LVL48
+ 2523 028d 0600     		.2byte	0x6
+ 2524 028f 11       		.byte	0x11
+ 2525 0290 A0DA8380 		.sleb128 -536810208
+ 2525      7E
+ 2526 0295 00000000 		.4byte	0
+ 2527 0299 00000000 		.4byte	0
+ 2528              		.section	.debug_aranges,"",%progbits
+ 2529 0000 6C000000 		.4byte	0x6c
+ 2530 0004 0200     		.2byte	0x2
+ 2531 0006 00000000 		.4byte	.Ldebug_info0
+ 2532 000a 04       		.byte	0x4
+ 2533 000b 00       		.byte	0
+ 2534 000c 0000     		.2byte	0
+ 2535 000e 0000     		.2byte	0
+ 2536 0010 00000000 		.4byte	.LFB1
+ 2537 0014 10000000 		.4byte	.LFE1-.LFB1
+ 2538 0018 00000000 		.4byte	.LFB2
+ 2539 001c 3C000000 		.4byte	.LFE2-.LFB2
+ 2540 0020 00000000 		.4byte	.LFB3
+ 2541 0024 10000000 		.4byte	.LFE3-.LFB3
+ 2542 0028 00000000 		.4byte	.LFB4
+ 2543 002c 10000000 		.4byte	.LFE4-.LFB4
+ 2544 0030 00000000 		.4byte	.LFB5
+ 2545 0034 10000000 		.4byte	.LFE5-.LFB5
+ 2546 0038 00000000 		.4byte	.LFB6
+ 2547 003c 10000000 		.4byte	.LFE6-.LFB6
+ 2548 0040 00000000 		.4byte	.LFB7
+ 2549 0044 88000000 		.4byte	.LFE7-.LFB7
+ 2550 0048 00000000 		.4byte	.LFB8
+ 2551 004c 40000000 		.4byte	.LFE8-.LFB8
+ 2552 0050 00000000 		.4byte	.LFB9
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 53
+
+
+ 2553 0054 10000000 		.4byte	.LFE9-.LFB9
+ 2554 0058 00000000 		.4byte	.LFB10
+ 2555 005c 20000000 		.4byte	.LFE10-.LFB10
+ 2556 0060 00000000 		.4byte	.LFB11
+ 2557 0064 30000000 		.4byte	.LFE11-.LFB11
+ 2558 0068 00000000 		.4byte	0
+ 2559 006c 00000000 		.4byte	0
+ 2560              		.section	.debug_ranges,"",%progbits
+ 2561              	.Ldebug_ranges0:
+ 2562 0000 00000000 		.4byte	.LFB1
+ 2563 0004 10000000 		.4byte	.LFE1
+ 2564 0008 00000000 		.4byte	.LFB2
+ 2565 000c 3C000000 		.4byte	.LFE2
+ 2566 0010 00000000 		.4byte	.LFB3
+ 2567 0014 10000000 		.4byte	.LFE3
+ 2568 0018 00000000 		.4byte	.LFB4
+ 2569 001c 10000000 		.4byte	.LFE4
+ 2570 0020 00000000 		.4byte	.LFB5
+ 2571 0024 10000000 		.4byte	.LFE5
+ 2572 0028 00000000 		.4byte	.LFB6
+ 2573 002c 10000000 		.4byte	.LFE6
+ 2574 0030 00000000 		.4byte	.LFB7
+ 2575 0034 88000000 		.4byte	.LFE7
+ 2576 0038 00000000 		.4byte	.LFB8
+ 2577 003c 40000000 		.4byte	.LFE8
+ 2578 0040 00000000 		.4byte	.LFB9
+ 2579 0044 10000000 		.4byte	.LFE9
+ 2580 0048 00000000 		.4byte	.LFB10
+ 2581 004c 20000000 		.4byte	.LFE10
+ 2582 0050 00000000 		.4byte	.LFB11
+ 2583 0054 30000000 		.4byte	.LFE11
+ 2584 0058 00000000 		.4byte	0
+ 2585 005c 00000000 		.4byte	0
+ 2586              		.section	.debug_line,"",%progbits
+ 2587              	.Ldebug_line0:
+ 2588 0000 E2010000 		.section	.debug_str,"MS",%progbits,1
+ 2588      0200E300 
+ 2588      00000201 
+ 2588      FB0E0D00 
+ 2588      01010101 
+ 2589              	.LASF56:
+ 2590 0000 6F735F74 		.ascii	"os_tcb\000"
+ 2590      636200
+ 2591              	.LASF164:
+ 2592 0007 433A5C63 		.ascii	"C:\\cypress\\esw_uCOS3_cykit\\esw_uCOS3_cykit.cydsn"
+ 2592      79707265 
+ 2592      73735C65 
+ 2592      73775F75 
+ 2592      434F5333 
+ 2593 0037 00       		.ascii	"\000"
+ 2594              	.LASF26:
+ 2595 0038 4F535F43 		.ascii	"OS_CTX_SW_CTR\000"
+ 2595      54585F53 
+ 2595      575F4354 
+ 2595      5200
+ 2596              	.LASF98:
+ 2597 0046 53746B55 		.ascii	"StkUsed\000"
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 54
+
+
+ 2597      73656400 
+ 2598              	.LASF14:
+ 2599 004e 4350555F 		.ascii	"CPU_REG32\000"
+ 2599      52454733 
+ 2599      3200
+ 2600              	.LASF163:
+ 2601 0058 75434F53 		.ascii	"uCOS-III\\Ports\\ARM-Cortex-M3\\Generic\\GNU\\os_cp"
+ 2601      2D494949 
+ 2601      5C506F72 
+ 2601      74735C41 
+ 2601      524D2D43 
+ 2602 0086 755F632E 		.ascii	"u_c.c\000"
+ 2602      6300
+ 2603              	.LASF142:
+ 2604 008c 636E7473 		.ascii	"cnts\000"
+ 2604      00
+ 2605              	.LASF80:
+ 2606 0091 54696D65 		.ascii	"TimeQuantaCtr\000"
+ 2606      5175616E 
+ 2606      74614374 
+ 2606      7200
+ 2607              	.LASF124:
+ 2608 009f 705F7374 		.ascii	"p_stk\000"
+ 2608      6B00
+ 2609              	.LASF52:
+ 2610 00a5 4E627245 		.ascii	"NbrEntries\000"
+ 2610      6E747269 
+ 2610      657300
+ 2611              	.LASF25:
+ 2612 00b0 4F535F43 		.ascii	"OS_CPU_USAGE\000"
+ 2612      50555F55 
+ 2612      53414745 
+ 2612      00
+ 2613              	.LASF8:
+ 2614 00bd 4350555F 		.ascii	"CPU_INT32U\000"
+ 2614      494E5433 
+ 2614      325500
+ 2615              	.LASF154:
+ 2616 00c8 4F535443 		.ascii	"OSTCBHighRdyPtr\000"
+ 2616      42486967 
+ 2616      68526479 
+ 2616      50747200 
+ 2617              	.LASF153:
+ 2618 00d8 4F535443 		.ascii	"OSTCBCurPtr\000"
+ 2618      42437572 
+ 2618      50747200 
+ 2619              	.LASF87:
+ 2620 00e4 466C6167 		.ascii	"FlagsOpt\000"
+ 2620      734F7074 
+ 2620      00
+ 2621              	.LASF32:
+ 2622 00ed 4F535F4F 		.ascii	"OS_OBJ_QTY\000"
+ 2622      424A5F51 
+ 2622      545900
+ 2623              	.LASF100:
+ 2624 00f8 44626750 		.ascii	"DbgPrevPtr\000"
+ 2624      72657650 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 55
+
+
+ 2624      747200
+ 2625              	.LASF96:
+ 2626 0103 53656D50 		.ascii	"SemPendTime\000"
+ 2626      656E6454 
+ 2626      696D6500 
+ 2627              	.LASF101:
+ 2628 010f 4462674E 		.ascii	"DbgNextPtr\000"
+ 2628      65787450 
+ 2628      747200
+ 2629              	.LASF116:
+ 2630 011a 48656164 		.ascii	"HeadPtr\000"
+ 2630      50747200 
+ 2631              	.LASF147:
+ 2632 0122 4F535F41 		.ascii	"OS_AppTaskReturnHookPtr\000"
+ 2632      70705461 
+ 2632      736B5265 
+ 2632      7475726E 
+ 2632      486F6F6B 
+ 2633              	.LASF69:
+ 2634 013a 50656E64 		.ascii	"PendOn\000"
+ 2634      4F6E00
+ 2635              	.LASF74:
+ 2636 0141 50656E64 		.ascii	"PendDataTblEntries\000"
+ 2636      44617461 
+ 2636      54626C45 
+ 2636      6E747269 
+ 2636      657300
+ 2637              	.LASF158:
+ 2638 0154 4350555F 		.ascii	"CPU_SR_Save\000"
+ 2638      53525F53 
+ 2638      61766500 
+ 2639              	.LASF117:
+ 2640 0160 5461696C 		.ascii	"TailPtr\000"
+ 2640      50747200 
+ 2641              	.LASF126:
+ 2642 0168 4F535374 		.ascii	"OSStatTaskHook\000"
+ 2642      61745461 
+ 2642      736B486F 
+ 2642      6F6B00
+ 2643              	.LASF54:
+ 2644 0177 4F535F54 		.ascii	"OS_TASK_PTR\000"
+ 2644      41534B5F 
+ 2644      50545200 
+ 2645              	.LASF77:
+ 2646 0183 5469636B 		.ascii	"TickCtrMatch\000"
+ 2646      4374724D 
+ 2646      61746368 
+ 2646      00
+ 2647              	.LASF119:
+ 2648 0190 6F735F70 		.ascii	"os_pend_obj\000"
+ 2648      656E645F 
+ 2648      6F626A00 
+ 2649              	.LASF85:
+ 2650 019c 466C6167 		.ascii	"FlagsPend\000"
+ 2650      7350656E 
+ 2650      6400
+ 2651              	.LASF139:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 56
+
+
+ 2652 01a6 4F535F43 		.ascii	"OS_CPU_SysTickHandler\000"
+ 2652      50555F53 
+ 2652      79735469 
+ 2652      636B4861 
+ 2652      6E646C65 
+ 2653              	.LASF91:
+ 2654 01bc 43747853 		.ascii	"CtxSwCtr\000"
+ 2654      77437472 
+ 2654      00
+ 2655              	.LASF35:
+ 2656 01c5 4F535F50 		.ascii	"OS_PRIO\000"
+ 2656      52494F00 
+ 2657              	.LASF12:
+ 2658 01cd 666C6F61 		.ascii	"float\000"
+ 2658      7400
+ 2659              	.LASF107:
+ 2660 01d3 6F735F70 		.ascii	"os_pend_data\000"
+ 2660      656E645F 
+ 2660      64617461 
+ 2660      00
+ 2661              	.LASF152:
+ 2662 01e0 4F53496E 		.ascii	"OSIntNestingCtr\000"
+ 2662      744E6573 
+ 2662      74696E67 
+ 2662      43747200 
+ 2663              	.LASF103:
+ 2664 01f0 4F535F54 		.ascii	"OS_TICK_SPOKE\000"
+ 2664      49434B5F 
+ 2664      53504F4B 
+ 2664      4500
+ 2665              	.LASF140:
+ 2666 01fe 6370755F 		.ascii	"cpu_sr\000"
+ 2666      737200
+ 2667              	.LASF41:
+ 2668 0205 4F535F4D 		.ascii	"OS_MSG\000"
+ 2668      534700
+ 2669              	.LASF10:
+ 2670 020c 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2670      206C6F6E 
+ 2670      6720756E 
+ 2670      7369676E 
+ 2670      65642069 
+ 2671              	.LASF132:
+ 2672 0223 705F7461 		.ascii	"p_task\000"
+ 2672      736B00
+ 2673              	.LASF106:
+ 2674 022a 4F535F50 		.ascii	"OS_PEND_DATA\000"
+ 2674      454E445F 
+ 2674      44415441 
+ 2674      00
+ 2675              	.LASF3:
+ 2676 0237 4350555F 		.ascii	"CPU_INT08U\000"
+ 2676      494E5430 
+ 2676      385500
+ 2677              	.LASF47:
+ 2678 0242 6F735F6D 		.ascii	"os_msg\000"
+ 2678      736700
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 57
+
+
+ 2679              	.LASF73:
+ 2680 0249 53746B53 		.ascii	"StkSize\000"
+ 2680      697A6500 
+ 2681              	.LASF65:
+ 2682 0251 53746B42 		.ascii	"StkBasePtr\000"
+ 2682      61736550 
+ 2682      747200
+ 2683              	.LASF36:
+ 2684 025c 4F535F52 		.ascii	"OS_REG\000"
+ 2684      454700
+ 2685              	.LASF162:
+ 2686 0263 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2686      43313120 
+ 2686      352E342E 
+ 2686      31203230 
+ 2686      31363036 
+ 2687 0296 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2687      20726576 
+ 2687      6973696F 
+ 2687      6E203233 
+ 2687      37373135 
+ 2688 02c9 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 2688      66756E63 
+ 2688      74696F6E 
+ 2688      2D736563 
+ 2688      74696F6E 
+ 2689              	.LASF39:
+ 2690 02f1 4F535F53 		.ascii	"OS_STATUS\000"
+ 2690      54415455 
+ 2690      5300
+ 2691              	.LASF130:
+ 2692 02fb 705F7463 		.ascii	"p_tcb\000"
+ 2692      6200
+ 2693              	.LASF30:
+ 2694 0301 4F535F4D 		.ascii	"OS_MSG_SIZE\000"
+ 2694      53475F53 
+ 2694      495A4500 
+ 2695              	.LASF2:
+ 2696 030d 4350555F 		.ascii	"CPU_CHAR\000"
+ 2696      43484152 
+ 2696      00
+ 2697              	.LASF17:
+ 2698 0316 4350555F 		.ascii	"CPU_STK_SIZE\000"
+ 2698      53544B5F 
+ 2698      53495A45 
+ 2698      00
+ 2699              	.LASF29:
+ 2700 0323 4F535F4D 		.ascii	"OS_MSG_QTY\000"
+ 2700      53475F51 
+ 2700      545900
+ 2701              	.LASF76:
+ 2702 032e 5469636B 		.ascii	"TickCtrPrev\000"
+ 2702      43747250 
+ 2702      72657600 
+ 2703              	.LASF51:
+ 2704 033a 4E627245 		.ascii	"NbrEntriesSize\000"
+ 2704      6E747269 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 58
+
+
+ 2704      65735369 
+ 2704      7A6500
+ 2705              	.LASF62:
+ 2706 0349 5469636B 		.ascii	"TickPrevPtr\000"
+ 2706      50726576 
+ 2706      50747200 
+ 2707              	.LASF159:
+ 2708 0355 4350555F 		.ascii	"CPU_SR_Restore\000"
+ 2708      53525F52 
+ 2708      6573746F 
+ 2708      726500
+ 2709              	.LASF128:
+ 2710 0364 4F535461 		.ascii	"OSTaskCreateHook\000"
+ 2710      736B4372 
+ 2710      65617465 
+ 2710      486F6F6B 
+ 2710      00
+ 2711              	.LASF83:
+ 2712 0375 4D736751 		.ascii	"MsgQPendTimeMax\000"
+ 2712      50656E64 
+ 2712      54696D65 
+ 2712      4D617800 
+ 2713              	.LASF82:
+ 2714 0385 4D736751 		.ascii	"MsgQPendTime\000"
+ 2714      50656E64 
+ 2714      54696D65 
+ 2714      00
+ 2715              	.LASF141:
+ 2716 0392 4F535F43 		.ascii	"OS_CPU_SysTickInit\000"
+ 2716      50555F53 
+ 2716      79735469 
+ 2716      636B496E 
+ 2716      697400
+ 2717              	.LASF160:
+ 2718 03a5 4F535469 		.ascii	"OSTimeTick\000"
+ 2718      6D655469 
+ 2718      636B00
+ 2719              	.LASF143:
+ 2720 03b0 7072696F 		.ascii	"prio\000"
+ 2720      00
+ 2721              	.LASF123:
+ 2722 03b5 4F535F41 		.ascii	"OS_APP_HOOK_TCB\000"
+ 2722      50505F48 
+ 2722      4F4F4B5F 
+ 2722      54434200 
+ 2723              	.LASF60:
+ 2724 03c5 50726576 		.ascii	"PrevPtr\000"
+ 2724      50747200 
+ 2725              	.LASF0:
+ 2726 03cd 63686172 		.ascii	"char\000"
+ 2726      00
+ 2727              	.LASF146:
+ 2728 03d2 4F535F41 		.ascii	"OS_AppTaskDelHookPtr\000"
+ 2728      70705461 
+ 2728      736B4465 
+ 2728      6C486F6F 
+ 2728      6B507472 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 59
+
+
+ 2729              	.LASF33:
+ 2730 03e7 4F535F4F 		.ascii	"OS_OBJ_TYPE\000"
+ 2730      424A5F54 
+ 2730      59504500 
+ 2731              	.LASF135:
+ 2732 03f3 705F7374 		.ascii	"p_stk_limit\000"
+ 2732      6B5F6C69 
+ 2732      6D697400 
+ 2733              	.LASF71:
+ 2734 03ff 5461736B 		.ascii	"TaskState\000"
+ 2734      53746174 
+ 2734      6500
+ 2735              	.LASF18:
+ 2736 0409 4350555F 		.ascii	"CPU_SR\000"
+ 2736      535200
+ 2737              	.LASF49:
+ 2738 0410 496E5074 		.ascii	"InPtr\000"
+ 2738      7200
+ 2739              	.LASF156:
+ 2740 0416 4F534366 		.ascii	"OSCfg_ISRStkSize\000"
+ 2740      675F4953 
+ 2740      5253746B 
+ 2740      53697A65 
+ 2740      00
+ 2741              	.LASF81:
+ 2742 0427 4D736751 		.ascii	"MsgQ\000"
+ 2742      00
+ 2743              	.LASF66:
+ 2744 042c 5461736B 		.ascii	"TaskEntryAddr\000"
+ 2744      456E7472 
+ 2744      79416464 
+ 2744      7200
+ 2745              	.LASF131:
+ 2746 043a 4F535461 		.ascii	"OSTaskReturnHook\000"
+ 2746      736B5265 
+ 2746      7475726E 
+ 2746      486F6F6B 
+ 2746      00
+ 2747              	.LASF137:
+ 2748 044b 4F535461 		.ascii	"OSTaskSwHook\000"
+ 2748      736B5377 
+ 2748      486F6F6B 
+ 2748      00
+ 2749              	.LASF64:
+ 2750 0458 4E616D65 		.ascii	"NamePtr\000"
+ 2750      50747200 
+ 2751              	.LASF70:
+ 2752 0460 50656E64 		.ascii	"PendStatus\000"
+ 2752      53746174 
+ 2752      757300
+ 2753              	.LASF46:
+ 2754 046b 4F535F4D 		.ascii	"OS_MSG_Q\000"
+ 2754      53475F51 
+ 2754      00
+ 2755              	.LASF120:
+ 2756 0474 54797065 		.ascii	"Type\000"
+ 2756      00
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 60
+
+
+ 2757              	.LASF24:
+ 2758 0479 4350555F 		.ascii	"CPU_TS\000"
+ 2758      545300
+ 2759              	.LASF11:
+ 2760 0480 6C6F6E67 		.ascii	"long long int\000"
+ 2760      206C6F6E 
+ 2760      6720696E 
+ 2760      7400
+ 2761              	.LASF57:
+ 2762 048e 53746B50 		.ascii	"StkPtr\000"
+ 2762      747200
+ 2763              	.LASF104:
+ 2764 0495 6F735F74 		.ascii	"os_tick_spoke\000"
+ 2764      69636B5F 
+ 2764      73706F6B 
+ 2764      6500
+ 2765              	.LASF145:
+ 2766 04a3 4F535F41 		.ascii	"OS_AppTaskCreateHookPtr\000"
+ 2766      70705461 
+ 2766      736B4372 
+ 2766      65617465 
+ 2766      486F6F6B 
+ 2767              	.LASF93:
+ 2768 04bb 4379636C 		.ascii	"CyclesStart\000"
+ 2768      65735374 
+ 2768      61727400 
+ 2769              	.LASF5:
+ 2770 04c7 4350555F 		.ascii	"CPU_INT16U\000"
+ 2770      494E5431 
+ 2770      365500
+ 2771              	.LASF40:
+ 2772 04d2 4F535F54 		.ascii	"OS_TICK\000"
+ 2772      49434B00 
+ 2773              	.LASF23:
+ 2774 04da 4350555F 		.ascii	"CPU_TS32\000"
+ 2774      54533332 
+ 2774      00
+ 2775              	.LASF88:
+ 2776 04e3 53757370 		.ascii	"SuspendCtr\000"
+ 2776      656E6443 
+ 2776      747200
+ 2777              	.LASF59:
+ 2778 04ee 53746B4C 		.ascii	"StkLimitPtr\000"
+ 2778      696D6974 
+ 2778      50747200 
+ 2779              	.LASF122:
+ 2780 04fa 4F535F41 		.ascii	"OS_APP_HOOK_VOID\000"
+ 2780      50505F48 
+ 2780      4F4F4B5F 
+ 2780      564F4944 
+ 2780      00
+ 2781              	.LASF37:
+ 2782 050b 4F535F53 		.ascii	"OS_SEM_CTR\000"
+ 2782      454D5F43 
+ 2782      545200
+ 2783              	.LASF108:
+ 2784 0516 54434250 		.ascii	"TCBPtr\000"
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 61
+
+
+ 2784      747200
+ 2785              	.LASF92:
+ 2786 051d 4379636C 		.ascii	"CyclesDelta\000"
+ 2786      65734465 
+ 2786      6C746100 
+ 2787              	.LASF61:
+ 2788 0529 5469636B 		.ascii	"TickNextPtr\000"
+ 2788      4E657874 
+ 2788      50747200 
+ 2789              	.LASF110:
+ 2790 0535 5264794F 		.ascii	"RdyObjPtr\000"
+ 2790      626A5074 
+ 2790      7200
+ 2791              	.LASF42:
+ 2792 053f 4E657874 		.ascii	"NextPtr\000"
+ 2792      50747200 
+ 2793              	.LASF21:
+ 2794 0547 6C6F6E67 		.ascii	"long double\000"
+ 2794      20646F75 
+ 2794      626C6500 
+ 2795              	.LASF161:
+ 2796 0553 4F53496E 		.ascii	"OSIntExit\000"
+ 2796      74457869 
+ 2796      7400
+ 2797              	.LASF113:
+ 2798 055d 52647954 		.ascii	"RdyTS\000"
+ 2798      5300
+ 2799              	.LASF136:
+ 2800 0563 73746B5F 		.ascii	"stk_size\000"
+ 2800      73697A65 
+ 2800      00
+ 2801              	.LASF148:
+ 2802 056c 4F535F41 		.ascii	"OS_AppIdleTaskHookPtr\000"
+ 2802      70704964 
+ 2802      6C655461 
+ 2802      736B486F 
+ 2802      6F6B5074 
+ 2803              	.LASF7:
+ 2804 0582 73686F72 		.ascii	"short int\000"
+ 2804      7420696E 
+ 2804      7400
+ 2805              	.LASF112:
+ 2806 058c 5264794D 		.ascii	"RdyMsgSize\000"
+ 2806      73675369 
+ 2806      7A6500
+ 2807              	.LASF151:
+ 2808 0597 4F535F41 		.ascii	"OS_AppTimeTickHookPtr\000"
+ 2808      70705469 
+ 2808      6D655469 
+ 2808      636B486F 
+ 2808      6F6B5074 
+ 2809              	.LASF19:
+ 2810 05ad 6C6F6E67 		.ascii	"long int\000"
+ 2810      20696E74 
+ 2810      00
+ 2811              	.LASF97:
+ 2812 05b6 53656D50 		.ascii	"SemPendTimeMax\000"
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 62
+
+
+ 2812      656E6454 
+ 2812      696D654D 
+ 2812      617800
+ 2813              	.LASF95:
+ 2814 05c5 4379636C 		.ascii	"CyclesTotalPrev\000"
+ 2814      6573546F 
+ 2814      74616C50 
+ 2814      72657600 
+ 2815              	.LASF149:
+ 2816 05d5 4F535F41 		.ascii	"OS_AppStatTaskHookPtr\000"
+ 2816      70705374 
+ 2816      61745461 
+ 2816      736B486F 
+ 2816      6F6B5074 
+ 2817              	.LASF68:
+ 2818 05eb 50656E64 		.ascii	"PendDataTblPtr\000"
+ 2818      44617461 
+ 2818      54626C50 
+ 2818      747200
+ 2819              	.LASF31:
+ 2820 05fa 4F535F4E 		.ascii	"OS_NESTING_CTR\000"
+ 2820      45535449 
+ 2820      4E475F43 
+ 2820      545200
+ 2821              	.LASF94:
+ 2822 0609 4379636C 		.ascii	"CyclesTotal\000"
+ 2822      6573546F 
+ 2822      74616C00 
+ 2823              	.LASF118:
+ 2824 0615 4F535F50 		.ascii	"OS_PEND_OBJ\000"
+ 2824      454E445F 
+ 2824      4F424A00 
+ 2825              	.LASF90:
+ 2826 0621 43505555 		.ascii	"CPUUsageMax\000"
+ 2826      73616765 
+ 2826      4D617800 
+ 2827              	.LASF121:
+ 2828 062d 50656E64 		.ascii	"PendList\000"
+ 2828      4C697374 
+ 2828      00
+ 2829              	.LASF75:
+ 2830 0636 53656D43 		.ascii	"SemCtr\000"
+ 2830      747200
+ 2831              	.LASF138:
+ 2832 063d 4F535469 		.ascii	"OSTimeTickHook\000"
+ 2832      6D655469 
+ 2832      636B486F 
+ 2832      6F6B00
+ 2833              	.LASF78:
+ 2834 064c 5469636B 		.ascii	"TickRemain\000"
+ 2834      52656D61 
+ 2834      696E00
+ 2835              	.LASF127:
+ 2836 0657 4F53496E 		.ascii	"OSInitHook\000"
+ 2836      6974486F 
+ 2836      6F6B00
+ 2837              	.LASF9:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 63
+
+
+ 2838 0662 756E7369 		.ascii	"unsigned int\000"
+ 2838      676E6564 
+ 2838      20696E74 
+ 2838      00
+ 2839              	.LASF125:
+ 2840 066f 4F534964 		.ascii	"OSIdleTaskHook\000"
+ 2840      6C655461 
+ 2840      736B486F 
+ 2840      6F6B00
+ 2841              	.LASF44:
+ 2842 067e 4D736753 		.ascii	"MsgSize\000"
+ 2842      697A6500 
+ 2843              	.LASF111:
+ 2844 0686 5264794D 		.ascii	"RdyMsgPtr\000"
+ 2844      73675074 
+ 2844      7200
+ 2845              	.LASF105:
+ 2846 0690 46697273 		.ascii	"FirstPtr\000"
+ 2846      74507472 
+ 2846      00
+ 2847              	.LASF144:
+ 2848 0699 4F535F43 		.ascii	"OS_CPU_ExceptStkBase\000"
+ 2848      50555F45 
+ 2848      78636570 
+ 2848      7453746B 
+ 2848      42617365 
+ 2849              	.LASF133:
+ 2850 06ae 705F6172 		.ascii	"p_arg\000"
+ 2850      6700
+ 2851              	.LASF58:
+ 2852 06b4 45787450 		.ascii	"ExtPtr\000"
+ 2852      747200
+ 2853              	.LASF22:
+ 2854 06bb 73697A65 		.ascii	"sizetype\000"
+ 2854      74797065 
+ 2854      00
+ 2855              	.LASF20:
+ 2856 06c4 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2856      20756E73 
+ 2856      69676E65 
+ 2856      6420696E 
+ 2856      7400
+ 2857              	.LASF15:
+ 2858 06d6 4350555F 		.ascii	"CPU_ADDR\000"
+ 2858      41444452 
+ 2858      00
+ 2859              	.LASF155:
+ 2860 06df 4F534366 		.ascii	"OSCfg_ISRStkBasePtr\000"
+ 2860      675F4953 
+ 2860      5253746B 
+ 2860      42617365 
+ 2860      50747200 
+ 2861              	.LASF27:
+ 2862 06f3 4F535F43 		.ascii	"OS_CYCLES\000"
+ 2862      59434C45 
+ 2862      5300
+ 2863              	.LASF55:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 64
+
+
+ 2864 06fd 4F535F54 		.ascii	"OS_TCB\000"
+ 2864      434200
+ 2865              	.LASF129:
+ 2866 0704 4F535461 		.ascii	"OSTaskDelHook\000"
+ 2866      736B4465 
+ 2866      6C486F6F 
+ 2866      6B00
+ 2867              	.LASF134:
+ 2868 0712 705F7374 		.ascii	"p_stk_base\000"
+ 2868      6B5F6261 
+ 2868      736500
+ 2869              	.LASF1:
+ 2870 071d 756E7369 		.ascii	"unsigned char\000"
+ 2870      676E6564 
+ 2870      20636861 
+ 2870      7200
+ 2871              	.LASF38:
+ 2872 072b 4F535F53 		.ascii	"OS_STATE\000"
+ 2872      54415445 
+ 2872      00
+ 2873              	.LASF34:
+ 2874 0734 4F535F4F 		.ascii	"OS_OPT\000"
+ 2874      505400
+ 2875              	.LASF63:
+ 2876 073b 5469636B 		.ascii	"TickSpokePtr\000"
+ 2876      53706F6B 
+ 2876      65507472 
+ 2876      00
+ 2877              	.LASF102:
+ 2878 0748 4462674E 		.ascii	"DbgNamePtr\000"
+ 2878      616D6550 
+ 2878      747200
+ 2879              	.LASF67:
+ 2880 0753 5461736B 		.ascii	"TaskEntryArg\000"
+ 2880      456E7472 
+ 2880      79417267 
+ 2880      00
+ 2881              	.LASF165:
+ 2882 0760 4F535461 		.ascii	"OSTaskStkInit\000"
+ 2882      736B5374 
+ 2882      6B496E69 
+ 2882      7400
+ 2883              	.LASF50:
+ 2884 076e 4F757450 		.ascii	"OutPtr\000"
+ 2884      747200
+ 2885              	.LASF114:
+ 2886 0775 4F535F50 		.ascii	"OS_PEND_LIST\000"
+ 2886      454E445F 
+ 2886      4C495354 
+ 2886      00
+ 2887              	.LASF157:
+ 2888 0782 4350555F 		.ascii	"CPU_TS_TmrRd\000"
+ 2888      54535F54 
+ 2888      6D725264 
+ 2888      00
+ 2889              	.LASF150:
+ 2890 078f 4F535F41 		.ascii	"OS_AppTaskSwHookPtr\000"
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 65
+
+
+ 2890      70705461 
+ 2890      736B5377 
+ 2890      486F6F6B 
+ 2890      50747200 
+ 2891              	.LASF4:
+ 2892 07a3 7369676E 		.ascii	"signed char\000"
+ 2892      65642063 
+ 2892      68617200 
+ 2893              	.LASF45:
+ 2894 07af 4D736754 		.ascii	"MsgTS\000"
+ 2894      5300
+ 2895              	.LASF6:
+ 2896 07b5 73686F72 		.ascii	"short unsigned int\000"
+ 2896      7420756E 
+ 2896      7369676E 
+ 2896      65642069 
+ 2896      6E7400
+ 2897              	.LASF28:
+ 2898 07c8 4F535F46 		.ascii	"OS_FLAGS\000"
+ 2898      4C414753 
+ 2898      00
+ 2899              	.LASF43:
+ 2900 07d1 4D736750 		.ascii	"MsgPtr\000"
+ 2900      747200
+ 2901              	.LASF86:
+ 2902 07d8 466C6167 		.ascii	"FlagsRdy\000"
+ 2902      73526479 
+ 2902      00
+ 2903              	.LASF72:
+ 2904 07e1 5072696F 		.ascii	"Prio\000"
+ 2904      00
+ 2905              	.LASF13:
+ 2906 07e6 646F7562 		.ascii	"double\000"
+ 2906      6C6500
+ 2907              	.LASF89:
+ 2908 07ed 43505555 		.ascii	"CPUUsage\000"
+ 2908      73616765 
+ 2908      00
+ 2909              	.LASF109:
+ 2910 07f6 50656E64 		.ascii	"PendObjPtr\000"
+ 2910      4F626A50 
+ 2910      747200
+ 2911              	.LASF53:
+ 2912 0801 4E627245 		.ascii	"NbrEntriesMax\000"
+ 2912      6E747269 
+ 2912      65734D61 
+ 2912      7800
+ 2913              	.LASF115:
+ 2914 080f 6F735F70 		.ascii	"os_pend_list\000"
+ 2914      656E645F 
+ 2914      6C697374 
+ 2914      00
+ 2915              	.LASF84:
+ 2916 081c 52656754 		.ascii	"RegTbl\000"
+ 2916      626C00
+ 2917              	.LASF99:
+ 2918 0823 53746B46 		.ascii	"StkFree\000"
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccrkxAiz.s 			page 66
+
+
+ 2918      72656500 
+ 2919              	.LASF79:
+ 2920 082b 54696D65 		.ascii	"TimeQuanta\000"
+ 2920      5175616E 
+ 2920      746100
+ 2921              	.LASF48:
+ 2922 0836 6F735F6D 		.ascii	"os_msg_q\000"
+ 2922      73675F71 
+ 2922      00
+ 2923              	.LASF16:
+ 2924 083f 4350555F 		.ascii	"CPU_STK\000"
+ 2924      53544B00 
+ 2925              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

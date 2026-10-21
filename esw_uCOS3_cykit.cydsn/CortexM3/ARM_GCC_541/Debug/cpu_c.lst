@@ -1,0 +1,4232 @@
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"cpu_c.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.CPU_BitBandClr,"ax",%progbits
+  20              		.align	2
+  21              		.global	CPU_BitBandClr
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	CPU_BitBandClr, %function
+  25              	CPU_BitBandClr:
+  26              	.LFB1:
+  27              		.file 1 "uC-CPU\\ARM-Cortex-M3\\GNU\\cpu_c.c"
+   1:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+   2:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+   3:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                                uC/CPU
+   4:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                    CPU CONFIGURATION & PORT LAYER
+   5:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+   6:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                          (c) Copyright 2004-2011; Micrium, Inc.; Weston, FL
+   7:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+   8:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               All rights reserved.  Protected by international copyright laws.
+   9:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+  10:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               uC/CPU is provided in source form to registered licensees ONLY.  It is 
+  11:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               illegal to distribute this source code to any third party unless you receive 
+  12:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               written permission by an authorized Micrium representative.  Knowledge of 
+  13:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               the source code may NOT be used to develop a similar product.
+  14:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+  15:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               Please help us continue to provide the Embedded community with the finest 
+  16:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               software available.  Your honesty is greatly appreciated.
+  17:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+  18:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               You can contact us at www.micrium.com.
+  19:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+  20:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+  21:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  22:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+  23:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+  24:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+  25:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                            CPU PORT FILE
+  26:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+  27:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                            ARM-Cortex-M3
+  28:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                            GNU C Compiler
+  29:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+  30:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Filename      : cpu_c.c
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 2
+
+
+  31:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Version       : V1.29.01.00
+  32:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Programmer(s) : JJL
+  33:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                 BAN
+  34:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+  35:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+  36:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  37:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  38:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+  39:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+  40:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                            INCLUDE FILES
+  41:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+  42:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+  43:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  44:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** #define    MICRIUM_SOURCE
+  45:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** #include  <cpu.h>
+  46:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** #include  <cpu_core.h>
+  47:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  48:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** #include  <lib_def.h>
+  49:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  50:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  51:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*$PAGE*/
+  52:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+  53:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+  54:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                            LOCAL DEFINES
+  55:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+  56:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+  57:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  58:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** #define  CPU_INT_SRC_POS_MAX                  ((((CPU_REG_NVIC_NVIC + 1) & 0x1F) * 32) + 16)
+  59:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  60:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** #define  CPU_BIT_BAND_SRAM_REG_LO                 0x20000000
+  61:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** #define  CPU_BIT_BAND_SRAM_REG_HI                 0x200FFFFF
+  62:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** #define  CPU_BIT_BAND_SRAM_BASE                   0x22000000
+  63:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  64:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  65:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** #define  CPU_BIT_BAND_PERIPH_REG_LO               0x40000000
+  66:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** #define  CPU_BIT_BAND_PERIPH_REG_HI               0x400FFFFF
+  67:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** #define  CPU_BIT_BAND_PERIPH_BASE                 0x42000000
+  68:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  69:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  70:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+  71:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+  72:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                           LOCAL CONSTANTS
+  73:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+  74:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+  75:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  76:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  77:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+  78:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+  79:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                          LOCAL DATA TYPES
+  80:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+  81:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+  82:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  83:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  84:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+  85:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+  86:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                            LOCAL TABLES
+  87:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 3
+
+
+  88:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+  89:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  90:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  91:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+  92:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+  93:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                       LOCAL GLOBAL VARIABLES
+  94:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+  95:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+  96:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  97:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+  98:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+  99:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 100:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                      LOCAL FUNCTION PROTOTYPES
+ 101:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 102:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+ 103:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 104:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 105:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+ 106:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 107:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                     LOCAL CONFIGURATION ERRORS
+ 108:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 109:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+ 110:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 111:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 112:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*$PAGE*/
+ 113:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+ 114:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 115:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                          CPU_BitBandClr()
+ 116:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 117:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Description : Clear bit in bit-band region.
+ 118:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 119:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Argument(s) : addr            Byte address in memory space.
+ 120:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 121:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               bit_nbr         Bit number in byte.
+ 122:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 123:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Return(s)   : none.
+ 124:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 125:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Caller(s)   : Application.
+ 126:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 127:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Note(s)     : none.
+ 128:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 129:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+ 130:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 131:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** void  CPU_BitBandClr (CPU_ADDR    addr,
+ 132:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                       CPU_INT08U  bit_nbr)
+ 133:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** {
+  28              		.loc 1 133 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33              	.LVL0:
+ 134:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_ADDR  bit_word_off;
+ 135:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_ADDR  bit_word_addr;
+ 136:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 137:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 138:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     if ((addr >= CPU_BIT_BAND_SRAM_REG_LO) &&
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 4
+
+
+  34              		.loc 1 138 0
+  35 0000 00F16043 		add	r3, r0, #-536870912
+  36 0004 B3F5801F 		cmp	r3, #1048576
+  37 0008 07D2     		bcs	.L2
+ 139:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         (addr <= CPU_BIT_BAND_SRAM_REG_HI)) {
+ 140:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         bit_word_off  = ((addr - CPU_BIT_BAND_SRAM_REG_LO  ) * 32) + (bit_nbr * 4);
+  38              		.loc 1 140 0
+  39 000a 8900     		lsls	r1, r1, #2
+  40              	.LVL1:
+  41 000c 01EB4011 		add	r1, r1, r0, lsl #5
+  42              	.LVL2:
+ 141:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         bit_word_addr = CPU_BIT_BAND_SRAM_BASE   + bit_word_off;
+  43              		.loc 1 141 0
+  44 0010 01F10851 		add	r1, r1, #570425344
+  45              	.LVL3:
+ 142:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 143:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****       *(volatile CPU_INT32U *)(bit_word_addr) = 0;
+  46              		.loc 1 143 0
+  47 0014 0023     		movs	r3, #0
+  48 0016 0B60     		str	r3, [r1]
+  49 0018 7047     		bx	lr
+  50              	.LVL4:
+  51              	.L2:
+ 144:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 145:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     } else if ((addr >= CPU_BIT_BAND_PERIPH_REG_LO) &&
+  52              		.loc 1 145 0
+  53 001a 00F14043 		add	r3, r0, #-1073741824
+  54 001e B3F5801F 		cmp	r3, #1048576
+  55 0022 06D2     		bcs	.L1
+ 146:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                (addr <= CPU_BIT_BAND_PERIPH_REG_HI)) {
+ 147:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         bit_word_off  = ((addr - CPU_BIT_BAND_PERIPH_REG_LO) * 32) + (bit_nbr * 4);
+  56              		.loc 1 147 0
+  57 0024 8900     		lsls	r1, r1, #2
+  58              	.LVL5:
+  59 0026 01EB4011 		add	r1, r1, r0, lsl #5
+  60              	.LVL6:
+ 148:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         bit_word_addr = CPU_BIT_BAND_PERIPH_BASE + bit_word_off;
+  61              		.loc 1 148 0
+  62 002a 01F18441 		add	r1, r1, #1107296256
+  63              	.LVL7:
+ 149:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 150:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****       *(volatile CPU_INT32U *)(bit_word_addr) = 0;
+  64              		.loc 1 150 0
+  65 002e 0023     		movs	r3, #0
+  66 0030 0B60     		str	r3, [r1]
+  67              	.LVL8:
+  68              	.L1:
+  69 0032 7047     		bx	lr
+  70              		.cfi_endproc
+  71              	.LFE1:
+  72              		.size	CPU_BitBandClr, .-CPU_BitBandClr
+  73              		.section	.text.CPU_BitBandSet,"ax",%progbits
+  74              		.align	2
+  75              		.global	CPU_BitBandSet
+  76              		.thumb
+  77              		.thumb_func
+  78              		.type	CPU_BitBandSet, %function
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 5
+
+
+  79              	CPU_BitBandSet:
+  80              	.LFB2:
+ 151:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     }
+ 152:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** }
+ 153:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 154:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 155:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*$PAGE*/
+ 156:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+ 157:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 158:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                          CPU_BitBandSet()
+ 159:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 160:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Description : Set bit in bit-band region.
+ 161:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 162:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Argument(s) : addr            Byte address in memory space.
+ 163:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 164:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               bit_nbr         Bit number in byte.
+ 165:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 166:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Return(s)   : none.
+ 167:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 168:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Caller(s)   : Application.
+ 169:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 170:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Note(s)     : none.
+ 171:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 172:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+ 173:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 174:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** void  CPU_BitBandSet (CPU_ADDR    addr,
+ 175:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                       CPU_INT08U  bit_nbr)
+ 176:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** {
+  81              		.loc 1 176 0
+  82              		.cfi_startproc
+  83              		@ args = 0, pretend = 0, frame = 0
+  84              		@ frame_needed = 0, uses_anonymous_args = 0
+  85              		@ link register save eliminated.
+  86              	.LVL9:
+ 177:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_ADDR  bit_word_off;
+ 178:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_ADDR  bit_word_addr;
+ 179:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 180:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 181:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     if ((addr >= CPU_BIT_BAND_SRAM_REG_LO) &&
+  87              		.loc 1 181 0
+  88 0000 00F16043 		add	r3, r0, #-536870912
+  89 0004 B3F5801F 		cmp	r3, #1048576
+  90 0008 07D2     		bcs	.L5
+ 182:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         (addr <= CPU_BIT_BAND_SRAM_REG_HI)) {
+ 183:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         bit_word_off  = ((addr - CPU_BIT_BAND_SRAM_REG_LO  ) * 32) + (bit_nbr * 4);
+  91              		.loc 1 183 0
+  92 000a 8900     		lsls	r1, r1, #2
+  93              	.LVL10:
+  94 000c 01EB4011 		add	r1, r1, r0, lsl #5
+  95              	.LVL11:
+ 184:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         bit_word_addr = CPU_BIT_BAND_SRAM_BASE   + bit_word_off;
+  96              		.loc 1 184 0
+  97 0010 01F10851 		add	r1, r1, #570425344
+  98              	.LVL12:
+ 185:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 186:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****       *(volatile CPU_INT32U *)(bit_word_addr) = 1;
+  99              		.loc 1 186 0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 6
+
+
+ 100 0014 0123     		movs	r3, #1
+ 101 0016 0B60     		str	r3, [r1]
+ 102 0018 7047     		bx	lr
+ 103              	.LVL13:
+ 104              	.L5:
+ 187:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 188:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     } else if ((addr >= CPU_BIT_BAND_PERIPH_REG_LO) &&
+ 105              		.loc 1 188 0
+ 106 001a 00F14043 		add	r3, r0, #-1073741824
+ 107 001e B3F5801F 		cmp	r3, #1048576
+ 108 0022 06D2     		bcs	.L4
+ 189:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                (addr <= CPU_BIT_BAND_PERIPH_REG_HI)) {
+ 190:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         bit_word_off  = ((addr - CPU_BIT_BAND_PERIPH_REG_LO) * 32) + (bit_nbr * 4);
+ 109              		.loc 1 190 0
+ 110 0024 8900     		lsls	r1, r1, #2
+ 111              	.LVL14:
+ 112 0026 01EB4011 		add	r1, r1, r0, lsl #5
+ 113              	.LVL15:
+ 191:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         bit_word_addr = CPU_BIT_BAND_PERIPH_BASE + bit_word_off;
+ 114              		.loc 1 191 0
+ 115 002a 01F18441 		add	r1, r1, #1107296256
+ 116              	.LVL16:
+ 192:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 193:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****       *(volatile CPU_INT32U *)(bit_word_addr) = 1;
+ 117              		.loc 1 193 0
+ 118 002e 0123     		movs	r3, #1
+ 119 0030 0B60     		str	r3, [r1]
+ 120              	.LVL17:
+ 121              	.L4:
+ 122 0032 7047     		bx	lr
+ 123              		.cfi_endproc
+ 124              	.LFE2:
+ 125              		.size	CPU_BitBandSet, .-CPU_BitBandSet
+ 126              		.section	.text.CPU_IntSrcDis,"ax",%progbits
+ 127              		.align	2
+ 128              		.global	CPU_IntSrcDis
+ 129              		.thumb
+ 130              		.thumb_func
+ 131              		.type	CPU_IntSrcDis, %function
+ 132              	CPU_IntSrcDis:
+ 133              	.LFB3:
+ 194:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     }
+ 195:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** }
+ 196:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 197:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 198:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*$PAGE*/
+ 199:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+ 200:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 201:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                           CPU_IntSrcDis()
+ 202:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 203:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Description : Disable an interrupt source.
+ 204:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 205:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Argument(s) : pos     Position of interrupt vector in interrupt table :
+ 206:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 207:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                           0       Invalid (see Note #1a).
+ 208:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                           1       Invalid (see Note #1b).
+ 209:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                           2       Non-maskable interrupt.
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 7
+
+
+ 210:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                           3       Hard Fault.
+ 211:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                           4       Memory Management.
+ 212:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                           5       Bus Fault.
+ 213:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                           6       Usage Fault.
+ 214:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                           7-10    Reserved.
+ 215:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                           11      SVCall
+ 216:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                           12      Debug monitor.
+ 217:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                           13      Reserved
+ 218:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                           14      PendSV.
+ 219:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                           15      SysTick.
+ 220:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                           16+     External Interrupt.
+ 221:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 222:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Return(s)   : none.
+ 223:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 224:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Caller(s)   : Application.
+ 225:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 226:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Note(s)     : (1) Several table positions do not contain interrupt sources :
+ 227:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 228:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (a) Position 0 contains the stack pointer.
+ 229:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (b) Positions 7-10, 13 are reserved.
+ 230:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 231:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               (2) Several interrupts cannot be disabled/enabled :
+ 232:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 233:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (a) Reset.
+ 234:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (b) NMI.
+ 235:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (c) Hard fault.
+ 236:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (d) SVCall.
+ 237:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (e) Debug monitor.
+ 238:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (f) PendSV.
+ 239:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 240:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               (3) The maximum Cortex-M3 table position is 256.  A particular Cortex-M3 may have f
+ 241:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   than 240 external exceptions and, consequently, fewer than 256 table positions.
+ 242:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   This function assumes that the specified table position is valid if the interru
+ 243:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   controller type register's INTLINESNUM field is large enough so that the positi
+ 244:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   COULD be valid.
+ 245:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 246:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+ 247:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*$PAGE*/
+ 248:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** void  CPU_IntSrcDis (CPU_INT08U  pos)
+ 249:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** {
+ 134              		.loc 1 249 0
+ 135              		.cfi_startproc
+ 136              		@ args = 0, pretend = 0, frame = 0
+ 137              		@ frame_needed = 0, uses_anonymous_args = 0
+ 138              	.LVL18:
+ 139 0000 38B5     		push	{r3, r4, r5, lr}
+ 140              		.cfi_def_cfa_offset 16
+ 141              		.cfi_offset 3, -16
+ 142              		.cfi_offset 4, -12
+ 143              		.cfi_offset 5, -8
+ 144              		.cfi_offset 14, -4
+ 145              	.LVL19:
+ 250:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  group;
+ 251:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  pos_max;
+ 252:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  nbr;
+ 253:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_SR_ALLOC();
+ 254:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 8
+
+
+ 255:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 256:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     switch (pos) {
+ 146              		.loc 1 256 0
+ 147 0002 0F28     		cmp	r0, #15
+ 148 0004 31D8     		bhi	.L8
+ 149 0006 DFE800F0 		tbb	[pc, r0]
+ 150              	.L10:
+ 151 000a 56       		.byte	(.L7-.L10)/2
+ 152 000b 56       		.byte	(.L7-.L10)/2
+ 153 000c 56       		.byte	(.L7-.L10)/2
+ 154 000d 56       		.byte	(.L7-.L10)/2
+ 155 000e 08       		.byte	(.L11-.L10)/2
+ 156 000f 12       		.byte	(.L12-.L10)/2
+ 157 0010 1C       		.byte	(.L13-.L10)/2
+ 158 0011 56       		.byte	(.L7-.L10)/2
+ 159 0012 56       		.byte	(.L7-.L10)/2
+ 160 0013 56       		.byte	(.L7-.L10)/2
+ 161 0014 56       		.byte	(.L7-.L10)/2
+ 162 0015 56       		.byte	(.L7-.L10)/2
+ 163 0016 56       		.byte	(.L7-.L10)/2
+ 164 0017 56       		.byte	(.L7-.L10)/2
+ 165 0018 56       		.byte	(.L7-.L10)/2
+ 166 0019 26       		.byte	(.L14-.L10)/2
+ 167              		.p2align 1
+ 168              	.L11:
+ 257:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_STK_PTR:                                   /* ---------------- INVALID OR RESE
+ 258:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_07:
+ 259:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_08:
+ 260:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_09:
+ 261:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_10:
+ 262:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_13:
+ 263:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 264:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 265:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 266:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                                                                 /* ----------------- SYSTEM EXCEPTI
+ 267:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RESET:                                     /* Reset (see Note #2).            
+ 268:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_NMI:                                       /* Non-maskable interrupt (see Note
+ 269:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_HFAULT:                                    /* Hard fault (see Note #2).       
+ 270:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_SVCALL:                                    /* SVCall (see Note #2).           
+ 271:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_DBGMON:                                    /* Debug monitor (see Note #2).    
+ 272:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_PENDSV:                                    /* PendSV (see Note #2).           
+ 273:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 274:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 275:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_MEM:                                       /* Memory management.              
+ 276:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 169              		.loc 1 276 0
+ 170 001a FFF7FEFF 		bl	CPU_SR_Save
+ 171              	.LVL20:
+ 277:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_REG_NVIC_SHCSR &= ~CPU_REG_NVIC_SHCSR_MEMFAULTENA;
+ 172              		.loc 1 277 0
+ 173 001e 264A     		ldr	r2, .L18
+ 174 0020 1368     		ldr	r3, [r2]
+ 175 0022 23F48033 		bic	r3, r3, #65536
+ 176 0026 1360     		str	r3, [r2]
+ 278:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 177              		.loc 1 278 0
+ 178 0028 FFF7FEFF 		bl	CPU_SR_Restore
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 9
+
+
+ 179              	.LVL21:
+ 279:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 180              		.loc 1 279 0
+ 181 002c 38BD     		pop	{r3, r4, r5, pc}
+ 182              	.LVL22:
+ 183              	.L12:
+ 280:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 281:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_BUSFAULT:                                  /* Bus fault.                      
+ 282:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 184              		.loc 1 282 0
+ 185 002e FFF7FEFF 		bl	CPU_SR_Save
+ 186              	.LVL23:
+ 283:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_REG_NVIC_SHCSR &= ~CPU_REG_NVIC_SHCSR_BUSFAULTENA;
+ 187              		.loc 1 283 0
+ 188 0032 214A     		ldr	r2, .L18
+ 189 0034 1368     		ldr	r3, [r2]
+ 190 0036 23F40033 		bic	r3, r3, #131072
+ 191 003a 1360     		str	r3, [r2]
+ 284:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 192              		.loc 1 284 0
+ 193 003c FFF7FEFF 		bl	CPU_SR_Restore
+ 194              	.LVL24:
+ 285:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 195              		.loc 1 285 0
+ 196 0040 38BD     		pop	{r3, r4, r5, pc}
+ 197              	.LVL25:
+ 198              	.L13:
+ 286:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 287:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_USAGEFAULT:                                /* Usage fault.                    
+ 288:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 199              		.loc 1 288 0
+ 200 0042 FFF7FEFF 		bl	CPU_SR_Save
+ 201              	.LVL26:
+ 289:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_REG_NVIC_SHCSR &= ~CPU_REG_NVIC_SHCSR_USGFAULTENA;
+ 202              		.loc 1 289 0
+ 203 0046 1C4A     		ldr	r2, .L18
+ 204 0048 1368     		ldr	r3, [r2]
+ 205 004a 23F48023 		bic	r3, r3, #262144
+ 206 004e 1360     		str	r3, [r2]
+ 290:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 207              		.loc 1 290 0
+ 208 0050 FFF7FEFF 		bl	CPU_SR_Restore
+ 209              	.LVL27:
+ 291:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 210              		.loc 1 291 0
+ 211 0054 38BD     		pop	{r3, r4, r5, pc}
+ 212              	.LVL28:
+ 213              	.L14:
+ 292:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 293:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_SYSTICK:                                   /* SysTick.                        
+ 294:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 214              		.loc 1 294 0
+ 215 0056 FFF7FEFF 		bl	CPU_SR_Save
+ 216              	.LVL29:
+ 295:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_REG_NVIC_ST_CTRL &= ~CPU_REG_NVIC_ST_CTRL_ENABLE;
+ 217              		.loc 1 295 0
+ 218 005a 184A     		ldr	r2, .L18+4
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 10
+
+
+ 219 005c 1368     		ldr	r3, [r2]
+ 220 005e 23F00103 		bic	r3, r3, #1
+ 221 0062 1360     		str	r3, [r2]
+ 296:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 222              		.loc 1 296 0
+ 223 0064 FFF7FEFF 		bl	CPU_SR_Restore
+ 224              	.LVL30:
+ 297:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 225              		.loc 1 297 0
+ 226 0068 38BD     		pop	{r3, r4, r5, pc}
+ 227              	.LVL31:
+ 228              	.L8:
+ 298:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 299:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 300:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                                                                 /* ---------------- EXTERNAL INTERR
+ 301:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         default:
+ 302:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****             pos_max = CPU_INT_SRC_POS_MAX;
+ 229              		.loc 1 302 0
+ 230 006a 154B     		ldr	r3, .L18+8
+ 231 006c 1B68     		ldr	r3, [r3]
+ 232 006e 0133     		adds	r3, r3, #1
+ 233 0070 03F01F03 		and	r3, r3, #31
+ 234 0074 5B01     		lsls	r3, r3, #5
+ 235 0076 1033     		adds	r3, r3, #16
+ 236 0078 DBB2     		uxtb	r3, r3
+ 237              	.LVL32:
+ 303:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****             if (pos < pos_max) {                                /* See Note #3.                    
+ 238              		.loc 1 303 0
+ 239 007a 9842     		cmp	r0, r3
+ 240 007c 1BD2     		bcs	.L7
+ 304:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  group = (pos - 16) / 32;
+ 241              		.loc 1 304 0
+ 242 007e 1038     		subs	r0, r0, #16
+ 243              	.LVL33:
+ 244 0080 0346     		mov	r3, r0
+ 245              	.LVL34:
+ 246 0082 0028     		cmp	r0, #0
+ 247 0084 01DA     		bge	.L15
+ 248 0086 00F11F03 		add	r3, r0, #31
+ 249              	.L15:
+ 250 008a 5D11     		asrs	r5, r3, #5
+ 251              	.LVL35:
+ 305:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  nbr   = (pos - 16) % 32;
+ 252              		.loc 1 305 0
+ 253 008c 0D4C     		ldr	r4, .L18+12
+ 254 008e 0440     		ands	r4, r0, r4
+ 255 0090 03D5     		bpl	.L16
+ 256 0092 013C     		subs	r4, r4, #1
+ 257 0094 64F01F04 		orn	r4, r4, #31
+ 258 0098 0134     		adds	r4, r4, #1
+ 259              	.L16:
+ 260              	.LVL36:
+ 306:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 307:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  CPU_CRITICAL_ENTER();
+ 261              		.loc 1 307 0
+ 262 009a FFF7FEFF 		bl	CPU_SR_Save
+ 263              	.LVL37:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 11
+
+
+ 308:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  CPU_REG_NVIC_CLREN(group) = DEF_BIT(nbr);
+ 264              		.loc 1 308 0
+ 265 009e EBB2     		uxtb	r3, r5
+ 266 00a0 03F13823 		add	r3, r3, #939538432
+ 267 00a4 6033     		adds	r3, r3, #96
+ 268 00a6 9B00     		lsls	r3, r3, #2
+ 269 00a8 E4B2     		uxtb	r4, r4
+ 270 00aa 0122     		movs	r2, #1
+ 271 00ac 02FA04F4 		lsl	r4, r2, r4
+ 272              	.LVL38:
+ 273 00b0 1C60     		str	r4, [r3]
+ 309:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  CPU_CRITICAL_EXIT();
+ 274              		.loc 1 309 0
+ 275 00b2 FFF7FEFF 		bl	CPU_SR_Restore
+ 276              	.LVL39:
+ 277              	.L7:
+ 278 00b6 38BD     		pop	{r3, r4, r5, pc}
+ 279              	.L19:
+ 280              		.align	2
+ 281              	.L18:
+ 282 00b8 24ED00E0 		.word	-536810204
+ 283 00bc 10E000E0 		.word	-536813552
+ 284 00c0 04E000E0 		.word	-536813564
+ 285 00c4 1F000080 		.word	-2147483617
+ 286              		.cfi_endproc
+ 287              	.LFE3:
+ 288              		.size	CPU_IntSrcDis, .-CPU_IntSrcDis
+ 289              		.section	.text.CPU_IntSrcEn,"ax",%progbits
+ 290              		.align	2
+ 291              		.global	CPU_IntSrcEn
+ 292              		.thumb
+ 293              		.thumb_func
+ 294              		.type	CPU_IntSrcEn, %function
+ 295              	CPU_IntSrcEn:
+ 296              	.LFB4:
+ 310:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              }
+ 311:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 312:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     }
+ 313:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** }
+ 314:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 315:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 316:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*$PAGE*/
+ 317:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+ 318:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 319:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                           CPU_IntSrcEn()
+ 320:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 321:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Description : Enable an interrupt source.
+ 322:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 323:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Argument(s) : pos     Position of interrupt vector in interrupt table (see 'CPU_IntSrcDis()').
+ 324:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 325:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Return(s)   : none.
+ 326:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 327:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Caller(s)   : Application.
+ 328:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 329:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Note(s)     : (1) See 'CPU_IntSrcDis()  Note #1'.
+ 330:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 331:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               (2) See 'CPU_IntSrcDis()  Note #2'.
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 12
+
+
+ 332:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 333:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               (3) See 'CPU_IntSrcDis()  Note #3'.
+ 334:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 335:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+ 336:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 337:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** void  CPU_IntSrcEn (CPU_INT08U  pos)
+ 338:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** {
+ 297              		.loc 1 338 0
+ 298              		.cfi_startproc
+ 299              		@ args = 0, pretend = 0, frame = 0
+ 300              		@ frame_needed = 0, uses_anonymous_args = 0
+ 301              	.LVL40:
+ 302 0000 38B5     		push	{r3, r4, r5, lr}
+ 303              		.cfi_def_cfa_offset 16
+ 304              		.cfi_offset 3, -16
+ 305              		.cfi_offset 4, -12
+ 306              		.cfi_offset 5, -8
+ 307              		.cfi_offset 14, -4
+ 308              	.LVL41:
+ 339:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  group;
+ 340:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  nbr;
+ 341:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  pos_max;
+ 342:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_SR_ALLOC();
+ 343:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 344:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 345:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     switch (pos) {
+ 309              		.loc 1 345 0
+ 310 0002 0F28     		cmp	r0, #15
+ 311 0004 31D8     		bhi	.L21
+ 312 0006 DFE800F0 		tbb	[pc, r0]
+ 313              	.L23:
+ 314 000a 56       		.byte	(.L20-.L23)/2
+ 315 000b 56       		.byte	(.L20-.L23)/2
+ 316 000c 56       		.byte	(.L20-.L23)/2
+ 317 000d 56       		.byte	(.L20-.L23)/2
+ 318 000e 08       		.byte	(.L24-.L23)/2
+ 319 000f 12       		.byte	(.L25-.L23)/2
+ 320 0010 1C       		.byte	(.L26-.L23)/2
+ 321 0011 56       		.byte	(.L20-.L23)/2
+ 322 0012 56       		.byte	(.L20-.L23)/2
+ 323 0013 56       		.byte	(.L20-.L23)/2
+ 324 0014 56       		.byte	(.L20-.L23)/2
+ 325 0015 56       		.byte	(.L20-.L23)/2
+ 326 0016 56       		.byte	(.L20-.L23)/2
+ 327 0017 56       		.byte	(.L20-.L23)/2
+ 328 0018 56       		.byte	(.L20-.L23)/2
+ 329 0019 26       		.byte	(.L27-.L23)/2
+ 330              		.p2align 1
+ 331              	.L24:
+ 346:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_STK_PTR:                                   /* ---------------- INVALID OR RESE
+ 347:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_07:
+ 348:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_08:
+ 349:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_09:
+ 350:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_10:
+ 351:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_13:
+ 352:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 353:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 13
+
+
+ 354:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 355:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                                                                 /* ----------------- SYSTEM EXCEPTI
+ 356:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RESET:                                     /* Reset (see Note #2).            
+ 357:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_NMI:                                       /* Non-maskable interrupt (see Note
+ 358:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_HFAULT:                                    /* Hard fault (see Note #2).       
+ 359:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_SVCALL:                                    /* SVCall (see Note #2).           
+ 360:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_DBGMON:                                    /* Debug monitor (see Note #2).    
+ 361:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_PENDSV:                                    /* PendSV (see Note #2).           
+ 362:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 363:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 364:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_MEM:                                       /* Memory management.              
+ 365:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 332              		.loc 1 365 0
+ 333 001a FFF7FEFF 		bl	CPU_SR_Save
+ 334              	.LVL42:
+ 366:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_REG_NVIC_SHCSR |= CPU_REG_NVIC_SHCSR_MEMFAULTENA;
+ 335              		.loc 1 366 0
+ 336 001e 264A     		ldr	r2, .L31
+ 337 0020 1368     		ldr	r3, [r2]
+ 338 0022 43F48033 		orr	r3, r3, #65536
+ 339 0026 1360     		str	r3, [r2]
+ 367:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 340              		.loc 1 367 0
+ 341 0028 FFF7FEFF 		bl	CPU_SR_Restore
+ 342              	.LVL43:
+ 368:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 343              		.loc 1 368 0
+ 344 002c 38BD     		pop	{r3, r4, r5, pc}
+ 345              	.LVL44:
+ 346              	.L25:
+ 369:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 370:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_BUSFAULT:                                  /* Bus fault.                      
+ 371:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 347              		.loc 1 371 0
+ 348 002e FFF7FEFF 		bl	CPU_SR_Save
+ 349              	.LVL45:
+ 372:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_REG_NVIC_SHCSR |= CPU_REG_NVIC_SHCSR_BUSFAULTENA;
+ 350              		.loc 1 372 0
+ 351 0032 214A     		ldr	r2, .L31
+ 352 0034 1368     		ldr	r3, [r2]
+ 353 0036 43F40033 		orr	r3, r3, #131072
+ 354 003a 1360     		str	r3, [r2]
+ 373:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 355              		.loc 1 373 0
+ 356 003c FFF7FEFF 		bl	CPU_SR_Restore
+ 357              	.LVL46:
+ 374:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 358              		.loc 1 374 0
+ 359 0040 38BD     		pop	{r3, r4, r5, pc}
+ 360              	.LVL47:
+ 361              	.L26:
+ 375:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 376:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_USAGEFAULT:                                /* Usage fault.                    
+ 377:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 362              		.loc 1 377 0
+ 363 0042 FFF7FEFF 		bl	CPU_SR_Save
+ 364              	.LVL48:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 14
+
+
+ 378:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_REG_NVIC_SHCSR |= CPU_REG_NVIC_SHCSR_USGFAULTENA;
+ 365              		.loc 1 378 0
+ 366 0046 1C4A     		ldr	r2, .L31
+ 367 0048 1368     		ldr	r3, [r2]
+ 368 004a 43F48023 		orr	r3, r3, #262144
+ 369 004e 1360     		str	r3, [r2]
+ 379:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 370              		.loc 1 379 0
+ 371 0050 FFF7FEFF 		bl	CPU_SR_Restore
+ 372              	.LVL49:
+ 380:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 373              		.loc 1 380 0
+ 374 0054 38BD     		pop	{r3, r4, r5, pc}
+ 375              	.LVL50:
+ 376              	.L27:
+ 381:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 382:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_SYSTICK:                                   /* SysTick.                        
+ 383:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 377              		.loc 1 383 0
+ 378 0056 FFF7FEFF 		bl	CPU_SR_Save
+ 379              	.LVL51:
+ 384:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_REG_NVIC_ST_CTRL |= CPU_REG_NVIC_ST_CTRL_ENABLE;
+ 380              		.loc 1 384 0
+ 381 005a 184A     		ldr	r2, .L31+4
+ 382 005c 1368     		ldr	r3, [r2]
+ 383 005e 43F00103 		orr	r3, r3, #1
+ 384 0062 1360     		str	r3, [r2]
+ 385:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 385              		.loc 1 385 0
+ 386 0064 FFF7FEFF 		bl	CPU_SR_Restore
+ 387              	.LVL52:
+ 386:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 388              		.loc 1 386 0
+ 389 0068 38BD     		pop	{r3, r4, r5, pc}
+ 390              	.LVL53:
+ 391              	.L21:
+ 387:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 388:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 389:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                                                                 /* ---------------- EXTERNAL INTERR
+ 390:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         default:
+ 391:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****             pos_max = CPU_INT_SRC_POS_MAX;
+ 392              		.loc 1 391 0
+ 393 006a 154B     		ldr	r3, .L31+8
+ 394 006c 1B68     		ldr	r3, [r3]
+ 395 006e 0133     		adds	r3, r3, #1
+ 396 0070 03F01F03 		and	r3, r3, #31
+ 397 0074 5B01     		lsls	r3, r3, #5
+ 398 0076 1033     		adds	r3, r3, #16
+ 399 0078 DBB2     		uxtb	r3, r3
+ 400              	.LVL54:
+ 392:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****             if (pos < pos_max) {                                /* See Note #3.                    
+ 401              		.loc 1 392 0
+ 402 007a 9842     		cmp	r0, r3
+ 403 007c 1BD2     		bcs	.L20
+ 393:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  group = (pos - 16) / 32;
+ 404              		.loc 1 393 0
+ 405 007e 1038     		subs	r0, r0, #16
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 15
+
+
+ 406              	.LVL55:
+ 407 0080 0346     		mov	r3, r0
+ 408              	.LVL56:
+ 409 0082 0028     		cmp	r0, #0
+ 410 0084 01DA     		bge	.L28
+ 411 0086 00F11F03 		add	r3, r0, #31
+ 412              	.L28:
+ 413 008a 5D11     		asrs	r5, r3, #5
+ 414              	.LVL57:
+ 394:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  nbr   = (pos - 16) % 32;
+ 415              		.loc 1 394 0
+ 416 008c 0D4C     		ldr	r4, .L31+12
+ 417 008e 0440     		ands	r4, r0, r4
+ 418 0090 03D5     		bpl	.L29
+ 419 0092 013C     		subs	r4, r4, #1
+ 420 0094 64F01F04 		orn	r4, r4, #31
+ 421 0098 0134     		adds	r4, r4, #1
+ 422              	.L29:
+ 423              	.LVL58:
+ 395:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 396:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  CPU_CRITICAL_ENTER();
+ 424              		.loc 1 396 0
+ 425 009a FFF7FEFF 		bl	CPU_SR_Save
+ 426              	.LVL59:
+ 397:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  CPU_REG_NVIC_SETEN(group) = DEF_BIT(nbr);
+ 427              		.loc 1 397 0
+ 428 009e EBB2     		uxtb	r3, r5
+ 429 00a0 03F13823 		add	r3, r3, #939538432
+ 430 00a4 4033     		adds	r3, r3, #64
+ 431 00a6 9B00     		lsls	r3, r3, #2
+ 432 00a8 E4B2     		uxtb	r4, r4
+ 433 00aa 0122     		movs	r2, #1
+ 434 00ac 02FA04F4 		lsl	r4, r2, r4
+ 435              	.LVL60:
+ 436 00b0 1C60     		str	r4, [r3]
+ 398:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  CPU_CRITICAL_EXIT();
+ 437              		.loc 1 398 0
+ 438 00b2 FFF7FEFF 		bl	CPU_SR_Restore
+ 439              	.LVL61:
+ 440              	.L20:
+ 441 00b6 38BD     		pop	{r3, r4, r5, pc}
+ 442              	.L32:
+ 443              		.align	2
+ 444              	.L31:
+ 445 00b8 24ED00E0 		.word	-536810204
+ 446 00bc 10E000E0 		.word	-536813552
+ 447 00c0 04E000E0 		.word	-536813564
+ 448 00c4 1F000080 		.word	-2147483617
+ 449              		.cfi_endproc
+ 450              	.LFE4:
+ 451              		.size	CPU_IntSrcEn, .-CPU_IntSrcEn
+ 452              		.section	.text.CPU_IntSrcPendClr,"ax",%progbits
+ 453              		.align	2
+ 454              		.global	CPU_IntSrcPendClr
+ 455              		.thumb
+ 456              		.thumb_func
+ 457              		.type	CPU_IntSrcPendClr, %function
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 16
+
+
+ 458              	CPU_IntSrcPendClr:
+ 459              	.LFB5:
+ 399:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              }
+ 400:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 401:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     }
+ 402:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** }
+ 403:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 404:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*$PAGE*/
+ 405:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+ 406:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 407:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                         CPU_IntSrcPendClr()
+ 408:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 409:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Description : Clear a pending interrupt.
+ 410:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 411:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Argument(s) : pos     Position of interrupt vector in interrupt table (see 'CPU_IntSrcDis()').
+ 412:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 413:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Return(s)   : none.
+ 414:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 415:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Caller(s)   : Application.
+ 416:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 417:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Note(s)     : (1) See 'CPU_IntSrcDis()  Note #1'.
+ 418:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 419:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               (2) The pending status of several interrupts cannot be clear/set :
+ 420:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 421:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (a) Reset.
+ 422:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (b) NMI.
+ 423:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (c) Hard fault.
+ 424:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (d) Memory Managment.
+ 425:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (e) Bus Fault.
+ 426:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (f) Usage Fault.
+ 427:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (g) SVCall.
+ 428:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (h) Debug monitor.
+ 429:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (i) PendSV.
+ 430:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (j) Systick 
+ 431:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 432:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               (3) See 'CPU_IntSrcDis()  Note #3'.
+ 433:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 434:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+ 435:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 436:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** void  CPU_IntSrcPendClr (CPU_INT08U  pos)
+ 437:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 438:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** {
+ 460              		.loc 1 438 0
+ 461              		.cfi_startproc
+ 462              		@ args = 0, pretend = 0, frame = 0
+ 463              		@ frame_needed = 0, uses_anonymous_args = 0
+ 464              	.LVL62:
+ 439:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  group;
+ 440:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  nbr;
+ 441:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  pos_max;
+ 442:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_SR_ALLOC();
+ 443:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 444:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 445:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     switch (pos) {
+ 465              		.loc 1 445 0
+ 466 0000 0F28     		cmp	r0, #15
+ 467 0002 27D9     		bls	.L39
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 17
+
+
+ 438:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  group;
+ 468              		.loc 1 438 0
+ 469 0004 38B5     		push	{r3, r4, r5, lr}
+ 470              		.cfi_def_cfa_offset 16
+ 471              		.cfi_offset 3, -16
+ 472              		.cfi_offset 4, -12
+ 473              		.cfi_offset 5, -8
+ 474              		.cfi_offset 14, -4
+ 446:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_STK_PTR:                                   /* ---------------- INVALID OR RESE
+ 447:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_07:
+ 448:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_08:
+ 449:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_09:
+ 450:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_10:
+ 451:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_13:
+ 452:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 453:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                                                                 /* ----------------- SYSTEM EXCEPTI
+ 454:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RESET:                                     /* Reset (see Note #2).            
+ 455:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_NMI:                                       /* Non-maskable interrupt (see Note
+ 456:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_HFAULT:                                    /* Hard fault (see Note #2).       
+ 457:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_MEM:                                       /* Memory management (see Note #2).
+ 458:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_SVCALL:                                    /* SVCall (see Note #2).           
+ 459:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_DBGMON:                                    /* Debug monitor (see Note #2).    
+ 460:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_PENDSV:                                    /* PendSV (see Note #2).           
+ 461:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_BUSFAULT:                                  /* Bus fault.                      
+ 462:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_USAGEFAULT:                                /* Usage fault.                    
+ 463:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_SYSTICK:                                   /* SysTick.                        
+ 464:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 465:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                                                                 /* ---------------- EXTERNAL INTERR
+ 466:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         default:
+ 467:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****             pos_max = CPU_INT_SRC_POS_MAX;
+ 475              		.loc 1 467 0
+ 476 0006 144B     		ldr	r3, .L40
+ 477 0008 1B68     		ldr	r3, [r3]
+ 478 000a 0133     		adds	r3, r3, #1
+ 479 000c 03F01F03 		and	r3, r3, #31
+ 480 0010 5B01     		lsls	r3, r3, #5
+ 481 0012 1033     		adds	r3, r3, #16
+ 482 0014 DBB2     		uxtb	r3, r3
+ 483              	.LVL63:
+ 468:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****             if (pos < pos_max) {                                /* See Note #3.                    
+ 484              		.loc 1 468 0
+ 485 0016 9842     		cmp	r0, r3
+ 486 0018 1BD2     		bcs	.L33
+ 469:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  group = (pos - 16) / 32;
+ 487              		.loc 1 469 0
+ 488 001a 1038     		subs	r0, r0, #16
+ 489              	.LVL64:
+ 490 001c 0346     		mov	r3, r0
+ 491              	.LVL65:
+ 492 001e 0028     		cmp	r0, #0
+ 493 0020 01DA     		bge	.L36
+ 494 0022 00F11F03 		add	r3, r0, #31
+ 495              	.L36:
+ 496 0026 5D11     		asrs	r5, r3, #5
+ 497              	.LVL66:
+ 470:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  nbr   = (pos - 16) % 32;
+ 498              		.loc 1 470 0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 18
+
+
+ 499 0028 0C4C     		ldr	r4, .L40+4
+ 500 002a 0440     		ands	r4, r0, r4
+ 501 002c 03D5     		bpl	.L37
+ 502 002e 013C     		subs	r4, r4, #1
+ 503 0030 64F01F04 		orn	r4, r4, #31
+ 504 0034 0134     		adds	r4, r4, #1
+ 505              	.L37:
+ 506              	.LVL67:
+ 471:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 472:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  CPU_CRITICAL_ENTER();
+ 507              		.loc 1 472 0
+ 508 0036 FFF7FEFF 		bl	CPU_SR_Save
+ 509              	.LVL68:
+ 473:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  CPU_REG_NVIC_CLRPEND(group) = DEF_BIT(nbr);
+ 510              		.loc 1 473 0
+ 511 003a EBB2     		uxtb	r3, r5
+ 512 003c 03F13823 		add	r3, r3, #939538432
+ 513 0040 A033     		adds	r3, r3, #160
+ 514 0042 9B00     		lsls	r3, r3, #2
+ 515 0044 E4B2     		uxtb	r4, r4
+ 516 0046 0122     		movs	r2, #1
+ 517 0048 02FA04F4 		lsl	r4, r2, r4
+ 518              	.LVL69:
+ 519 004c 1C60     		str	r4, [r3]
+ 474:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  CPU_CRITICAL_EXIT();
+ 520              		.loc 1 474 0
+ 521 004e FFF7FEFF 		bl	CPU_SR_Restore
+ 522              	.LVL70:
+ 523              	.L33:
+ 524 0052 38BD     		pop	{r3, r4, r5, pc}
+ 525              	.LVL71:
+ 526              	.L39:
+ 527              		.cfi_def_cfa_offset 0
+ 528              		.cfi_restore 3
+ 529              		.cfi_restore 4
+ 530              		.cfi_restore 5
+ 531              		.cfi_restore 14
+ 532 0054 7047     		bx	lr
+ 533              	.L41:
+ 534 0056 00BF     		.align	2
+ 535              	.L40:
+ 536 0058 04E000E0 		.word	-536813564
+ 537 005c 1F000080 		.word	-2147483617
+ 538              		.cfi_endproc
+ 539              	.LFE5:
+ 540              		.size	CPU_IntSrcPendClr, .-CPU_IntSrcPendClr
+ 541              		.section	.text.CPU_IntSrcPrioSet,"ax",%progbits
+ 542              		.align	2
+ 543              		.global	CPU_IntSrcPrioSet
+ 544              		.thumb
+ 545              		.thumb_func
+ 546              		.type	CPU_IntSrcPrioSet, %function
+ 547              	CPU_IntSrcPrioSet:
+ 548              	.LFB6:
+ 475:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              }
+ 476:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 477:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     }
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 19
+
+
+ 478:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** }
+ 479:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 480:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 481:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*$PAGE*/
+ 482:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+ 483:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 484:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                         CPU_IntSrcPrioSet()
+ 485:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 486:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Description : Set priority of an interrupt source.
+ 487:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 488:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Argument(s) : pos     Position of interrupt vector in interrupt table (see 'CPU_IntSrcDis()').
+ 489:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 490:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               prio    Priority.  Use a lower priority number for a higher priority.
+ 491:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 492:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Return(s)   : none.
+ 493:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 494:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Caller(s)   : Application.
+ 495:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 496:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Note(s)     : (1) See 'CPU_IntSrcDis()  Note #1'.
+ 497:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 498:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               (2) Several interrupts priorities CANNOT be set :
+ 499:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 500:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (a) Reset (always -3).
+ 501:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (b) NMI (always -2).
+ 502:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                   (c) Hard fault (always -1).
+ 503:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 504:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               (3) See 'CPU_IntSrcDis()  Note #3'.
+ 505:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 506:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+ 507:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 508:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** void  CPU_IntSrcPrioSet (CPU_INT08U  pos,
+ 509:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                          CPU_INT08U  prio)
+ 510:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** {
+ 549              		.loc 1 510 0
+ 550              		.cfi_startproc
+ 551              		@ args = 0, pretend = 0, frame = 0
+ 552              		@ frame_needed = 0, uses_anonymous_args = 0
+ 553              	.LVL72:
+ 554 0000 70B5     		push	{r4, r5, r6, lr}
+ 555              		.cfi_def_cfa_offset 16
+ 556              		.cfi_offset 4, -16
+ 557              		.cfi_offset 5, -12
+ 558              		.cfi_offset 6, -8
+ 559              		.cfi_offset 14, -4
+ 560 0002 0446     		mov	r4, r0
+ 561              	.LVL73:
+ 511:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  group;
+ 512:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  nbr;
+ 513:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  pos_max;
+ 514:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT32U  prio_32;
+ 515:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT32U  temp;
+ 516:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_SR_ALLOC();
+ 517:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 518:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 519:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     prio_32 = CPU_RevBits((CPU_INT08U)prio);
+ 562              		.loc 1 519 0
+ 563 0004 0846     		mov	r0, r1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 20
+
+
+ 564              	.LVL74:
+ 565 0006 FFF7FEFF 		bl	CPU_RevBits
+ 566              	.LVL75:
+ 520:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     prio    = (CPU_INT08U)(prio_32 >> (3 * DEF_OCTET_NBR_BITS));
+ 567              		.loc 1 520 0
+ 568 000a 050E     		lsrs	r5, r0, #24
+ 569              	.LVL76:
+ 521:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 522:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     switch (pos) {
+ 570              		.loc 1 522 0
+ 571 000c 0F2C     		cmp	r4, #15
+ 572 000e 5BD8     		bhi	.L43
+ 573 0010 DFE804F0 		tbb	[pc, r4]
+ 574              	.L45:
+ 575 0014 86       		.byte	(.L42-.L45)/2
+ 576 0015 86       		.byte	(.L42-.L45)/2
+ 577 0016 86       		.byte	(.L42-.L45)/2
+ 578 0017 86       		.byte	(.L42-.L45)/2
+ 579 0018 08       		.byte	(.L46-.L45)/2
+ 580 0019 13       		.byte	(.L47-.L45)/2
+ 581 001a 1F       		.byte	(.L48-.L45)/2
+ 582 001b 86       		.byte	(.L42-.L45)/2
+ 583 001c 86       		.byte	(.L42-.L45)/2
+ 584 001d 86       		.byte	(.L42-.L45)/2
+ 585 001e 86       		.byte	(.L42-.L45)/2
+ 586 001f 2B       		.byte	(.L49-.L45)/2
+ 587 0020 37       		.byte	(.L50-.L45)/2
+ 588 0021 86       		.byte	(.L42-.L45)/2
+ 589 0022 42       		.byte	(.L51-.L45)/2
+ 590 0023 4E       		.byte	(.L52-.L45)/2
+ 591              		.p2align 1
+ 592              	.L46:
+ 523:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_STK_PTR:                                   /* ---------------- INVALID OR RESE
+ 524:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_07:
+ 525:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_08:
+ 526:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_09:
+ 527:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_10:
+ 528:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_13:
+ 529:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 530:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 531:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 532:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                                                                 /* ----------------- SYSTEM EXCEPTI
+ 533:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RESET:                                     /* Reset (see Note #2).            
+ 534:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_NMI:                                       /* Non-maskable interrupt (see Note
+ 535:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_HFAULT:                                    /* Hard fault (see Note #2).       
+ 536:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 537:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 538:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_MEM:                                       /* Memory management.              
+ 539:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 593              		.loc 1 539 0
+ 594 0024 FFF7FEFF 		bl	CPU_SR_Save
+ 595              	.LVL77:
+ 540:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                 = CPU_REG_NVIC_SHPRI1;
+ 596              		.loc 1 540 0
+ 597 0028 3E4B     		ldr	r3, .L56
+ 598 002a 1C68     		ldr	r4, [r3]
+ 599              	.LVL78:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 21
+
+
+ 541:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                &= ~(DEF_OCTET_MASK << (0 * DEF_OCTET_NBR_BITS));
+ 600              		.loc 1 541 0
+ 601 002c 24F0FF04 		bic	r4, r4, #255
+ 602              	.LVL79:
+ 542:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                |=  (prio           << (0 * DEF_OCTET_NBR_BITS));
+ 603              		.loc 1 542 0
+ 604 0030 2543     		orrs	r5, r5, r4
+ 605              	.LVL80:
+ 543:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_REG_NVIC_SHPRI1  = temp;
+ 606              		.loc 1 543 0
+ 607 0032 1D60     		str	r5, [r3]
+ 544:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 608              		.loc 1 544 0
+ 609 0034 FFF7FEFF 		bl	CPU_SR_Restore
+ 610              	.LVL81:
+ 545:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 611              		.loc 1 545 0
+ 612 0038 70BD     		pop	{r4, r5, r6, pc}
+ 613              	.LVL82:
+ 614              	.L47:
+ 546:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 547:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_BUSFAULT:                                  /* Bus fault.                      
+ 548:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 615              		.loc 1 548 0
+ 616 003a FFF7FEFF 		bl	CPU_SR_Save
+ 617              	.LVL83:
+ 549:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                 = CPU_REG_NVIC_SHPRI1;
+ 618              		.loc 1 549 0
+ 619 003e 394B     		ldr	r3, .L56
+ 620 0040 1C68     		ldr	r4, [r3]
+ 621              	.LVL84:
+ 550:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                &= ~(DEF_OCTET_MASK << (1 * DEF_OCTET_NBR_BITS));
+ 622              		.loc 1 550 0
+ 623 0042 24F47F44 		bic	r4, r4, #65280
+ 624              	.LVL85:
+ 551:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                |=  (prio           << (1 * DEF_OCTET_NBR_BITS));
+ 625              		.loc 1 551 0
+ 626 0046 44EA0525 		orr	r5, r4, r5, lsl #8
+ 627              	.LVL86:
+ 552:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_REG_NVIC_SHPRI1  = temp;
+ 628              		.loc 1 552 0
+ 629 004a 1D60     		str	r5, [r3]
+ 553:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 630              		.loc 1 553 0
+ 631 004c FFF7FEFF 		bl	CPU_SR_Restore
+ 632              	.LVL87:
+ 554:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 633              		.loc 1 554 0
+ 634 0050 70BD     		pop	{r4, r5, r6, pc}
+ 635              	.LVL88:
+ 636              	.L48:
+ 555:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 556:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_USAGEFAULT:                                /* Usage fault.                    
+ 557:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 637              		.loc 1 557 0
+ 638 0052 FFF7FEFF 		bl	CPU_SR_Save
+ 639              	.LVL89:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 22
+
+
+ 558:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                 = CPU_REG_NVIC_SHPRI1;
+ 640              		.loc 1 558 0
+ 641 0056 334B     		ldr	r3, .L56
+ 642 0058 1C68     		ldr	r4, [r3]
+ 643              	.LVL90:
+ 559:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                &= ~(DEF_OCTET_MASK << (2 * DEF_OCTET_NBR_BITS));
+ 644              		.loc 1 559 0
+ 645 005a 24F47F04 		bic	r4, r4, #16711680
+ 646              	.LVL91:
+ 560:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                |=  (prio           << (2 * DEF_OCTET_NBR_BITS));
+ 647              		.loc 1 560 0
+ 648 005e 44EA0545 		orr	r5, r4, r5, lsl #16
+ 649              	.LVL92:
+ 561:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_REG_NVIC_SHPRI1  = temp;
+ 650              		.loc 1 561 0
+ 651 0062 1D60     		str	r5, [r3]
+ 562:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 652              		.loc 1 562 0
+ 653 0064 FFF7FEFF 		bl	CPU_SR_Restore
+ 654              	.LVL93:
+ 563:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 655              		.loc 1 563 0
+ 656 0068 70BD     		pop	{r4, r5, r6, pc}
+ 657              	.LVL94:
+ 658              	.L49:
+ 564:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 565:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_SVCALL:                                    /* SVCall.                         
+ 566:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 659              		.loc 1 566 0
+ 660 006a FFF7FEFF 		bl	CPU_SR_Save
+ 661              	.LVL95:
+ 567:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                 = CPU_REG_NVIC_SHPRI2;
+ 662              		.loc 1 567 0
+ 663 006e 2E4B     		ldr	r3, .L56+4
+ 664 0070 1C68     		ldr	r4, [r3]
+ 665              	.LVL96:
+ 568:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                &= ~((CPU_INT32U)DEF_OCTET_MASK << (3 * DEF_OCTET_NBR_BITS));
+ 666              		.loc 1 568 0
+ 667 0072 24F07F44 		bic	r4, r4, #-16777216
+ 668              	.LVL97:
+ 569:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                |=  (prio                       << (3 * DEF_OCTET_NBR_BITS));
+ 669              		.loc 1 569 0
+ 670 0076 44EA0565 		orr	r5, r4, r5, lsl #24
+ 671              	.LVL98:
+ 570:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_REG_NVIC_SHPRI2  = temp;
+ 672              		.loc 1 570 0
+ 673 007a 1D60     		str	r5, [r3]
+ 571:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 674              		.loc 1 571 0
+ 675 007c FFF7FEFF 		bl	CPU_SR_Restore
+ 676              	.LVL99:
+ 572:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 677              		.loc 1 572 0
+ 678 0080 70BD     		pop	{r4, r5, r6, pc}
+ 679              	.LVL100:
+ 680              	.L50:
+ 573:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 23
+
+
+ 574:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_DBGMON:                                    /* Debug monitor.                  
+ 575:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 681              		.loc 1 575 0
+ 682 0082 FFF7FEFF 		bl	CPU_SR_Save
+ 683              	.LVL101:
+ 576:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                = CPU_REG_NVIC_SHPRI3;
+ 684              		.loc 1 576 0
+ 685 0086 294B     		ldr	r3, .L56+8
+ 686 0088 1C68     		ldr	r4, [r3]
+ 687              	.LVL102:
+ 577:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                &= ~(DEF_OCTET_MASK << (0 * DEF_OCTET_NBR_BITS));
+ 688              		.loc 1 577 0
+ 689 008a 24F0FF04 		bic	r4, r4, #255
+ 690              	.LVL103:
+ 578:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                |=  (prio           << (0 * DEF_OCTET_NBR_BITS));
+ 691              		.loc 1 578 0
+ 692 008e 2543     		orrs	r5, r5, r4
+ 693              	.LVL104:
+ 579:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_REG_NVIC_SHPRI3  = temp;
+ 694              		.loc 1 579 0
+ 695 0090 1D60     		str	r5, [r3]
+ 580:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 696              		.loc 1 580 0
+ 697 0092 FFF7FEFF 		bl	CPU_SR_Restore
+ 698              	.LVL105:
+ 581:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 699              		.loc 1 581 0
+ 700 0096 70BD     		pop	{r4, r5, r6, pc}
+ 701              	.LVL106:
+ 702              	.L51:
+ 582:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 583:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_PENDSV:                                    /* PendSV.                         
+ 584:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 703              		.loc 1 584 0
+ 704 0098 FFF7FEFF 		bl	CPU_SR_Save
+ 705              	.LVL107:
+ 585:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                 = CPU_REG_NVIC_SHPRI3;
+ 706              		.loc 1 585 0
+ 707 009c 234B     		ldr	r3, .L56+8
+ 708 009e 1C68     		ldr	r4, [r3]
+ 709              	.LVL108:
+ 586:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                &= ~(DEF_OCTET_MASK << (2 * DEF_OCTET_NBR_BITS));
+ 710              		.loc 1 586 0
+ 711 00a0 24F47F04 		bic	r4, r4, #16711680
+ 712              	.LVL109:
+ 587:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                |=  (prio           << (2 * DEF_OCTET_NBR_BITS));
+ 713              		.loc 1 587 0
+ 714 00a4 44EA0545 		orr	r5, r4, r5, lsl #16
+ 715              	.LVL110:
+ 588:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_REG_NVIC_SHPRI3  = temp;
+ 716              		.loc 1 588 0
+ 717 00a8 1D60     		str	r5, [r3]
+ 589:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 718              		.loc 1 589 0
+ 719 00aa FFF7FEFF 		bl	CPU_SR_Restore
+ 720              	.LVL111:
+ 590:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 24
+
+
+ 721              		.loc 1 590 0
+ 722 00ae 70BD     		pop	{r4, r5, r6, pc}
+ 723              	.LVL112:
+ 724              	.L52:
+ 591:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 592:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_SYSTICK:                                   /* SysTick.                        
+ 593:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 725              		.loc 1 593 0
+ 726 00b0 FFF7FEFF 		bl	CPU_SR_Save
+ 727              	.LVL113:
+ 594:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                 = CPU_REG_NVIC_SHPRI3;
+ 728              		.loc 1 594 0
+ 729 00b4 1D4B     		ldr	r3, .L56+8
+ 730 00b6 1C68     		ldr	r4, [r3]
+ 731              	.LVL114:
+ 595:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                &= ~((CPU_INT32U)DEF_OCTET_MASK << (3 * DEF_OCTET_NBR_BITS));
+ 732              		.loc 1 595 0
+ 733 00b8 24F07F44 		bic	r4, r4, #-16777216
+ 734              	.LVL115:
+ 596:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp                |=  (prio                       << (3 * DEF_OCTET_NBR_BITS));
+ 735              		.loc 1 596 0
+ 736 00bc 44EA0565 		orr	r5, r4, r5, lsl #24
+ 737              	.LVL116:
+ 597:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_REG_NVIC_SHPRI3  = temp;
+ 738              		.loc 1 597 0
+ 739 00c0 1D60     		str	r5, [r3]
+ 598:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 740              		.loc 1 598 0
+ 741 00c2 FFF7FEFF 		bl	CPU_SR_Restore
+ 742              	.LVL117:
+ 599:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 743              		.loc 1 599 0
+ 744 00c6 70BD     		pop	{r4, r5, r6, pc}
+ 745              	.LVL118:
+ 746              	.L43:
+ 600:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 601:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 602:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                                                                 /* ---------------- EXTERNAL INTERR
+ 603:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         default:
+ 604:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****             pos_max = CPU_INT_SRC_POS_MAX;
+ 747              		.loc 1 604 0
+ 748 00c8 194B     		ldr	r3, .L56+12
+ 749 00ca 1B68     		ldr	r3, [r3]
+ 750 00cc 0133     		adds	r3, r3, #1
+ 751 00ce 03F01F03 		and	r3, r3, #31
+ 752 00d2 5B01     		lsls	r3, r3, #5
+ 753 00d4 1033     		adds	r3, r3, #16
+ 754 00d6 DBB2     		uxtb	r3, r3
+ 755              	.LVL119:
+ 605:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****             if (pos < pos_max) {                                /* See Note #3.                    
+ 756              		.loc 1 605 0
+ 757 00d8 9C42     		cmp	r4, r3
+ 758 00da 21D2     		bcs	.L42
+ 606:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  group                    = (pos - 16) / 4;
+ 759              		.loc 1 606 0
+ 760 00dc 103C     		subs	r4, r4, #16
+ 761 00de 2346     		mov	r3, r4
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 25
+
+
+ 762              	.LVL120:
+ 763 00e0 002C     		cmp	r4, #0
+ 764 00e2 00DA     		bge	.L53
+ 765 00e4 E31C     		adds	r3, r4, #3
+ 766              	.L53:
+ 767 00e6 9E10     		asrs	r6, r3, #2
+ 768              	.LVL121:
+ 607:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  nbr                      = (pos - 16) % 4;
+ 769              		.loc 1 607 0
+ 770 00e8 124B     		ldr	r3, .L56+16
+ 771 00ea 1C40     		ands	r4, r4, r3
+ 772 00ec 03D5     		bpl	.L54
+ 773 00ee 013C     		subs	r4, r4, #1
+ 774 00f0 64F00304 		orn	r4, r4, #3
+ 775 00f4 0134     		adds	r4, r4, #1
+ 776              	.L54:
+ 777              	.LVL122:
+ 608:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 609:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  CPU_CRITICAL_ENTER();
+ 778              		.loc 1 609 0
+ 779 00f6 FFF7FEFF 		bl	CPU_SR_Save
+ 780              	.LVL123:
+ 610:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  temp                     = CPU_REG_NVIC_PRIO(group);
+ 781              		.loc 1 610 0
+ 782 00fa F3B2     		uxtb	r3, r6
+ 783 00fc 03F16053 		add	r3, r3, #939524096
+ 784 0100 03F56453 		add	r3, r3, #14592
+ 785 0104 9B00     		lsls	r3, r3, #2
+ 786 0106 1968     		ldr	r1, [r3]
+ 787              	.LVL124:
+ 611:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  temp                    &= ~(DEF_OCTET_MASK << (nbr * DEF_OCTET_NBR_BITS));
+ 788              		.loc 1 611 0
+ 789 0108 E4B2     		uxtb	r4, r4
+ 790 010a E400     		lsls	r4, r4, #3
+ 791              	.LVL125:
+ 792 010c FF22     		movs	r2, #255
+ 793 010e A240     		lsls	r2, r2, r4
+ 794 0110 21EA0202 		bic	r2, r1, r2
+ 795              	.LVL126:
+ 612:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  temp                    |=  (prio           << (nbr * DEF_OCTET_NBR_BITS));
+ 796              		.loc 1 612 0
+ 797 0114 05FA04F4 		lsl	r4, r5, r4
+ 798 0118 1443     		orrs	r4, r4, r2
+ 799              	.LVL127:
+ 613:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  CPU_REG_NVIC_PRIO(group) = temp;
+ 800              		.loc 1 613 0
+ 801 011a 1C60     		str	r4, [r3]
+ 614:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  CPU_CRITICAL_EXIT();
+ 802              		.loc 1 614 0
+ 803 011c FFF7FEFF 		bl	CPU_SR_Restore
+ 804              	.LVL128:
+ 805              	.L42:
+ 806 0120 70BD     		pop	{r4, r5, r6, pc}
+ 807              	.LVL129:
+ 808              	.L57:
+ 809 0122 00BF     		.align	2
+ 810              	.L56:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 26
+
+
+ 811 0124 18ED00E0 		.word	-536810216
+ 812 0128 1CED00E0 		.word	-536810212
+ 813 012c 20ED00E0 		.word	-536810208
+ 814 0130 04E000E0 		.word	-536813564
+ 815 0134 03000080 		.word	-2147483645
+ 816              		.cfi_endproc
+ 817              	.LFE6:
+ 818              		.size	CPU_IntSrcPrioSet, .-CPU_IntSrcPrioSet
+ 819              		.section	.text.CPU_IntSrcPrioGet,"ax",%progbits
+ 820              		.align	2
+ 821              		.global	CPU_IntSrcPrioGet
+ 822              		.thumb
+ 823              		.thumb_func
+ 824              		.type	CPU_IntSrcPrioGet, %function
+ 825              	CPU_IntSrcPrioGet:
+ 826              	.LFB7:
+ 615:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              }
+ 616:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 617:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     }
+ 618:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** }
+ 619:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 620:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 621:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*$PAGE*/
+ 622:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** /*
+ 623:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 624:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *                                         CPU_IntSrcPrioGet()
+ 625:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 626:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Description : Get priority of an interrupt source.
+ 627:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 628:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Argument(s) : pos     Position of interrupt vector in interrupt table (see 'CPU_IntSrcDis()').
+ 629:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 630:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Return(s)   : Priority of interrupt source.  If the interrupt source specified is invalid, then
+ 631:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               DEF_INT_16S_MIN_VAL is returned.
+ 632:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 633:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Caller(s)   : Application.
+ 634:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 635:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** * Note(s)     : (1) See 'CPU_IntSrcDis()      Note #1'.
+ 636:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 637:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               (2) See 'CPU_IntSrcPrioSet()  Note #2'.
+ 638:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *
+ 639:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** *               (3) See 'CPU_IntSrcDis()      Note #3'.
+ 640:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** ***************************************************************************************************
+ 641:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** */
+ 642:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 643:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** CPU_INT16S  CPU_IntSrcPrioGet (CPU_INT08U  pos)
+ 644:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** {
+ 827              		.loc 1 644 0
+ 828              		.cfi_startproc
+ 829              		@ args = 0, pretend = 0, frame = 0
+ 830              		@ frame_needed = 0, uses_anonymous_args = 0
+ 831              	.LVL130:
+ 832 0000 38B5     		push	{r3, r4, r5, lr}
+ 833              		.cfi_def_cfa_offset 16
+ 834              		.cfi_offset 3, -16
+ 835              		.cfi_offset 4, -12
+ 836              		.cfi_offset 5, -8
+ 837              		.cfi_offset 14, -4
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 27
+
+
+ 838              	.LVL131:
+ 645:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  group;
+ 646:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  nbr;
+ 647:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT08U  pos_max;
+ 648:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT16S  prio;
+ 649:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT32U  prio_32;
+ 650:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_INT32U  temp;
+ 651:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     CPU_SR_ALLOC();
+ 652:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 653:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 654:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     switch (pos) {
+ 839              		.loc 1 654 0
+ 840 0002 0F28     		cmp	r0, #15
+ 841 0004 4AD8     		bhi	.L59
+ 842 0006 DFE800F0 		tbb	[pc, r0]
+ 843              	.L61:
+ 844 000a 08       		.byte	(.L60-.L61)/2
+ 845 000b 70       		.byte	(.L75-.L61)/2
+ 846 000c 0A       		.byte	(.L63-.L61)/2
+ 847 000d 0D       		.byte	(.L64-.L61)/2
+ 848 000e 10       		.byte	(.L65-.L61)/2
+ 849 000f 18       		.byte	(.L66-.L61)/2
+ 850 0010 21       		.byte	(.L67-.L61)/2
+ 851 0011 08       		.byte	(.L60-.L61)/2
+ 852 0012 08       		.byte	(.L60-.L61)/2
+ 853 0013 08       		.byte	(.L60-.L61)/2
+ 854 0014 08       		.byte	(.L60-.L61)/2
+ 855 0015 28       		.byte	(.L68-.L61)/2
+ 856 0016 30       		.byte	(.L69-.L61)/2
+ 857 0017 08       		.byte	(.L60-.L61)/2
+ 858 0018 38       		.byte	(.L70-.L61)/2
+ 859 0019 41       		.byte	(.L71-.L61)/2
+ 860              		.p2align 1
+ 861              	.L60:
+ 655:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_STK_PTR:                                   /* ---------------- INVALID OR RESE
+ 656:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_07:
+ 657:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_08:
+ 658:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_09:
+ 659:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_10:
+ 660:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RSVD_13:
+ 661:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              prio = DEF_INT_16S_MIN_VAL;
+ 862              		.loc 1 661 0
+ 863 001a 3A4C     		ldr	r4, .L78
+ 864 001c 69E0     		b	.L62
+ 865              	.L63:
+ 866              	.LVL132:
+ 662:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 663:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 664:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 665:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                                                                 /* ----------------- SYSTEM EXCEPTI
+ 666:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_RESET:                                     /* Reset (see Note #2).            
+ 667:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              prio = -3;
+ 668:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 669:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 670:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_NMI:                                       /* Non-maskable interrupt (see Note
+ 671:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              prio = -2;
+ 867              		.loc 1 671 0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 28
+
+
+ 868 001e 6FF00104 		mvn	r4, #1
+ 672:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 869              		.loc 1 672 0
+ 870 0022 66E0     		b	.L62
+ 871              	.LVL133:
+ 872              	.L64:
+ 673:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 674:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_HFAULT:                                    /* Hard fault (see Note #2).       
+ 675:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              prio = -1;
+ 873              		.loc 1 675 0
+ 874 0024 4FF0FF34 		mov	r4, #-1
+ 676:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 875              		.loc 1 676 0
+ 876 0028 63E0     		b	.L62
+ 877              	.LVL134:
+ 878              	.L65:
+ 677:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 678:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 679:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_MEM:                                       /* Memory management.              
+ 680:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 879              		.loc 1 680 0
+ 880 002a FFF7FEFF 		bl	CPU_SR_Save
+ 881              	.LVL135:
+ 681:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp = CPU_REG_NVIC_SHPRI1;
+ 882              		.loc 1 681 0
+ 883 002e 364B     		ldr	r3, .L78+4
+ 884 0030 1C68     		ldr	r4, [r3]
+ 885              	.LVL136:
+ 682:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              prio = (temp >> (0 * DEF_OCTET_NBR_BITS)) & DEF_OCTET_MASK;
+ 886              		.loc 1 682 0
+ 887 0032 E4B2     		uxtb	r4, r4
+ 888              	.LVL137:
+ 683:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 889              		.loc 1 683 0
+ 890 0034 FFF7FEFF 		bl	CPU_SR_Restore
+ 891              	.LVL138:
+ 684:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 892              		.loc 1 684 0
+ 893 0038 5BE0     		b	.L62
+ 894              	.LVL139:
+ 895              	.L66:
+ 685:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 686:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 687:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_BUSFAULT:                                  /* Bus fault.                      
+ 688:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 896              		.loc 1 688 0
+ 897 003a FFF7FEFF 		bl	CPU_SR_Save
+ 898              	.LVL140:
+ 689:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp = CPU_REG_NVIC_SHPRI1;
+ 899              		.loc 1 689 0
+ 900 003e 324B     		ldr	r3, .L78+4
+ 901 0040 1C68     		ldr	r4, [r3]
+ 902              	.LVL141:
+ 690:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              prio = (temp >> (1 * DEF_OCTET_NBR_BITS)) & DEF_OCTET_MASK;
+ 903              		.loc 1 690 0
+ 904 0042 C4F30724 		ubfx	r4, r4, #8, #8
+ 905              	.LVL142:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 29
+
+
+ 691:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 906              		.loc 1 691 0
+ 907 0046 FFF7FEFF 		bl	CPU_SR_Restore
+ 908              	.LVL143:
+ 692:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 909              		.loc 1 692 0
+ 910 004a 52E0     		b	.L62
+ 911              	.LVL144:
+ 912              	.L67:
+ 693:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 694:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 695:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_USAGEFAULT:                                /* Usage fault.                    
+ 696:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 913              		.loc 1 696 0
+ 914 004c FFF7FEFF 		bl	CPU_SR_Save
+ 915              	.LVL145:
+ 697:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp = CPU_REG_NVIC_SHPRI1;
+ 916              		.loc 1 697 0
+ 917 0050 2D4B     		ldr	r3, .L78+4
+ 918 0052 1C68     		ldr	r4, [r3]
+ 919              	.LVL146:
+ 698:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              prio = (temp >> (2 * DEF_OCTET_NBR_BITS)) & DEF_OCTET_MASK;
+ 920              		.loc 1 698 0
+ 921 0054 C4F30744 		ubfx	r4, r4, #16, #8
+ 922              	.LVL147:
+ 699:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 923              		.loc 1 699 0
+ 924 0058 4BE0     		b	.L62
+ 925              	.LVL148:
+ 926              	.L68:
+ 700:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 701:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_SVCALL:                                    /* SVCall.                         
+ 702:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 927              		.loc 1 702 0
+ 928 005a FFF7FEFF 		bl	CPU_SR_Save
+ 929              	.LVL149:
+ 703:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp = CPU_REG_NVIC_SHPRI2;
+ 930              		.loc 1 703 0
+ 931 005e 2B4B     		ldr	r3, .L78+8
+ 932 0060 1C68     		ldr	r4, [r3]
+ 933              	.LVL150:
+ 704:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              prio = (temp >> (3 * DEF_OCTET_NBR_BITS)) & DEF_OCTET_MASK;
+ 934              		.loc 1 704 0
+ 935 0062 240E     		lsrs	r4, r4, #24
+ 936              	.LVL151:
+ 705:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 937              		.loc 1 705 0
+ 938 0064 FFF7FEFF 		bl	CPU_SR_Restore
+ 939              	.LVL152:
+ 706:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 940              		.loc 1 706 0
+ 941 0068 43E0     		b	.L62
+ 942              	.LVL153:
+ 943              	.L69:
+ 707:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 708:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_DBGMON:                                    /* Debug monitor.                  
+ 709:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 30
+
+
+ 944              		.loc 1 709 0
+ 945 006a FFF7FEFF 		bl	CPU_SR_Save
+ 946              	.LVL154:
+ 710:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp = CPU_REG_NVIC_SHPRI3;
+ 947              		.loc 1 710 0
+ 948 006e 284B     		ldr	r3, .L78+12
+ 949 0070 1C68     		ldr	r4, [r3]
+ 950              	.LVL155:
+ 711:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              prio = (temp >> (0 * DEF_OCTET_NBR_BITS)) & DEF_OCTET_MASK;
+ 951              		.loc 1 711 0
+ 952 0072 E4B2     		uxtb	r4, r4
+ 953              	.LVL156:
+ 712:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 954              		.loc 1 712 0
+ 955 0074 FFF7FEFF 		bl	CPU_SR_Restore
+ 956              	.LVL157:
+ 713:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 957              		.loc 1 713 0
+ 958 0078 3BE0     		b	.L62
+ 959              	.LVL158:
+ 960              	.L70:
+ 714:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 715:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_PENDSV:                                    /* PendSV.                         
+ 716:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 961              		.loc 1 716 0
+ 962 007a FFF7FEFF 		bl	CPU_SR_Save
+ 963              	.LVL159:
+ 717:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp = CPU_REG_NVIC_SHPRI3;
+ 964              		.loc 1 717 0
+ 965 007e 244B     		ldr	r3, .L78+12
+ 966 0080 1C68     		ldr	r4, [r3]
+ 967              	.LVL160:
+ 718:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              prio = (temp >> (2 * DEF_OCTET_NBR_BITS)) & DEF_OCTET_MASK;
+ 968              		.loc 1 718 0
+ 969 0082 C4F30744 		ubfx	r4, r4, #16, #8
+ 970              	.LVL161:
+ 719:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 971              		.loc 1 719 0
+ 972 0086 FFF7FEFF 		bl	CPU_SR_Restore
+ 973              	.LVL162:
+ 720:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 974              		.loc 1 720 0
+ 975 008a 32E0     		b	.L62
+ 976              	.LVL163:
+ 977              	.L71:
+ 721:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 722:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         case CPU_INT_SYSTICK:                                   /* SysTick.                        
+ 723:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_ENTER();
+ 978              		.loc 1 723 0
+ 979 008c FFF7FEFF 		bl	CPU_SR_Save
+ 980              	.LVL164:
+ 724:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              temp = CPU_REG_NVIC_SHPRI3;
+ 981              		.loc 1 724 0
+ 982 0090 1F4B     		ldr	r3, .L78+12
+ 983 0092 1C68     		ldr	r4, [r3]
+ 984              	.LVL165:
+ 725:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              prio = (temp >> (3 * DEF_OCTET_NBR_BITS)) & DEF_OCTET_MASK;
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 31
+
+
+ 985              		.loc 1 725 0
+ 986 0094 240E     		lsrs	r4, r4, #24
+ 987              	.LVL166:
+ 726:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              CPU_CRITICAL_EXIT();
+ 988              		.loc 1 726 0
+ 989 0096 FFF7FEFF 		bl	CPU_SR_Restore
+ 990              	.LVL167:
+ 727:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 991              		.loc 1 727 0
+ 992 009a 2AE0     		b	.L62
+ 993              	.LVL168:
+ 994              	.L59:
+ 728:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 729:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 730:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                                                                 /* ---------------- EXTERNAL INTERR
+ 731:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         default:
+ 732:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****             pos_max = CPU_INT_SRC_POS_MAX;
+ 995              		.loc 1 732 0
+ 996 009c 1D4B     		ldr	r3, .L78+16
+ 997 009e 1B68     		ldr	r3, [r3]
+ 998 00a0 0133     		adds	r3, r3, #1
+ 999 00a2 03F01F03 		and	r3, r3, #31
+ 1000 00a6 5B01     		lsls	r3, r3, #5
+ 1001 00a8 1033     		adds	r3, r3, #16
+ 1002 00aa DBB2     		uxtb	r3, r3
+ 1003              	.LVL169:
+ 733:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****             if (pos < pos_max) {                                /* See Note #3.                    
+ 1004              		.loc 1 733 0
+ 1005 00ac 9842     		cmp	r0, r3
+ 1006 00ae 1FD2     		bcs	.L76
+ 734:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  group = (pos - 16) / 4;
+ 1007              		.loc 1 734 0
+ 1008 00b0 1038     		subs	r0, r0, #16
+ 1009              	.LVL170:
+ 1010 00b2 0346     		mov	r3, r0
+ 1011              	.LVL171:
+ 1012 00b4 0028     		cmp	r0, #0
+ 1013 00b6 00DA     		bge	.L72
+ 1014 00b8 C31C     		adds	r3, r0, #3
+ 1015              	.L72:
+ 1016 00ba 9C10     		asrs	r4, r3, #2
+ 1017              	.LVL172:
+ 735:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  nbr   = (pos - 16) % 4;
+ 1018              		.loc 1 735 0
+ 1019 00bc 164D     		ldr	r5, .L78+20
+ 1020 00be 0540     		ands	r5, r0, r5
+ 1021 00c0 03D5     		bpl	.L73
+ 1022 00c2 013D     		subs	r5, r5, #1
+ 1023 00c4 65F00305 		orn	r5, r5, #3
+ 1024 00c8 0135     		adds	r5, r5, #1
+ 1025              	.L73:
+ 1026              	.LVL173:
+ 736:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 737:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  CPU_CRITICAL_ENTER();
+ 1027              		.loc 1 737 0
+ 1028 00ca FFF7FEFF 		bl	CPU_SR_Save
+ 1029              	.LVL174:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 32
+
+
+ 738:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  temp  = CPU_REG_NVIC_PRIO(group);
+ 1030              		.loc 1 738 0
+ 1031 00ce E3B2     		uxtb	r3, r4
+ 1032 00d0 03F16053 		add	r3, r3, #939524096
+ 1033 00d4 03F56453 		add	r3, r3, #14592
+ 1034 00d8 9B00     		lsls	r3, r3, #2
+ 1035 00da 1C68     		ldr	r4, [r3]
+ 1036              	.LVL175:
+ 739:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  CPU_CRITICAL_EXIT();
+ 1037              		.loc 1 739 0
+ 1038 00dc FFF7FEFF 		bl	CPU_SR_Restore
+ 1039              	.LVL176:
+ 740:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 741:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  prio  = (temp >> (nbr * DEF_OCTET_NBR_BITS)) & DEF_OCTET_MASK;
+ 1040              		.loc 1 741 0
+ 1041 00e0 E8B2     		uxtb	r0, r5
+ 1042 00e2 C000     		lsls	r0, r0, #3
+ 1043 00e4 C440     		lsrs	r4, r4, r0
+ 1044              	.LVL177:
+ 1045 00e6 E4B2     		uxtb	r4, r4
+ 1046              	.LVL178:
+ 1047 00e8 03E0     		b	.L62
+ 1048              	.LVL179:
+ 1049              	.L75:
+ 667:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 1050              		.loc 1 667 0
+ 1051 00ea 6FF00204 		mvn	r4, #2
+ 1052 00ee 00E0     		b	.L62
+ 1053              	.LVL180:
+ 1054              	.L76:
+ 742:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              } else {
+ 743:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****                  prio  = DEF_INT_16S_MIN_VAL;
+ 1055              		.loc 1 743 0
+ 1056 00f0 044C     		ldr	r4, .L78
+ 1057              	.LVL181:
+ 1058              	.L62:
+ 744:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              }
+ 745:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****              break;
+ 746:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     }
+ 747:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 748:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     if (prio >= 0) {
+ 1059              		.loc 1 748 0
+ 1060 00f2 002C     		cmp	r4, #0
+ 1061 00f4 03DB     		blt	.L74
+ 749:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         prio_32 = CPU_RevBits((CPU_INT32U)prio);
+ 1062              		.loc 1 749 0
+ 1063 00f6 2046     		mov	r0, r4
+ 1064 00f8 FFF7FEFF 		bl	CPU_RevBits
+ 1065              	.LVL182:
+ 750:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****         prio    = (CPU_INT16S)(prio_32 >> (3 * DEF_OCTET_NBR_BITS));
+ 1066              		.loc 1 750 0
+ 1067 00fc 040E     		lsrs	r4, r0, #24
+ 1068              	.LVL183:
+ 1069              	.L74:
+ 751:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     }
+ 752:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** 
+ 753:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c ****     return (prio);
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 33
+
+
+ 754:uC-CPU\ARM-Cortex-M3\GNU/cpu_c.c **** }
+ 1070              		.loc 1 754 0
+ 1071 00fe 2046     		mov	r0, r4
+ 1072 0100 38BD     		pop	{r3, r4, r5, pc}
+ 1073              	.LVL184:
+ 1074              	.L79:
+ 1075 0102 00BF     		.align	2
+ 1076              	.L78:
+ 1077 0104 0080FFFF 		.word	-32768
+ 1078 0108 18ED00E0 		.word	-536810216
+ 1079 010c 1CED00E0 		.word	-536810212
+ 1080 0110 20ED00E0 		.word	-536810208
+ 1081 0114 04E000E0 		.word	-536813564
+ 1082 0118 03000080 		.word	-2147483645
+ 1083              		.cfi_endproc
+ 1084              	.LFE7:
+ 1085              		.size	CPU_IntSrcPrioGet, .-CPU_IntSrcPrioGet
+ 1086              		.text
+ 1087              	.Letext0:
+ 1088              		.file 2 ".\\uC-CPU\\ARM-Cortex-M3\\GNU/cpu.h"
+ 1089              		.section	.debug_info,"",%progbits
+ 1090              	.Ldebug_info0:
+ 1091 0000 EE050000 		.4byte	0x5ee
+ 1092 0004 0400     		.2byte	0x4
+ 1093 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1094 000a 04       		.byte	0x4
+ 1095 000b 01       		.uleb128 0x1
+ 1096 000c 8F000000 		.4byte	.LASF39
+ 1097 0010 0C       		.byte	0xc
+ 1098 0011 53010000 		.4byte	.LASF40
+ 1099 0015 97010000 		.4byte	.LASF41
+ 1100 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 1101 001d 00000000 		.4byte	0
+ 1102 0021 00000000 		.4byte	.Ldebug_line0
+ 1103 0025 02       		.uleb128 0x2
+ 1104 0026 01       		.byte	0x1
+ 1105 0027 08       		.byte	0x8
+ 1106 0028 69020000 		.4byte	.LASF0
+ 1107 002c 02       		.uleb128 0x2
+ 1108 002d 01       		.byte	0x1
+ 1109 002e 08       		.byte	0x8
+ 1110 002f 74010000 		.4byte	.LASF1
+ 1111 0033 03       		.uleb128 0x3
+ 1112 0034 39010000 		.4byte	.LASF4
+ 1113 0038 02       		.byte	0x2
+ 1114 0039 78       		.byte	0x78
+ 1115 003a 2C000000 		.4byte	0x2c
+ 1116 003e 02       		.uleb128 0x2
+ 1117 003f 01       		.byte	0x1
+ 1118 0040 06       		.byte	0x6
+ 1119 0041 93020000 		.4byte	.LASF2
+ 1120 0045 02       		.uleb128 0x2
+ 1121 0046 02       		.byte	0x2
+ 1122 0047 07       		.byte	0x7
+ 1123 0048 26000000 		.4byte	.LASF3
+ 1124 004c 03       		.uleb128 0x3
+ 1125 004d 03020000 		.4byte	.LASF5
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 34
+
+
+ 1126 0051 02       		.byte	0x2
+ 1127 0052 7B       		.byte	0x7b
+ 1128 0053 57000000 		.4byte	0x57
+ 1129 0057 02       		.uleb128 0x2
+ 1130 0058 02       		.byte	0x2
+ 1131 0059 05       		.byte	0x5
+ 1132 005a 56020000 		.4byte	.LASF6
+ 1133 005e 03       		.uleb128 0x3
+ 1134 005f 65000000 		.4byte	.LASF7
+ 1135 0063 02       		.byte	0x2
+ 1136 0064 7C       		.byte	0x7c
+ 1137 0065 69000000 		.4byte	0x69
+ 1138 0069 02       		.uleb128 0x2
+ 1139 006a 04       		.byte	0x4
+ 1140 006b 07       		.byte	0x7
+ 1141 006c D7010000 		.4byte	.LASF8
+ 1142 0070 04       		.uleb128 0x4
+ 1143 0071 04       		.byte	0x4
+ 1144 0072 05       		.byte	0x5
+ 1145 0073 696E7400 		.ascii	"int\000"
+ 1146 0077 02       		.uleb128 0x2
+ 1147 0078 08       		.byte	0x8
+ 1148 0079 07       		.byte	0x7
+ 1149 007a EC010000 		.4byte	.LASF9
+ 1150 007e 02       		.uleb128 0x2
+ 1151 007f 08       		.byte	0x8
+ 1152 0080 05       		.byte	0x5
+ 1153 0081 31020000 		.4byte	.LASF10
+ 1154 0085 02       		.uleb128 0x2
+ 1155 0086 04       		.byte	0x4
+ 1156 0087 04       		.byte	0x4
+ 1157 0088 7C000000 		.4byte	.LASF11
+ 1158 008c 02       		.uleb128 0x2
+ 1159 008d 08       		.byte	0x8
+ 1160 008e 04       		.byte	0x4
+ 1161 008f 90010000 		.4byte	.LASF12
+ 1162 0093 03       		.uleb128 0x3
+ 1163 0094 4C020000 		.4byte	.LASF13
+ 1164 0098 02       		.byte	0x2
+ 1165 0099 87       		.byte	0x87
+ 1166 009a 9E000000 		.4byte	0x9e
+ 1167 009e 05       		.uleb128 0x5
+ 1168 009f 5E000000 		.4byte	0x5e
+ 1169 00a3 03       		.uleb128 0x3
+ 1170 00a4 7D020000 		.4byte	.LASF14
+ 1171 00a8 02       		.byte	0x2
+ 1172 00a9 B5       		.byte	0xb5
+ 1173 00aa 5E000000 		.4byte	0x5e
+ 1174 00ae 06       		.uleb128 0x6
+ 1175 00af 82000000 		.4byte	.LASF15
+ 1176 00b3 02       		.byte	0x2
+ 1177 00b4 2901     		.2byte	0x129
+ 1178 00b6 5E000000 		.4byte	0x5e
+ 1179 00ba 02       		.uleb128 0x2
+ 1180 00bb 04       		.byte	0x4
+ 1181 00bc 05       		.byte	0x5
+ 1182 00bd 60020000 		.4byte	.LASF16
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 35
+
+
+ 1183 00c1 02       		.uleb128 0x2
+ 1184 00c2 04       		.byte	0x4
+ 1185 00c3 07       		.byte	0x7
+ 1186 00c4 1D010000 		.4byte	.LASF17
+ 1187 00c8 02       		.uleb128 0x2
+ 1188 00c9 08       		.byte	0x8
+ 1189 00ca 04       		.byte	0x4
+ 1190 00cb 0E020000 		.4byte	.LASF18
+ 1191 00cf 02       		.uleb128 0x2
+ 1192 00d0 04       		.byte	0x4
+ 1193 00d1 07       		.byte	0x7
+ 1194 00d2 1A020000 		.4byte	.LASF19
+ 1195 00d6 07       		.uleb128 0x7
+ 1196 00d7 44010000 		.4byte	.LASF24
+ 1197 00db 01       		.byte	0x1
+ 1198 00dc 83       		.byte	0x83
+ 1199 00dd 00000000 		.4byte	.LFB1
+ 1200 00e1 34000000 		.4byte	.LFE1-.LFB1
+ 1201 00e5 01       		.uleb128 0x1
+ 1202 00e6 9C       		.byte	0x9c
+ 1203 00e7 26010000 		.4byte	0x126
+ 1204 00eb 08       		.uleb128 0x8
+ 1205 00ec 34010000 		.4byte	.LASF20
+ 1206 00f0 01       		.byte	0x1
+ 1207 00f1 83       		.byte	0x83
+ 1208 00f2 A3000000 		.4byte	0xa3
+ 1209 00f6 01       		.uleb128 0x1
+ 1210 00f7 50       		.byte	0x50
+ 1211 00f8 09       		.uleb128 0x9
+ 1212 00f9 4B000000 		.4byte	.LASF21
+ 1213 00fd 01       		.byte	0x1
+ 1214 00fe 84       		.byte	0x84
+ 1215 00ff 33000000 		.4byte	0x33
+ 1216 0103 00000000 		.4byte	.LLST0
+ 1217 0107 0A       		.uleb128 0xa
+ 1218 0108 86020000 		.4byte	.LASF22
+ 1219 010c 01       		.byte	0x1
+ 1220 010d 86       		.byte	0x86
+ 1221 010e A3000000 		.4byte	0xa3
+ 1222 0112 3A000000 		.4byte	.LLST1
+ 1223 0116 0A       		.uleb128 0xa
+ 1224 0117 82010000 		.4byte	.LASF23
+ 1225 011b 01       		.byte	0x1
+ 1226 011c 87       		.byte	0x87
+ 1227 011d A3000000 		.4byte	0xa3
+ 1228 0121 7A000000 		.4byte	.LLST2
+ 1229 0125 00       		.byte	0
+ 1230 0126 07       		.uleb128 0x7
+ 1231 0127 C8010000 		.4byte	.LASF25
+ 1232 012b 01       		.byte	0x1
+ 1233 012c AE       		.byte	0xae
+ 1234 012d 00000000 		.4byte	.LFB2
+ 1235 0131 34000000 		.4byte	.LFE2-.LFB2
+ 1236 0135 01       		.uleb128 0x1
+ 1237 0136 9C       		.byte	0x9c
+ 1238 0137 76010000 		.4byte	0x176
+ 1239 013b 08       		.uleb128 0x8
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 36
+
+
+ 1240 013c 34010000 		.4byte	.LASF20
+ 1241 0140 01       		.byte	0x1
+ 1242 0141 AE       		.byte	0xae
+ 1243 0142 A3000000 		.4byte	0xa3
+ 1244 0146 01       		.uleb128 0x1
+ 1245 0147 50       		.byte	0x50
+ 1246 0148 09       		.uleb128 0x9
+ 1247 0149 4B000000 		.4byte	.LASF21
+ 1248 014d 01       		.byte	0x1
+ 1249 014e AF       		.byte	0xaf
+ 1250 014f 33000000 		.4byte	0x33
+ 1251 0153 98000000 		.4byte	.LLST3
+ 1252 0157 0A       		.uleb128 0xa
+ 1253 0158 86020000 		.4byte	.LASF22
+ 1254 015c 01       		.byte	0x1
+ 1255 015d B1       		.byte	0xb1
+ 1256 015e A3000000 		.4byte	0xa3
+ 1257 0162 D2000000 		.4byte	.LLST4
+ 1258 0166 0A       		.uleb128 0xa
+ 1259 0167 82010000 		.4byte	.LASF23
+ 1260 016b 01       		.byte	0x1
+ 1261 016c B2       		.byte	0xb2
+ 1262 016d A3000000 		.4byte	0xa3
+ 1263 0171 12010000 		.4byte	.LLST5
+ 1264 0175 00       		.byte	0
+ 1265 0176 07       		.uleb128 0x7
+ 1266 0177 23020000 		.4byte	.LASF26
+ 1267 017b 01       		.byte	0x1
+ 1268 017c F8       		.byte	0xf8
+ 1269 017d 00000000 		.4byte	.LFB3
+ 1270 0181 C8000000 		.4byte	.LFE3-.LFB3
+ 1271 0185 01       		.uleb128 0x1
+ 1272 0186 9C       		.byte	0x9c
+ 1273 0187 31020000 		.4byte	0x231
+ 1274 018b 0B       		.uleb128 0xb
+ 1275 018c 706F7300 		.ascii	"pos\000"
+ 1276 0190 01       		.byte	0x1
+ 1277 0191 F8       		.byte	0xf8
+ 1278 0192 33000000 		.4byte	0x33
+ 1279 0196 30010000 		.4byte	.LLST6
+ 1280 019a 0A       		.uleb128 0xa
+ 1281 019b 89000000 		.4byte	.LASF27
+ 1282 019f 01       		.byte	0x1
+ 1283 01a0 FA       		.byte	0xfa
+ 1284 01a1 33000000 		.4byte	0x33
+ 1285 01a5 B5010000 		.4byte	.LLST7
+ 1286 01a9 0A       		.uleb128 0xa
+ 1287 01aa 1E000000 		.4byte	.LASF28
+ 1288 01ae 01       		.byte	0x1
+ 1289 01af FB       		.byte	0xfb
+ 1290 01b0 33000000 		.4byte	0x33
+ 1291 01b4 C8010000 		.4byte	.LLST8
+ 1292 01b8 0C       		.uleb128 0xc
+ 1293 01b9 6E627200 		.ascii	"nbr\000"
+ 1294 01bd 01       		.byte	0x1
+ 1295 01be FC       		.byte	0xfc
+ 1296 01bf 33000000 		.4byte	0x33
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 37
+
+
+ 1297 01c3 DB010000 		.4byte	.LLST9
+ 1298 01c7 0A       		.uleb128 0xa
+ 1299 01c8 17000000 		.4byte	.LASF29
+ 1300 01cc 01       		.byte	0x1
+ 1301 01cd FD       		.byte	0xfd
+ 1302 01ce AE000000 		.4byte	0xae
+ 1303 01d2 EE010000 		.4byte	.LLST10
+ 1304 01d6 0D       		.uleb128 0xd
+ 1305 01d7 1E000000 		.4byte	.LVL20
+ 1306 01db CD050000 		.4byte	0x5cd
+ 1307 01df 0D       		.uleb128 0xd
+ 1308 01e0 2C000000 		.4byte	.LVL21
+ 1309 01e4 D9050000 		.4byte	0x5d9
+ 1310 01e8 0D       		.uleb128 0xd
+ 1311 01e9 32000000 		.4byte	.LVL23
+ 1312 01ed CD050000 		.4byte	0x5cd
+ 1313 01f1 0D       		.uleb128 0xd
+ 1314 01f2 40000000 		.4byte	.LVL24
+ 1315 01f6 D9050000 		.4byte	0x5d9
+ 1316 01fa 0D       		.uleb128 0xd
+ 1317 01fb 46000000 		.4byte	.LVL26
+ 1318 01ff CD050000 		.4byte	0x5cd
+ 1319 0203 0D       		.uleb128 0xd
+ 1320 0204 54000000 		.4byte	.LVL27
+ 1321 0208 D9050000 		.4byte	0x5d9
+ 1322 020c 0D       		.uleb128 0xd
+ 1323 020d 5A000000 		.4byte	.LVL29
+ 1324 0211 CD050000 		.4byte	0x5cd
+ 1325 0215 0D       		.uleb128 0xd
+ 1326 0216 68000000 		.4byte	.LVL30
+ 1327 021a D9050000 		.4byte	0x5d9
+ 1328 021e 0D       		.uleb128 0xd
+ 1329 021f 9E000000 		.4byte	.LVL37
+ 1330 0223 CD050000 		.4byte	0x5cd
+ 1331 0227 0D       		.uleb128 0xd
+ 1332 0228 B6000000 		.4byte	.LVL39
+ 1333 022c D9050000 		.4byte	0x5d9
+ 1334 0230 00       		.byte	0
+ 1335 0231 0E       		.uleb128 0xe
+ 1336 0232 3F020000 		.4byte	.LASF30
+ 1337 0236 01       		.byte	0x1
+ 1338 0237 5101     		.2byte	0x151
+ 1339 0239 00000000 		.4byte	.LFB4
+ 1340 023d C8000000 		.4byte	.LFE4-.LFB4
+ 1341 0241 01       		.uleb128 0x1
+ 1342 0242 9C       		.byte	0x9c
+ 1343 0243 F2020000 		.4byte	0x2f2
+ 1344 0247 0F       		.uleb128 0xf
+ 1345 0248 706F7300 		.ascii	"pos\000"
+ 1346 024c 01       		.byte	0x1
+ 1347 024d 5101     		.2byte	0x151
+ 1348 024f 33000000 		.4byte	0x33
+ 1349 0253 69020000 		.4byte	.LLST11
+ 1350 0257 10       		.uleb128 0x10
+ 1351 0258 89000000 		.4byte	.LASF27
+ 1352 025c 01       		.byte	0x1
+ 1353 025d 5301     		.2byte	0x153
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 38
+
+
+ 1354 025f 33000000 		.4byte	0x33
+ 1355 0263 EE020000 		.4byte	.LLST12
+ 1356 0267 11       		.uleb128 0x11
+ 1357 0268 6E627200 		.ascii	"nbr\000"
+ 1358 026c 01       		.byte	0x1
+ 1359 026d 5401     		.2byte	0x154
+ 1360 026f 33000000 		.4byte	0x33
+ 1361 0273 01030000 		.4byte	.LLST13
+ 1362 0277 10       		.uleb128 0x10
+ 1363 0278 1E000000 		.4byte	.LASF28
+ 1364 027c 01       		.byte	0x1
+ 1365 027d 5501     		.2byte	0x155
+ 1366 027f 33000000 		.4byte	0x33
+ 1367 0283 14030000 		.4byte	.LLST14
+ 1368 0287 10       		.uleb128 0x10
+ 1369 0288 17000000 		.4byte	.LASF29
+ 1370 028c 01       		.byte	0x1
+ 1371 028d 5601     		.2byte	0x156
+ 1372 028f AE000000 		.4byte	0xae
+ 1373 0293 27030000 		.4byte	.LLST15
+ 1374 0297 0D       		.uleb128 0xd
+ 1375 0298 1E000000 		.4byte	.LVL42
+ 1376 029c CD050000 		.4byte	0x5cd
+ 1377 02a0 0D       		.uleb128 0xd
+ 1378 02a1 2C000000 		.4byte	.LVL43
+ 1379 02a5 D9050000 		.4byte	0x5d9
+ 1380 02a9 0D       		.uleb128 0xd
+ 1381 02aa 32000000 		.4byte	.LVL45
+ 1382 02ae CD050000 		.4byte	0x5cd
+ 1383 02b2 0D       		.uleb128 0xd
+ 1384 02b3 40000000 		.4byte	.LVL46
+ 1385 02b7 D9050000 		.4byte	0x5d9
+ 1386 02bb 0D       		.uleb128 0xd
+ 1387 02bc 46000000 		.4byte	.LVL48
+ 1388 02c0 CD050000 		.4byte	0x5cd
+ 1389 02c4 0D       		.uleb128 0xd
+ 1390 02c5 54000000 		.4byte	.LVL49
+ 1391 02c9 D9050000 		.4byte	0x5d9
+ 1392 02cd 0D       		.uleb128 0xd
+ 1393 02ce 5A000000 		.4byte	.LVL51
+ 1394 02d2 CD050000 		.4byte	0x5cd
+ 1395 02d6 0D       		.uleb128 0xd
+ 1396 02d7 68000000 		.4byte	.LVL52
+ 1397 02db D9050000 		.4byte	0x5d9
+ 1398 02df 0D       		.uleb128 0xd
+ 1399 02e0 9E000000 		.4byte	.LVL59
+ 1400 02e4 CD050000 		.4byte	0x5cd
+ 1401 02e8 0D       		.uleb128 0xd
+ 1402 02e9 B6000000 		.4byte	.LVL61
+ 1403 02ed D9050000 		.4byte	0x5d9
+ 1404 02f1 00       		.byte	0
+ 1405 02f2 0E       		.uleb128 0xe
+ 1406 02f3 53000000 		.4byte	.LASF31
+ 1407 02f7 01       		.byte	0x1
+ 1408 02f8 B401     		.2byte	0x1b4
+ 1409 02fa 00000000 		.4byte	.LFB5
+ 1410 02fe 60000000 		.4byte	.LFE5-.LFB5
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 39
+
+
+ 1411 0302 01       		.uleb128 0x1
+ 1412 0303 9C       		.byte	0x9c
+ 1413 0304 6B030000 		.4byte	0x36b
+ 1414 0308 0F       		.uleb128 0xf
+ 1415 0309 706F7300 		.ascii	"pos\000"
+ 1416 030d 01       		.byte	0x1
+ 1417 030e B401     		.2byte	0x1b4
+ 1418 0310 33000000 		.4byte	0x33
+ 1419 0314 A2030000 		.4byte	.LLST16
+ 1420 0318 10       		.uleb128 0x10
+ 1421 0319 89000000 		.4byte	.LASF27
+ 1422 031d 01       		.byte	0x1
+ 1423 031e B701     		.2byte	0x1b7
+ 1424 0320 33000000 		.4byte	0x33
+ 1425 0324 CE030000 		.4byte	.LLST17
+ 1426 0328 11       		.uleb128 0x11
+ 1427 0329 6E627200 		.ascii	"nbr\000"
+ 1428 032d 01       		.byte	0x1
+ 1429 032e B801     		.2byte	0x1b8
+ 1430 0330 33000000 		.4byte	0x33
+ 1431 0334 E1030000 		.4byte	.LLST18
+ 1432 0338 10       		.uleb128 0x10
+ 1433 0339 1E000000 		.4byte	.LASF28
+ 1434 033d 01       		.byte	0x1
+ 1435 033e B901     		.2byte	0x1b9
+ 1436 0340 33000000 		.4byte	0x33
+ 1437 0344 F4030000 		.4byte	.LLST19
+ 1438 0348 10       		.uleb128 0x10
+ 1439 0349 17000000 		.4byte	.LASF29
+ 1440 034d 01       		.byte	0x1
+ 1441 034e BA01     		.2byte	0x1ba
+ 1442 0350 AE000000 		.4byte	0xae
+ 1443 0354 07040000 		.4byte	.LLST20
+ 1444 0358 0D       		.uleb128 0xd
+ 1445 0359 3A000000 		.4byte	.LVL68
+ 1446 035d CD050000 		.4byte	0x5cd
+ 1447 0361 0D       		.uleb128 0xd
+ 1448 0362 52000000 		.4byte	.LVL70
+ 1449 0366 D9050000 		.4byte	0x5d9
+ 1450 036a 00       		.byte	0
+ 1451 036b 0E       		.uleb128 0xe
+ 1452 036c 39000000 		.4byte	.LASF32
+ 1453 0370 01       		.byte	0x1
+ 1454 0371 FC01     		.2byte	0x1fc
+ 1455 0373 00000000 		.4byte	.LFB6
+ 1456 0377 38010000 		.4byte	.LFE6-.LFB6
+ 1457 037b 01       		.uleb128 0x1
+ 1458 037c 9C       		.byte	0x9c
+ 1459 037d 9B040000 		.4byte	0x49b
+ 1460 0381 0F       		.uleb128 0xf
+ 1461 0382 706F7300 		.ascii	"pos\000"
+ 1462 0386 01       		.byte	0x1
+ 1463 0387 FC01     		.2byte	0x1fc
+ 1464 0389 33000000 		.4byte	0x33
+ 1465 038d 32040000 		.4byte	.LLST21
+ 1466 0391 12       		.uleb128 0x12
+ 1467 0392 00000000 		.4byte	.LASF33
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 40
+
+
+ 1468 0396 01       		.byte	0x1
+ 1469 0397 FD01     		.2byte	0x1fd
+ 1470 0399 33000000 		.4byte	0x33
+ 1471 039d 53040000 		.4byte	.LLST22
+ 1472 03a1 10       		.uleb128 0x10
+ 1473 03a2 89000000 		.4byte	.LASF27
+ 1474 03a6 01       		.byte	0x1
+ 1475 03a7 FF01     		.2byte	0x1ff
+ 1476 03a9 33000000 		.4byte	0x33
+ 1477 03ad CC040000 		.4byte	.LLST23
+ 1478 03b1 11       		.uleb128 0x11
+ 1479 03b2 6E627200 		.ascii	"nbr\000"
+ 1480 03b6 01       		.byte	0x1
+ 1481 03b7 0002     		.2byte	0x200
+ 1482 03b9 33000000 		.4byte	0x33
+ 1483 03bd DF040000 		.4byte	.LLST24
+ 1484 03c1 10       		.uleb128 0x10
+ 1485 03c2 1E000000 		.4byte	.LASF28
+ 1486 03c6 01       		.byte	0x1
+ 1487 03c7 0102     		.2byte	0x201
+ 1488 03c9 33000000 		.4byte	0x33
+ 1489 03cd F2040000 		.4byte	.LLST25
+ 1490 03d1 10       		.uleb128 0x10
+ 1491 03d2 E4010000 		.4byte	.LASF34
+ 1492 03d6 01       		.byte	0x1
+ 1493 03d7 0202     		.2byte	0x202
+ 1494 03d9 5E000000 		.4byte	0x5e
+ 1495 03dd 05050000 		.4byte	.LLST26
+ 1496 03e1 10       		.uleb128 0x10
+ 1497 03e2 2F010000 		.4byte	.LASF35
+ 1498 03e6 01       		.byte	0x1
+ 1499 03e7 0302     		.2byte	0x203
+ 1500 03e9 5E000000 		.4byte	0x5e
+ 1501 03ed 65050000 		.4byte	.LLST27
+ 1502 03f1 10       		.uleb128 0x10
+ 1503 03f2 17000000 		.4byte	.LASF29
+ 1504 03f6 01       		.byte	0x1
+ 1505 03f7 0402     		.2byte	0x204
+ 1506 03f9 AE000000 		.4byte	0xae
+ 1507 03fd 28060000 		.4byte	.LLST28
+ 1508 0401 0D       		.uleb128 0xd
+ 1509 0402 0A000000 		.4byte	.LVL75
+ 1510 0406 E5050000 		.4byte	0x5e5
+ 1511 040a 0D       		.uleb128 0xd
+ 1512 040b 28000000 		.4byte	.LVL77
+ 1513 040f CD050000 		.4byte	0x5cd
+ 1514 0413 0D       		.uleb128 0xd
+ 1515 0414 38000000 		.4byte	.LVL81
+ 1516 0418 D9050000 		.4byte	0x5d9
+ 1517 041c 0D       		.uleb128 0xd
+ 1518 041d 3E000000 		.4byte	.LVL83
+ 1519 0421 CD050000 		.4byte	0x5cd
+ 1520 0425 0D       		.uleb128 0xd
+ 1521 0426 50000000 		.4byte	.LVL87
+ 1522 042a D9050000 		.4byte	0x5d9
+ 1523 042e 0D       		.uleb128 0xd
+ 1524 042f 56000000 		.4byte	.LVL89
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 41
+
+
+ 1525 0433 CD050000 		.4byte	0x5cd
+ 1526 0437 0D       		.uleb128 0xd
+ 1527 0438 68000000 		.4byte	.LVL93
+ 1528 043c D9050000 		.4byte	0x5d9
+ 1529 0440 0D       		.uleb128 0xd
+ 1530 0441 6E000000 		.4byte	.LVL95
+ 1531 0445 CD050000 		.4byte	0x5cd
+ 1532 0449 0D       		.uleb128 0xd
+ 1533 044a 80000000 		.4byte	.LVL99
+ 1534 044e D9050000 		.4byte	0x5d9
+ 1535 0452 0D       		.uleb128 0xd
+ 1536 0453 86000000 		.4byte	.LVL101
+ 1537 0457 CD050000 		.4byte	0x5cd
+ 1538 045b 0D       		.uleb128 0xd
+ 1539 045c 96000000 		.4byte	.LVL105
+ 1540 0460 D9050000 		.4byte	0x5d9
+ 1541 0464 0D       		.uleb128 0xd
+ 1542 0465 9C000000 		.4byte	.LVL107
+ 1543 0469 CD050000 		.4byte	0x5cd
+ 1544 046d 0D       		.uleb128 0xd
+ 1545 046e AE000000 		.4byte	.LVL111
+ 1546 0472 D9050000 		.4byte	0x5d9
+ 1547 0476 0D       		.uleb128 0xd
+ 1548 0477 B4000000 		.4byte	.LVL113
+ 1549 047b CD050000 		.4byte	0x5cd
+ 1550 047f 0D       		.uleb128 0xd
+ 1551 0480 C6000000 		.4byte	.LVL117
+ 1552 0484 D9050000 		.4byte	0x5d9
+ 1553 0488 0D       		.uleb128 0xd
+ 1554 0489 FA000000 		.4byte	.LVL123
+ 1555 048d CD050000 		.4byte	0x5cd
+ 1556 0491 0D       		.uleb128 0xd
+ 1557 0492 20010000 		.4byte	.LVL128
+ 1558 0496 D9050000 		.4byte	0x5d9
+ 1559 049a 00       		.byte	0
+ 1560 049b 13       		.uleb128 0x13
+ 1561 049c 05000000 		.4byte	.LASF42
+ 1562 04a0 01       		.byte	0x1
+ 1563 04a1 8302     		.2byte	0x283
+ 1564 04a3 4C000000 		.4byte	0x4c
+ 1565 04a7 00000000 		.4byte	.LFB7
+ 1566 04ab 1C010000 		.4byte	.LFE7-.LFB7
+ 1567 04af 01       		.uleb128 0x1
+ 1568 04b0 9C       		.byte	0x9c
+ 1569 04b1 CD050000 		.4byte	0x5cd
+ 1570 04b5 0F       		.uleb128 0xf
+ 1571 04b6 706F7300 		.ascii	"pos\000"
+ 1572 04ba 01       		.byte	0x1
+ 1573 04bb 8302     		.2byte	0x283
+ 1574 04bd 33000000 		.4byte	0x33
+ 1575 04c1 E8060000 		.4byte	.LLST29
+ 1576 04c5 10       		.uleb128 0x10
+ 1577 04c6 89000000 		.4byte	.LASF27
+ 1578 04ca 01       		.byte	0x1
+ 1579 04cb 8502     		.2byte	0x285
+ 1580 04cd 33000000 		.4byte	0x33
+ 1581 04d1 D1070000 		.4byte	.LLST30
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 42
+
+
+ 1582 04d5 11       		.uleb128 0x11
+ 1583 04d6 6E627200 		.ascii	"nbr\000"
+ 1584 04da 01       		.byte	0x1
+ 1585 04db 8602     		.2byte	0x286
+ 1586 04dd 33000000 		.4byte	0x33
+ 1587 04e1 E4070000 		.4byte	.LLST31
+ 1588 04e5 10       		.uleb128 0x10
+ 1589 04e6 1E000000 		.4byte	.LASF28
+ 1590 04ea 01       		.byte	0x1
+ 1591 04eb 8702     		.2byte	0x287
+ 1592 04ed 33000000 		.4byte	0x33
+ 1593 04f1 F7070000 		.4byte	.LLST32
+ 1594 04f5 10       		.uleb128 0x10
+ 1595 04f6 00000000 		.4byte	.LASF33
+ 1596 04fa 01       		.byte	0x1
+ 1597 04fb 8802     		.2byte	0x288
+ 1598 04fd 4C000000 		.4byte	0x4c
+ 1599 0501 15080000 		.4byte	.LLST33
+ 1600 0505 10       		.uleb128 0x10
+ 1601 0506 E4010000 		.4byte	.LASF34
+ 1602 050a 01       		.byte	0x1
+ 1603 050b 8902     		.2byte	0x289
+ 1604 050d 5E000000 		.4byte	0x5e
+ 1605 0511 9A080000 		.4byte	.LLST34
+ 1606 0515 10       		.uleb128 0x10
+ 1607 0516 2F010000 		.4byte	.LASF35
+ 1608 051a 01       		.byte	0x1
+ 1609 051b 8A02     		.2byte	0x28a
+ 1610 051d 5E000000 		.4byte	0x5e
+ 1611 0521 AD080000 		.4byte	.LLST35
+ 1612 0525 10       		.uleb128 0x10
+ 1613 0526 17000000 		.4byte	.LASF29
+ 1614 052a 01       		.byte	0x1
+ 1615 052b 8B02     		.2byte	0x28b
+ 1616 052d AE000000 		.4byte	0xae
+ 1617 0531 0D090000 		.4byte	.LLST36
+ 1618 0535 0D       		.uleb128 0xd
+ 1619 0536 2E000000 		.4byte	.LVL135
+ 1620 053a CD050000 		.4byte	0x5cd
+ 1621 053e 0D       		.uleb128 0xd
+ 1622 053f 38000000 		.4byte	.LVL138
+ 1623 0543 D9050000 		.4byte	0x5d9
+ 1624 0547 0D       		.uleb128 0xd
+ 1625 0548 3E000000 		.4byte	.LVL140
+ 1626 054c CD050000 		.4byte	0x5cd
+ 1627 0550 0D       		.uleb128 0xd
+ 1628 0551 4A000000 		.4byte	.LVL143
+ 1629 0555 D9050000 		.4byte	0x5d9
+ 1630 0559 0D       		.uleb128 0xd
+ 1631 055a 50000000 		.4byte	.LVL145
+ 1632 055e CD050000 		.4byte	0x5cd
+ 1633 0562 0D       		.uleb128 0xd
+ 1634 0563 5E000000 		.4byte	.LVL149
+ 1635 0567 CD050000 		.4byte	0x5cd
+ 1636 056b 0D       		.uleb128 0xd
+ 1637 056c 68000000 		.4byte	.LVL152
+ 1638 0570 D9050000 		.4byte	0x5d9
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 43
+
+
+ 1639 0574 0D       		.uleb128 0xd
+ 1640 0575 6E000000 		.4byte	.LVL154
+ 1641 0579 CD050000 		.4byte	0x5cd
+ 1642 057d 0D       		.uleb128 0xd
+ 1643 057e 78000000 		.4byte	.LVL157
+ 1644 0582 D9050000 		.4byte	0x5d9
+ 1645 0586 0D       		.uleb128 0xd
+ 1646 0587 7E000000 		.4byte	.LVL159
+ 1647 058b CD050000 		.4byte	0x5cd
+ 1648 058f 0D       		.uleb128 0xd
+ 1649 0590 8A000000 		.4byte	.LVL162
+ 1650 0594 D9050000 		.4byte	0x5d9
+ 1651 0598 0D       		.uleb128 0xd
+ 1652 0599 90000000 		.4byte	.LVL164
+ 1653 059d CD050000 		.4byte	0x5cd
+ 1654 05a1 0D       		.uleb128 0xd
+ 1655 05a2 9A000000 		.4byte	.LVL167
+ 1656 05a6 D9050000 		.4byte	0x5d9
+ 1657 05aa 0D       		.uleb128 0xd
+ 1658 05ab CE000000 		.4byte	.LVL174
+ 1659 05af CD050000 		.4byte	0x5cd
+ 1660 05b3 0D       		.uleb128 0xd
+ 1661 05b4 E0000000 		.4byte	.LVL176
+ 1662 05b8 D9050000 		.4byte	0x5d9
+ 1663 05bc 14       		.uleb128 0x14
+ 1664 05bd FC000000 		.4byte	.LVL182
+ 1665 05c1 E5050000 		.4byte	0x5e5
+ 1666 05c5 15       		.uleb128 0x15
+ 1667 05c6 01       		.uleb128 0x1
+ 1668 05c7 50       		.byte	0x50
+ 1669 05c8 02       		.uleb128 0x2
+ 1670 05c9 74       		.byte	0x74
+ 1671 05ca 00       		.sleb128 0
+ 1672 05cb 00       		.byte	0
+ 1673 05cc 00       		.byte	0
+ 1674 05cd 16       		.uleb128 0x16
+ 1675 05ce 70000000 		.4byte	.LASF36
+ 1676 05d2 70000000 		.4byte	.LASF36
+ 1677 05d6 02       		.byte	0x2
+ 1678 05d7 7C01     		.2byte	0x17c
+ 1679 05d9 16       		.uleb128 0x16
+ 1680 05da 6E020000 		.4byte	.LASF37
+ 1681 05de 6E020000 		.4byte	.LASF37
+ 1682 05e2 02       		.byte	0x2
+ 1683 05e3 7D01     		.2byte	0x17d
+ 1684 05e5 16       		.uleb128 0x16
+ 1685 05e6 9F020000 		.4byte	.LASF38
+ 1686 05ea 9F020000 		.4byte	.LASF38
+ 1687 05ee 02       		.byte	0x2
+ 1688 05ef 8401     		.2byte	0x184
+ 1689 05f1 00       		.byte	0
+ 1690              		.section	.debug_abbrev,"",%progbits
+ 1691              	.Ldebug_abbrev0:
+ 1692 0000 01       		.uleb128 0x1
+ 1693 0001 11       		.uleb128 0x11
+ 1694 0002 01       		.byte	0x1
+ 1695 0003 25       		.uleb128 0x25
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 44
+
+
+ 1696 0004 0E       		.uleb128 0xe
+ 1697 0005 13       		.uleb128 0x13
+ 1698 0006 0B       		.uleb128 0xb
+ 1699 0007 03       		.uleb128 0x3
+ 1700 0008 0E       		.uleb128 0xe
+ 1701 0009 1B       		.uleb128 0x1b
+ 1702 000a 0E       		.uleb128 0xe
+ 1703 000b 55       		.uleb128 0x55
+ 1704 000c 17       		.uleb128 0x17
+ 1705 000d 11       		.uleb128 0x11
+ 1706 000e 01       		.uleb128 0x1
+ 1707 000f 10       		.uleb128 0x10
+ 1708 0010 17       		.uleb128 0x17
+ 1709 0011 00       		.byte	0
+ 1710 0012 00       		.byte	0
+ 1711 0013 02       		.uleb128 0x2
+ 1712 0014 24       		.uleb128 0x24
+ 1713 0015 00       		.byte	0
+ 1714 0016 0B       		.uleb128 0xb
+ 1715 0017 0B       		.uleb128 0xb
+ 1716 0018 3E       		.uleb128 0x3e
+ 1717 0019 0B       		.uleb128 0xb
+ 1718 001a 03       		.uleb128 0x3
+ 1719 001b 0E       		.uleb128 0xe
+ 1720 001c 00       		.byte	0
+ 1721 001d 00       		.byte	0
+ 1722 001e 03       		.uleb128 0x3
+ 1723 001f 16       		.uleb128 0x16
+ 1724 0020 00       		.byte	0
+ 1725 0021 03       		.uleb128 0x3
+ 1726 0022 0E       		.uleb128 0xe
+ 1727 0023 3A       		.uleb128 0x3a
+ 1728 0024 0B       		.uleb128 0xb
+ 1729 0025 3B       		.uleb128 0x3b
+ 1730 0026 0B       		.uleb128 0xb
+ 1731 0027 49       		.uleb128 0x49
+ 1732 0028 13       		.uleb128 0x13
+ 1733 0029 00       		.byte	0
+ 1734 002a 00       		.byte	0
+ 1735 002b 04       		.uleb128 0x4
+ 1736 002c 24       		.uleb128 0x24
+ 1737 002d 00       		.byte	0
+ 1738 002e 0B       		.uleb128 0xb
+ 1739 002f 0B       		.uleb128 0xb
+ 1740 0030 3E       		.uleb128 0x3e
+ 1741 0031 0B       		.uleb128 0xb
+ 1742 0032 03       		.uleb128 0x3
+ 1743 0033 08       		.uleb128 0x8
+ 1744 0034 00       		.byte	0
+ 1745 0035 00       		.byte	0
+ 1746 0036 05       		.uleb128 0x5
+ 1747 0037 35       		.uleb128 0x35
+ 1748 0038 00       		.byte	0
+ 1749 0039 49       		.uleb128 0x49
+ 1750 003a 13       		.uleb128 0x13
+ 1751 003b 00       		.byte	0
+ 1752 003c 00       		.byte	0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 45
+
+
+ 1753 003d 06       		.uleb128 0x6
+ 1754 003e 16       		.uleb128 0x16
+ 1755 003f 00       		.byte	0
+ 1756 0040 03       		.uleb128 0x3
+ 1757 0041 0E       		.uleb128 0xe
+ 1758 0042 3A       		.uleb128 0x3a
+ 1759 0043 0B       		.uleb128 0xb
+ 1760 0044 3B       		.uleb128 0x3b
+ 1761 0045 05       		.uleb128 0x5
+ 1762 0046 49       		.uleb128 0x49
+ 1763 0047 13       		.uleb128 0x13
+ 1764 0048 00       		.byte	0
+ 1765 0049 00       		.byte	0
+ 1766 004a 07       		.uleb128 0x7
+ 1767 004b 2E       		.uleb128 0x2e
+ 1768 004c 01       		.byte	0x1
+ 1769 004d 3F       		.uleb128 0x3f
+ 1770 004e 19       		.uleb128 0x19
+ 1771 004f 03       		.uleb128 0x3
+ 1772 0050 0E       		.uleb128 0xe
+ 1773 0051 3A       		.uleb128 0x3a
+ 1774 0052 0B       		.uleb128 0xb
+ 1775 0053 3B       		.uleb128 0x3b
+ 1776 0054 0B       		.uleb128 0xb
+ 1777 0055 27       		.uleb128 0x27
+ 1778 0056 19       		.uleb128 0x19
+ 1779 0057 11       		.uleb128 0x11
+ 1780 0058 01       		.uleb128 0x1
+ 1781 0059 12       		.uleb128 0x12
+ 1782 005a 06       		.uleb128 0x6
+ 1783 005b 40       		.uleb128 0x40
+ 1784 005c 18       		.uleb128 0x18
+ 1785 005d 9742     		.uleb128 0x2117
+ 1786 005f 19       		.uleb128 0x19
+ 1787 0060 01       		.uleb128 0x1
+ 1788 0061 13       		.uleb128 0x13
+ 1789 0062 00       		.byte	0
+ 1790 0063 00       		.byte	0
+ 1791 0064 08       		.uleb128 0x8
+ 1792 0065 05       		.uleb128 0x5
+ 1793 0066 00       		.byte	0
+ 1794 0067 03       		.uleb128 0x3
+ 1795 0068 0E       		.uleb128 0xe
+ 1796 0069 3A       		.uleb128 0x3a
+ 1797 006a 0B       		.uleb128 0xb
+ 1798 006b 3B       		.uleb128 0x3b
+ 1799 006c 0B       		.uleb128 0xb
+ 1800 006d 49       		.uleb128 0x49
+ 1801 006e 13       		.uleb128 0x13
+ 1802 006f 02       		.uleb128 0x2
+ 1803 0070 18       		.uleb128 0x18
+ 1804 0071 00       		.byte	0
+ 1805 0072 00       		.byte	0
+ 1806 0073 09       		.uleb128 0x9
+ 1807 0074 05       		.uleb128 0x5
+ 1808 0075 00       		.byte	0
+ 1809 0076 03       		.uleb128 0x3
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 46
+
+
+ 1810 0077 0E       		.uleb128 0xe
+ 1811 0078 3A       		.uleb128 0x3a
+ 1812 0079 0B       		.uleb128 0xb
+ 1813 007a 3B       		.uleb128 0x3b
+ 1814 007b 0B       		.uleb128 0xb
+ 1815 007c 49       		.uleb128 0x49
+ 1816 007d 13       		.uleb128 0x13
+ 1817 007e 02       		.uleb128 0x2
+ 1818 007f 17       		.uleb128 0x17
+ 1819 0080 00       		.byte	0
+ 1820 0081 00       		.byte	0
+ 1821 0082 0A       		.uleb128 0xa
+ 1822 0083 34       		.uleb128 0x34
+ 1823 0084 00       		.byte	0
+ 1824 0085 03       		.uleb128 0x3
+ 1825 0086 0E       		.uleb128 0xe
+ 1826 0087 3A       		.uleb128 0x3a
+ 1827 0088 0B       		.uleb128 0xb
+ 1828 0089 3B       		.uleb128 0x3b
+ 1829 008a 0B       		.uleb128 0xb
+ 1830 008b 49       		.uleb128 0x49
+ 1831 008c 13       		.uleb128 0x13
+ 1832 008d 02       		.uleb128 0x2
+ 1833 008e 17       		.uleb128 0x17
+ 1834 008f 00       		.byte	0
+ 1835 0090 00       		.byte	0
+ 1836 0091 0B       		.uleb128 0xb
+ 1837 0092 05       		.uleb128 0x5
+ 1838 0093 00       		.byte	0
+ 1839 0094 03       		.uleb128 0x3
+ 1840 0095 08       		.uleb128 0x8
+ 1841 0096 3A       		.uleb128 0x3a
+ 1842 0097 0B       		.uleb128 0xb
+ 1843 0098 3B       		.uleb128 0x3b
+ 1844 0099 0B       		.uleb128 0xb
+ 1845 009a 49       		.uleb128 0x49
+ 1846 009b 13       		.uleb128 0x13
+ 1847 009c 02       		.uleb128 0x2
+ 1848 009d 17       		.uleb128 0x17
+ 1849 009e 00       		.byte	0
+ 1850 009f 00       		.byte	0
+ 1851 00a0 0C       		.uleb128 0xc
+ 1852 00a1 34       		.uleb128 0x34
+ 1853 00a2 00       		.byte	0
+ 1854 00a3 03       		.uleb128 0x3
+ 1855 00a4 08       		.uleb128 0x8
+ 1856 00a5 3A       		.uleb128 0x3a
+ 1857 00a6 0B       		.uleb128 0xb
+ 1858 00a7 3B       		.uleb128 0x3b
+ 1859 00a8 0B       		.uleb128 0xb
+ 1860 00a9 49       		.uleb128 0x49
+ 1861 00aa 13       		.uleb128 0x13
+ 1862 00ab 02       		.uleb128 0x2
+ 1863 00ac 17       		.uleb128 0x17
+ 1864 00ad 00       		.byte	0
+ 1865 00ae 00       		.byte	0
+ 1866 00af 0D       		.uleb128 0xd
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 47
+
+
+ 1867 00b0 898201   		.uleb128 0x4109
+ 1868 00b3 00       		.byte	0
+ 1869 00b4 11       		.uleb128 0x11
+ 1870 00b5 01       		.uleb128 0x1
+ 1871 00b6 31       		.uleb128 0x31
+ 1872 00b7 13       		.uleb128 0x13
+ 1873 00b8 00       		.byte	0
+ 1874 00b9 00       		.byte	0
+ 1875 00ba 0E       		.uleb128 0xe
+ 1876 00bb 2E       		.uleb128 0x2e
+ 1877 00bc 01       		.byte	0x1
+ 1878 00bd 3F       		.uleb128 0x3f
+ 1879 00be 19       		.uleb128 0x19
+ 1880 00bf 03       		.uleb128 0x3
+ 1881 00c0 0E       		.uleb128 0xe
+ 1882 00c1 3A       		.uleb128 0x3a
+ 1883 00c2 0B       		.uleb128 0xb
+ 1884 00c3 3B       		.uleb128 0x3b
+ 1885 00c4 05       		.uleb128 0x5
+ 1886 00c5 27       		.uleb128 0x27
+ 1887 00c6 19       		.uleb128 0x19
+ 1888 00c7 11       		.uleb128 0x11
+ 1889 00c8 01       		.uleb128 0x1
+ 1890 00c9 12       		.uleb128 0x12
+ 1891 00ca 06       		.uleb128 0x6
+ 1892 00cb 40       		.uleb128 0x40
+ 1893 00cc 18       		.uleb128 0x18
+ 1894 00cd 9742     		.uleb128 0x2117
+ 1895 00cf 19       		.uleb128 0x19
+ 1896 00d0 01       		.uleb128 0x1
+ 1897 00d1 13       		.uleb128 0x13
+ 1898 00d2 00       		.byte	0
+ 1899 00d3 00       		.byte	0
+ 1900 00d4 0F       		.uleb128 0xf
+ 1901 00d5 05       		.uleb128 0x5
+ 1902 00d6 00       		.byte	0
+ 1903 00d7 03       		.uleb128 0x3
+ 1904 00d8 08       		.uleb128 0x8
+ 1905 00d9 3A       		.uleb128 0x3a
+ 1906 00da 0B       		.uleb128 0xb
+ 1907 00db 3B       		.uleb128 0x3b
+ 1908 00dc 05       		.uleb128 0x5
+ 1909 00dd 49       		.uleb128 0x49
+ 1910 00de 13       		.uleb128 0x13
+ 1911 00df 02       		.uleb128 0x2
+ 1912 00e0 17       		.uleb128 0x17
+ 1913 00e1 00       		.byte	0
+ 1914 00e2 00       		.byte	0
+ 1915 00e3 10       		.uleb128 0x10
+ 1916 00e4 34       		.uleb128 0x34
+ 1917 00e5 00       		.byte	0
+ 1918 00e6 03       		.uleb128 0x3
+ 1919 00e7 0E       		.uleb128 0xe
+ 1920 00e8 3A       		.uleb128 0x3a
+ 1921 00e9 0B       		.uleb128 0xb
+ 1922 00ea 3B       		.uleb128 0x3b
+ 1923 00eb 05       		.uleb128 0x5
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 48
+
+
+ 1924 00ec 49       		.uleb128 0x49
+ 1925 00ed 13       		.uleb128 0x13
+ 1926 00ee 02       		.uleb128 0x2
+ 1927 00ef 17       		.uleb128 0x17
+ 1928 00f0 00       		.byte	0
+ 1929 00f1 00       		.byte	0
+ 1930 00f2 11       		.uleb128 0x11
+ 1931 00f3 34       		.uleb128 0x34
+ 1932 00f4 00       		.byte	0
+ 1933 00f5 03       		.uleb128 0x3
+ 1934 00f6 08       		.uleb128 0x8
+ 1935 00f7 3A       		.uleb128 0x3a
+ 1936 00f8 0B       		.uleb128 0xb
+ 1937 00f9 3B       		.uleb128 0x3b
+ 1938 00fa 05       		.uleb128 0x5
+ 1939 00fb 49       		.uleb128 0x49
+ 1940 00fc 13       		.uleb128 0x13
+ 1941 00fd 02       		.uleb128 0x2
+ 1942 00fe 17       		.uleb128 0x17
+ 1943 00ff 00       		.byte	0
+ 1944 0100 00       		.byte	0
+ 1945 0101 12       		.uleb128 0x12
+ 1946 0102 05       		.uleb128 0x5
+ 1947 0103 00       		.byte	0
+ 1948 0104 03       		.uleb128 0x3
+ 1949 0105 0E       		.uleb128 0xe
+ 1950 0106 3A       		.uleb128 0x3a
+ 1951 0107 0B       		.uleb128 0xb
+ 1952 0108 3B       		.uleb128 0x3b
+ 1953 0109 05       		.uleb128 0x5
+ 1954 010a 49       		.uleb128 0x49
+ 1955 010b 13       		.uleb128 0x13
+ 1956 010c 02       		.uleb128 0x2
+ 1957 010d 17       		.uleb128 0x17
+ 1958 010e 00       		.byte	0
+ 1959 010f 00       		.byte	0
+ 1960 0110 13       		.uleb128 0x13
+ 1961 0111 2E       		.uleb128 0x2e
+ 1962 0112 01       		.byte	0x1
+ 1963 0113 3F       		.uleb128 0x3f
+ 1964 0114 19       		.uleb128 0x19
+ 1965 0115 03       		.uleb128 0x3
+ 1966 0116 0E       		.uleb128 0xe
+ 1967 0117 3A       		.uleb128 0x3a
+ 1968 0118 0B       		.uleb128 0xb
+ 1969 0119 3B       		.uleb128 0x3b
+ 1970 011a 05       		.uleb128 0x5
+ 1971 011b 27       		.uleb128 0x27
+ 1972 011c 19       		.uleb128 0x19
+ 1973 011d 49       		.uleb128 0x49
+ 1974 011e 13       		.uleb128 0x13
+ 1975 011f 11       		.uleb128 0x11
+ 1976 0120 01       		.uleb128 0x1
+ 1977 0121 12       		.uleb128 0x12
+ 1978 0122 06       		.uleb128 0x6
+ 1979 0123 40       		.uleb128 0x40
+ 1980 0124 18       		.uleb128 0x18
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 49
+
+
+ 1981 0125 9742     		.uleb128 0x2117
+ 1982 0127 19       		.uleb128 0x19
+ 1983 0128 01       		.uleb128 0x1
+ 1984 0129 13       		.uleb128 0x13
+ 1985 012a 00       		.byte	0
+ 1986 012b 00       		.byte	0
+ 1987 012c 14       		.uleb128 0x14
+ 1988 012d 898201   		.uleb128 0x4109
+ 1989 0130 01       		.byte	0x1
+ 1990 0131 11       		.uleb128 0x11
+ 1991 0132 01       		.uleb128 0x1
+ 1992 0133 31       		.uleb128 0x31
+ 1993 0134 13       		.uleb128 0x13
+ 1994 0135 00       		.byte	0
+ 1995 0136 00       		.byte	0
+ 1996 0137 15       		.uleb128 0x15
+ 1997 0138 8A8201   		.uleb128 0x410a
+ 1998 013b 00       		.byte	0
+ 1999 013c 02       		.uleb128 0x2
+ 2000 013d 18       		.uleb128 0x18
+ 2001 013e 9142     		.uleb128 0x2111
+ 2002 0140 18       		.uleb128 0x18
+ 2003 0141 00       		.byte	0
+ 2004 0142 00       		.byte	0
+ 2005 0143 16       		.uleb128 0x16
+ 2006 0144 2E       		.uleb128 0x2e
+ 2007 0145 00       		.byte	0
+ 2008 0146 3F       		.uleb128 0x3f
+ 2009 0147 19       		.uleb128 0x19
+ 2010 0148 3C       		.uleb128 0x3c
+ 2011 0149 19       		.uleb128 0x19
+ 2012 014a 6E       		.uleb128 0x6e
+ 2013 014b 0E       		.uleb128 0xe
+ 2014 014c 03       		.uleb128 0x3
+ 2015 014d 0E       		.uleb128 0xe
+ 2016 014e 3A       		.uleb128 0x3a
+ 2017 014f 0B       		.uleb128 0xb
+ 2018 0150 3B       		.uleb128 0x3b
+ 2019 0151 05       		.uleb128 0x5
+ 2020 0152 00       		.byte	0
+ 2021 0153 00       		.byte	0
+ 2022 0154 00       		.byte	0
+ 2023              		.section	.debug_loc,"",%progbits
+ 2024              	.Ldebug_loc0:
+ 2025              	.LLST0:
+ 2026 0000 00000000 		.4byte	.LVL0
+ 2027 0004 0C000000 		.4byte	.LVL1
+ 2028 0008 0100     		.2byte	0x1
+ 2029 000a 51       		.byte	0x51
+ 2030 000b 0C000000 		.4byte	.LVL1
+ 2031 000f 1A000000 		.4byte	.LVL4
+ 2032 0013 0400     		.2byte	0x4
+ 2033 0015 F3       		.byte	0xf3
+ 2034 0016 01       		.uleb128 0x1
+ 2035 0017 51       		.byte	0x51
+ 2036 0018 9F       		.byte	0x9f
+ 2037 0019 1A000000 		.4byte	.LVL4
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 50
+
+
+ 2038 001d 26000000 		.4byte	.LVL5
+ 2039 0021 0100     		.2byte	0x1
+ 2040 0023 51       		.byte	0x51
+ 2041 0024 26000000 		.4byte	.LVL5
+ 2042 0028 34000000 		.4byte	.LFE1
+ 2043 002c 0400     		.2byte	0x4
+ 2044 002e F3       		.byte	0xf3
+ 2045 002f 01       		.uleb128 0x1
+ 2046 0030 51       		.byte	0x51
+ 2047 0031 9F       		.byte	0x9f
+ 2048 0032 00000000 		.4byte	0
+ 2049 0036 00000000 		.4byte	0
+ 2050              	.LLST1:
+ 2051 003a 10000000 		.4byte	.LVL2
+ 2052 003e 14000000 		.4byte	.LVL3
+ 2053 0042 0100     		.2byte	0x1
+ 2054 0044 51       		.byte	0x51
+ 2055 0045 14000000 		.4byte	.LVL3
+ 2056 0049 1A000000 		.4byte	.LVL4
+ 2057 004d 0700     		.2byte	0x7
+ 2058 004f 71       		.byte	0x71
+ 2059 0050 808080F0 		.sleb128 -570425344
+ 2059      7D
+ 2060 0055 9F       		.byte	0x9f
+ 2061 0056 2A000000 		.4byte	.LVL6
+ 2062 005a 2E000000 		.4byte	.LVL7
+ 2063 005e 0100     		.2byte	0x1
+ 2064 0060 51       		.byte	0x51
+ 2065 0061 2E000000 		.4byte	.LVL7
+ 2066 0065 32000000 		.4byte	.LVL8
+ 2067 0069 0700     		.2byte	0x7
+ 2068 006b 71       		.byte	0x71
+ 2069 006c 808080F0 		.sleb128 -1107296256
+ 2069      7B
+ 2070 0071 9F       		.byte	0x9f
+ 2071 0072 00000000 		.4byte	0
+ 2072 0076 00000000 		.4byte	0
+ 2073              	.LLST2:
+ 2074 007a 14000000 		.4byte	.LVL3
+ 2075 007e 1A000000 		.4byte	.LVL4
+ 2076 0082 0100     		.2byte	0x1
+ 2077 0084 51       		.byte	0x51
+ 2078 0085 2E000000 		.4byte	.LVL7
+ 2079 0089 32000000 		.4byte	.LVL8
+ 2080 008d 0100     		.2byte	0x1
+ 2081 008f 51       		.byte	0x51
+ 2082 0090 00000000 		.4byte	0
+ 2083 0094 00000000 		.4byte	0
+ 2084              	.LLST3:
+ 2085 0098 00000000 		.4byte	.LVL9
+ 2086 009c 0C000000 		.4byte	.LVL10
+ 2087 00a0 0100     		.2byte	0x1
+ 2088 00a2 51       		.byte	0x51
+ 2089 00a3 0C000000 		.4byte	.LVL10
+ 2090 00a7 1A000000 		.4byte	.LVL13
+ 2091 00ab 0400     		.2byte	0x4
+ 2092 00ad F3       		.byte	0xf3
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 51
+
+
+ 2093 00ae 01       		.uleb128 0x1
+ 2094 00af 51       		.byte	0x51
+ 2095 00b0 9F       		.byte	0x9f
+ 2096 00b1 1A000000 		.4byte	.LVL13
+ 2097 00b5 26000000 		.4byte	.LVL14
+ 2098 00b9 0100     		.2byte	0x1
+ 2099 00bb 51       		.byte	0x51
+ 2100 00bc 26000000 		.4byte	.LVL14
+ 2101 00c0 34000000 		.4byte	.LFE2
+ 2102 00c4 0400     		.2byte	0x4
+ 2103 00c6 F3       		.byte	0xf3
+ 2104 00c7 01       		.uleb128 0x1
+ 2105 00c8 51       		.byte	0x51
+ 2106 00c9 9F       		.byte	0x9f
+ 2107 00ca 00000000 		.4byte	0
+ 2108 00ce 00000000 		.4byte	0
+ 2109              	.LLST4:
+ 2110 00d2 10000000 		.4byte	.LVL11
+ 2111 00d6 14000000 		.4byte	.LVL12
+ 2112 00da 0100     		.2byte	0x1
+ 2113 00dc 51       		.byte	0x51
+ 2114 00dd 14000000 		.4byte	.LVL12
+ 2115 00e1 1A000000 		.4byte	.LVL13
+ 2116 00e5 0700     		.2byte	0x7
+ 2117 00e7 71       		.byte	0x71
+ 2118 00e8 808080F0 		.sleb128 -570425344
+ 2118      7D
+ 2119 00ed 9F       		.byte	0x9f
+ 2120 00ee 2A000000 		.4byte	.LVL15
+ 2121 00f2 2E000000 		.4byte	.LVL16
+ 2122 00f6 0100     		.2byte	0x1
+ 2123 00f8 51       		.byte	0x51
+ 2124 00f9 2E000000 		.4byte	.LVL16
+ 2125 00fd 32000000 		.4byte	.LVL17
+ 2126 0101 0700     		.2byte	0x7
+ 2127 0103 71       		.byte	0x71
+ 2128 0104 808080F0 		.sleb128 -1107296256
+ 2128      7B
+ 2129 0109 9F       		.byte	0x9f
+ 2130 010a 00000000 		.4byte	0
+ 2131 010e 00000000 		.4byte	0
+ 2132              	.LLST5:
+ 2133 0112 14000000 		.4byte	.LVL12
+ 2134 0116 1A000000 		.4byte	.LVL13
+ 2135 011a 0100     		.2byte	0x1
+ 2136 011c 51       		.byte	0x51
+ 2137 011d 2E000000 		.4byte	.LVL16
+ 2138 0121 32000000 		.4byte	.LVL17
+ 2139 0125 0100     		.2byte	0x1
+ 2140 0127 51       		.byte	0x51
+ 2141 0128 00000000 		.4byte	0
+ 2142 012c 00000000 		.4byte	0
+ 2143              	.LLST6:
+ 2144 0130 00000000 		.4byte	.LVL18
+ 2145 0134 1D000000 		.4byte	.LVL20-1
+ 2146 0138 0100     		.2byte	0x1
+ 2147 013a 50       		.byte	0x50
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 52
+
+
+ 2148 013b 1D000000 		.4byte	.LVL20-1
+ 2149 013f 2E000000 		.4byte	.LVL22
+ 2150 0143 0400     		.2byte	0x4
+ 2151 0145 F3       		.byte	0xf3
+ 2152 0146 01       		.uleb128 0x1
+ 2153 0147 50       		.byte	0x50
+ 2154 0148 9F       		.byte	0x9f
+ 2155 0149 2E000000 		.4byte	.LVL22
+ 2156 014d 31000000 		.4byte	.LVL23-1
+ 2157 0151 0100     		.2byte	0x1
+ 2158 0153 50       		.byte	0x50
+ 2159 0154 31000000 		.4byte	.LVL23-1
+ 2160 0158 42000000 		.4byte	.LVL25
+ 2161 015c 0400     		.2byte	0x4
+ 2162 015e F3       		.byte	0xf3
+ 2163 015f 01       		.uleb128 0x1
+ 2164 0160 50       		.byte	0x50
+ 2165 0161 9F       		.byte	0x9f
+ 2166 0162 42000000 		.4byte	.LVL25
+ 2167 0166 45000000 		.4byte	.LVL26-1
+ 2168 016a 0100     		.2byte	0x1
+ 2169 016c 50       		.byte	0x50
+ 2170 016d 45000000 		.4byte	.LVL26-1
+ 2171 0171 56000000 		.4byte	.LVL28
+ 2172 0175 0400     		.2byte	0x4
+ 2173 0177 F3       		.byte	0xf3
+ 2174 0178 01       		.uleb128 0x1
+ 2175 0179 50       		.byte	0x50
+ 2176 017a 9F       		.byte	0x9f
+ 2177 017b 56000000 		.4byte	.LVL28
+ 2178 017f 59000000 		.4byte	.LVL29-1
+ 2179 0183 0100     		.2byte	0x1
+ 2180 0185 50       		.byte	0x50
+ 2181 0186 59000000 		.4byte	.LVL29-1
+ 2182 018a 6A000000 		.4byte	.LVL31
+ 2183 018e 0400     		.2byte	0x4
+ 2184 0190 F3       		.byte	0xf3
+ 2185 0191 01       		.uleb128 0x1
+ 2186 0192 50       		.byte	0x50
+ 2187 0193 9F       		.byte	0x9f
+ 2188 0194 6A000000 		.4byte	.LVL31
+ 2189 0198 80000000 		.4byte	.LVL33
+ 2190 019c 0100     		.2byte	0x1
+ 2191 019e 50       		.byte	0x50
+ 2192 019f 80000000 		.4byte	.LVL33
+ 2193 01a3 C8000000 		.4byte	.LFE3
+ 2194 01a7 0400     		.2byte	0x4
+ 2195 01a9 F3       		.byte	0xf3
+ 2196 01aa 01       		.uleb128 0x1
+ 2197 01ab 50       		.byte	0x50
+ 2198 01ac 9F       		.byte	0x9f
+ 2199 01ad 00000000 		.4byte	0
+ 2200 01b1 00000000 		.4byte	0
+ 2201              	.LLST7:
+ 2202 01b5 8C000000 		.4byte	.LVL35
+ 2203 01b9 B6000000 		.4byte	.LVL39
+ 2204 01bd 0100     		.2byte	0x1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 53
+
+
+ 2205 01bf 55       		.byte	0x55
+ 2206 01c0 00000000 		.4byte	0
+ 2207 01c4 00000000 		.4byte	0
+ 2208              	.LLST8:
+ 2209 01c8 7A000000 		.4byte	.LVL32
+ 2210 01cc 82000000 		.4byte	.LVL34
+ 2211 01d0 0100     		.2byte	0x1
+ 2212 01d2 53       		.byte	0x53
+ 2213 01d3 00000000 		.4byte	0
+ 2214 01d7 00000000 		.4byte	0
+ 2215              	.LLST9:
+ 2216 01db 9A000000 		.4byte	.LVL36
+ 2217 01df B0000000 		.4byte	.LVL38
+ 2218 01e3 0100     		.2byte	0x1
+ 2219 01e5 54       		.byte	0x54
+ 2220 01e6 00000000 		.4byte	0
+ 2221 01ea 00000000 		.4byte	0
+ 2222              	.LLST10:
+ 2223 01ee 02000000 		.4byte	.LVL19
+ 2224 01f2 1E000000 		.4byte	.LVL20
+ 2225 01f6 0200     		.2byte	0x2
+ 2226 01f8 30       		.byte	0x30
+ 2227 01f9 9F       		.byte	0x9f
+ 2228 01fa 1E000000 		.4byte	.LVL20
+ 2229 01fe 2B000000 		.4byte	.LVL21-1
+ 2230 0202 0100     		.2byte	0x1
+ 2231 0204 50       		.byte	0x50
+ 2232 0205 2E000000 		.4byte	.LVL22
+ 2233 0209 32000000 		.4byte	.LVL23
+ 2234 020d 0200     		.2byte	0x2
+ 2235 020f 30       		.byte	0x30
+ 2236 0210 9F       		.byte	0x9f
+ 2237 0211 32000000 		.4byte	.LVL23
+ 2238 0215 3F000000 		.4byte	.LVL24-1
+ 2239 0219 0100     		.2byte	0x1
+ 2240 021b 50       		.byte	0x50
+ 2241 021c 42000000 		.4byte	.LVL25
+ 2242 0220 46000000 		.4byte	.LVL26
+ 2243 0224 0200     		.2byte	0x2
+ 2244 0226 30       		.byte	0x30
+ 2245 0227 9F       		.byte	0x9f
+ 2246 0228 46000000 		.4byte	.LVL26
+ 2247 022c 53000000 		.4byte	.LVL27-1
+ 2248 0230 0100     		.2byte	0x1
+ 2249 0232 50       		.byte	0x50
+ 2250 0233 56000000 		.4byte	.LVL28
+ 2251 0237 5A000000 		.4byte	.LVL29
+ 2252 023b 0200     		.2byte	0x2
+ 2253 023d 30       		.byte	0x30
+ 2254 023e 9F       		.byte	0x9f
+ 2255 023f 5A000000 		.4byte	.LVL29
+ 2256 0243 67000000 		.4byte	.LVL30-1
+ 2257 0247 0100     		.2byte	0x1
+ 2258 0249 50       		.byte	0x50
+ 2259 024a 6A000000 		.4byte	.LVL31
+ 2260 024e 9E000000 		.4byte	.LVL37
+ 2261 0252 0200     		.2byte	0x2
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 54
+
+
+ 2262 0254 30       		.byte	0x30
+ 2263 0255 9F       		.byte	0x9f
+ 2264 0256 9E000000 		.4byte	.LVL37
+ 2265 025a B5000000 		.4byte	.LVL39-1
+ 2266 025e 0100     		.2byte	0x1
+ 2267 0260 50       		.byte	0x50
+ 2268 0261 00000000 		.4byte	0
+ 2269 0265 00000000 		.4byte	0
+ 2270              	.LLST11:
+ 2271 0269 00000000 		.4byte	.LVL40
+ 2272 026d 1D000000 		.4byte	.LVL42-1
+ 2273 0271 0100     		.2byte	0x1
+ 2274 0273 50       		.byte	0x50
+ 2275 0274 1D000000 		.4byte	.LVL42-1
+ 2276 0278 2E000000 		.4byte	.LVL44
+ 2277 027c 0400     		.2byte	0x4
+ 2278 027e F3       		.byte	0xf3
+ 2279 027f 01       		.uleb128 0x1
+ 2280 0280 50       		.byte	0x50
+ 2281 0281 9F       		.byte	0x9f
+ 2282 0282 2E000000 		.4byte	.LVL44
+ 2283 0286 31000000 		.4byte	.LVL45-1
+ 2284 028a 0100     		.2byte	0x1
+ 2285 028c 50       		.byte	0x50
+ 2286 028d 31000000 		.4byte	.LVL45-1
+ 2287 0291 42000000 		.4byte	.LVL47
+ 2288 0295 0400     		.2byte	0x4
+ 2289 0297 F3       		.byte	0xf3
+ 2290 0298 01       		.uleb128 0x1
+ 2291 0299 50       		.byte	0x50
+ 2292 029a 9F       		.byte	0x9f
+ 2293 029b 42000000 		.4byte	.LVL47
+ 2294 029f 45000000 		.4byte	.LVL48-1
+ 2295 02a3 0100     		.2byte	0x1
+ 2296 02a5 50       		.byte	0x50
+ 2297 02a6 45000000 		.4byte	.LVL48-1
+ 2298 02aa 56000000 		.4byte	.LVL50
+ 2299 02ae 0400     		.2byte	0x4
+ 2300 02b0 F3       		.byte	0xf3
+ 2301 02b1 01       		.uleb128 0x1
+ 2302 02b2 50       		.byte	0x50
+ 2303 02b3 9F       		.byte	0x9f
+ 2304 02b4 56000000 		.4byte	.LVL50
+ 2305 02b8 59000000 		.4byte	.LVL51-1
+ 2306 02bc 0100     		.2byte	0x1
+ 2307 02be 50       		.byte	0x50
+ 2308 02bf 59000000 		.4byte	.LVL51-1
+ 2309 02c3 6A000000 		.4byte	.LVL53
+ 2310 02c7 0400     		.2byte	0x4
+ 2311 02c9 F3       		.byte	0xf3
+ 2312 02ca 01       		.uleb128 0x1
+ 2313 02cb 50       		.byte	0x50
+ 2314 02cc 9F       		.byte	0x9f
+ 2315 02cd 6A000000 		.4byte	.LVL53
+ 2316 02d1 80000000 		.4byte	.LVL55
+ 2317 02d5 0100     		.2byte	0x1
+ 2318 02d7 50       		.byte	0x50
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 55
+
+
+ 2319 02d8 80000000 		.4byte	.LVL55
+ 2320 02dc C8000000 		.4byte	.LFE4
+ 2321 02e0 0400     		.2byte	0x4
+ 2322 02e2 F3       		.byte	0xf3
+ 2323 02e3 01       		.uleb128 0x1
+ 2324 02e4 50       		.byte	0x50
+ 2325 02e5 9F       		.byte	0x9f
+ 2326 02e6 00000000 		.4byte	0
+ 2327 02ea 00000000 		.4byte	0
+ 2328              	.LLST12:
+ 2329 02ee 8C000000 		.4byte	.LVL57
+ 2330 02f2 B6000000 		.4byte	.LVL61
+ 2331 02f6 0100     		.2byte	0x1
+ 2332 02f8 55       		.byte	0x55
+ 2333 02f9 00000000 		.4byte	0
+ 2334 02fd 00000000 		.4byte	0
+ 2335              	.LLST13:
+ 2336 0301 9A000000 		.4byte	.LVL58
+ 2337 0305 B0000000 		.4byte	.LVL60
+ 2338 0309 0100     		.2byte	0x1
+ 2339 030b 54       		.byte	0x54
+ 2340 030c 00000000 		.4byte	0
+ 2341 0310 00000000 		.4byte	0
+ 2342              	.LLST14:
+ 2343 0314 7A000000 		.4byte	.LVL54
+ 2344 0318 82000000 		.4byte	.LVL56
+ 2345 031c 0100     		.2byte	0x1
+ 2346 031e 53       		.byte	0x53
+ 2347 031f 00000000 		.4byte	0
+ 2348 0323 00000000 		.4byte	0
+ 2349              	.LLST15:
+ 2350 0327 02000000 		.4byte	.LVL41
+ 2351 032b 1E000000 		.4byte	.LVL42
+ 2352 032f 0200     		.2byte	0x2
+ 2353 0331 30       		.byte	0x30
+ 2354 0332 9F       		.byte	0x9f
+ 2355 0333 1E000000 		.4byte	.LVL42
+ 2356 0337 2B000000 		.4byte	.LVL43-1
+ 2357 033b 0100     		.2byte	0x1
+ 2358 033d 50       		.byte	0x50
+ 2359 033e 2E000000 		.4byte	.LVL44
+ 2360 0342 32000000 		.4byte	.LVL45
+ 2361 0346 0200     		.2byte	0x2
+ 2362 0348 30       		.byte	0x30
+ 2363 0349 9F       		.byte	0x9f
+ 2364 034a 32000000 		.4byte	.LVL45
+ 2365 034e 3F000000 		.4byte	.LVL46-1
+ 2366 0352 0100     		.2byte	0x1
+ 2367 0354 50       		.byte	0x50
+ 2368 0355 42000000 		.4byte	.LVL47
+ 2369 0359 46000000 		.4byte	.LVL48
+ 2370 035d 0200     		.2byte	0x2
+ 2371 035f 30       		.byte	0x30
+ 2372 0360 9F       		.byte	0x9f
+ 2373 0361 46000000 		.4byte	.LVL48
+ 2374 0365 53000000 		.4byte	.LVL49-1
+ 2375 0369 0100     		.2byte	0x1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 56
+
+
+ 2376 036b 50       		.byte	0x50
+ 2377 036c 56000000 		.4byte	.LVL50
+ 2378 0370 5A000000 		.4byte	.LVL51
+ 2379 0374 0200     		.2byte	0x2
+ 2380 0376 30       		.byte	0x30
+ 2381 0377 9F       		.byte	0x9f
+ 2382 0378 5A000000 		.4byte	.LVL51
+ 2383 037c 67000000 		.4byte	.LVL52-1
+ 2384 0380 0100     		.2byte	0x1
+ 2385 0382 50       		.byte	0x50
+ 2386 0383 6A000000 		.4byte	.LVL53
+ 2387 0387 9E000000 		.4byte	.LVL59
+ 2388 038b 0200     		.2byte	0x2
+ 2389 038d 30       		.byte	0x30
+ 2390 038e 9F       		.byte	0x9f
+ 2391 038f 9E000000 		.4byte	.LVL59
+ 2392 0393 B5000000 		.4byte	.LVL61-1
+ 2393 0397 0100     		.2byte	0x1
+ 2394 0399 50       		.byte	0x50
+ 2395 039a 00000000 		.4byte	0
+ 2396 039e 00000000 		.4byte	0
+ 2397              	.LLST16:
+ 2398 03a2 00000000 		.4byte	.LVL62
+ 2399 03a6 1C000000 		.4byte	.LVL64
+ 2400 03aa 0100     		.2byte	0x1
+ 2401 03ac 50       		.byte	0x50
+ 2402 03ad 1C000000 		.4byte	.LVL64
+ 2403 03b1 54000000 		.4byte	.LVL71
+ 2404 03b5 0400     		.2byte	0x4
+ 2405 03b7 F3       		.byte	0xf3
+ 2406 03b8 01       		.uleb128 0x1
+ 2407 03b9 50       		.byte	0x50
+ 2408 03ba 9F       		.byte	0x9f
+ 2409 03bb 54000000 		.4byte	.LVL71
+ 2410 03bf 60000000 		.4byte	.LFE5
+ 2411 03c3 0100     		.2byte	0x1
+ 2412 03c5 50       		.byte	0x50
+ 2413 03c6 00000000 		.4byte	0
+ 2414 03ca 00000000 		.4byte	0
+ 2415              	.LLST17:
+ 2416 03ce 28000000 		.4byte	.LVL66
+ 2417 03d2 52000000 		.4byte	.LVL70
+ 2418 03d6 0100     		.2byte	0x1
+ 2419 03d8 55       		.byte	0x55
+ 2420 03d9 00000000 		.4byte	0
+ 2421 03dd 00000000 		.4byte	0
+ 2422              	.LLST18:
+ 2423 03e1 36000000 		.4byte	.LVL67
+ 2424 03e5 4C000000 		.4byte	.LVL69
+ 2425 03e9 0100     		.2byte	0x1
+ 2426 03eb 54       		.byte	0x54
+ 2427 03ec 00000000 		.4byte	0
+ 2428 03f0 00000000 		.4byte	0
+ 2429              	.LLST19:
+ 2430 03f4 16000000 		.4byte	.LVL63
+ 2431 03f8 1E000000 		.4byte	.LVL65
+ 2432 03fc 0100     		.2byte	0x1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 57
+
+
+ 2433 03fe 53       		.byte	0x53
+ 2434 03ff 00000000 		.4byte	0
+ 2435 0403 00000000 		.4byte	0
+ 2436              	.LLST20:
+ 2437 0407 00000000 		.4byte	.LVL62
+ 2438 040b 3A000000 		.4byte	.LVL68
+ 2439 040f 0200     		.2byte	0x2
+ 2440 0411 30       		.byte	0x30
+ 2441 0412 9F       		.byte	0x9f
+ 2442 0413 3A000000 		.4byte	.LVL68
+ 2443 0417 51000000 		.4byte	.LVL70-1
+ 2444 041b 0100     		.2byte	0x1
+ 2445 041d 50       		.byte	0x50
+ 2446 041e 54000000 		.4byte	.LVL71
+ 2447 0422 60000000 		.4byte	.LFE5
+ 2448 0426 0200     		.2byte	0x2
+ 2449 0428 30       		.byte	0x30
+ 2450 0429 9F       		.byte	0x9f
+ 2451 042a 00000000 		.4byte	0
+ 2452 042e 00000000 		.4byte	0
+ 2453              	.LLST21:
+ 2454 0432 00000000 		.4byte	.LVL72
+ 2455 0436 06000000 		.4byte	.LVL74
+ 2456 043a 0100     		.2byte	0x1
+ 2457 043c 50       		.byte	0x50
+ 2458 043d 06000000 		.4byte	.LVL74
+ 2459 0441 38010000 		.4byte	.LFE6
+ 2460 0445 0400     		.2byte	0x4
+ 2461 0447 F3       		.byte	0xf3
+ 2462 0448 01       		.uleb128 0x1
+ 2463 0449 50       		.byte	0x50
+ 2464 044a 9F       		.byte	0x9f
+ 2465 044b 00000000 		.4byte	0
+ 2466 044f 00000000 		.4byte	0
+ 2467              	.LLST22:
+ 2468 0453 00000000 		.4byte	.LVL72
+ 2469 0457 09000000 		.4byte	.LVL75-1
+ 2470 045b 0100     		.2byte	0x1
+ 2471 045d 51       		.byte	0x51
+ 2472 045e 09000000 		.4byte	.LVL75-1
+ 2473 0462 0C000000 		.4byte	.LVL76
+ 2474 0466 0400     		.2byte	0x4
+ 2475 0468 F3       		.byte	0xf3
+ 2476 0469 01       		.uleb128 0x1
+ 2477 046a 51       		.byte	0x51
+ 2478 046b 9F       		.byte	0x9f
+ 2479 046c 0C000000 		.4byte	.LVL76
+ 2480 0470 32000000 		.4byte	.LVL80
+ 2481 0474 0100     		.2byte	0x1
+ 2482 0476 55       		.byte	0x55
+ 2483 0477 3A000000 		.4byte	.LVL82
+ 2484 047b 4A000000 		.4byte	.LVL86
+ 2485 047f 0100     		.2byte	0x1
+ 2486 0481 55       		.byte	0x55
+ 2487 0482 52000000 		.4byte	.LVL88
+ 2488 0486 62000000 		.4byte	.LVL92
+ 2489 048a 0100     		.2byte	0x1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 58
+
+
+ 2490 048c 55       		.byte	0x55
+ 2491 048d 6A000000 		.4byte	.LVL94
+ 2492 0491 7A000000 		.4byte	.LVL98
+ 2493 0495 0100     		.2byte	0x1
+ 2494 0497 55       		.byte	0x55
+ 2495 0498 82000000 		.4byte	.LVL100
+ 2496 049c 90000000 		.4byte	.LVL104
+ 2497 04a0 0100     		.2byte	0x1
+ 2498 04a2 55       		.byte	0x55
+ 2499 04a3 98000000 		.4byte	.LVL106
+ 2500 04a7 A8000000 		.4byte	.LVL110
+ 2501 04ab 0100     		.2byte	0x1
+ 2502 04ad 55       		.byte	0x55
+ 2503 04ae B0000000 		.4byte	.LVL112
+ 2504 04b2 C0000000 		.4byte	.LVL116
+ 2505 04b6 0100     		.2byte	0x1
+ 2506 04b8 55       		.byte	0x55
+ 2507 04b9 C8000000 		.4byte	.LVL118
+ 2508 04bd 22010000 		.4byte	.LVL129
+ 2509 04c1 0100     		.2byte	0x1
+ 2510 04c3 55       		.byte	0x55
+ 2511 04c4 00000000 		.4byte	0
+ 2512 04c8 00000000 		.4byte	0
+ 2513              	.LLST23:
+ 2514 04cc E8000000 		.4byte	.LVL121
+ 2515 04d0 20010000 		.4byte	.LVL128
+ 2516 04d4 0100     		.2byte	0x1
+ 2517 04d6 56       		.byte	0x56
+ 2518 04d7 00000000 		.4byte	0
+ 2519 04db 00000000 		.4byte	0
+ 2520              	.LLST24:
+ 2521 04df F6000000 		.4byte	.LVL122
+ 2522 04e3 0C010000 		.4byte	.LVL125
+ 2523 04e7 0100     		.2byte	0x1
+ 2524 04e9 54       		.byte	0x54
+ 2525 04ea 00000000 		.4byte	0
+ 2526 04ee 00000000 		.4byte	0
+ 2527              	.LLST25:
+ 2528 04f2 D8000000 		.4byte	.LVL119
+ 2529 04f6 E0000000 		.4byte	.LVL120
+ 2530 04fa 0100     		.2byte	0x1
+ 2531 04fc 53       		.byte	0x53
+ 2532 04fd 00000000 		.4byte	0
+ 2533 0501 00000000 		.4byte	0
+ 2534              	.LLST26:
+ 2535 0505 0A000000 		.4byte	.LVL75
+ 2536 0509 27000000 		.4byte	.LVL77-1
+ 2537 050d 0100     		.2byte	0x1
+ 2538 050f 50       		.byte	0x50
+ 2539 0510 3A000000 		.4byte	.LVL82
+ 2540 0514 3D000000 		.4byte	.LVL83-1
+ 2541 0518 0100     		.2byte	0x1
+ 2542 051a 50       		.byte	0x50
+ 2543 051b 52000000 		.4byte	.LVL88
+ 2544 051f 55000000 		.4byte	.LVL89-1
+ 2545 0523 0100     		.2byte	0x1
+ 2546 0525 50       		.byte	0x50
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 59
+
+
+ 2547 0526 6A000000 		.4byte	.LVL94
+ 2548 052a 6D000000 		.4byte	.LVL95-1
+ 2549 052e 0100     		.2byte	0x1
+ 2550 0530 50       		.byte	0x50
+ 2551 0531 82000000 		.4byte	.LVL100
+ 2552 0535 85000000 		.4byte	.LVL101-1
+ 2553 0539 0100     		.2byte	0x1
+ 2554 053b 50       		.byte	0x50
+ 2555 053c 98000000 		.4byte	.LVL106
+ 2556 0540 9B000000 		.4byte	.LVL107-1
+ 2557 0544 0100     		.2byte	0x1
+ 2558 0546 50       		.byte	0x50
+ 2559 0547 B0000000 		.4byte	.LVL112
+ 2560 054b B3000000 		.4byte	.LVL113-1
+ 2561 054f 0100     		.2byte	0x1
+ 2562 0551 50       		.byte	0x50
+ 2563 0552 C8000000 		.4byte	.LVL118
+ 2564 0556 F9000000 		.4byte	.LVL123-1
+ 2565 055a 0100     		.2byte	0x1
+ 2566 055c 50       		.byte	0x50
+ 2567 055d 00000000 		.4byte	0
+ 2568 0561 00000000 		.4byte	0
+ 2569              	.LLST27:
+ 2570 0565 2C000000 		.4byte	.LVL78
+ 2571 0569 32000000 		.4byte	.LVL80
+ 2572 056d 0100     		.2byte	0x1
+ 2573 056f 54       		.byte	0x54
+ 2574 0570 32000000 		.4byte	.LVL80
+ 2575 0574 3A000000 		.4byte	.LVL82
+ 2576 0578 0100     		.2byte	0x1
+ 2577 057a 55       		.byte	0x55
+ 2578 057b 42000000 		.4byte	.LVL84
+ 2579 057f 4A000000 		.4byte	.LVL86
+ 2580 0583 0100     		.2byte	0x1
+ 2581 0585 54       		.byte	0x54
+ 2582 0586 4A000000 		.4byte	.LVL86
+ 2583 058a 52000000 		.4byte	.LVL88
+ 2584 058e 0100     		.2byte	0x1
+ 2585 0590 55       		.byte	0x55
+ 2586 0591 5A000000 		.4byte	.LVL90
+ 2587 0595 62000000 		.4byte	.LVL92
+ 2588 0599 0100     		.2byte	0x1
+ 2589 059b 54       		.byte	0x54
+ 2590 059c 62000000 		.4byte	.LVL92
+ 2591 05a0 6A000000 		.4byte	.LVL94
+ 2592 05a4 0100     		.2byte	0x1
+ 2593 05a6 55       		.byte	0x55
+ 2594 05a7 72000000 		.4byte	.LVL96
+ 2595 05ab 7A000000 		.4byte	.LVL98
+ 2596 05af 0100     		.2byte	0x1
+ 2597 05b1 54       		.byte	0x54
+ 2598 05b2 7A000000 		.4byte	.LVL98
+ 2599 05b6 82000000 		.4byte	.LVL100
+ 2600 05ba 0100     		.2byte	0x1
+ 2601 05bc 55       		.byte	0x55
+ 2602 05bd 8A000000 		.4byte	.LVL102
+ 2603 05c1 90000000 		.4byte	.LVL104
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 60
+
+
+ 2604 05c5 0100     		.2byte	0x1
+ 2605 05c7 54       		.byte	0x54
+ 2606 05c8 90000000 		.4byte	.LVL104
+ 2607 05cc 98000000 		.4byte	.LVL106
+ 2608 05d0 0100     		.2byte	0x1
+ 2609 05d2 55       		.byte	0x55
+ 2610 05d3 A0000000 		.4byte	.LVL108
+ 2611 05d7 A8000000 		.4byte	.LVL110
+ 2612 05db 0100     		.2byte	0x1
+ 2613 05dd 54       		.byte	0x54
+ 2614 05de A8000000 		.4byte	.LVL110
+ 2615 05e2 B0000000 		.4byte	.LVL112
+ 2616 05e6 0100     		.2byte	0x1
+ 2617 05e8 55       		.byte	0x55
+ 2618 05e9 B8000000 		.4byte	.LVL114
+ 2619 05ed C0000000 		.4byte	.LVL116
+ 2620 05f1 0100     		.2byte	0x1
+ 2621 05f3 54       		.byte	0x54
+ 2622 05f4 C0000000 		.4byte	.LVL116
+ 2623 05f8 C8000000 		.4byte	.LVL118
+ 2624 05fc 0100     		.2byte	0x1
+ 2625 05fe 55       		.byte	0x55
+ 2626 05ff 08010000 		.4byte	.LVL124
+ 2627 0603 14010000 		.4byte	.LVL126
+ 2628 0607 0100     		.2byte	0x1
+ 2629 0609 51       		.byte	0x51
+ 2630 060a 14010000 		.4byte	.LVL126
+ 2631 060e 1A010000 		.4byte	.LVL127
+ 2632 0612 0100     		.2byte	0x1
+ 2633 0614 52       		.byte	0x52
+ 2634 0615 1A010000 		.4byte	.LVL127
+ 2635 0619 20010000 		.4byte	.LVL128
+ 2636 061d 0100     		.2byte	0x1
+ 2637 061f 54       		.byte	0x54
+ 2638 0620 00000000 		.4byte	0
+ 2639 0624 00000000 		.4byte	0
+ 2640              	.LLST28:
+ 2641 0628 04000000 		.4byte	.LVL73
+ 2642 062c 28000000 		.4byte	.LVL77
+ 2643 0630 0200     		.2byte	0x2
+ 2644 0632 30       		.byte	0x30
+ 2645 0633 9F       		.byte	0x9f
+ 2646 0634 28000000 		.4byte	.LVL77
+ 2647 0638 37000000 		.4byte	.LVL81-1
+ 2648 063c 0100     		.2byte	0x1
+ 2649 063e 50       		.byte	0x50
+ 2650 063f 3A000000 		.4byte	.LVL82
+ 2651 0643 3E000000 		.4byte	.LVL83
+ 2652 0647 0200     		.2byte	0x2
+ 2653 0649 30       		.byte	0x30
+ 2654 064a 9F       		.byte	0x9f
+ 2655 064b 3E000000 		.4byte	.LVL83
+ 2656 064f 4F000000 		.4byte	.LVL87-1
+ 2657 0653 0100     		.2byte	0x1
+ 2658 0655 50       		.byte	0x50
+ 2659 0656 52000000 		.4byte	.LVL88
+ 2660 065a 56000000 		.4byte	.LVL89
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 61
+
+
+ 2661 065e 0200     		.2byte	0x2
+ 2662 0660 30       		.byte	0x30
+ 2663 0661 9F       		.byte	0x9f
+ 2664 0662 56000000 		.4byte	.LVL89
+ 2665 0666 67000000 		.4byte	.LVL93-1
+ 2666 066a 0100     		.2byte	0x1
+ 2667 066c 50       		.byte	0x50
+ 2668 066d 6A000000 		.4byte	.LVL94
+ 2669 0671 6E000000 		.4byte	.LVL95
+ 2670 0675 0200     		.2byte	0x2
+ 2671 0677 30       		.byte	0x30
+ 2672 0678 9F       		.byte	0x9f
+ 2673 0679 6E000000 		.4byte	.LVL95
+ 2674 067d 7F000000 		.4byte	.LVL99-1
+ 2675 0681 0100     		.2byte	0x1
+ 2676 0683 50       		.byte	0x50
+ 2677 0684 82000000 		.4byte	.LVL100
+ 2678 0688 86000000 		.4byte	.LVL101
+ 2679 068c 0200     		.2byte	0x2
+ 2680 068e 30       		.byte	0x30
+ 2681 068f 9F       		.byte	0x9f
+ 2682 0690 86000000 		.4byte	.LVL101
+ 2683 0694 95000000 		.4byte	.LVL105-1
+ 2684 0698 0100     		.2byte	0x1
+ 2685 069a 50       		.byte	0x50
+ 2686 069b 98000000 		.4byte	.LVL106
+ 2687 069f 9C000000 		.4byte	.LVL107
+ 2688 06a3 0200     		.2byte	0x2
+ 2689 06a5 30       		.byte	0x30
+ 2690 06a6 9F       		.byte	0x9f
+ 2691 06a7 9C000000 		.4byte	.LVL107
+ 2692 06ab AD000000 		.4byte	.LVL111-1
+ 2693 06af 0100     		.2byte	0x1
+ 2694 06b1 50       		.byte	0x50
+ 2695 06b2 B0000000 		.4byte	.LVL112
+ 2696 06b6 B4000000 		.4byte	.LVL113
+ 2697 06ba 0200     		.2byte	0x2
+ 2698 06bc 30       		.byte	0x30
+ 2699 06bd 9F       		.byte	0x9f
+ 2700 06be B4000000 		.4byte	.LVL113
+ 2701 06c2 C5000000 		.4byte	.LVL117-1
+ 2702 06c6 0100     		.2byte	0x1
+ 2703 06c8 50       		.byte	0x50
+ 2704 06c9 C8000000 		.4byte	.LVL118
+ 2705 06cd FA000000 		.4byte	.LVL123
+ 2706 06d1 0200     		.2byte	0x2
+ 2707 06d3 30       		.byte	0x30
+ 2708 06d4 9F       		.byte	0x9f
+ 2709 06d5 FA000000 		.4byte	.LVL123
+ 2710 06d9 1F010000 		.4byte	.LVL128-1
+ 2711 06dd 0100     		.2byte	0x1
+ 2712 06df 50       		.byte	0x50
+ 2713 06e0 00000000 		.4byte	0
+ 2714 06e4 00000000 		.4byte	0
+ 2715              	.LLST29:
+ 2716 06e8 00000000 		.4byte	.LVL130
+ 2717 06ec 2D000000 		.4byte	.LVL135-1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 62
+
+
+ 2718 06f0 0100     		.2byte	0x1
+ 2719 06f2 50       		.byte	0x50
+ 2720 06f3 2D000000 		.4byte	.LVL135-1
+ 2721 06f7 3A000000 		.4byte	.LVL139
+ 2722 06fb 0400     		.2byte	0x4
+ 2723 06fd F3       		.byte	0xf3
+ 2724 06fe 01       		.uleb128 0x1
+ 2725 06ff 50       		.byte	0x50
+ 2726 0700 9F       		.byte	0x9f
+ 2727 0701 3A000000 		.4byte	.LVL139
+ 2728 0705 3D000000 		.4byte	.LVL140-1
+ 2729 0709 0100     		.2byte	0x1
+ 2730 070b 50       		.byte	0x50
+ 2731 070c 3D000000 		.4byte	.LVL140-1
+ 2732 0710 4C000000 		.4byte	.LVL144
+ 2733 0714 0400     		.2byte	0x4
+ 2734 0716 F3       		.byte	0xf3
+ 2735 0717 01       		.uleb128 0x1
+ 2736 0718 50       		.byte	0x50
+ 2737 0719 9F       		.byte	0x9f
+ 2738 071a 4C000000 		.4byte	.LVL144
+ 2739 071e 4F000000 		.4byte	.LVL145-1
+ 2740 0722 0100     		.2byte	0x1
+ 2741 0724 50       		.byte	0x50
+ 2742 0725 4F000000 		.4byte	.LVL145-1
+ 2743 0729 5A000000 		.4byte	.LVL148
+ 2744 072d 0400     		.2byte	0x4
+ 2745 072f F3       		.byte	0xf3
+ 2746 0730 01       		.uleb128 0x1
+ 2747 0731 50       		.byte	0x50
+ 2748 0732 9F       		.byte	0x9f
+ 2749 0733 5A000000 		.4byte	.LVL148
+ 2750 0737 5D000000 		.4byte	.LVL149-1
+ 2751 073b 0100     		.2byte	0x1
+ 2752 073d 50       		.byte	0x50
+ 2753 073e 5D000000 		.4byte	.LVL149-1
+ 2754 0742 6A000000 		.4byte	.LVL153
+ 2755 0746 0400     		.2byte	0x4
+ 2756 0748 F3       		.byte	0xf3
+ 2757 0749 01       		.uleb128 0x1
+ 2758 074a 50       		.byte	0x50
+ 2759 074b 9F       		.byte	0x9f
+ 2760 074c 6A000000 		.4byte	.LVL153
+ 2761 0750 6D000000 		.4byte	.LVL154-1
+ 2762 0754 0100     		.2byte	0x1
+ 2763 0756 50       		.byte	0x50
+ 2764 0757 6D000000 		.4byte	.LVL154-1
+ 2765 075b 7A000000 		.4byte	.LVL158
+ 2766 075f 0400     		.2byte	0x4
+ 2767 0761 F3       		.byte	0xf3
+ 2768 0762 01       		.uleb128 0x1
+ 2769 0763 50       		.byte	0x50
+ 2770 0764 9F       		.byte	0x9f
+ 2771 0765 7A000000 		.4byte	.LVL158
+ 2772 0769 7D000000 		.4byte	.LVL159-1
+ 2773 076d 0100     		.2byte	0x1
+ 2774 076f 50       		.byte	0x50
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 63
+
+
+ 2775 0770 7D000000 		.4byte	.LVL159-1
+ 2776 0774 8C000000 		.4byte	.LVL163
+ 2777 0778 0400     		.2byte	0x4
+ 2778 077a F3       		.byte	0xf3
+ 2779 077b 01       		.uleb128 0x1
+ 2780 077c 50       		.byte	0x50
+ 2781 077d 9F       		.byte	0x9f
+ 2782 077e 8C000000 		.4byte	.LVL163
+ 2783 0782 8F000000 		.4byte	.LVL164-1
+ 2784 0786 0100     		.2byte	0x1
+ 2785 0788 50       		.byte	0x50
+ 2786 0789 8F000000 		.4byte	.LVL164-1
+ 2787 078d 9C000000 		.4byte	.LVL168
+ 2788 0791 0400     		.2byte	0x4
+ 2789 0793 F3       		.byte	0xf3
+ 2790 0794 01       		.uleb128 0x1
+ 2791 0795 50       		.byte	0x50
+ 2792 0796 9F       		.byte	0x9f
+ 2793 0797 9C000000 		.4byte	.LVL168
+ 2794 079b B2000000 		.4byte	.LVL170
+ 2795 079f 0100     		.2byte	0x1
+ 2796 07a1 50       		.byte	0x50
+ 2797 07a2 B2000000 		.4byte	.LVL170
+ 2798 07a6 EA000000 		.4byte	.LVL179
+ 2799 07aa 0400     		.2byte	0x4
+ 2800 07ac F3       		.byte	0xf3
+ 2801 07ad 01       		.uleb128 0x1
+ 2802 07ae 50       		.byte	0x50
+ 2803 07af 9F       		.byte	0x9f
+ 2804 07b0 EA000000 		.4byte	.LVL179
+ 2805 07b4 F2000000 		.4byte	.LVL181
+ 2806 07b8 0100     		.2byte	0x1
+ 2807 07ba 50       		.byte	0x50
+ 2808 07bb F2000000 		.4byte	.LVL181
+ 2809 07bf 1C010000 		.4byte	.LFE7
+ 2810 07c3 0400     		.2byte	0x4
+ 2811 07c5 F3       		.byte	0xf3
+ 2812 07c6 01       		.uleb128 0x1
+ 2813 07c7 50       		.byte	0x50
+ 2814 07c8 9F       		.byte	0x9f
+ 2815 07c9 00000000 		.4byte	0
+ 2816 07cd 00000000 		.4byte	0
+ 2817              	.LLST30:
+ 2818 07d1 BC000000 		.4byte	.LVL172
+ 2819 07d5 DC000000 		.4byte	.LVL175
+ 2820 07d9 0100     		.2byte	0x1
+ 2821 07db 54       		.byte	0x54
+ 2822 07dc 00000000 		.4byte	0
+ 2823 07e0 00000000 		.4byte	0
+ 2824              	.LLST31:
+ 2825 07e4 CA000000 		.4byte	.LVL173
+ 2826 07e8 EA000000 		.4byte	.LVL179
+ 2827 07ec 0100     		.2byte	0x1
+ 2828 07ee 55       		.byte	0x55
+ 2829 07ef 00000000 		.4byte	0
+ 2830 07f3 00000000 		.4byte	0
+ 2831              	.LLST32:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 64
+
+
+ 2832 07f7 AC000000 		.4byte	.LVL169
+ 2833 07fb B4000000 		.4byte	.LVL171
+ 2834 07ff 0100     		.2byte	0x1
+ 2835 0801 53       		.byte	0x53
+ 2836 0802 F0000000 		.4byte	.LVL180
+ 2837 0806 F2000000 		.4byte	.LVL181
+ 2838 080a 0100     		.2byte	0x1
+ 2839 080c 53       		.byte	0x53
+ 2840 080d 00000000 		.4byte	0
+ 2841 0811 00000000 		.4byte	0
+ 2842              	.LLST33:
+ 2843 0815 1E000000 		.4byte	.LVL132
+ 2844 0819 24000000 		.4byte	.LVL133
+ 2845 081d 0300     		.2byte	0x3
+ 2846 081f 09       		.byte	0x9
+ 2847 0820 FE       		.byte	0xfe
+ 2848 0821 9F       		.byte	0x9f
+ 2849 0822 24000000 		.4byte	.LVL133
+ 2850 0826 2A000000 		.4byte	.LVL134
+ 2851 082a 0300     		.2byte	0x3
+ 2852 082c 09       		.byte	0x9
+ 2853 082d FF       		.byte	0xff
+ 2854 082e 9F       		.byte	0x9f
+ 2855 082f 34000000 		.4byte	.LVL137
+ 2856 0833 3A000000 		.4byte	.LVL139
+ 2857 0837 0100     		.2byte	0x1
+ 2858 0839 54       		.byte	0x54
+ 2859 083a 46000000 		.4byte	.LVL142
+ 2860 083e 4C000000 		.4byte	.LVL144
+ 2861 0842 0100     		.2byte	0x1
+ 2862 0844 54       		.byte	0x54
+ 2863 0845 58000000 		.4byte	.LVL147
+ 2864 0849 5A000000 		.4byte	.LVL148
+ 2865 084d 0100     		.2byte	0x1
+ 2866 084f 54       		.byte	0x54
+ 2867 0850 64000000 		.4byte	.LVL151
+ 2868 0854 6A000000 		.4byte	.LVL153
+ 2869 0858 0100     		.2byte	0x1
+ 2870 085a 54       		.byte	0x54
+ 2871 085b 74000000 		.4byte	.LVL156
+ 2872 085f 7A000000 		.4byte	.LVL158
+ 2873 0863 0100     		.2byte	0x1
+ 2874 0865 54       		.byte	0x54
+ 2875 0866 86000000 		.4byte	.LVL161
+ 2876 086a 8C000000 		.4byte	.LVL163
+ 2877 086e 0100     		.2byte	0x1
+ 2878 0870 54       		.byte	0x54
+ 2879 0871 96000000 		.4byte	.LVL166
+ 2880 0875 9C000000 		.4byte	.LVL168
+ 2881 0879 0100     		.2byte	0x1
+ 2882 087b 54       		.byte	0x54
+ 2883 087c E8000000 		.4byte	.LVL178
+ 2884 0880 EA000000 		.4byte	.LVL179
+ 2885 0884 0100     		.2byte	0x1
+ 2886 0886 54       		.byte	0x54
+ 2887 0887 F2000000 		.4byte	.LVL181
+ 2888 088b 02010000 		.4byte	.LVL184
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 65
+
+
+ 2889 088f 0100     		.2byte	0x1
+ 2890 0891 54       		.byte	0x54
+ 2891 0892 00000000 		.4byte	0
+ 2892 0896 00000000 		.4byte	0
+ 2893              	.LLST34:
+ 2894 089a FC000000 		.4byte	.LVL182
+ 2895 089e FE000000 		.4byte	.LVL183
+ 2896 08a2 0100     		.2byte	0x1
+ 2897 08a4 50       		.byte	0x50
+ 2898 08a5 00000000 		.4byte	0
+ 2899 08a9 00000000 		.4byte	0
+ 2900              	.LLST35:
+ 2901 08ad 32000000 		.4byte	.LVL136
+ 2902 08b1 34000000 		.4byte	.LVL137
+ 2903 08b5 0100     		.2byte	0x1
+ 2904 08b7 54       		.byte	0x54
+ 2905 08b8 42000000 		.4byte	.LVL141
+ 2906 08bc 46000000 		.4byte	.LVL142
+ 2907 08c0 0100     		.2byte	0x1
+ 2908 08c2 54       		.byte	0x54
+ 2909 08c3 54000000 		.4byte	.LVL146
+ 2910 08c7 58000000 		.4byte	.LVL147
+ 2911 08cb 0100     		.2byte	0x1
+ 2912 08cd 54       		.byte	0x54
+ 2913 08ce 62000000 		.4byte	.LVL150
+ 2914 08d2 64000000 		.4byte	.LVL151
+ 2915 08d6 0100     		.2byte	0x1
+ 2916 08d8 54       		.byte	0x54
+ 2917 08d9 72000000 		.4byte	.LVL155
+ 2918 08dd 74000000 		.4byte	.LVL156
+ 2919 08e1 0100     		.2byte	0x1
+ 2920 08e3 54       		.byte	0x54
+ 2921 08e4 82000000 		.4byte	.LVL160
+ 2922 08e8 86000000 		.4byte	.LVL161
+ 2923 08ec 0100     		.2byte	0x1
+ 2924 08ee 54       		.byte	0x54
+ 2925 08ef 94000000 		.4byte	.LVL165
+ 2926 08f3 96000000 		.4byte	.LVL166
+ 2927 08f7 0100     		.2byte	0x1
+ 2928 08f9 54       		.byte	0x54
+ 2929 08fa DC000000 		.4byte	.LVL175
+ 2930 08fe E6000000 		.4byte	.LVL177
+ 2931 0902 0100     		.2byte	0x1
+ 2932 0904 54       		.byte	0x54
+ 2933 0905 00000000 		.4byte	0
+ 2934 0909 00000000 		.4byte	0
+ 2935              	.LLST36:
+ 2936 090d 02000000 		.4byte	.LVL131
+ 2937 0911 2E000000 		.4byte	.LVL135
+ 2938 0915 0200     		.2byte	0x2
+ 2939 0917 30       		.byte	0x30
+ 2940 0918 9F       		.byte	0x9f
+ 2941 0919 2E000000 		.4byte	.LVL135
+ 2942 091d 37000000 		.4byte	.LVL138-1
+ 2943 0921 0100     		.2byte	0x1
+ 2944 0923 50       		.byte	0x50
+ 2945 0924 3A000000 		.4byte	.LVL139
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 66
+
+
+ 2946 0928 3E000000 		.4byte	.LVL140
+ 2947 092c 0200     		.2byte	0x2
+ 2948 092e 30       		.byte	0x30
+ 2949 092f 9F       		.byte	0x9f
+ 2950 0930 3E000000 		.4byte	.LVL140
+ 2951 0934 49000000 		.4byte	.LVL143-1
+ 2952 0938 0100     		.2byte	0x1
+ 2953 093a 50       		.byte	0x50
+ 2954 093b 4C000000 		.4byte	.LVL144
+ 2955 093f 50000000 		.4byte	.LVL145
+ 2956 0943 0200     		.2byte	0x2
+ 2957 0945 30       		.byte	0x30
+ 2958 0946 9F       		.byte	0x9f
+ 2959 0947 5A000000 		.4byte	.LVL148
+ 2960 094b 5E000000 		.4byte	.LVL149
+ 2961 094f 0200     		.2byte	0x2
+ 2962 0951 30       		.byte	0x30
+ 2963 0952 9F       		.byte	0x9f
+ 2964 0953 5E000000 		.4byte	.LVL149
+ 2965 0957 67000000 		.4byte	.LVL152-1
+ 2966 095b 0100     		.2byte	0x1
+ 2967 095d 50       		.byte	0x50
+ 2968 095e 6A000000 		.4byte	.LVL153
+ 2969 0962 6E000000 		.4byte	.LVL154
+ 2970 0966 0200     		.2byte	0x2
+ 2971 0968 30       		.byte	0x30
+ 2972 0969 9F       		.byte	0x9f
+ 2973 096a 6E000000 		.4byte	.LVL154
+ 2974 096e 77000000 		.4byte	.LVL157-1
+ 2975 0972 0100     		.2byte	0x1
+ 2976 0974 50       		.byte	0x50
+ 2977 0975 7A000000 		.4byte	.LVL158
+ 2978 0979 7E000000 		.4byte	.LVL159
+ 2979 097d 0200     		.2byte	0x2
+ 2980 097f 30       		.byte	0x30
+ 2981 0980 9F       		.byte	0x9f
+ 2982 0981 7E000000 		.4byte	.LVL159
+ 2983 0985 89000000 		.4byte	.LVL162-1
+ 2984 0989 0100     		.2byte	0x1
+ 2985 098b 50       		.byte	0x50
+ 2986 098c 8C000000 		.4byte	.LVL163
+ 2987 0990 90000000 		.4byte	.LVL164
+ 2988 0994 0200     		.2byte	0x2
+ 2989 0996 30       		.byte	0x30
+ 2990 0997 9F       		.byte	0x9f
+ 2991 0998 90000000 		.4byte	.LVL164
+ 2992 099c 99000000 		.4byte	.LVL167-1
+ 2993 09a0 0100     		.2byte	0x1
+ 2994 09a2 50       		.byte	0x50
+ 2995 09a3 9C000000 		.4byte	.LVL168
+ 2996 09a7 CE000000 		.4byte	.LVL174
+ 2997 09ab 0200     		.2byte	0x2
+ 2998 09ad 30       		.byte	0x30
+ 2999 09ae 9F       		.byte	0x9f
+ 3000 09af CE000000 		.4byte	.LVL174
+ 3001 09b3 DF000000 		.4byte	.LVL176-1
+ 3002 09b7 0100     		.2byte	0x1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 67
+
+
+ 3003 09b9 50       		.byte	0x50
+ 3004 09ba EA000000 		.4byte	.LVL179
+ 3005 09be F2000000 		.4byte	.LVL181
+ 3006 09c2 0200     		.2byte	0x2
+ 3007 09c4 30       		.byte	0x30
+ 3008 09c5 9F       		.byte	0x9f
+ 3009 09c6 00000000 		.4byte	0
+ 3010 09ca 00000000 		.4byte	0
+ 3011              		.section	.debug_aranges,"",%progbits
+ 3012 0000 4C000000 		.4byte	0x4c
+ 3013 0004 0200     		.2byte	0x2
+ 3014 0006 00000000 		.4byte	.Ldebug_info0
+ 3015 000a 04       		.byte	0x4
+ 3016 000b 00       		.byte	0
+ 3017 000c 0000     		.2byte	0
+ 3018 000e 0000     		.2byte	0
+ 3019 0010 00000000 		.4byte	.LFB1
+ 3020 0014 34000000 		.4byte	.LFE1-.LFB1
+ 3021 0018 00000000 		.4byte	.LFB2
+ 3022 001c 34000000 		.4byte	.LFE2-.LFB2
+ 3023 0020 00000000 		.4byte	.LFB3
+ 3024 0024 C8000000 		.4byte	.LFE3-.LFB3
+ 3025 0028 00000000 		.4byte	.LFB4
+ 3026 002c C8000000 		.4byte	.LFE4-.LFB4
+ 3027 0030 00000000 		.4byte	.LFB5
+ 3028 0034 60000000 		.4byte	.LFE5-.LFB5
+ 3029 0038 00000000 		.4byte	.LFB6
+ 3030 003c 38010000 		.4byte	.LFE6-.LFB6
+ 3031 0040 00000000 		.4byte	.LFB7
+ 3032 0044 1C010000 		.4byte	.LFE7-.LFB7
+ 3033 0048 00000000 		.4byte	0
+ 3034 004c 00000000 		.4byte	0
+ 3035              		.section	.debug_ranges,"",%progbits
+ 3036              	.Ldebug_ranges0:
+ 3037 0000 00000000 		.4byte	.LFB1
+ 3038 0004 34000000 		.4byte	.LFE1
+ 3039 0008 00000000 		.4byte	.LFB2
+ 3040 000c 34000000 		.4byte	.LFE2
+ 3041 0010 00000000 		.4byte	.LFB3
+ 3042 0014 C8000000 		.4byte	.LFE3
+ 3043 0018 00000000 		.4byte	.LFB4
+ 3044 001c C8000000 		.4byte	.LFE4
+ 3045 0020 00000000 		.4byte	.LFB5
+ 3046 0024 60000000 		.4byte	.LFE5
+ 3047 0028 00000000 		.4byte	.LFB6
+ 3048 002c 38010000 		.4byte	.LFE6
+ 3049 0030 00000000 		.4byte	.LFB7
+ 3050 0034 1C010000 		.4byte	.LFE7
+ 3051 0038 00000000 		.4byte	0
+ 3052 003c 00000000 		.4byte	0
+ 3053              		.section	.debug_line,"",%progbits
+ 3054              	.Ldebug_line0:
+ 3055 0000 A4010000 		.section	.debug_str,"MS",%progbits,1
+ 3055      02005B00 
+ 3055      00000201 
+ 3055      FB0E0D00 
+ 3055      01010101 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 68
+
+
+ 3056              	.LASF33:
+ 3057 0000 7072696F 		.ascii	"prio\000"
+ 3057      00
+ 3058              	.LASF42:
+ 3059 0005 4350555F 		.ascii	"CPU_IntSrcPrioGet\000"
+ 3059      496E7453 
+ 3059      72635072 
+ 3059      696F4765 
+ 3059      7400
+ 3060              	.LASF29:
+ 3061 0017 6370755F 		.ascii	"cpu_sr\000"
+ 3061      737200
+ 3062              	.LASF28:
+ 3063 001e 706F735F 		.ascii	"pos_max\000"
+ 3063      6D617800 
+ 3064              	.LASF3:
+ 3065 0026 73686F72 		.ascii	"short unsigned int\000"
+ 3065      7420756E 
+ 3065      7369676E 
+ 3065      65642069 
+ 3065      6E7400
+ 3066              	.LASF32:
+ 3067 0039 4350555F 		.ascii	"CPU_IntSrcPrioSet\000"
+ 3067      496E7453 
+ 3067      72635072 
+ 3067      696F5365 
+ 3067      7400
+ 3068              	.LASF21:
+ 3069 004b 6269745F 		.ascii	"bit_nbr\000"
+ 3069      6E627200 
+ 3070              	.LASF31:
+ 3071 0053 4350555F 		.ascii	"CPU_IntSrcPendClr\000"
+ 3071      496E7453 
+ 3071      72635065 
+ 3071      6E64436C 
+ 3071      7200
+ 3072              	.LASF7:
+ 3073 0065 4350555F 		.ascii	"CPU_INT32U\000"
+ 3073      494E5433 
+ 3073      325500
+ 3074              	.LASF36:
+ 3075 0070 4350555F 		.ascii	"CPU_SR_Save\000"
+ 3075      53525F53 
+ 3075      61766500 
+ 3076              	.LASF11:
+ 3077 007c 666C6F61 		.ascii	"float\000"
+ 3077      7400
+ 3078              	.LASF15:
+ 3079 0082 4350555F 		.ascii	"CPU_SR\000"
+ 3079      535200
+ 3080              	.LASF27:
+ 3081 0089 67726F75 		.ascii	"group\000"
+ 3081      7000
+ 3082              	.LASF39:
+ 3083 008f 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 3083      43313120 
+ 3083      352E342E 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 69
+
+
+ 3083      31203230 
+ 3083      31363036 
+ 3084 00c2 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 3084      20726576 
+ 3084      6973696F 
+ 3084      6E203233 
+ 3084      37373135 
+ 3085 00f5 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 3085      66756E63 
+ 3085      74696F6E 
+ 3085      2D736563 
+ 3085      74696F6E 
+ 3086              	.LASF17:
+ 3087 011d 6C6F6E67 		.ascii	"long unsigned int\000"
+ 3087      20756E73 
+ 3087      69676E65 
+ 3087      6420696E 
+ 3087      7400
+ 3088              	.LASF35:
+ 3089 012f 74656D70 		.ascii	"temp\000"
+ 3089      00
+ 3090              	.LASF20:
+ 3091 0134 61646472 		.ascii	"addr\000"
+ 3091      00
+ 3092              	.LASF4:
+ 3093 0139 4350555F 		.ascii	"CPU_INT08U\000"
+ 3093      494E5430 
+ 3093      385500
+ 3094              	.LASF24:
+ 3095 0144 4350555F 		.ascii	"CPU_BitBandClr\000"
+ 3095      42697442 
+ 3095      616E6443 
+ 3095      6C7200
+ 3096              	.LASF40:
+ 3097 0153 75432D43 		.ascii	"uC-CPU\\ARM-Cortex-M3\\GNU\\cpu_c.c\000"
+ 3097      50555C41 
+ 3097      524D2D43 
+ 3097      6F727465 
+ 3097      782D4D33 
+ 3098              	.LASF1:
+ 3099 0174 756E7369 		.ascii	"unsigned char\000"
+ 3099      676E6564 
+ 3099      20636861 
+ 3099      7200
+ 3100              	.LASF23:
+ 3101 0182 6269745F 		.ascii	"bit_word_addr\000"
+ 3101      776F7264 
+ 3101      5F616464 
+ 3101      7200
+ 3102              	.LASF12:
+ 3103 0190 646F7562 		.ascii	"double\000"
+ 3103      6C6500
+ 3104              	.LASF41:
+ 3105 0197 433A5C63 		.ascii	"C:\\cypress\\esw_uCOS3_cykit\\esw_uCOS3_cykit.cydsn"
+ 3105      79707265 
+ 3105      73735C65 
+ 3105      73775F75 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 70
+
+
+ 3105      434F5333 
+ 3106 01c7 00       		.ascii	"\000"
+ 3107              	.LASF25:
+ 3108 01c8 4350555F 		.ascii	"CPU_BitBandSet\000"
+ 3108      42697442 
+ 3108      616E6453 
+ 3108      657400
+ 3109              	.LASF8:
+ 3110 01d7 756E7369 		.ascii	"unsigned int\000"
+ 3110      676E6564 
+ 3110      20696E74 
+ 3110      00
+ 3111              	.LASF34:
+ 3112 01e4 7072696F 		.ascii	"prio_32\000"
+ 3112      5F333200 
+ 3113              	.LASF9:
+ 3114 01ec 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 3114      206C6F6E 
+ 3114      6720756E 
+ 3114      7369676E 
+ 3114      65642069 
+ 3115              	.LASF5:
+ 3116 0203 4350555F 		.ascii	"CPU_INT16S\000"
+ 3116      494E5431 
+ 3116      365300
+ 3117              	.LASF18:
+ 3118 020e 6C6F6E67 		.ascii	"long double\000"
+ 3118      20646F75 
+ 3118      626C6500 
+ 3119              	.LASF19:
+ 3120 021a 73697A65 		.ascii	"sizetype\000"
+ 3120      74797065 
+ 3120      00
+ 3121              	.LASF26:
+ 3122 0223 4350555F 		.ascii	"CPU_IntSrcDis\000"
+ 3122      496E7453 
+ 3122      72634469 
+ 3122      7300
+ 3123              	.LASF10:
+ 3124 0231 6C6F6E67 		.ascii	"long long int\000"
+ 3124      206C6F6E 
+ 3124      6720696E 
+ 3124      7400
+ 3125              	.LASF30:
+ 3126 023f 4350555F 		.ascii	"CPU_IntSrcEn\000"
+ 3126      496E7453 
+ 3126      7263456E 
+ 3126      00
+ 3127              	.LASF13:
+ 3128 024c 4350555F 		.ascii	"CPU_REG32\000"
+ 3128      52454733 
+ 3128      3200
+ 3129              	.LASF6:
+ 3130 0256 73686F72 		.ascii	"short int\000"
+ 3130      7420696E 
+ 3130      7400
+ 3131              	.LASF16:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccOFu0lo.s 			page 71
+
+
+ 3132 0260 6C6F6E67 		.ascii	"long int\000"
+ 3132      20696E74 
+ 3132      00
+ 3133              	.LASF0:
+ 3134 0269 63686172 		.ascii	"char\000"
+ 3134      00
+ 3135              	.LASF37:
+ 3136 026e 4350555F 		.ascii	"CPU_SR_Restore\000"
+ 3136      53525F52 
+ 3136      6573746F 
+ 3136      726500
+ 3137              	.LASF14:
+ 3138 027d 4350555F 		.ascii	"CPU_ADDR\000"
+ 3138      41444452 
+ 3138      00
+ 3139              	.LASF22:
+ 3140 0286 6269745F 		.ascii	"bit_word_off\000"
+ 3140      776F7264 
+ 3140      5F6F6666 
+ 3140      00
+ 3141              	.LASF2:
+ 3142 0293 7369676E 		.ascii	"signed char\000"
+ 3142      65642063 
+ 3142      68617200 
+ 3143              	.LASF38:
+ 3144 029f 4350555F 		.ascii	"CPU_RevBits\000"
+ 3144      52657642 
+ 3144      69747300 
+ 3145              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

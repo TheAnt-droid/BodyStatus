@@ -1,0 +1,3871 @@
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"lib_mem.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.Mem_Init,"ax",%progbits
+  20              		.align	2
+  21              		.global	Mem_Init
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	Mem_Init, %function
+  25              	Mem_Init:
+  26              	.LFB1:
+  27              		.file 1 "uC-LIB\\lib_mem.c"
+   1:uC-LIB/lib_mem.c **** /*
+   2:uC-LIB/lib_mem.c **** ***************************************************************************************************
+   3:uC-LIB/lib_mem.c **** *                                                uC/LIB
+   4:uC-LIB/lib_mem.c **** *                                        CUSTOM LIBRARY MODULES
+   5:uC-LIB/lib_mem.c **** *
+   6:uC-LIB/lib_mem.c **** *                          (c) Copyright 2004-2012; Micrium, Inc.; Weston, FL
+   7:uC-LIB/lib_mem.c **** *
+   8:uC-LIB/lib_mem.c **** *               All rights reserved.  Protected by international copyright laws.
+   9:uC-LIB/lib_mem.c **** *
+  10:uC-LIB/lib_mem.c **** *               uC/LIB is provided in source form to registered licensees ONLY.  It is
+  11:uC-LIB/lib_mem.c **** *               illegal to distribute this source code to any third party unless you receive
+  12:uC-LIB/lib_mem.c **** *               written permission by an authorized Micrium representative.  Knowledge of
+  13:uC-LIB/lib_mem.c **** *               the source code may NOT be used to develop a similar product.
+  14:uC-LIB/lib_mem.c **** *
+  15:uC-LIB/lib_mem.c **** *               Please help us continue to provide the Embedded community with the finest
+  16:uC-LIB/lib_mem.c **** *               software available.  Your honesty is greatly appreciated.
+  17:uC-LIB/lib_mem.c **** *
+  18:uC-LIB/lib_mem.c **** *               You can contact us at www.micrium.com.
+  19:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  20:uC-LIB/lib_mem.c **** */
+  21:uC-LIB/lib_mem.c **** 
+  22:uC-LIB/lib_mem.c **** /*
+  23:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  24:uC-LIB/lib_mem.c **** *
+  25:uC-LIB/lib_mem.c **** *                                     STANDARD MEMORY OPERATIONS
+  26:uC-LIB/lib_mem.c **** *
+  27:uC-LIB/lib_mem.c **** * Filename      : lib_mem.c
+  28:uC-LIB/lib_mem.c **** * Version       : V1.37.00
+  29:uC-LIB/lib_mem.c **** * Programmer(s) : ITJ
+  30:uC-LIB/lib_mem.c **** *                 FGK
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 2
+
+
+  31:uC-LIB/lib_mem.c **** *                 JFD
+  32:uC-LIB/lib_mem.c **** *                 FBJ
+  33:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  34:uC-LIB/lib_mem.c **** * Note(s)       : (1) NO compiler-supplied standard library functions are used in library or produc
+  35:uC-LIB/lib_mem.c **** *
+  36:uC-LIB/lib_mem.c **** *                     (a) ALL standard library functions are implemented in the custom library modu
+  37:uC-LIB/lib_mem.c **** *
+  38:uC-LIB/lib_mem.c **** *                         (1) \<Custom Library Directory>\lib_*.*
+  39:uC-LIB/lib_mem.c **** *
+  40:uC-LIB/lib_mem.c **** *                         (2) \<Custom Library Directory>\Ports\<cpu>\<compiler>\lib*_a.*
+  41:uC-LIB/lib_mem.c **** *
+  42:uC-LIB/lib_mem.c **** *                               where
+  43:uC-LIB/lib_mem.c **** *                                       <Custom Library Directory>      directory path for custom l
+  44:uC-LIB/lib_mem.c **** *                                       <cpu>                           directory name for specific
+  45:uC-LIB/lib_mem.c **** *                                       <compiler>                      directory name for specific
+  46:uC-LIB/lib_mem.c **** *
+  47:uC-LIB/lib_mem.c **** *                     (b) Product-specific library functions are implemented in individual products
+  48:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  49:uC-LIB/lib_mem.c **** */
+  50:uC-LIB/lib_mem.c **** 
+  51:uC-LIB/lib_mem.c **** 
+  52:uC-LIB/lib_mem.c **** /*
+  53:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  54:uC-LIB/lib_mem.c **** *                                            INCLUDE FILES
+  55:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  56:uC-LIB/lib_mem.c **** */
+  57:uC-LIB/lib_mem.c **** 
+  58:uC-LIB/lib_mem.c **** #define    MICRIUM_SOURCE
+  59:uC-LIB/lib_mem.c **** #define    LIB_MEM_MODULE
+  60:uC-LIB/lib_mem.c **** #include  <lib_mem.h>
+  61:uC-LIB/lib_mem.c **** 
+  62:uC-LIB/lib_mem.c **** 
+  63:uC-LIB/lib_mem.c **** /*$PAGE*/
+  64:uC-LIB/lib_mem.c **** /*
+  65:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  66:uC-LIB/lib_mem.c **** *                                            LOCAL DEFINES
+  67:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  68:uC-LIB/lib_mem.c **** */
+  69:uC-LIB/lib_mem.c **** 
+  70:uC-LIB/lib_mem.c **** 
+  71:uC-LIB/lib_mem.c **** /*
+  72:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  73:uC-LIB/lib_mem.c **** *                                           LOCAL CONSTANTS
+  74:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  75:uC-LIB/lib_mem.c **** */
+  76:uC-LIB/lib_mem.c **** 
+  77:uC-LIB/lib_mem.c **** 
+  78:uC-LIB/lib_mem.c **** /*
+  79:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  80:uC-LIB/lib_mem.c **** *                                          LOCAL DATA TYPES
+  81:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  82:uC-LIB/lib_mem.c **** */
+  83:uC-LIB/lib_mem.c **** 
+  84:uC-LIB/lib_mem.c **** 
+  85:uC-LIB/lib_mem.c **** /*
+  86:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  87:uC-LIB/lib_mem.c **** *                                            LOCAL TABLES
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 3
+
+
+  88:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  89:uC-LIB/lib_mem.c **** */
+  90:uC-LIB/lib_mem.c **** 
+  91:uC-LIB/lib_mem.c **** 
+  92:uC-LIB/lib_mem.c **** /*
+  93:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  94:uC-LIB/lib_mem.c **** *                                       LOCAL GLOBAL VARIABLES
+  95:uC-LIB/lib_mem.c **** ***************************************************************************************************
+  96:uC-LIB/lib_mem.c **** */
+  97:uC-LIB/lib_mem.c **** 
+  98:uC-LIB/lib_mem.c **** #if     (LIB_MEM_CFG_ALLOC_EN == DEF_ENABLED)
+  99:uC-LIB/lib_mem.c **** MEM_POOL    *Mem_PoolTbl;                                               /* Mem      pool/seg tbl.  
+ 100:uC-LIB/lib_mem.c **** MEM_POOL     Mem_PoolHeap;                                              /* Mem heap pool/seg.      
+ 101:uC-LIB/lib_mem.c **** 
+ 102:uC-LIB/lib_mem.c **** #ifndef  LIB_MEM_CFG_HEAP_BASE_ADDR
+ 103:uC-LIB/lib_mem.c **** CPU_INT08U   Mem_Heap[LIB_MEM_CFG_HEAP_SIZE];                           /* Mem heap.               
+ 104:uC-LIB/lib_mem.c **** #endif
+ 105:uC-LIB/lib_mem.c **** #endif
+ 106:uC-LIB/lib_mem.c **** 
+ 107:uC-LIB/lib_mem.c **** 
+ 108:uC-LIB/lib_mem.c **** /*
+ 109:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 110:uC-LIB/lib_mem.c **** *                                      LOCAL FUNCTION PROTOTYPES
+ 111:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 112:uC-LIB/lib_mem.c **** */
+ 113:uC-LIB/lib_mem.c **** 
+ 114:uC-LIB/lib_mem.c **** #if (LIB_MEM_CFG_ALLOC_EN == DEF_ENABLED)                               /* -------------- MEM POOL 
+ 115:uC-LIB/lib_mem.c **** 
+ 116:uC-LIB/lib_mem.c **** #if (LIB_MEM_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)
+ 117:uC-LIB/lib_mem.c **** static  CPU_BOOLEAN   Mem_PoolBlkIsValidAddr(MEM_POOL          *pmem_pool,
+ 118:uC-LIB/lib_mem.c ****                                              void              *pmem_blk);
+ 119:uC-LIB/lib_mem.c **** #endif
+ 120:uC-LIB/lib_mem.c **** 
+ 121:uC-LIB/lib_mem.c **** 
+ 122:uC-LIB/lib_mem.c **** static  CPU_SIZE_T    Mem_SegCalcTotSize    (void              *pmem_addr,
+ 123:uC-LIB/lib_mem.c ****                                              MEM_POOL_BLK_QTY   blk_nbr,
+ 124:uC-LIB/lib_mem.c ****                                              CPU_SIZE_T         blk_size,
+ 125:uC-LIB/lib_mem.c ****                                              CPU_SIZE_T         blk_align);
+ 126:uC-LIB/lib_mem.c **** 
+ 127:uC-LIB/lib_mem.c **** static  void         *Mem_SegAlloc          (MEM_POOL          *pmem_pool,
+ 128:uC-LIB/lib_mem.c ****                                              CPU_SIZE_T         size,
+ 129:uC-LIB/lib_mem.c ****                                              CPU_SIZE_T         align);
+ 130:uC-LIB/lib_mem.c **** 
+ 131:uC-LIB/lib_mem.c **** #endif
+ 132:uC-LIB/lib_mem.c **** 
+ 133:uC-LIB/lib_mem.c **** 
+ 134:uC-LIB/lib_mem.c **** /*
+ 135:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 136:uC-LIB/lib_mem.c **** *                                     LOCAL CONFIGURATION ERRORS
+ 137:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 138:uC-LIB/lib_mem.c **** */
+ 139:uC-LIB/lib_mem.c **** 
+ 140:uC-LIB/lib_mem.c **** 
+ 141:uC-LIB/lib_mem.c **** /*$PAGE*/
+ 142:uC-LIB/lib_mem.c **** /*
+ 143:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 144:uC-LIB/lib_mem.c **** *                                             Mem_Init()
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 4
+
+
+ 145:uC-LIB/lib_mem.c **** *
+ 146:uC-LIB/lib_mem.c **** * Description : (1) Initialize Memory Management Module :
+ 147:uC-LIB/lib_mem.c **** *
+ 148:uC-LIB/lib_mem.c **** *                   (a) Initialize heap memory pool
+ 149:uC-LIB/lib_mem.c **** *                   (b) Initialize      memory pool table
+ 150:uC-LIB/lib_mem.c **** *
+ 151:uC-LIB/lib_mem.c **** *
+ 152:uC-LIB/lib_mem.c **** * Argument(s) : none.
+ 153:uC-LIB/lib_mem.c **** *
+ 154:uC-LIB/lib_mem.c **** * Return(s)   : none.
+ 155:uC-LIB/lib_mem.c **** *
+ 156:uC-LIB/lib_mem.c **** * Caller(s)   : Application.
+ 157:uC-LIB/lib_mem.c **** *
+ 158:uC-LIB/lib_mem.c **** * Note(s)     : (2) Mem_Init() MUST be called ... :
+ 159:uC-LIB/lib_mem.c **** *
+ 160:uC-LIB/lib_mem.c **** *                   (a) ONLY ONCE from a product's application; ...
+ 161:uC-LIB/lib_mem.c **** *                   (b) BEFORE product's application calls any memory library module function(s)
+ 162:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 163:uC-LIB/lib_mem.c **** */
+ 164:uC-LIB/lib_mem.c **** 
+ 165:uC-LIB/lib_mem.c **** void  Mem_Init (void)
+ 166:uC-LIB/lib_mem.c **** {
+  28              		.loc 1 166 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33 0000 7047     		bx	lr
+  34              		.cfi_endproc
+  35              	.LFE1:
+  36              		.size	Mem_Init, .-Mem_Init
+  37 0002 00BF     		.section	.text.Mem_Set,"ax",%progbits
+  38              		.align	2
+  39              		.global	Mem_Set
+  40              		.thumb
+  41              		.thumb_func
+  42              		.type	Mem_Set, %function
+  43              	Mem_Set:
+  44              	.LFB3:
+ 167:uC-LIB/lib_mem.c **** #if (LIB_MEM_CFG_ALLOC_EN == DEF_ENABLED)
+ 168:uC-LIB/lib_mem.c ****     MEM_POOL  *pmem_pool;
+ 169:uC-LIB/lib_mem.c **** 
+ 170:uC-LIB/lib_mem.c ****                                                                         /* --------- INIT MEM HEAP 
+ 171:uC-LIB/lib_mem.c ****     pmem_pool                   = (MEM_POOL   *)&Mem_PoolHeap;
+ 172:uC-LIB/lib_mem.c ****     pmem_pool->Type             = (LIB_MEM_TYPE) LIB_MEM_TYPE_HEAP;
+ 173:uC-LIB/lib_mem.c ****     pmem_pool->SegHeadPtr       = (MEM_POOL   *)&Mem_PoolHeap;          /* Heap seg head = heap seg
+ 174:uC-LIB/lib_mem.c ****     pmem_pool->SegPrevPtr       = (MEM_POOL   *) 0;
+ 175:uC-LIB/lib_mem.c ****     pmem_pool->SegNextPtr       = (MEM_POOL   *) 0;
+ 176:uC-LIB/lib_mem.c ****     pmem_pool->PoolPrevPtr      = (MEM_POOL   *) 0;
+ 177:uC-LIB/lib_mem.c ****     pmem_pool->PoolNextPtr      = (MEM_POOL   *) 0;
+ 178:uC-LIB/lib_mem.c ****     pmem_pool->PoolAddrStart    = (void       *) 0;
+ 179:uC-LIB/lib_mem.c ****     pmem_pool->PoolAddrEnd      = (void       *) 0;
+ 180:uC-LIB/lib_mem.c ****     pmem_pool->PoolPtrs         = (void      **) 0;
+ 181:uC-LIB/lib_mem.c ****     pmem_pool->BlkSize          = (CPU_SIZE_T  ) 0u;
+ 182:uC-LIB/lib_mem.c ****     pmem_pool->BlkNbr           = (CPU_SIZE_T  ) 0u;
+ 183:uC-LIB/lib_mem.c ****     pmem_pool->BlkIx            = (MEM_POOL_IX ) 0u;
+ 184:uC-LIB/lib_mem.c **** 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 5
+
+
+ 185:uC-LIB/lib_mem.c **** #ifdef  LIB_MEM_CFG_HEAP_BASE_ADDR
+ 186:uC-LIB/lib_mem.c ****     pmem_pool->SegAddr          = (void       *) LIB_MEM_CFG_HEAP_BASE_ADDR;
+ 187:uC-LIB/lib_mem.c ****     pmem_pool->SegAddrNextAvail = (void       *) LIB_MEM_CFG_HEAP_BASE_ADDR;
+ 188:uC-LIB/lib_mem.c **** #else
+ 189:uC-LIB/lib_mem.c ****     pmem_pool->SegAddr          = (void       *)&Mem_Heap[0];
+ 190:uC-LIB/lib_mem.c ****     pmem_pool->SegAddrNextAvail = (void       *)&Mem_Heap[0];
+ 191:uC-LIB/lib_mem.c **** #endif
+ 192:uC-LIB/lib_mem.c **** 
+ 193:uC-LIB/lib_mem.c ****     pmem_pool->SegSizeTot       = (CPU_SIZE_T  ) LIB_MEM_CFG_HEAP_SIZE;
+ 194:uC-LIB/lib_mem.c ****     pmem_pool->SegSizeRem       = (CPU_SIZE_T  ) LIB_MEM_CFG_HEAP_SIZE;
+ 195:uC-LIB/lib_mem.c **** 
+ 196:uC-LIB/lib_mem.c ****                                                                         /* ------------ INIT MEM PO
+ 197:uC-LIB/lib_mem.c ****     Mem_PoolTbl = &Mem_PoolHeap;
+ 198:uC-LIB/lib_mem.c **** #endif
+ 199:uC-LIB/lib_mem.c **** }
+ 200:uC-LIB/lib_mem.c **** 
+ 201:uC-LIB/lib_mem.c **** 
+ 202:uC-LIB/lib_mem.c **** /*$PAGE*/
+ 203:uC-LIB/lib_mem.c **** /*
+ 204:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 205:uC-LIB/lib_mem.c **** *                                              Mem_Clr()
+ 206:uC-LIB/lib_mem.c **** *
+ 207:uC-LIB/lib_mem.c **** * Description : Clear data buffer (see Note #2).
+ 208:uC-LIB/lib_mem.c **** *
+ 209:uC-LIB/lib_mem.c **** * Argument(s) : pmem        Pointer to memory buffer to clear.
+ 210:uC-LIB/lib_mem.c **** *
+ 211:uC-LIB/lib_mem.c **** *               size        Number of data buffer octets to clear (see Note #1).
+ 212:uC-LIB/lib_mem.c **** *
+ 213:uC-LIB/lib_mem.c **** * Return(s)   : none.
+ 214:uC-LIB/lib_mem.c **** *
+ 215:uC-LIB/lib_mem.c **** * Caller(s)   : Application.
+ 216:uC-LIB/lib_mem.c **** *
+ 217:uC-LIB/lib_mem.c **** * Note(s)     : (1) Null clears allowed (i.e. zero-length clears).
+ 218:uC-LIB/lib_mem.c **** *
+ 219:uC-LIB/lib_mem.c **** *                   See also 'Mem_Set()  Note #1'.
+ 220:uC-LIB/lib_mem.c **** *
+ 221:uC-LIB/lib_mem.c **** *               (2) Clear data by setting each data octet to 0.
+ 222:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 223:uC-LIB/lib_mem.c **** */
+ 224:uC-LIB/lib_mem.c **** 
+ 225:uC-LIB/lib_mem.c **** void  Mem_Clr (void        *pmem,
+ 226:uC-LIB/lib_mem.c ****                CPU_SIZE_T   size)
+ 227:uC-LIB/lib_mem.c **** {
+ 228:uC-LIB/lib_mem.c ****     Mem_Set(pmem,
+ 229:uC-LIB/lib_mem.c ****             0u,                                                 /* See Note #2.                    
+ 230:uC-LIB/lib_mem.c ****             size);
+ 231:uC-LIB/lib_mem.c **** }
+ 232:uC-LIB/lib_mem.c **** 
+ 233:uC-LIB/lib_mem.c **** 
+ 234:uC-LIB/lib_mem.c **** /*$PAGE*/
+ 235:uC-LIB/lib_mem.c **** /*
+ 236:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 237:uC-LIB/lib_mem.c **** *                                              Mem_Set()
+ 238:uC-LIB/lib_mem.c **** *
+ 239:uC-LIB/lib_mem.c **** * Description : Fill data buffer with specified data octet.
+ 240:uC-LIB/lib_mem.c **** *
+ 241:uC-LIB/lib_mem.c **** * Argument(s) : pmem        Pointer to memory buffer to fill with specified data octet.
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 6
+
+
+ 242:uC-LIB/lib_mem.c **** *
+ 243:uC-LIB/lib_mem.c **** *               data_val    Data fill octet value.
+ 244:uC-LIB/lib_mem.c **** *
+ 245:uC-LIB/lib_mem.c **** *               size        Number of data buffer octets to fill (see Note #1).
+ 246:uC-LIB/lib_mem.c **** *
+ 247:uC-LIB/lib_mem.c **** * Return(s)   : none.
+ 248:uC-LIB/lib_mem.c **** *
+ 249:uC-LIB/lib_mem.c **** * Caller(s)   : Application.
+ 250:uC-LIB/lib_mem.c **** *
+ 251:uC-LIB/lib_mem.c **** * Note(s)     : (1) Null sets allowed (i.e. zero-length sets).
+ 252:uC-LIB/lib_mem.c **** *
+ 253:uC-LIB/lib_mem.c **** *               (2) For best CPU performance, optimized to fill data buffer using 'CPU_ALIGN'-sized
+ 254:uC-LIB/lib_mem.c **** *                   words.
+ 255:uC-LIB/lib_mem.c **** *
+ 256:uC-LIB/lib_mem.c **** *                   (a) Since many word-aligned processors REQUIRE that multi-octet words be access
+ 257:uC-LIB/lib_mem.c **** *                       word-aligned addresses, 'CPU_ALIGN'-sized words MUST be accessed on 'CPU_AL
+ 258:uC-LIB/lib_mem.c **** *                       addresses.
+ 259:uC-LIB/lib_mem.c **** *
+ 260:uC-LIB/lib_mem.c **** *               (3) Modulo arithmetic is used to determine whether a memory buffer starts on a 'CPU
+ 261:uC-LIB/lib_mem.c **** *                   address boundary.
+ 262:uC-LIB/lib_mem.c **** *
+ 263:uC-LIB/lib_mem.c **** *                   Modulo arithmetic in ANSI-C REQUIREs operations performed on integer values.  T
+ 264:uC-LIB/lib_mem.c **** *                   address values MUST be cast to an appropriately-sized integer value PRIOR to an
+ 265:uC-LIB/lib_mem.c **** *                  'mem_align_mod' arithmetic operation.
+ 266:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 267:uC-LIB/lib_mem.c **** */
+ 268:uC-LIB/lib_mem.c **** 
+ 269:uC-LIB/lib_mem.c **** void  Mem_Set (void        *pmem,
+ 270:uC-LIB/lib_mem.c ****                CPU_INT08U   data_val,
+ 271:uC-LIB/lib_mem.c ****                CPU_SIZE_T   size)
+ 272:uC-LIB/lib_mem.c **** {
+  45              		.loc 1 272 0
+  46              		.cfi_startproc
+  47              		@ args = 0, pretend = 0, frame = 0
+  48              		@ frame_needed = 0, uses_anonymous_args = 0
+  49              		@ link register save eliminated.
+  50              	.LVL0:
+  51              		.loc 1 272 0
+  52 0000 10B4     		push	{r4}
+  53              		.cfi_def_cfa_offset 4
+  54              		.cfi_offset 4, -4
+  55              	.LVL1:
+ 273:uC-LIB/lib_mem.c ****     CPU_SIZE_T   size_rem;
+ 274:uC-LIB/lib_mem.c ****     CPU_ALIGN    data_align;
+ 275:uC-LIB/lib_mem.c ****     CPU_ALIGN   *pmem_align;
+ 276:uC-LIB/lib_mem.c ****     CPU_INT08U  *pmem_08;
+ 277:uC-LIB/lib_mem.c ****     CPU_DATA     mem_align_mod;
+ 278:uC-LIB/lib_mem.c ****     CPU_DATA     i;
+ 279:uC-LIB/lib_mem.c **** 
+ 280:uC-LIB/lib_mem.c **** 
+ 281:uC-LIB/lib_mem.c **** #if (LIB_MEM_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)
+ 282:uC-LIB/lib_mem.c ****     if (size < 1) {                                             /* See Note #1.                    
+ 283:uC-LIB/lib_mem.c ****         return;
+ 284:uC-LIB/lib_mem.c ****     }
+ 285:uC-LIB/lib_mem.c ****     if (pmem == (void *)0) {
+ 286:uC-LIB/lib_mem.c ****         return;
+ 287:uC-LIB/lib_mem.c ****     }
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 7
+
+
+ 288:uC-LIB/lib_mem.c **** #endif
+ 289:uC-LIB/lib_mem.c **** 
+ 290:uC-LIB/lib_mem.c **** 
+ 291:uC-LIB/lib_mem.c ****     data_align = 0u;
+ 292:uC-LIB/lib_mem.c ****     for (i = 0u; i < sizeof(CPU_ALIGN); i++) {                  /* Fill each data_align octet with 
+  56              		.loc 1 292 0
+  57 0002 0024     		movs	r4, #0
+ 291:uC-LIB/lib_mem.c ****     for (i = 0u; i < sizeof(CPU_ALIGN); i++) {                  /* Fill each data_align octet with 
+  58              		.loc 1 291 0
+  59 0004 2346     		mov	r3, r4
+  60              		.loc 1 292 0
+  61 0006 02E0     		b	.L3
+  62              	.LVL2:
+  63              	.L4:
+ 293:uC-LIB/lib_mem.c ****         data_align <<=  DEF_OCTET_NBR_BITS;
+ 294:uC-LIB/lib_mem.c ****         data_align  |= (CPU_ALIGN)data_val;
+  64              		.loc 1 294 0 discriminator 3
+  65 0008 41EA0323 		orr	r3, r1, r3, lsl #8
+  66              	.LVL3:
+ 292:uC-LIB/lib_mem.c ****         data_align <<=  DEF_OCTET_NBR_BITS;
+  67              		.loc 1 292 0 discriminator 3
+  68 000c 0134     		adds	r4, r4, #1
+  69              	.LVL4:
+  70              	.L3:
+ 292:uC-LIB/lib_mem.c ****         data_align <<=  DEF_OCTET_NBR_BITS;
+  71              		.loc 1 292 0 is_stmt 0 discriminator 1
+  72 000e 032C     		cmp	r4, #3
+  73 0010 FAD9     		bls	.L4
+  74              	.LVL5:
+ 295:uC-LIB/lib_mem.c ****     }
+ 296:uC-LIB/lib_mem.c **** 
+ 297:uC-LIB/lib_mem.c ****     size_rem      =  size;
+ 298:uC-LIB/lib_mem.c ****     mem_align_mod = (CPU_INT08U)((CPU_ADDR)pmem % sizeof(CPU_ALIGN));   /* See Note #3.            
+ 299:uC-LIB/lib_mem.c **** 
+ 300:uC-LIB/lib_mem.c ****     pmem_08 = (CPU_INT08U *)pmem;
+ 301:uC-LIB/lib_mem.c ****     if (mem_align_mod != 0u) {                                  /* If leading octets avail,        
+  75              		.loc 1 301 0 is_stmt 1
+  76 0012 10F00304 		ands	r4, r0, #3
+  77              	.LVL6:
+  78 0016 04D1     		bne	.L5
+  79 0018 0AE0     		b	.L8
+  80              	.LVL7:
+  81              	.L9:
+ 302:uC-LIB/lib_mem.c ****         i = mem_align_mod;
+ 303:uC-LIB/lib_mem.c ****         while ((size_rem > 0) &&                                /* ... start mem buf fill with lead
+ 304:uC-LIB/lib_mem.c ****                (i        < sizeof(CPU_ALIGN ))) {               /* ... until next CPU_ALIGN word bo
+ 305:uC-LIB/lib_mem.c ****            *pmem_08++ = data_val;
+  82              		.loc 1 305 0
+  83 001a 0170     		strb	r1, [r0]
+ 306:uC-LIB/lib_mem.c ****             size_rem -= sizeof(CPU_INT08U);
+  84              		.loc 1 306 0
+  85 001c 013A     		subs	r2, r2, #1
+  86              	.LVL8:
+ 307:uC-LIB/lib_mem.c ****             i++;
+  87              		.loc 1 307 0
+  88 001e 0134     		adds	r4, r4, #1
+  89              	.LVL9:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 8
+
+
+ 305:uC-LIB/lib_mem.c ****             size_rem -= sizeof(CPU_INT08U);
+  90              		.loc 1 305 0
+  91 0020 0130     		adds	r0, r0, #1
+  92              	.LVL10:
+  93              	.L5:
+ 303:uC-LIB/lib_mem.c ****                (i        < sizeof(CPU_ALIGN ))) {               /* ... until next CPU_ALIGN word bo
+  94              		.loc 1 303 0
+  95 0022 2AB1     		cbz	r2, .L8
+ 303:uC-LIB/lib_mem.c ****                (i        < sizeof(CPU_ALIGN ))) {               /* ... until next CPU_ALIGN word bo
+  96              		.loc 1 303 0 is_stmt 0 discriminator 1
+  97 0024 032C     		cmp	r4, #3
+  98 0026 F8D9     		bls	.L9
+  99 0028 02E0     		b	.L8
+ 100              	.LVL11:
+ 101              	.L10:
+ 308:uC-LIB/lib_mem.c ****         }
+ 309:uC-LIB/lib_mem.c ****     }
+ 310:uC-LIB/lib_mem.c **** 
+ 311:uC-LIB/lib_mem.c ****     pmem_align = (CPU_ALIGN *)pmem_08;                          /* See Note #2a.                   
+ 312:uC-LIB/lib_mem.c ****     while (size_rem >= sizeof(CPU_ALIGN)) {                     /* While mem buf aligned on CPU_ALI
+ 313:uC-LIB/lib_mem.c ****        *pmem_align++ = data_align;                              /* ... fill mem buf with    CPU_ALI
+ 102              		.loc 1 313 0 is_stmt 1
+ 103 002a 0360     		str	r3, [r0]
+ 314:uC-LIB/lib_mem.c ****         size_rem    -= sizeof(CPU_ALIGN);
+ 104              		.loc 1 314 0
+ 105 002c 043A     		subs	r2, r2, #4
+ 106              	.LVL12:
+ 313:uC-LIB/lib_mem.c ****         size_rem    -= sizeof(CPU_ALIGN);
+ 107              		.loc 1 313 0
+ 108 002e 0430     		adds	r0, r0, #4
+ 109              	.LVL13:
+ 110              	.L8:
+ 312:uC-LIB/lib_mem.c ****        *pmem_align++ = data_align;                              /* ... fill mem buf with    CPU_ALI
+ 111              		.loc 1 312 0
+ 112 0030 032A     		cmp	r2, #3
+ 113 0032 FAD8     		bhi	.L10
+ 114 0034 02E0     		b	.L11
+ 115              	.LVL14:
+ 116              	.L12:
+ 315:uC-LIB/lib_mem.c ****     }
+ 316:uC-LIB/lib_mem.c **** 
+ 317:uC-LIB/lib_mem.c ****     pmem_08 = (CPU_INT08U *)pmem_align;
+ 318:uC-LIB/lib_mem.c ****     while (size_rem > 0) {                                      /* Finish mem buf fill with trailin
+ 319:uC-LIB/lib_mem.c ****        *pmem_08++   = data_val;
+ 117              		.loc 1 319 0
+ 118 0036 0170     		strb	r1, [r0]
+ 320:uC-LIB/lib_mem.c ****         size_rem   -= sizeof(CPU_INT08U);
+ 119              		.loc 1 320 0
+ 120 0038 013A     		subs	r2, r2, #1
+ 121              	.LVL15:
+ 319:uC-LIB/lib_mem.c ****         size_rem   -= sizeof(CPU_INT08U);
+ 122              		.loc 1 319 0
+ 123 003a 0130     		adds	r0, r0, #1
+ 124              	.LVL16:
+ 125              	.L11:
+ 318:uC-LIB/lib_mem.c ****        *pmem_08++   = data_val;
+ 126              		.loc 1 318 0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 9
+
+
+ 127 003c 002A     		cmp	r2, #0
+ 128 003e FAD1     		bne	.L12
+ 321:uC-LIB/lib_mem.c ****     }
+ 322:uC-LIB/lib_mem.c **** }
+ 129              		.loc 1 322 0
+ 130 0040 10BC     		pop	{r4}
+ 131              		.cfi_restore 4
+ 132              		.cfi_def_cfa_offset 0
+ 133 0042 7047     		bx	lr
+ 134              		.cfi_endproc
+ 135              	.LFE3:
+ 136              		.size	Mem_Set, .-Mem_Set
+ 137              		.section	.text.Mem_Clr,"ax",%progbits
+ 138              		.align	2
+ 139              		.global	Mem_Clr
+ 140              		.thumb
+ 141              		.thumb_func
+ 142              		.type	Mem_Clr, %function
+ 143              	Mem_Clr:
+ 144              	.LFB2:
+ 227:uC-LIB/lib_mem.c ****     Mem_Set(pmem,
+ 145              		.loc 1 227 0
+ 146              		.cfi_startproc
+ 147              		@ args = 0, pretend = 0, frame = 0
+ 148              		@ frame_needed = 0, uses_anonymous_args = 0
+ 149              	.LVL17:
+ 150 0000 08B5     		push	{r3, lr}
+ 151              		.cfi_def_cfa_offset 8
+ 152              		.cfi_offset 3, -8
+ 153              		.cfi_offset 14, -4
+ 228:uC-LIB/lib_mem.c ****             0u,                                                 /* See Note #2.                    
+ 154              		.loc 1 228 0
+ 155 0002 0A46     		mov	r2, r1
+ 156 0004 0021     		movs	r1, #0
+ 157              	.LVL18:
+ 158 0006 FFF7FEFF 		bl	Mem_Set
+ 159              	.LVL19:
+ 160 000a 08BD     		pop	{r3, pc}
+ 161              		.cfi_endproc
+ 162              	.LFE2:
+ 163              		.size	Mem_Clr, .-Mem_Clr
+ 164              		.section	.text.Mem_Copy,"ax",%progbits
+ 165              		.align	2
+ 166              		.global	Mem_Copy
+ 167              		.thumb
+ 168              		.thumb_func
+ 169              		.type	Mem_Copy, %function
+ 170              	Mem_Copy:
+ 171              	.LFB4:
+ 323:uC-LIB/lib_mem.c **** 
+ 324:uC-LIB/lib_mem.c **** 
+ 325:uC-LIB/lib_mem.c **** /*$PAGE*/
+ 326:uC-LIB/lib_mem.c **** /*
+ 327:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 328:uC-LIB/lib_mem.c **** *                                             Mem_Copy()
+ 329:uC-LIB/lib_mem.c **** *
+ 330:uC-LIB/lib_mem.c **** * Description : Copy data octets from one memory buffer to another memory buffer.
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 10
+
+
+ 331:uC-LIB/lib_mem.c **** *
+ 332:uC-LIB/lib_mem.c **** * Argument(s) : pdest       Pointer to destination memory buffer.
+ 333:uC-LIB/lib_mem.c **** *
+ 334:uC-LIB/lib_mem.c **** *               psrc        Pointer to source      memory buffer.
+ 335:uC-LIB/lib_mem.c **** *
+ 336:uC-LIB/lib_mem.c **** *               size        Number of octets to copy (see Note #1).
+ 337:uC-LIB/lib_mem.c **** *
+ 338:uC-LIB/lib_mem.c **** * Return(s)   : none.
+ 339:uC-LIB/lib_mem.c **** *
+ 340:uC-LIB/lib_mem.c **** * Caller(s)   : Application.
+ 341:uC-LIB/lib_mem.c **** *
+ 342:uC-LIB/lib_mem.c **** * Note(s)     : (1) Null copies allowed (i.e. zero-length copies).
+ 343:uC-LIB/lib_mem.c **** *
+ 344:uC-LIB/lib_mem.c **** *               (2) Memory buffers NOT checked for overlapping.
+ 345:uC-LIB/lib_mem.c **** *
+ 346:uC-LIB/lib_mem.c **** *                   (a) IEEE Std 1003.1, 2004 Edition, Section 'memcpy() : DESCRIPTION' states that
+ 347:uC-LIB/lib_mem.c **** *                       copying takes place between objects that overlap, the behavior is undefined
+ 348:uC-LIB/lib_mem.c **** *
+ 349:uC-LIB/lib_mem.c **** *                   (b) However, data octets from a source memory buffer at a higher address value 
+ 350:uC-LIB/lib_mem.c **** *                       successfully copy to a destination memory buffer at a lower  address value 
+ 351:uC-LIB/lib_mem.c **** *                       if any octets of the memory buffers overlap as long as no individual, atomi
+ 352:uC-LIB/lib_mem.c **** *                       word copy overlaps.
+ 353:uC-LIB/lib_mem.c **** *
+ 354:uC-LIB/lib_mem.c **** *                       Since Mem_Copy() performs the data octet copy via 'CPU_ALIGN'-sized words &
+ 355:uC-LIB/lib_mem.c **** *                       octets; & since 'CPU_ALIGN'-sized words MUST be accessed on word-aligned ad
+ 356:uC-LIB/lib_mem.c **** *                       (see Note #3b), neither 'CPU_ALIGN'-sized words nor octets at unique addres
+ 357:uC-LIB/lib_mem.c **** *                       ever overlap.
+ 358:uC-LIB/lib_mem.c **** *
+ 359:uC-LIB/lib_mem.c **** *                       Therefore, Mem_Copy() SHOULD be able to successfully copy overlapping memor
+ 360:uC-LIB/lib_mem.c **** *                       buffers as long as the source memory buffer is at a higher address value th
+ 361:uC-LIB/lib_mem.c **** *                       destination memory buffer.
+ 362:uC-LIB/lib_mem.c **** *
+ 363:uC-LIB/lib_mem.c **** *               (3) For best CPU performance, optimized to copy data buffer using 'CPU_ALIGN'-sized
+ 364:uC-LIB/lib_mem.c **** *                   words.
+ 365:uC-LIB/lib_mem.c **** *
+ 366:uC-LIB/lib_mem.c **** *                   (a) Since many word-aligned processors REQUIRE that multi-octet words be access
+ 367:uC-LIB/lib_mem.c **** *                       word-aligned addresses, 'CPU_ALIGN'-sized words MUST be accessed on 'CPU_AL
+ 368:uC-LIB/lib_mem.c **** *                       addresses.
+ 369:uC-LIB/lib_mem.c **** *
+ 370:uC-LIB/lib_mem.c **** *               (4) Modulo arithmetic is used to determine whether a memory buffer starts on a 'CPU
+ 371:uC-LIB/lib_mem.c **** *                   address boundary.
+ 372:uC-LIB/lib_mem.c **** *
+ 373:uC-LIB/lib_mem.c **** *                   Modulo arithmetic in ANSI-C REQUIREs operations performed on integer values.  T
+ 374:uC-LIB/lib_mem.c **** *                   address values MUST be cast to an appropriately-sized integer value PRIOR to an
+ 375:uC-LIB/lib_mem.c **** *                  'mem_align_mod' arithmetic operation.
+ 376:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 377:uC-LIB/lib_mem.c **** */
+ 378:uC-LIB/lib_mem.c **** /*$PAGE*/
+ 379:uC-LIB/lib_mem.c **** #if (LIB_MEM_CFG_OPTIMIZE_ASM_EN != DEF_ENABLED)
+ 380:uC-LIB/lib_mem.c **** void  Mem_Copy (       void        *pdest,
+ 381:uC-LIB/lib_mem.c ****                 const  void        *psrc,
+ 382:uC-LIB/lib_mem.c ****                        CPU_SIZE_T   size)
+ 383:uC-LIB/lib_mem.c **** {
+ 172              		.loc 1 383 0
+ 173              		.cfi_startproc
+ 174              		@ args = 0, pretend = 0, frame = 0
+ 175              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 11
+
+
+ 176              		@ link register save eliminated.
+ 177              	.LVL20:
+ 178 0000 10B4     		push	{r4}
+ 179              		.cfi_def_cfa_offset 4
+ 180              		.cfi_offset 4, -4
+ 181              	.LVL21:
+ 384:uC-LIB/lib_mem.c ****            CPU_SIZE_T    size_rem;
+ 385:uC-LIB/lib_mem.c ****            CPU_SIZE_T    mem_gap_octets;
+ 386:uC-LIB/lib_mem.c ****            CPU_ALIGN    *pmem_align_dest;
+ 387:uC-LIB/lib_mem.c ****     const  CPU_ALIGN    *pmem_align_src;
+ 388:uC-LIB/lib_mem.c ****            CPU_INT08U   *pmem_08_dest;
+ 389:uC-LIB/lib_mem.c ****     const  CPU_INT08U   *pmem_08_src;
+ 390:uC-LIB/lib_mem.c ****            CPU_DATA      i;
+ 391:uC-LIB/lib_mem.c ****            CPU_DATA      mem_align_mod_dest;
+ 392:uC-LIB/lib_mem.c ****            CPU_DATA      mem_align_mod_src;
+ 393:uC-LIB/lib_mem.c ****            CPU_BOOLEAN   mem_aligned;
+ 394:uC-LIB/lib_mem.c **** 
+ 395:uC-LIB/lib_mem.c **** 
+ 396:uC-LIB/lib_mem.c **** #if (LIB_MEM_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)
+ 397:uC-LIB/lib_mem.c ****     if (size < 1) {                                             /* See Note #1.                    
+ 398:uC-LIB/lib_mem.c ****         return;
+ 399:uC-LIB/lib_mem.c ****     }
+ 400:uC-LIB/lib_mem.c ****     if (pdest == (void *)0) {
+ 401:uC-LIB/lib_mem.c ****         return;
+ 402:uC-LIB/lib_mem.c ****     }
+ 403:uC-LIB/lib_mem.c ****     if (psrc  == (void *)0) {
+ 404:uC-LIB/lib_mem.c ****         return;
+ 405:uC-LIB/lib_mem.c ****     }
+ 406:uC-LIB/lib_mem.c **** #endif
+ 407:uC-LIB/lib_mem.c **** 
+ 408:uC-LIB/lib_mem.c **** 
+ 409:uC-LIB/lib_mem.c ****     size_rem           =  size;
+ 410:uC-LIB/lib_mem.c **** 
+ 411:uC-LIB/lib_mem.c ****     pmem_08_dest       = (      CPU_INT08U *)pdest;
+ 412:uC-LIB/lib_mem.c ****     pmem_08_src        = (const CPU_INT08U *)psrc;
+ 413:uC-LIB/lib_mem.c **** 
+ 414:uC-LIB/lib_mem.c ****     mem_gap_octets     = pmem_08_src - pmem_08_dest;
+ 182              		.loc 1 414 0
+ 183 0002 0B1A     		subs	r3, r1, r0
+ 184              	.LVL22:
+ 415:uC-LIB/lib_mem.c **** 
+ 416:uC-LIB/lib_mem.c **** 
+ 417:uC-LIB/lib_mem.c ****     if (mem_gap_octets >= sizeof(CPU_ALIGN)) {                  /* Avoid bufs overlap.             
+ 185              		.loc 1 417 0
+ 186 0004 032B     		cmp	r3, #3
+ 187 0006 22D9     		bls	.L20
+ 418:uC-LIB/lib_mem.c ****                                                                 /* See Note #4.                    
+ 419:uC-LIB/lib_mem.c ****         mem_align_mod_dest = (CPU_INT08U)((CPU_ADDR)pmem_08_dest % sizeof(CPU_ALIGN));
+ 188              		.loc 1 419 0
+ 189 0008 00F00303 		and	r3, r0, #3
+ 190              	.LVL23:
+ 420:uC-LIB/lib_mem.c ****         mem_align_mod_src  = (CPU_INT08U)((CPU_ADDR)pmem_08_src  % sizeof(CPU_ALIGN));
+ 191              		.loc 1 420 0
+ 192 000c 01F00304 		and	r4, r1, #3
+ 193              	.LVL24:
+ 421:uC-LIB/lib_mem.c **** 
+ 422:uC-LIB/lib_mem.c ****         mem_aligned        = (mem_align_mod_dest == mem_align_mod_src) ? DEF_YES : DEF_NO;
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 12
+
+
+ 194              		.loc 1 422 0
+ 195 0010 A342     		cmp	r3, r4
+ 196 0012 01D1     		bne	.L28
+ 197 0014 0124     		movs	r4, #1
+ 198              	.LVL25:
+ 199 0016 00E0     		b	.L18
+ 200              	.LVL26:
+ 201              	.L28:
+ 202 0018 0024     		movs	r4, #0
+ 203              	.LVL27:
+ 204              	.L18:
+ 423:uC-LIB/lib_mem.c **** 
+ 424:uC-LIB/lib_mem.c ****         if (mem_aligned == DEF_YES) {                           /* If mem bufs' alignment offset eq
+ 205              		.loc 1 424 0 discriminator 4
+ 206 001a C4B1     		cbz	r4, .L20
+ 425:uC-LIB/lib_mem.c ****                                                                 /* ... optimize copy for mem buf al
+ 426:uC-LIB/lib_mem.c ****             if (mem_align_mod_dest != 0u) {                     /* If leading octets avail,        
+ 207              		.loc 1 426 0
+ 208 001c 33B9     		cbnz	r3, .L21
+ 209 001e 0EE0     		b	.L24
+ 210              	.LVL28:
+ 211              	.L25:
+ 427:uC-LIB/lib_mem.c ****                 i = mem_align_mod_dest;
+ 428:uC-LIB/lib_mem.c ****                 while ((size_rem   >  0) &&                     /* ... start mem buf copy with lead
+ 429:uC-LIB/lib_mem.c ****                        (i          <  sizeof(CPU_ALIGN ))) {    /* ... until next CPU_ALIGN word bo
+ 430:uC-LIB/lib_mem.c ****                    *pmem_08_dest++ = *pmem_08_src++;
+ 212              		.loc 1 430 0
+ 213 0020 0C78     		ldrb	r4, [r1]	@ zero_extendqisi2
+ 214 0022 0470     		strb	r4, [r0]
+ 431:uC-LIB/lib_mem.c ****                     size_rem      -=  sizeof(CPU_INT08U);
+ 215              		.loc 1 431 0
+ 216 0024 013A     		subs	r2, r2, #1
+ 217              	.LVL29:
+ 432:uC-LIB/lib_mem.c ****                     i++;
+ 218              		.loc 1 432 0
+ 219 0026 0133     		adds	r3, r3, #1
+ 220              	.LVL30:
+ 430:uC-LIB/lib_mem.c ****                     size_rem      -=  sizeof(CPU_INT08U);
+ 221              		.loc 1 430 0
+ 222 0028 0131     		adds	r1, r1, #1
+ 223              	.LVL31:
+ 224 002a 0130     		adds	r0, r0, #1
+ 225              	.LVL32:
+ 226              	.L21:
+ 428:uC-LIB/lib_mem.c ****                        (i          <  sizeof(CPU_ALIGN ))) {    /* ... until next CPU_ALIGN word bo
+ 227              		.loc 1 428 0
+ 228 002c 3AB1     		cbz	r2, .L24
+ 428:uC-LIB/lib_mem.c ****                        (i          <  sizeof(CPU_ALIGN ))) {    /* ... until next CPU_ALIGN word bo
+ 229              		.loc 1 428 0 is_stmt 0 discriminator 1
+ 230 002e 032B     		cmp	r3, #3
+ 231 0030 F6D9     		bls	.L25
+ 232 0032 04E0     		b	.L24
+ 233              	.LVL33:
+ 234              	.L26:
+ 433:uC-LIB/lib_mem.c ****                 }
+ 434:uC-LIB/lib_mem.c ****             }
+ 435:uC-LIB/lib_mem.c **** 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 13
+
+
+ 436:uC-LIB/lib_mem.c ****             pmem_align_dest = (      CPU_ALIGN *)pmem_08_dest;  /* See Note #3a.                   
+ 437:uC-LIB/lib_mem.c ****             pmem_align_src  = (const CPU_ALIGN *)pmem_08_src;
+ 438:uC-LIB/lib_mem.c ****             while (size_rem      >=  sizeof(CPU_ALIGN)) {       /* While mem bufs aligned on CPU_AL
+ 439:uC-LIB/lib_mem.c ****                *pmem_align_dest++ = *pmem_align_src++;          /* ... copy psrc to pdest with CPU_
+ 235              		.loc 1 439 0 is_stmt 1
+ 236 0034 0B68     		ldr	r3, [r1]
+ 237 0036 0360     		str	r3, [r0]
+ 440:uC-LIB/lib_mem.c ****                 size_rem         -=  sizeof(CPU_ALIGN);
+ 238              		.loc 1 440 0
+ 239 0038 043A     		subs	r2, r2, #4
+ 240              	.LVL34:
+ 439:uC-LIB/lib_mem.c ****                 size_rem         -=  sizeof(CPU_ALIGN);
+ 241              		.loc 1 439 0
+ 242 003a 0431     		adds	r1, r1, #4
+ 243              	.LVL35:
+ 244 003c 0430     		adds	r0, r0, #4
+ 245              	.LVL36:
+ 246              	.L24:
+ 438:uC-LIB/lib_mem.c ****                *pmem_align_dest++ = *pmem_align_src++;          /* ... copy psrc to pdest with CPU_
+ 247              		.loc 1 438 0
+ 248 003e 032A     		cmp	r2, #3
+ 249 0040 F8D8     		bhi	.L26
+ 250 0042 04E0     		b	.L20
+ 251              	.LVL37:
+ 252              	.L27:
+ 441:uC-LIB/lib_mem.c ****             }
+ 442:uC-LIB/lib_mem.c **** 
+ 443:uC-LIB/lib_mem.c ****             pmem_08_dest = (      CPU_INT08U *)pmem_align_dest;
+ 444:uC-LIB/lib_mem.c ****             pmem_08_src  = (const CPU_INT08U *)pmem_align_src;
+ 445:uC-LIB/lib_mem.c ****         }
+ 446:uC-LIB/lib_mem.c ****     }
+ 447:uC-LIB/lib_mem.c **** 
+ 448:uC-LIB/lib_mem.c ****     while (size_rem > 0) {                                      /* For unaligned mem bufs or traili
+ 449:uC-LIB/lib_mem.c ****        *pmem_08_dest++ = *pmem_08_src++;                        /* ... copy psrc to pdest by octets
+ 253              		.loc 1 449 0
+ 254 0044 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 255 0046 0370     		strb	r3, [r0]
+ 450:uC-LIB/lib_mem.c ****         size_rem      -=  sizeof(CPU_INT08U);
+ 256              		.loc 1 450 0
+ 257 0048 013A     		subs	r2, r2, #1
+ 258              	.LVL38:
+ 449:uC-LIB/lib_mem.c ****         size_rem      -=  sizeof(CPU_INT08U);
+ 259              		.loc 1 449 0
+ 260 004a 0131     		adds	r1, r1, #1
+ 261              	.LVL39:
+ 262 004c 0130     		adds	r0, r0, #1
+ 263              	.LVL40:
+ 264              	.L20:
+ 448:uC-LIB/lib_mem.c ****        *pmem_08_dest++ = *pmem_08_src++;                        /* ... copy psrc to pdest by octets
+ 265              		.loc 1 448 0
+ 266 004e 002A     		cmp	r2, #0
+ 267 0050 F8D1     		bne	.L27
+ 451:uC-LIB/lib_mem.c ****     }
+ 452:uC-LIB/lib_mem.c **** }
+ 268              		.loc 1 452 0
+ 269 0052 10BC     		pop	{r4}
+ 270              		.cfi_restore 4
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 14
+
+
+ 271              		.cfi_def_cfa_offset 0
+ 272 0054 7047     		bx	lr
+ 273              		.cfi_endproc
+ 274              	.LFE4:
+ 275              		.size	Mem_Copy, .-Mem_Copy
+ 276 0056 00BF     		.section	.text.Mem_Move,"ax",%progbits
+ 277              		.align	2
+ 278              		.global	Mem_Move
+ 279              		.thumb
+ 280              		.thumb_func
+ 281              		.type	Mem_Move, %function
+ 282              	Mem_Move:
+ 283              	.LFB5:
+ 453:uC-LIB/lib_mem.c **** #endif
+ 454:uC-LIB/lib_mem.c **** 
+ 455:uC-LIB/lib_mem.c **** 
+ 456:uC-LIB/lib_mem.c **** /*
+ 457:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 458:uC-LIB/lib_mem.c **** *                                             Mem_Move()
+ 459:uC-LIB/lib_mem.c **** *
+ 460:uC-LIB/lib_mem.c **** * Description : Move data octets from one memory buffer to another memory buffer, or within the sam
+ 461:uC-LIB/lib_mem.c **** *               memory buffer. Overlapping is correctly handled for all move operations.
+ 462:uC-LIB/lib_mem.c **** *
+ 463:uC-LIB/lib_mem.c **** * Argument(s) : pdest       Pointer to destination memory buffer.
+ 464:uC-LIB/lib_mem.c **** *
+ 465:uC-LIB/lib_mem.c **** *               psrc        Pointer to source      memory buffer.
+ 466:uC-LIB/lib_mem.c **** *
+ 467:uC-LIB/lib_mem.c **** *               size        Number of octets to move (see Note #1).
+ 468:uC-LIB/lib_mem.c **** *
+ 469:uC-LIB/lib_mem.c **** * Return(s)   : none.
+ 470:uC-LIB/lib_mem.c **** *
+ 471:uC-LIB/lib_mem.c **** * Caller(s)   : Application.
+ 472:uC-LIB/lib_mem.c **** *
+ 473:uC-LIB/lib_mem.c **** * Note(s)     : (1) Null move operations allowed (i.e. zero-length).
+ 474:uC-LIB/lib_mem.c **** *
+ 475:uC-LIB/lib_mem.c **** *               (2) Memory buffers checked for overlapping.
+ 476:uC-LIB/lib_mem.c **** *
+ 477:uC-LIB/lib_mem.c **** *               (3) For best CPU performance, optimized to copy data buffer using 'CPU_ALIGN'-sized
+ 478:uC-LIB/lib_mem.c **** *                   words.
+ 479:uC-LIB/lib_mem.c **** *
+ 480:uC-LIB/lib_mem.c **** *                   (a) Since many word-aligned processors REQUIRE that multi-octet words be access
+ 481:uC-LIB/lib_mem.c **** *                       word-aligned addresses, 'CPU_ALIGN'-sized words MUST be accessed on 'CPU_AL
+ 482:uC-LIB/lib_mem.c **** *                       addresses.
+ 483:uC-LIB/lib_mem.c **** *
+ 484:uC-LIB/lib_mem.c **** *               (4) Modulo arithmetic is used to determine whether a memory buffer starts on a 'CPU
+ 485:uC-LIB/lib_mem.c **** *                   address boundary.
+ 486:uC-LIB/lib_mem.c **** *
+ 487:uC-LIB/lib_mem.c **** *                   Modulo arithmetic in ANSI-C REQUIREs operations performed on integer values.  T
+ 488:uC-LIB/lib_mem.c **** *                   address values MUST be cast to an appropriately-sized integer value PRIOR to an
+ 489:uC-LIB/lib_mem.c **** *                  'mem_align_mod' arithmetic operation.
+ 490:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 491:uC-LIB/lib_mem.c **** */
+ 492:uC-LIB/lib_mem.c **** /*$PAGE*/
+ 493:uC-LIB/lib_mem.c **** 
+ 494:uC-LIB/lib_mem.c **** void  Mem_Move (       void        *pdest,
+ 495:uC-LIB/lib_mem.c ****                 const  void        *psrc,
+ 496:uC-LIB/lib_mem.c ****                        CPU_SIZE_T   size)
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 15
+
+
+ 497:uC-LIB/lib_mem.c **** {
+ 284              		.loc 1 497 0
+ 285              		.cfi_startproc
+ 286              		@ args = 0, pretend = 0, frame = 0
+ 287              		@ frame_needed = 0, uses_anonymous_args = 0
+ 288              	.LVL41:
+ 289 0000 10B5     		push	{r4, lr}
+ 290              		.cfi_def_cfa_offset 8
+ 291              		.cfi_offset 4, -8
+ 292              		.cfi_offset 14, -4
+ 293              	.LVL42:
+ 498:uC-LIB/lib_mem.c ****            CPU_SIZE_T    size_rem;
+ 499:uC-LIB/lib_mem.c ****            CPU_SIZE_T    mem_gap_octets;
+ 500:uC-LIB/lib_mem.c ****            CPU_ALIGN    *pmem_align_dest;
+ 501:uC-LIB/lib_mem.c ****     const  CPU_ALIGN    *pmem_align_src;
+ 502:uC-LIB/lib_mem.c ****            CPU_INT08U   *pmem_08_dest;
+ 503:uC-LIB/lib_mem.c ****     const  CPU_INT08U   *pmem_08_src;
+ 504:uC-LIB/lib_mem.c ****            CPU_INT08S    i;
+ 505:uC-LIB/lib_mem.c ****            CPU_DATA      mem_align_mod_dest;
+ 506:uC-LIB/lib_mem.c ****            CPU_DATA      mem_align_mod_src;
+ 507:uC-LIB/lib_mem.c ****            CPU_BOOLEAN   mem_aligned;
+ 508:uC-LIB/lib_mem.c **** 
+ 509:uC-LIB/lib_mem.c **** 
+ 510:uC-LIB/lib_mem.c **** #if (LIB_MEM_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)
+ 511:uC-LIB/lib_mem.c ****     if (size < 1) {
+ 512:uC-LIB/lib_mem.c ****         return;
+ 513:uC-LIB/lib_mem.c ****     }
+ 514:uC-LIB/lib_mem.c ****     if (pdest == (void *)0) {
+ 515:uC-LIB/lib_mem.c ****         return;
+ 516:uC-LIB/lib_mem.c ****     }
+ 517:uC-LIB/lib_mem.c ****     if (psrc  == (void *)0) {
+ 518:uC-LIB/lib_mem.c ****         return;
+ 519:uC-LIB/lib_mem.c ****     }
+ 520:uC-LIB/lib_mem.c **** #endif
+ 521:uC-LIB/lib_mem.c **** 
+ 522:uC-LIB/lib_mem.c ****     pmem_08_src  = (const CPU_INT08U *)psrc;
+ 523:uC-LIB/lib_mem.c ****     pmem_08_dest = (      CPU_INT08U *)pdest;
+ 524:uC-LIB/lib_mem.c ****     if (pmem_08_src > pmem_08_dest) {
+ 294              		.loc 1 524 0
+ 295 0002 8142     		cmp	r1, r0
+ 296 0004 02D9     		bls	.L31
+ 525:uC-LIB/lib_mem.c ****         Mem_Copy(pdest, psrc, size);
+ 297              		.loc 1 525 0
+ 298 0006 FFF7FEFF 		bl	Mem_Copy
+ 299              	.LVL43:
+ 526:uC-LIB/lib_mem.c ****         return;
+ 300              		.loc 1 526 0
+ 301 000a 10BD     		pop	{r4, pc}
+ 302              	.LVL44:
+ 303              	.L31:
+ 527:uC-LIB/lib_mem.c ****     }
+ 528:uC-LIB/lib_mem.c **** 
+ 529:uC-LIB/lib_mem.c ****     size_rem           =  size;
+ 530:uC-LIB/lib_mem.c **** 
+ 531:uC-LIB/lib_mem.c ****     pmem_08_dest       = (      CPU_INT08U *)pdest + size - 1;
+ 304              		.loc 1 531 0
+ 305 000c 531E     		subs	r3, r2, #1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 16
+
+
+ 306 000e 1844     		add	r0, r0, r3
+ 307              	.LVL45:
+ 532:uC-LIB/lib_mem.c ****     pmem_08_src        = (const CPU_INT08U *)psrc  + size - 1;
+ 308              		.loc 1 532 0
+ 309 0010 1944     		add	r1, r1, r3
+ 310              	.LVL46:
+ 533:uC-LIB/lib_mem.c ****     
+ 534:uC-LIB/lib_mem.c ****     mem_gap_octets     = pmem_08_dest - pmem_08_src;
+ 311              		.loc 1 534 0
+ 312 0012 431A     		subs	r3, r0, r1
+ 313              	.LVL47:
+ 535:uC-LIB/lib_mem.c ****     
+ 536:uC-LIB/lib_mem.c **** 
+ 537:uC-LIB/lib_mem.c ****     if (mem_gap_octets >= sizeof(CPU_ALIGN)) {                  /* Avoid bufs overlap.             
+ 314              		.loc 1 537 0
+ 315 0014 032B     		cmp	r3, #3
+ 316 0016 29D9     		bls	.L40
+ 538:uC-LIB/lib_mem.c ****     
+ 539:uC-LIB/lib_mem.c ****                                                                 /* See Note #4.                    
+ 540:uC-LIB/lib_mem.c ****         mem_align_mod_dest = (CPU_INT08U)((CPU_ADDR)pmem_08_dest % sizeof(CPU_ALIGN));
+ 317              		.loc 1 540 0
+ 318 0018 00F00303 		and	r3, r0, #3
+ 319              	.LVL48:
+ 541:uC-LIB/lib_mem.c ****         mem_align_mod_src  = (CPU_INT08U)((CPU_ADDR)pmem_08_src  % sizeof(CPU_ALIGN));
+ 320              		.loc 1 541 0
+ 321 001c 01F00304 		and	r4, r1, #3
+ 322              	.LVL49:
+ 542:uC-LIB/lib_mem.c **** 
+ 543:uC-LIB/lib_mem.c ****         mem_aligned        = (mem_align_mod_dest == mem_align_mod_src) ? DEF_YES : DEF_NO;
+ 323              		.loc 1 543 0
+ 324 0020 A342     		cmp	r3, r4
+ 325 0022 01D1     		bne	.L42
+ 326 0024 0124     		movs	r4, #1
+ 327              	.LVL50:
+ 328 0026 00E0     		b	.L34
+ 329              	.LVL51:
+ 330              	.L42:
+ 331 0028 0024     		movs	r4, #0
+ 332              	.LVL52:
+ 333              	.L34:
+ 544:uC-LIB/lib_mem.c **** 
+ 545:uC-LIB/lib_mem.c ****         if (mem_aligned == DEF_YES) {                           /* If mem bufs' alignment offset eq
+ 334              		.loc 1 545 0 discriminator 4
+ 335 002a FCB1     		cbz	r4, .L40
+ 546:uC-LIB/lib_mem.c ****                                                                 /* ... optimize copy for mem buf al
+ 547:uC-LIB/lib_mem.c ****             if (mem_align_mod_dest != (sizeof(CPU_ALIGN) - 1)) {/* If leading octets avail,        
+ 336              		.loc 1 547 0
+ 337 002c 032B     		cmp	r3, #3
+ 338 002e 0BD0     		beq	.L35
+ 548:uC-LIB/lib_mem.c ****                 i = mem_align_mod_dest;
+ 339              		.loc 1 548 0
+ 340 0030 5BB2     		sxtb	r3, r3
+ 341              	.LVL53:
+ 549:uC-LIB/lib_mem.c ****                 while ((size_rem   >  0) &&                     /* ... start mem buf copy with lead
+ 342              		.loc 1 549 0
+ 343 0032 06E0     		b	.L36
+ 344              	.LVL54:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 17
+
+
+ 345              	.L37:
+ 550:uC-LIB/lib_mem.c ****                        (i          >= 0)) {                     /* ... until next CPU_ALIGN word bo
+ 551:uC-LIB/lib_mem.c ****                    *pmem_08_dest-- = *pmem_08_src--;
+ 346              		.loc 1 551 0
+ 347 0034 0C78     		ldrb	r4, [r1]	@ zero_extendqisi2
+ 348 0036 0470     		strb	r4, [r0]
+ 552:uC-LIB/lib_mem.c ****                     size_rem      -=  sizeof(CPU_INT08U);
+ 349              		.loc 1 552 0
+ 350 0038 013A     		subs	r2, r2, #1
+ 351              	.LVL55:
+ 553:uC-LIB/lib_mem.c ****                     i--;
+ 352              		.loc 1 553 0
+ 353 003a 013B     		subs	r3, r3, #1
+ 354              	.LVL56:
+ 355 003c 5BB2     		sxtb	r3, r3
+ 356              	.LVL57:
+ 551:uC-LIB/lib_mem.c ****                     size_rem      -=  sizeof(CPU_INT08U);
+ 357              		.loc 1 551 0
+ 358 003e 0139     		subs	r1, r1, #1
+ 359              	.LVL58:
+ 360 0040 0138     		subs	r0, r0, #1
+ 361              	.LVL59:
+ 362              	.L36:
+ 549:uC-LIB/lib_mem.c ****                        (i          >= 0)) {                     /* ... until next CPU_ALIGN word bo
+ 363              		.loc 1 549 0
+ 364 0042 0AB1     		cbz	r2, .L35
+ 549:uC-LIB/lib_mem.c ****                        (i          >= 0)) {                     /* ... until next CPU_ALIGN word bo
+ 365              		.loc 1 549 0 is_stmt 0 discriminator 1
+ 366 0044 002B     		cmp	r3, #0
+ 367 0046 F5DA     		bge	.L37
+ 368              	.LVL60:
+ 369              	.L35:
+ 554:uC-LIB/lib_mem.c ****                 }
+ 555:uC-LIB/lib_mem.c ****             }
+ 556:uC-LIB/lib_mem.c **** 
+ 557:uC-LIB/lib_mem.c ****                                                                 /* See Note #3a.                   
+ 558:uC-LIB/lib_mem.c ****             pmem_align_dest = (      CPU_ALIGN *)pmem_08_dest - sizeof(CPU_ALIGN) + 1;
+ 370              		.loc 1 558 0 is_stmt 1
+ 371 0048 0C38     		subs	r0, r0, #12
+ 372              	.LVL61:
+ 559:uC-LIB/lib_mem.c ****             pmem_align_src  = (const CPU_ALIGN *)pmem_08_src  - sizeof(CPU_ALIGN) + 1;
+ 373              		.loc 1 559 0
+ 374 004a 0C39     		subs	r1, r1, #12
+ 375              	.LVL62:
+ 560:uC-LIB/lib_mem.c ****             while (size_rem      >=  sizeof(CPU_ALIGN)) {       /* While mem bufs aligned on CPU_AL
+ 376              		.loc 1 560 0
+ 377 004c 04E0     		b	.L38
+ 378              	.LVL63:
+ 379              	.L39:
+ 561:uC-LIB/lib_mem.c ****                *pmem_align_dest-- = *pmem_align_src--;          /* ... copy psrc to pdest with CPU_
+ 380              		.loc 1 561 0
+ 381 004e 0B68     		ldr	r3, [r1]
+ 382 0050 0360     		str	r3, [r0]
+ 562:uC-LIB/lib_mem.c ****                 size_rem         -=  sizeof(CPU_ALIGN);
+ 383              		.loc 1 562 0
+ 384 0052 043A     		subs	r2, r2, #4
+ 385              	.LVL64:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 18
+
+
+ 561:uC-LIB/lib_mem.c ****                *pmem_align_dest-- = *pmem_align_src--;          /* ... copy psrc to pdest with CPU_
+ 386              		.loc 1 561 0
+ 387 0054 0439     		subs	r1, r1, #4
+ 388              	.LVL65:
+ 389 0056 0438     		subs	r0, r0, #4
+ 390              	.LVL66:
+ 391              	.L38:
+ 560:uC-LIB/lib_mem.c ****             while (size_rem      >=  sizeof(CPU_ALIGN)) {       /* While mem bufs aligned on CPU_AL
+ 392              		.loc 1 560 0
+ 393 0058 032A     		cmp	r2, #3
+ 394 005a F8D8     		bhi	.L39
+ 563:uC-LIB/lib_mem.c ****             }
+ 564:uC-LIB/lib_mem.c **** 
+ 565:uC-LIB/lib_mem.c ****             pmem_08_dest = (      CPU_INT08U *)pmem_align_dest + sizeof(CPU_ALIGN) - 1;
+ 395              		.loc 1 565 0
+ 396 005c 0330     		adds	r0, r0, #3
+ 397              	.LVL67:
+ 566:uC-LIB/lib_mem.c ****             pmem_08_src  = (const CPU_INT08U *)pmem_align_src  + sizeof(CPU_ALIGN) - 1;
+ 398              		.loc 1 566 0
+ 399 005e 0331     		adds	r1, r1, #3
+ 400              	.LVL68:
+ 401 0060 04E0     		b	.L40
+ 402              	.LVL69:
+ 403              	.L41:
+ 567:uC-LIB/lib_mem.c **** 
+ 568:uC-LIB/lib_mem.c ****         }
+ 569:uC-LIB/lib_mem.c ****     }
+ 570:uC-LIB/lib_mem.c **** 
+ 571:uC-LIB/lib_mem.c ****     while (size_rem > 0) {                                      /* For unaligned mem bufs or traili
+ 572:uC-LIB/lib_mem.c ****        *pmem_08_dest-- = *pmem_08_src--;                        /* ... copy psrc to pdest by octets
+ 404              		.loc 1 572 0
+ 405 0062 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 406 0064 0370     		strb	r3, [r0]
+ 573:uC-LIB/lib_mem.c ****         size_rem      -=  sizeof(CPU_INT08U);
+ 407              		.loc 1 573 0
+ 408 0066 013A     		subs	r2, r2, #1
+ 409              	.LVL70:
+ 572:uC-LIB/lib_mem.c ****         size_rem      -=  sizeof(CPU_INT08U);
+ 410              		.loc 1 572 0
+ 411 0068 0139     		subs	r1, r1, #1
+ 412              	.LVL71:
+ 413 006a 0138     		subs	r0, r0, #1
+ 414              	.LVL72:
+ 415              	.L40:
+ 571:uC-LIB/lib_mem.c ****        *pmem_08_dest-- = *pmem_08_src--;                        /* ... copy psrc to pdest by octets
+ 416              		.loc 1 571 0
+ 417 006c 002A     		cmp	r2, #0
+ 418 006e F8D1     		bne	.L41
+ 419 0070 10BD     		pop	{r4, pc}
+ 420              		.cfi_endproc
+ 421              	.LFE5:
+ 422              		.size	Mem_Move, .-Mem_Move
+ 423 0072 00BF     		.section	.text.Mem_Cmp,"ax",%progbits
+ 424              		.align	2
+ 425              		.global	Mem_Cmp
+ 426              		.thumb
+ 427              		.thumb_func
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 19
+
+
+ 428              		.type	Mem_Cmp, %function
+ 429              	Mem_Cmp:
+ 430              	.LFB6:
+ 574:uC-LIB/lib_mem.c ****     }
+ 575:uC-LIB/lib_mem.c **** }
+ 576:uC-LIB/lib_mem.c **** 
+ 577:uC-LIB/lib_mem.c **** 
+ 578:uC-LIB/lib_mem.c **** /*$PAGE*/
+ 579:uC-LIB/lib_mem.c **** /*
+ 580:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 581:uC-LIB/lib_mem.c **** *                                              Mem_Cmp()
+ 582:uC-LIB/lib_mem.c **** *
+ 583:uC-LIB/lib_mem.c **** * Description : Verify that ALL data octets in two memory buffers are identical in sequence.
+ 584:uC-LIB/lib_mem.c **** *
+ 585:uC-LIB/lib_mem.c **** * Argument(s) : p1_mem      Pointer to first  memory buffer.
+ 586:uC-LIB/lib_mem.c **** *
+ 587:uC-LIB/lib_mem.c **** *               p2_mem      Pointer to second memory buffer.
+ 588:uC-LIB/lib_mem.c **** *
+ 589:uC-LIB/lib_mem.c **** *               size        Number of data buffer octets to compare (see Note #1).
+ 590:uC-LIB/lib_mem.c **** *
+ 591:uC-LIB/lib_mem.c **** * Return(s)   : DEF_YES, if 'size' number of data octets are identical in both memory buffers.
+ 592:uC-LIB/lib_mem.c **** *
+ 593:uC-LIB/lib_mem.c **** *               DEF_NO,  otherwise.
+ 594:uC-LIB/lib_mem.c **** *
+ 595:uC-LIB/lib_mem.c **** * Caller(s)   : Application.
+ 596:uC-LIB/lib_mem.c **** *
+ 597:uC-LIB/lib_mem.c **** * Note(s)     : (1) Null compares allowed (i.e. zero-length compares); 'DEF_YES' returned to indica
+ 598:uC-LIB/lib_mem.c **** *                   identical null compare.
+ 599:uC-LIB/lib_mem.c **** *
+ 600:uC-LIB/lib_mem.c **** *               (2) Many memory buffer comparisons vary ONLY in the least significant octets -- e.g
+ 601:uC-LIB/lib_mem.c **** *                   network address buffers.  Consequently, memory buffer comparison is more effici
+ 602:uC-LIB/lib_mem.c **** *                   if the comparison starts from the end of the memory buffers which will abort so
+ 603:uC-LIB/lib_mem.c **** *                   on dissimilar memory buffers that vary only in the least significant octets.
+ 604:uC-LIB/lib_mem.c **** *
+ 605:uC-LIB/lib_mem.c **** *               (3) For best CPU performance, optimized to compare data buffers using 'CPU_ALIGN'-s
+ 606:uC-LIB/lib_mem.c **** *                   data words.
+ 607:uC-LIB/lib_mem.c **** *
+ 608:uC-LIB/lib_mem.c **** *                   (a) Since many word-aligned processors REQUIRE that multi-octet words be access
+ 609:uC-LIB/lib_mem.c **** *                       word-aligned addresses, 'CPU_ALIGN'-sized words MUST be accessed on 'CPU_AL
+ 610:uC-LIB/lib_mem.c **** *                       addresses.
+ 611:uC-LIB/lib_mem.c **** *
+ 612:uC-LIB/lib_mem.c **** *               (4) Modulo arithmetic is used to determine whether a memory buffer starts on a 'CPU
+ 613:uC-LIB/lib_mem.c **** *                   address boundary.
+ 614:uC-LIB/lib_mem.c **** *
+ 615:uC-LIB/lib_mem.c **** *                   Modulo arithmetic in ANSI-C REQUIREs operations performed on integer values.  T
+ 616:uC-LIB/lib_mem.c **** *                   address values MUST be cast to an appropriately-sized integer value PRIOR to an
+ 617:uC-LIB/lib_mem.c **** *                  'mem_align_mod' arithmetic operation.
+ 618:uC-LIB/lib_mem.c **** ***************************************************************************************************
+ 619:uC-LIB/lib_mem.c **** */
+ 620:uC-LIB/lib_mem.c **** /*$PAGE*/
+ 621:uC-LIB/lib_mem.c **** CPU_BOOLEAN  Mem_Cmp (const  void        *p1_mem,
+ 622:uC-LIB/lib_mem.c ****                       const  void        *p2_mem,
+ 623:uC-LIB/lib_mem.c ****                              CPU_SIZE_T   size)
+ 624:uC-LIB/lib_mem.c **** {
+ 431              		.loc 1 624 0
+ 432              		.cfi_startproc
+ 433              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 20
+
+
+ 434              		@ frame_needed = 0, uses_anonymous_args = 0
+ 435              		@ link register save eliminated.
+ 436              	.LVL73:
+ 625:uC-LIB/lib_mem.c ****            CPU_SIZE_T    size_rem;
+ 626:uC-LIB/lib_mem.c ****            CPU_ALIGN    *p1_mem_align;
+ 627:uC-LIB/lib_mem.c ****            CPU_ALIGN    *p2_mem_align;
+ 628:uC-LIB/lib_mem.c ****     const  CPU_INT08U   *p1_mem_08;
+ 629:uC-LIB/lib_mem.c ****     const  CPU_INT08U   *p2_mem_08;
+ 630:uC-LIB/lib_mem.c ****            CPU_DATA      i;
+ 631:uC-LIB/lib_mem.c ****            CPU_DATA      mem_align_mod_1;
+ 632:uC-LIB/lib_mem.c ****            CPU_DATA      mem_align_mod_2;
+ 633:uC-LIB/lib_mem.c ****            CPU_BOOLEAN   mem_aligned;
+ 634:uC-LIB/lib_mem.c ****            CPU_BOOLEAN   mem_cmp;
+ 635:uC-LIB/lib_mem.c **** 
+ 636:uC-LIB/lib_mem.c **** 
+ 637:uC-LIB/lib_mem.c ****     if (size < 1) {                                             /* See Note #1.                    
+ 437              		.loc 1 637 0
+ 438 0000 002A     		cmp	r2, #0
+ 439 0002 3FD0     		beq	.L58
+ 440 0004 1346     		mov	r3, r2
+ 638:uC-LIB/lib_mem.c ****         return (DEF_YES);
+ 639:uC-LIB/lib_mem.c ****     }
+ 640:uC-LIB/lib_mem.c ****     if (p1_mem == (void *)0) {
+ 441              		.loc 1 640 0
+ 442 0006 0028     		cmp	r0, #0
+ 443 0008 3ED0     		beq	.L59
+ 641:uC-LIB/lib_mem.c ****         return (DEF_NO);
+ 642:uC-LIB/lib_mem.c ****     }
+ 643:uC-LIB/lib_mem.c ****     if (p2_mem == (void *)0) {
+ 444              		.loc 1 643 0
+ 445 000a 0029     		cmp	r1, #0
+ 446 000c 3ED0     		beq	.L60
+ 624:uC-LIB/lib_mem.c ****            CPU_SIZE_T    size_rem;
+ 447              		.loc 1 624 0
+ 448 000e 70B4     		push	{r4, r5, r6}
+ 449              		.cfi_def_cfa_offset 12
+ 450              		.cfi_offset 4, -12
+ 451              		.cfi_offset 5, -8
+ 452              		.cfi_offset 6, -4
+ 453              	.LVL74:
+ 644:uC-LIB/lib_mem.c ****         return (DEF_NO);
+ 645:uC-LIB/lib_mem.c ****     }
+ 646:uC-LIB/lib_mem.c **** 
+ 647:uC-LIB/lib_mem.c **** 
+ 648:uC-LIB/lib_mem.c ****     mem_cmp         =  DEF_YES;                                 /* Assume mem bufs are identical un
+ 649:uC-LIB/lib_mem.c ****     size_rem        =  size;
+ 650:uC-LIB/lib_mem.c ****                                                                 /* Start @ end of mem bufs (see Not
+ 651:uC-LIB/lib_mem.c ****     p1_mem_08       = (const CPU_INT08U *)p1_mem + size;
+ 454              		.loc 1 651 0
+ 455 0010 8218     		adds	r2, r0, r2
+ 456              	.LVL75:
+ 652:uC-LIB/lib_mem.c ****     p2_mem_08       = (const CPU_INT08U *)p2_mem + size;
+ 457              		.loc 1 652 0
+ 458 0012 1944     		add	r1, r1, r3
+ 459              	.LVL76:
+ 653:uC-LIB/lib_mem.c ****                                                                 /* See Note #4.                    
+ 654:uC-LIB/lib_mem.c ****     mem_align_mod_1 = (CPU_INT08U)((CPU_ADDR)p1_mem_08 % sizeof(CPU_ALIGN));
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 21
+
+
+ 460              		.loc 1 654 0
+ 461 0014 02F00304 		and	r4, r2, #3
+ 462              	.LVL77:
+ 655:uC-LIB/lib_mem.c ****     mem_align_mod_2 = (CPU_INT08U)((CPU_ADDR)p2_mem_08 % sizeof(CPU_ALIGN));
+ 463              		.loc 1 655 0
+ 464 0018 01F00300 		and	r0, r1, #3
+ 465              	.LVL78:
+ 656:uC-LIB/lib_mem.c **** 
+ 657:uC-LIB/lib_mem.c ****     mem_aligned     = (mem_align_mod_1 == mem_align_mod_2) ? DEF_YES : DEF_NO;
+ 466              		.loc 1 657 0
+ 467 001c 8442     		cmp	r4, r0
+ 468 001e 01D1     		bne	.L61
+ 469 0020 0120     		movs	r0, #1
+ 470              	.LVL79:
+ 471 0022 00E0     		b	.L46
+ 472              	.LVL80:
+ 473              	.L61:
+ 474 0024 0020     		movs	r0, #0
+ 475              	.LVL81:
+ 476              	.L46:
+ 658:uC-LIB/lib_mem.c **** 
+ 659:uC-LIB/lib_mem.c ****     if (mem_aligned == DEF_YES) {                               /* If mem bufs' alignment offset eq
+ 477              		.loc 1 659 0 discriminator 4
+ 478 0026 98B1     		cbz	r0, .L62
+ 660:uC-LIB/lib_mem.c ****                                                                 /* ... optimize cmp for mem buf ali
+ 661:uC-LIB/lib_mem.c ****         if (mem_align_mod_1 != 0u) {                            /* If trailing octets avail,       
+ 479              		.loc 1 661 0
+ 480 0028 5CB9     		cbnz	r4, .L63
+ 648:uC-LIB/lib_mem.c ****     size_rem        =  size;
+ 481              		.loc 1 648 0
+ 482 002a 0120     		movs	r0, #1
+ 483              	.LVL82:
+ 484 002c 0EE0     		b	.L49
+ 485              	.LVL83:
+ 486              	.L51:
+ 662:uC-LIB/lib_mem.c ****             i = mem_align_mod_1;
+ 663:uC-LIB/lib_mem.c ****             while ((mem_cmp == DEF_YES) &&                      /* ... cmp mem bufs while identical
+ 664:uC-LIB/lib_mem.c ****                    (size_rem > 0)       &&                      /* ... start mem buf cmp with trail
+ 665:uC-LIB/lib_mem.c ****                    (i        > 0)) {                            /* ... until next CPU_ALIGN word bo
+ 666:uC-LIB/lib_mem.c ****                 p1_mem_08--;
+ 667:uC-LIB/lib_mem.c ****                 p2_mem_08--;
+ 668:uC-LIB/lib_mem.c ****                 if (*p1_mem_08 != *p2_mem_08) {                 /* If ANY data octet(s) NOT identic
+ 487              		.loc 1 668 0
+ 488 002e 12F8016D 		ldrb	r6, [r2, #-1]!	@ zero_extendqisi2
+ 489              	.LVL84:
+ 490 0032 11F8015D 		ldrb	r5, [r1, #-1]!	@ zero_extendqisi2
+ 491              	.LVL85:
+ 492 0036 AE42     		cmp	r6, r5
+ 493 0038 00D0     		beq	.L50
+ 669:uC-LIB/lib_mem.c ****                      mem_cmp = DEF_NO;
+ 494              		.loc 1 669 0
+ 495 003a 0020     		movs	r0, #0
+ 496              	.LVL86:
+ 497              	.L50:
+ 670:uC-LIB/lib_mem.c ****                 }
+ 671:uC-LIB/lib_mem.c ****                 size_rem -= sizeof(CPU_INT08U);
+ 498              		.loc 1 671 0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 22
+
+
+ 499 003c 013B     		subs	r3, r3, #1
+ 500              	.LVL87:
+ 672:uC-LIB/lib_mem.c ****                 i--;
+ 501              		.loc 1 672 0
+ 502 003e 013C     		subs	r4, r4, #1
+ 503              	.LVL88:
+ 504 0040 00E0     		b	.L48
+ 505              	.LVL89:
+ 506              	.L63:
+ 507 0042 0120     		movs	r0, #1
+ 508              	.LVL90:
+ 509              	.L48:
+ 663:uC-LIB/lib_mem.c ****                    (size_rem > 0)       &&                      /* ... start mem buf cmp with trail
+ 510              		.loc 1 663 0
+ 511 0044 10B1     		cbz	r0, .L49
+ 663:uC-LIB/lib_mem.c ****                    (size_rem > 0)       &&                      /* ... start mem buf cmp with trail
+ 512              		.loc 1 663 0 is_stmt 0 discriminator 1
+ 513 0046 0BB1     		cbz	r3, .L49
+ 664:uC-LIB/lib_mem.c ****                    (i        > 0)) {                            /* ... until next CPU_ALIGN word bo
+ 514              		.loc 1 664 0 is_stmt 1
+ 515 0048 002C     		cmp	r4, #0
+ 516 004a F0D1     		bne	.L51
+ 517              	.LVL91:
+ 518              	.L49:
+ 673:uC-LIB/lib_mem.c ****             }
+ 674:uC-LIB/lib_mem.c ****         }
+ 675:uC-LIB/lib_mem.c **** 
+ 676:uC-LIB/lib_mem.c ****         if (mem_cmp == DEF_YES) {                               /* If cmp still identical, cmp alig
+ 519              		.loc 1 676 0
+ 520 004c B0B1     		cbz	r0, .L53
+ 521 004e 09E0     		b	.L52
+ 522              	.LVL92:
+ 523              	.L62:
+ 648:uC-LIB/lib_mem.c ****     size_rem        =  size;
+ 524              		.loc 1 648 0
+ 525 0050 0120     		movs	r0, #1
+ 526              	.LVL93:
+ 527 0052 13E0     		b	.L53
+ 528              	.LVL94:
+ 529              	.L55:
+ 677:uC-LIB/lib_mem.c ****             p1_mem_align = (CPU_ALIGN *)p1_mem_08;              /* See Note #3a.                   
+ 678:uC-LIB/lib_mem.c ****             p2_mem_align = (CPU_ALIGN *)p2_mem_08;
+ 679:uC-LIB/lib_mem.c **** 
+ 680:uC-LIB/lib_mem.c ****             while ((mem_cmp  == DEF_YES) &&                     /* Cmp mem bufs while identical & .
+ 681:uC-LIB/lib_mem.c ****                    (size_rem >= sizeof(CPU_ALIGN))) {           /* ... mem bufs aligned on CPU_ALIG
+ 682:uC-LIB/lib_mem.c ****                 p1_mem_align--;
+ 683:uC-LIB/lib_mem.c ****                 p2_mem_align--;
+ 684:uC-LIB/lib_mem.c ****                 if (*p1_mem_align != *p2_mem_align) {           /* If ANY data octet(s) NOT identic
+ 530              		.loc 1 684 0
+ 531 0054 52F8045D 		ldr	r5, [r2, #-4]!
+ 532              	.LVL95:
+ 533 0058 51F8044D 		ldr	r4, [r1, #-4]!
+ 534              	.LVL96:
+ 535 005c A542     		cmp	r5, r4
+ 536 005e 00D0     		beq	.L54
+ 685:uC-LIB/lib_mem.c ****                      mem_cmp = DEF_NO;
+ 537              		.loc 1 685 0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 23
+
+
+ 538 0060 0020     		movs	r0, #0
+ 539              	.LVL97:
+ 540              	.L54:
+ 686:uC-LIB/lib_mem.c ****                 }
+ 687:uC-LIB/lib_mem.c ****                 size_rem -= sizeof(CPU_ALIGN);
+ 541              		.loc 1 687 0
+ 542 0062 043B     		subs	r3, r3, #4
+ 543              	.LVL98:
+ 544              	.L52:
+ 680:uC-LIB/lib_mem.c ****                    (size_rem >= sizeof(CPU_ALIGN))) {           /* ... mem bufs aligned on CPU_ALIG
+ 545              		.loc 1 680 0
+ 546 0064 50B1     		cbz	r0, .L53
+ 680:uC-LIB/lib_mem.c ****                    (size_rem >= sizeof(CPU_ALIGN))) {           /* ... mem bufs aligned on CPU_ALIG
+ 547              		.loc 1 680 0 is_stmt 0 discriminator 1
+ 548 0066 032B     		cmp	r3, #3
+ 549 0068 F4D8     		bhi	.L55
+ 550 006a 07E0     		b	.L53
+ 551              	.LVL99:
+ 552              	.L57:
+ 688:uC-LIB/lib_mem.c ****             }
+ 689:uC-LIB/lib_mem.c **** 
+ 690:uC-LIB/lib_mem.c ****             p1_mem_08 = (CPU_INT08U *)p1_mem_align;
+ 691:uC-LIB/lib_mem.c ****             p2_mem_08 = (CPU_INT08U *)p2_mem_align;
+ 692:uC-LIB/lib_mem.c ****         }
+ 693:uC-LIB/lib_mem.c ****     }
+ 694:uC-LIB/lib_mem.c **** 
+ 695:uC-LIB/lib_mem.c ****     while ((mem_cmp == DEF_YES) &&                              /* Cmp mem bufs while identical ...
+ 696:uC-LIB/lib_mem.c ****            (size_rem > 0)) {                                    /* ... for unaligned mem bufs or tr
+ 697:uC-LIB/lib_mem.c ****         p1_mem_08--;
+ 698:uC-LIB/lib_mem.c ****         p2_mem_08--;
+ 699:uC-LIB/lib_mem.c ****         if (*p1_mem_08 != *p2_mem_08) {                         /* If ANY data octet(s) NOT identic
+ 553              		.loc 1 699 0 is_stmt 1
+ 554 006c 12F8015D 		ldrb	r5, [r2, #-1]!	@ zero_extendqisi2
+ 555              	.LVL100:
+ 556 0070 11F8014D 		ldrb	r4, [r1, #-1]!	@ zero_extendqisi2
+ 557              	.LVL101:
+ 558 0074 A542     		cmp	r5, r4
+ 559 0076 00D0     		beq	.L56
+ 700:uC-LIB/lib_mem.c ****              mem_cmp = DEF_NO;
+ 560              		.loc 1 700 0
+ 561 0078 0020     		movs	r0, #0
+ 562              	.LVL102:
+ 563              	.L56:
+ 701:uC-LIB/lib_mem.c ****         }
+ 702:uC-LIB/lib_mem.c ****         size_rem -= sizeof(CPU_INT08U);
+ 564              		.loc 1 702 0
+ 565 007a 013B     		subs	r3, r3, #1
+ 566              	.LVL103:
+ 567              	.L53:
+ 695:uC-LIB/lib_mem.c ****            (size_rem > 0)) {                                    /* ... for unaligned mem bufs or tr
+ 568              		.loc 1 695 0
+ 569 007c 40B1     		cbz	r0, .L45
+ 695:uC-LIB/lib_mem.c ****            (size_rem > 0)) {                                    /* ... for unaligned mem bufs or tr
+ 570              		.loc 1 695 0 is_stmt 0 discriminator 1
+ 571 007e 002B     		cmp	r3, #0
+ 572 0080 F4D1     		bne	.L57
+ 573 0082 05E0     		b	.L45
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 24
+
+
+ 574              	.LVL104:
+ 575              	.L58:
+ 576              		.cfi_def_cfa_offset 0
+ 577              		.cfi_restore 4
+ 578              		.cfi_restore 5
+ 579              		.cfi_restore 6
+ 638:uC-LIB/lib_mem.c ****     }
+ 580              		.loc 1 638 0 is_stmt 1
+ 581 0084 0120     		movs	r0, #1
+ 582              	.LVL105:
+ 583 0086 7047     		bx	lr
+ 584              	.LVL106:
+ 585              	.L59:
+ 641:uC-LIB/lib_mem.c ****     }
+ 586              		.loc 1 641 0
+ 587 0088 0020     		movs	r0, #0
+ 588              	.LVL107:
+ 703:uC-LIB/lib_mem.c ****     }
+ 704:uC-LIB/lib_mem.c **** 
+ 705:uC-LIB/lib_mem.c ****     return (mem_cmp);
+ 706:uC-LIB/lib_mem.c **** }
+ 589              		.loc 1 706 0
+ 590 008a 7047     		bx	lr
+ 591              	.LVL108:
+ 592              	.L60:
+ 644:uC-LIB/lib_mem.c ****     }
+ 593              		.loc 1 644 0
+ 594 008c 0020     		movs	r0, #0
+ 595              	.LVL109:
+ 596 008e 7047     		bx	lr
+ 597              	.LVL110:
+ 598              	.L45:
+ 599              		.cfi_def_cfa_offset 12
+ 600              		.cfi_offset 4, -12
+ 601              		.cfi_offset 5, -8
+ 602              		.cfi_offset 6, -4
+ 603              		.loc 1 706 0
+ 604 0090 70BC     		pop	{r4, r5, r6}
+ 605              		.cfi_restore 6
+ 606              		.cfi_restore 5
+ 607              		.cfi_restore 4
+ 608              		.cfi_def_cfa_offset 0
+ 609 0092 7047     		bx	lr
+ 610              		.cfi_endproc
+ 611              	.LFE6:
+ 612              		.size	Mem_Cmp, .-Mem_Cmp
+ 613              		.text
+ 614              	.Letext0:
+ 615              		.file 2 ".\\uC-CPU\\ARM-Cortex-M3\\GNU/cpu.h"
+ 616              		.section	.debug_info,"",%progbits
+ 617              	.Ldebug_info0:
+ 618 0000 DB040000 		.4byte	0x4db
+ 619 0004 0400     		.2byte	0x4
+ 620 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 621 000a 04       		.byte	0x4
+ 622 000b 01       		.uleb128 0x1
+ 623 000c B8000000 		.4byte	.LASF54
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 25
+
+
+ 624 0010 0C       		.byte	0xc
+ 625 0011 00000000 		.4byte	.LASF55
+ 626 0015 E6010000 		.4byte	.LASF56
+ 627 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 628 001d 00000000 		.4byte	0
+ 629 0021 00000000 		.4byte	.Ldebug_line0
+ 630 0025 02       		.uleb128 0x2
+ 631 0026 01       		.byte	0x1
+ 632 0027 08       		.byte	0x8
+ 633 0028 C3020000 		.4byte	.LASF0
+ 634 002c 03       		.uleb128 0x3
+ 635 002d 7D020000 		.4byte	.LASF2
+ 636 0031 02       		.byte	0x2
+ 637 0032 77       		.byte	0x77
+ 638 0033 37000000 		.4byte	0x37
+ 639 0037 02       		.uleb128 0x2
+ 640 0038 01       		.byte	0x1
+ 641 0039 08       		.byte	0x8
+ 642 003a 38020000 		.4byte	.LASF1
+ 643 003e 03       		.uleb128 0x3
+ 644 003f 6B010000 		.4byte	.LASF3
+ 645 0043 02       		.byte	0x2
+ 646 0044 78       		.byte	0x78
+ 647 0045 37000000 		.4byte	0x37
+ 648 0049 03       		.uleb128 0x3
+ 649 004a 46010000 		.4byte	.LASF4
+ 650 004e 02       		.byte	0x2
+ 651 004f 79       		.byte	0x79
+ 652 0050 54000000 		.4byte	0x54
+ 653 0054 02       		.uleb128 0x2
+ 654 0055 01       		.byte	0x1
+ 655 0056 06       		.byte	0x6
+ 656 0057 FE020000 		.4byte	.LASF5
+ 657 005b 02       		.uleb128 0x2
+ 658 005c 02       		.byte	0x2
+ 659 005d 07       		.byte	0x7
+ 660 005e 4B000000 		.4byte	.LASF6
+ 661 0062 02       		.uleb128 0x2
+ 662 0063 02       		.byte	0x2
+ 663 0064 05       		.byte	0x5
+ 664 0065 C8020000 		.4byte	.LASF7
+ 665 0069 03       		.uleb128 0x3
+ 666 006a 9B000000 		.4byte	.LASF8
+ 667 006e 02       		.byte	0x2
+ 668 006f 7C       		.byte	0x7c
+ 669 0070 74000000 		.4byte	0x74
+ 670 0074 02       		.uleb128 0x2
+ 671 0075 04       		.byte	0x4
+ 672 0076 07       		.byte	0x7
+ 673 0077 46020000 		.4byte	.LASF9
+ 674 007b 04       		.uleb128 0x4
+ 675 007c 04       		.byte	0x4
+ 676 007d 05       		.byte	0x5
+ 677 007e 696E7400 		.ascii	"int\000"
+ 678 0082 02       		.uleb128 0x2
+ 679 0083 08       		.byte	0x8
+ 680 0084 07       		.byte	0x7
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 26
+
+
+ 681 0085 66020000 		.4byte	.LASF10
+ 682 0089 02       		.uleb128 0x2
+ 683 008a 08       		.byte	0x8
+ 684 008b 05       		.byte	0x5
+ 685 008c AD020000 		.4byte	.LASF11
+ 686 0090 02       		.uleb128 0x2
+ 687 0091 04       		.byte	0x4
+ 688 0092 04       		.byte	0x4
+ 689 0093 A6000000 		.4byte	.LASF12
+ 690 0097 02       		.uleb128 0x2
+ 691 0098 08       		.byte	0x8
+ 692 0099 04       		.byte	0x4
+ 693 009a B3010000 		.4byte	.LASF13
+ 694 009e 05       		.uleb128 0x5
+ 695 009f 04       		.byte	0x4
+ 696 00a0 03       		.uleb128 0x3
+ 697 00a1 F5020000 		.4byte	.LASF14
+ 698 00a5 02       		.byte	0x2
+ 699 00a6 B5       		.byte	0xb5
+ 700 00a7 69000000 		.4byte	0x69
+ 701 00ab 03       		.uleb128 0x3
+ 702 00ac 42000000 		.4byte	.LASF15
+ 703 00b0 02       		.byte	0x2
+ 704 00b1 BE       		.byte	0xbe
+ 705 00b2 69000000 		.4byte	0x69
+ 706 00b6 03       		.uleb128 0x3
+ 707 00b7 5C020000 		.4byte	.LASF16
+ 708 00bb 02       		.byte	0x2
+ 709 00bc C6       		.byte	0xc6
+ 710 00bd AB000000 		.4byte	0xab
+ 711 00c1 03       		.uleb128 0x3
+ 712 00c2 A8010000 		.4byte	.LASF17
+ 713 00c6 02       		.byte	0x2
+ 714 00c7 C7       		.byte	0xc7
+ 715 00c8 A0000000 		.4byte	0xa0
+ 716 00cc 02       		.uleb128 0x2
+ 717 00cd 04       		.byte	0x4
+ 718 00ce 05       		.byte	0x5
+ 719 00cf E1020000 		.4byte	.LASF18
+ 720 00d3 02       		.uleb128 0x2
+ 721 00d4 04       		.byte	0x4
+ 722 00d5 07       		.byte	0x7
+ 723 00d6 51010000 		.4byte	.LASF19
+ 724 00da 02       		.uleb128 0x2
+ 725 00db 08       		.byte	0x8
+ 726 00dc 04       		.byte	0x4
+ 727 00dd 98020000 		.4byte	.LASF20
+ 728 00e1 02       		.uleb128 0x2
+ 729 00e2 04       		.byte	0x4
+ 730 00e3 07       		.byte	0x7
+ 731 00e4 A4020000 		.4byte	.LASF21
+ 732 00e8 06       		.uleb128 0x6
+ 733 00e9 83010000 		.4byte	.LASF57
+ 734 00ed 01       		.byte	0x1
+ 735 00ee A5       		.byte	0xa5
+ 736 00ef 00000000 		.4byte	.LFB1
+ 737 00f3 02000000 		.4byte	.LFE1-.LFB1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 27
+
+
+ 738 00f7 01       		.uleb128 0x1
+ 739 00f8 9C       		.byte	0x9c
+ 740 00f9 07       		.uleb128 0x7
+ 741 00fa BB020000 		.4byte	.LASF30
+ 742 00fe 01       		.byte	0x1
+ 743 00ff 0D01     		.2byte	0x10d
+ 744 0101 00000000 		.4byte	.LFB3
+ 745 0105 44000000 		.4byte	.LFE3-.LFB3
+ 746 0109 01       		.uleb128 0x1
+ 747 010a 9C       		.byte	0x9c
+ 748 010b 9A010000 		.4byte	0x19a
+ 749 010f 08       		.uleb128 0x8
+ 750 0110 6B000000 		.4byte	.LASF22
+ 751 0114 01       		.byte	0x1
+ 752 0115 0D01     		.2byte	0x10d
+ 753 0117 9E000000 		.4byte	0x9e
+ 754 011b 00000000 		.4byte	.LLST0
+ 755 011f 09       		.uleb128 0x9
+ 756 0120 53020000 		.4byte	.LASF23
+ 757 0124 01       		.byte	0x1
+ 758 0125 0E01     		.2byte	0x10e
+ 759 0127 3E000000 		.4byte	0x3e
+ 760 012b 01       		.uleb128 0x1
+ 761 012c 51       		.byte	0x51
+ 762 012d 08       		.uleb128 0x8
+ 763 012e B3000000 		.4byte	.LASF24
+ 764 0132 01       		.byte	0x1
+ 765 0133 0F01     		.2byte	0x10f
+ 766 0135 C1000000 		.4byte	0xc1
+ 767 0139 21000000 		.4byte	.LLST1
+ 768 013d 0A       		.uleb128 0xa
+ 769 013e 1C000000 		.4byte	.LASF25
+ 770 0142 01       		.byte	0x1
+ 771 0143 1101     		.2byte	0x111
+ 772 0145 C1000000 		.4byte	0xc1
+ 773 0149 01       		.uleb128 0x1
+ 774 014a 52       		.byte	0x52
+ 775 014b 0B       		.uleb128 0xb
+ 776 014c 37000000 		.4byte	.LASF26
+ 777 0150 01       		.byte	0x1
+ 778 0151 1201     		.2byte	0x112
+ 779 0153 B6000000 		.4byte	0xb6
+ 780 0157 42000000 		.4byte	.LLST2
+ 781 015b 0B       		.uleb128 0xb
+ 782 015c EA020000 		.4byte	.LASF27
+ 783 0160 01       		.byte	0x1
+ 784 0161 1301     		.2byte	0x113
+ 785 0163 9A010000 		.4byte	0x19a
+ 786 0167 70000000 		.4byte	.LLST3
+ 787 016b 0B       		.uleb128 0xb
+ 788 016c 29030000 		.4byte	.LASF28
+ 789 0170 01       		.byte	0x1
+ 790 0171 1401     		.2byte	0x114
+ 791 0173 A0010000 		.4byte	0x1a0
+ 792 0177 90000000 		.4byte	.LLST4
+ 793 017b 0B       		.uleb128 0xb
+ 794 017c 17020000 		.4byte	.LASF29
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 28
+
+
+ 795 0180 01       		.byte	0x1
+ 796 0181 1501     		.2byte	0x115
+ 797 0183 AB000000 		.4byte	0xab
+ 798 0187 D3000000 		.4byte	.LLST5
+ 799 018b 0C       		.uleb128 0xc
+ 800 018c 6900     		.ascii	"i\000"
+ 801 018e 01       		.byte	0x1
+ 802 018f 1601     		.2byte	0x116
+ 803 0191 AB000000 		.4byte	0xab
+ 804 0195 05010000 		.4byte	.LLST6
+ 805 0199 00       		.byte	0
+ 806 019a 0D       		.uleb128 0xd
+ 807 019b 04       		.byte	0x4
+ 808 019c B6000000 		.4byte	0xb6
+ 809 01a0 0D       		.uleb128 0xd
+ 810 01a1 04       		.byte	0x4
+ 811 01a2 3E000000 		.4byte	0x3e
+ 812 01a6 0E       		.uleb128 0xe
+ 813 01a7 D9020000 		.4byte	.LASF31
+ 814 01ab 01       		.byte	0x1
+ 815 01ac E1       		.byte	0xe1
+ 816 01ad 00000000 		.4byte	.LFB2
+ 817 01b1 0C000000 		.4byte	.LFE2-.LFB2
+ 818 01b5 01       		.uleb128 0x1
+ 819 01b6 9C       		.byte	0x9c
+ 820 01b7 F7010000 		.4byte	0x1f7
+ 821 01bb 0F       		.uleb128 0xf
+ 822 01bc 6B000000 		.4byte	.LASF22
+ 823 01c0 01       		.byte	0x1
+ 824 01c1 E1       		.byte	0xe1
+ 825 01c2 9E000000 		.4byte	0x9e
+ 826 01c6 2F010000 		.4byte	.LLST7
+ 827 01ca 0F       		.uleb128 0xf
+ 828 01cb B3000000 		.4byte	.LASF24
+ 829 01cf 01       		.byte	0x1
+ 830 01d0 E2       		.byte	0xe2
+ 831 01d1 C1000000 		.4byte	0xc1
+ 832 01d5 50010000 		.4byte	.LLST8
+ 833 01d9 10       		.uleb128 0x10
+ 834 01da 0A000000 		.4byte	.LVL19
+ 835 01de F9000000 		.4byte	0xf9
+ 836 01e2 11       		.uleb128 0x11
+ 837 01e3 01       		.uleb128 0x1
+ 838 01e4 50       		.byte	0x50
+ 839 01e5 03       		.uleb128 0x3
+ 840 01e6 F3       		.byte	0xf3
+ 841 01e7 01       		.uleb128 0x1
+ 842 01e8 50       		.byte	0x50
+ 843 01e9 11       		.uleb128 0x11
+ 844 01ea 01       		.uleb128 0x1
+ 845 01eb 51       		.byte	0x51
+ 846 01ec 01       		.uleb128 0x1
+ 847 01ed 30       		.byte	0x30
+ 848 01ee 11       		.uleb128 0x11
+ 849 01ef 01       		.uleb128 0x1
+ 850 01f0 52       		.byte	0x52
+ 851 01f1 03       		.uleb128 0x3
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 29
+
+
+ 852 01f2 F3       		.byte	0xf3
+ 853 01f3 01       		.uleb128 0x1
+ 854 01f4 51       		.byte	0x51
+ 855 01f5 00       		.byte	0
+ 856 01f6 00       		.byte	0
+ 857 01f7 07       		.uleb128 0x7
+ 858 01f8 92000000 		.4byte	.LASF32
+ 859 01fc 01       		.byte	0x1
+ 860 01fd 7C01     		.2byte	0x17c
+ 861 01ff 00000000 		.4byte	.LFB4
+ 862 0203 56000000 		.4byte	.LFE4-.LFB4
+ 863 0207 01       		.uleb128 0x1
+ 864 0208 9C       		.byte	0x9c
+ 865 0209 DA020000 		.4byte	0x2da
+ 866 020d 08       		.uleb128 0x8
+ 867 020e 16000000 		.4byte	.LASF33
+ 868 0212 01       		.byte	0x1
+ 869 0213 7C01     		.2byte	0x17c
+ 870 0215 9E000000 		.4byte	0x9e
+ 871 0219 7C010000 		.4byte	.LLST9
+ 872 021d 08       		.uleb128 0x8
+ 873 021e 11000000 		.4byte	.LASF34
+ 874 0222 01       		.byte	0x1
+ 875 0223 7D01     		.2byte	0x17d
+ 876 0225 DA020000 		.4byte	0x2da
+ 877 0229 9D010000 		.4byte	.LLST10
+ 878 022d 08       		.uleb128 0x8
+ 879 022e B3000000 		.4byte	.LASF24
+ 880 0232 01       		.byte	0x1
+ 881 0233 7E01     		.2byte	0x17e
+ 882 0235 C1000000 		.4byte	0xc1
+ 883 0239 BE010000 		.4byte	.LLST11
+ 884 023d 0A       		.uleb128 0xa
+ 885 023e 1C000000 		.4byte	.LASF25
+ 886 0242 01       		.byte	0x1
+ 887 0243 8001     		.2byte	0x180
+ 888 0245 C1000000 		.4byte	0xc1
+ 889 0249 01       		.uleb128 0x1
+ 890 024a 52       		.byte	0x52
+ 891 024b 0B       		.uleb128 0xb
+ 892 024c 8C010000 		.4byte	.LASF35
+ 893 0250 01       		.byte	0x1
+ 894 0251 8101     		.2byte	0x181
+ 895 0253 C1000000 		.4byte	0xc1
+ 896 0257 DF010000 		.4byte	.LLST12
+ 897 025b 0B       		.uleb128 0xb
+ 898 025c 7A000000 		.4byte	.LASF36
+ 899 0260 01       		.byte	0x1
+ 900 0261 8201     		.2byte	0x182
+ 901 0263 9A010000 		.4byte	0x19a
+ 902 0267 14020000 		.4byte	.LLST13
+ 903 026b 0B       		.uleb128 0xb
+ 904 026c 89020000 		.4byte	.LASF37
+ 905 0270 01       		.byte	0x1
+ 906 0271 8301     		.2byte	0x183
+ 907 0273 E1020000 		.4byte	0x2e1
+ 908 0277 34020000 		.4byte	.LLST14
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 30
+
+
+ 909 027b 0B       		.uleb128 0xb
+ 910 027c 76010000 		.4byte	.LASF38
+ 911 0280 01       		.byte	0x1
+ 912 0281 8401     		.2byte	0x184
+ 913 0283 A0010000 		.4byte	0x1a0
+ 914 0287 54020000 		.4byte	.LLST15
+ 915 028b 0B       		.uleb128 0xb
+ 916 028c BA010000 		.4byte	.LASF39
+ 917 0290 01       		.byte	0x1
+ 918 0291 8501     		.2byte	0x185
+ 919 0293 EC020000 		.4byte	0x2ec
+ 920 0297 97020000 		.4byte	.LLST16
+ 921 029b 0C       		.uleb128 0xc
+ 922 029c 6900     		.ascii	"i\000"
+ 923 029e 01       		.byte	0x1
+ 924 029f 8601     		.2byte	0x186
+ 925 02a1 AB000000 		.4byte	0xab
+ 926 02a5 DA020000 		.4byte	.LLST17
+ 927 02a9 0B       		.uleb128 0xb
+ 928 02aa 16030000 		.4byte	.LASF40
+ 929 02ae 01       		.byte	0x1
+ 930 02af 8701     		.2byte	0x187
+ 931 02b1 AB000000 		.4byte	0xab
+ 932 02b5 ED020000 		.4byte	.LLST18
+ 933 02b9 0B       		.uleb128 0xb
+ 934 02ba 25000000 		.4byte	.LASF41
+ 935 02be 01       		.byte	0x1
+ 936 02bf 8801     		.2byte	0x188
+ 937 02c1 AB000000 		.4byte	0xab
+ 938 02c5 10030000 		.4byte	.LLST19
+ 939 02c9 0B       		.uleb128 0xb
+ 940 02ca 0A030000 		.4byte	.LASF42
+ 941 02ce 01       		.byte	0x1
+ 942 02cf 8901     		.2byte	0x189
+ 943 02d1 2C000000 		.4byte	0x2c
+ 944 02d5 5C030000 		.4byte	.LLST20
+ 945 02d9 00       		.byte	0
+ 946 02da 0D       		.uleb128 0xd
+ 947 02db 04       		.byte	0x4
+ 948 02dc E0020000 		.4byte	0x2e0
+ 949 02e0 12       		.uleb128 0x12
+ 950 02e1 0D       		.uleb128 0xd
+ 951 02e2 04       		.byte	0x4
+ 952 02e3 E7020000 		.4byte	0x2e7
+ 953 02e7 13       		.uleb128 0x13
+ 954 02e8 B6000000 		.4byte	0xb6
+ 955 02ec 0D       		.uleb128 0xd
+ 956 02ed 04       		.byte	0x4
+ 957 02ee F2020000 		.4byte	0x2f2
+ 958 02f2 13       		.uleb128 0x13
+ 959 02f3 3E000000 		.4byte	0x3e
+ 960 02f7 07       		.uleb128 0x7
+ 961 02f8 25020000 		.4byte	.LASF43
+ 962 02fc 01       		.byte	0x1
+ 963 02fd EE01     		.2byte	0x1ee
+ 964 02ff 00000000 		.4byte	.LFB5
+ 965 0303 72000000 		.4byte	.LFE5-.LFB5
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 31
+
+
+ 966 0307 01       		.uleb128 0x1
+ 967 0308 9C       		.byte	0x9c
+ 968 0309 F9030000 		.4byte	0x3f9
+ 969 030d 08       		.uleb128 0x8
+ 970 030e 16000000 		.4byte	.LASF33
+ 971 0312 01       		.byte	0x1
+ 972 0313 EE01     		.2byte	0x1ee
+ 973 0315 9E000000 		.4byte	0x9e
+ 974 0319 6F030000 		.4byte	.LLST21
+ 975 031d 08       		.uleb128 0x8
+ 976 031e 11000000 		.4byte	.LASF34
+ 977 0322 01       		.byte	0x1
+ 978 0323 EF01     		.2byte	0x1ef
+ 979 0325 DA020000 		.4byte	0x2da
+ 980 0329 A9030000 		.4byte	.LLST22
+ 981 032d 08       		.uleb128 0x8
+ 982 032e B3000000 		.4byte	.LASF24
+ 983 0332 01       		.byte	0x1
+ 984 0333 F001     		.2byte	0x1f0
+ 985 0335 C1000000 		.4byte	0xc1
+ 986 0339 E3030000 		.4byte	.LLST23
+ 987 033d 0A       		.uleb128 0xa
+ 988 033e 1C000000 		.4byte	.LASF25
+ 989 0342 01       		.byte	0x1
+ 990 0343 F201     		.2byte	0x1f2
+ 991 0345 C1000000 		.4byte	0xc1
+ 992 0349 01       		.uleb128 0x1
+ 993 034a 52       		.byte	0x52
+ 994 034b 0B       		.uleb128 0xb
+ 995 034c 8C010000 		.4byte	.LASF35
+ 996 0350 01       		.byte	0x1
+ 997 0351 F301     		.2byte	0x1f3
+ 998 0353 C1000000 		.4byte	0xc1
+ 999 0357 1D040000 		.4byte	.LLST24
+ 1000 035b 0B       		.uleb128 0xb
+ 1001 035c 7A000000 		.4byte	.LASF36
+ 1002 0360 01       		.byte	0x1
+ 1003 0361 F401     		.2byte	0x1f4
+ 1004 0363 9A010000 		.4byte	0x19a
+ 1005 0367 52040000 		.4byte	.LLST25
+ 1006 036b 0B       		.uleb128 0xb
+ 1007 036c 89020000 		.4byte	.LASF37
+ 1008 0370 01       		.byte	0x1
+ 1009 0371 F501     		.2byte	0x1f5
+ 1010 0373 E1020000 		.4byte	0x2e1
+ 1011 0377 8A040000 		.4byte	.LLST26
+ 1012 037b 0B       		.uleb128 0xb
+ 1013 037c 76010000 		.4byte	.LASF38
+ 1014 0380 01       		.byte	0x1
+ 1015 0381 F601     		.2byte	0x1f6
+ 1016 0383 A0010000 		.4byte	0x1a0
+ 1017 0387 C2040000 		.4byte	.LLST27
+ 1018 038b 0B       		.uleb128 0xb
+ 1019 038c BA010000 		.4byte	.LASF39
+ 1020 0390 01       		.byte	0x1
+ 1021 0391 F701     		.2byte	0x1f7
+ 1022 0393 EC020000 		.4byte	0x2ec
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 32
+
+
+ 1023 0397 36050000 		.4byte	.LLST28
+ 1024 039b 0C       		.uleb128 0xc
+ 1025 039c 6900     		.ascii	"i\000"
+ 1026 039e 01       		.byte	0x1
+ 1027 039f F801     		.2byte	0x1f8
+ 1028 03a1 49000000 		.4byte	0x49
+ 1029 03a5 AA050000 		.4byte	.LLST29
+ 1030 03a9 0B       		.uleb128 0xb
+ 1031 03aa 16030000 		.4byte	.LASF40
+ 1032 03ae 01       		.byte	0x1
+ 1033 03af F901     		.2byte	0x1f9
+ 1034 03b1 AB000000 		.4byte	0xab
+ 1035 03b5 C8050000 		.4byte	.LLST30
+ 1036 03b9 0B       		.uleb128 0xb
+ 1037 03ba 25000000 		.4byte	.LASF41
+ 1038 03be 01       		.byte	0x1
+ 1039 03bf FA01     		.2byte	0x1fa
+ 1040 03c1 AB000000 		.4byte	0xab
+ 1041 03c5 00060000 		.4byte	.LLST31
+ 1042 03c9 0B       		.uleb128 0xb
+ 1043 03ca 0A030000 		.4byte	.LASF42
+ 1044 03ce 01       		.byte	0x1
+ 1045 03cf FB01     		.2byte	0x1fb
+ 1046 03d1 2C000000 		.4byte	0x2c
+ 1047 03d5 52060000 		.4byte	.LLST32
+ 1048 03d9 10       		.uleb128 0x10
+ 1049 03da 0A000000 		.4byte	.LVL43
+ 1050 03de F7010000 		.4byte	0x1f7
+ 1051 03e2 11       		.uleb128 0x11
+ 1052 03e3 01       		.uleb128 0x1
+ 1053 03e4 50       		.byte	0x50
+ 1054 03e5 03       		.uleb128 0x3
+ 1055 03e6 F3       		.byte	0xf3
+ 1056 03e7 01       		.uleb128 0x1
+ 1057 03e8 50       		.byte	0x50
+ 1058 03e9 11       		.uleb128 0x11
+ 1059 03ea 01       		.uleb128 0x1
+ 1060 03eb 51       		.byte	0x51
+ 1061 03ec 03       		.uleb128 0x3
+ 1062 03ed F3       		.byte	0xf3
+ 1063 03ee 01       		.uleb128 0x1
+ 1064 03ef 51       		.byte	0x51
+ 1065 03f0 11       		.uleb128 0x11
+ 1066 03f1 01       		.uleb128 0x1
+ 1067 03f2 52       		.byte	0x52
+ 1068 03f3 03       		.uleb128 0x3
+ 1069 03f4 F3       		.byte	0xf3
+ 1070 03f5 01       		.uleb128 0x1
+ 1071 03f6 52       		.byte	0x52
+ 1072 03f7 00       		.byte	0
+ 1073 03f8 00       		.byte	0
+ 1074 03f9 14       		.uleb128 0x14
+ 1075 03fa 63010000 		.4byte	.LASF44
+ 1076 03fe 01       		.byte	0x1
+ 1077 03ff 6D02     		.2byte	0x26d
+ 1078 0401 2C000000 		.4byte	0x2c
+ 1079 0405 00000000 		.4byte	.LFB6
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 33
+
+
+ 1080 0409 94000000 		.4byte	.LFE6-.LFB6
+ 1081 040d 01       		.uleb128 0x1
+ 1082 040e 9C       		.byte	0x9c
+ 1083 040f 08       		.uleb128 0x8
+ 1084 0410 AC000000 		.4byte	.LASF45
+ 1085 0414 01       		.byte	0x1
+ 1086 0415 6D02     		.2byte	0x26d
+ 1087 0417 DA020000 		.4byte	0x2da
+ 1088 041b 65060000 		.4byte	.LLST33
+ 1089 041f 08       		.uleb128 0x8
+ 1090 0420 D2020000 		.4byte	.LASF46
+ 1091 0424 01       		.byte	0x1
+ 1092 0425 6E02     		.2byte	0x26e
+ 1093 0427 DA020000 		.4byte	0x2da
+ 1094 042b D1060000 		.4byte	.LLST34
+ 1095 042f 08       		.uleb128 0x8
+ 1096 0430 B3000000 		.4byte	.LASF24
+ 1097 0434 01       		.byte	0x1
+ 1098 0435 6F02     		.2byte	0x26f
+ 1099 0437 C1000000 		.4byte	0xc1
+ 1100 043b 0B070000 		.4byte	.LLST35
+ 1101 043f 0B       		.uleb128 0xb
+ 1102 0440 1C000000 		.4byte	.LASF25
+ 1103 0444 01       		.byte	0x1
+ 1104 0445 7102     		.2byte	0x271
+ 1105 0447 C1000000 		.4byte	0xc1
+ 1106 044b 82070000 		.4byte	.LLST36
+ 1107 044f 0B       		.uleb128 0xb
+ 1108 0450 9B010000 		.4byte	.LASF47
+ 1109 0454 01       		.byte	0x1
+ 1110 0455 7202     		.2byte	0x272
+ 1111 0457 9A010000 		.4byte	0x19a
+ 1112 045b AB070000 		.4byte	.LLST37
+ 1113 045f 0B       		.uleb128 0xb
+ 1114 0460 5E000000 		.4byte	.LASF48
+ 1115 0464 01       		.byte	0x1
+ 1116 0465 7302     		.2byte	0x273
+ 1117 0467 9A010000 		.4byte	0x19a
+ 1118 046b D6070000 		.4byte	.LLST38
+ 1119 046f 0B       		.uleb128 0xb
+ 1120 0470 70000000 		.4byte	.LASF49
+ 1121 0474 01       		.byte	0x1
+ 1122 0475 7402     		.2byte	0x274
+ 1123 0477 EC020000 		.4byte	0x2ec
+ 1124 047b 01080000 		.4byte	.LLST39
+ 1125 047f 0B       		.uleb128 0xb
+ 1126 0480 2E020000 		.4byte	.LASF50
+ 1127 0484 01       		.byte	0x1
+ 1128 0485 7502     		.2byte	0x275
+ 1129 0487 EC020000 		.4byte	0x2ec
+ 1130 048b 5A080000 		.4byte	.LLST40
+ 1131 048f 0C       		.uleb128 0xc
+ 1132 0490 6900     		.ascii	"i\000"
+ 1133 0492 01       		.byte	0x1
+ 1134 0493 7602     		.2byte	0x276
+ 1135 0495 AB000000 		.4byte	0xab
+ 1136 0499 B3080000 		.4byte	.LLST41
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 34
+
+
+ 1137 049d 0B       		.uleb128 0xb
+ 1138 049e C6010000 		.4byte	.LASF51
+ 1139 04a2 01       		.byte	0x1
+ 1140 04a3 7702     		.2byte	0x277
+ 1141 04a5 AB000000 		.4byte	0xab
+ 1142 04a9 D1080000 		.4byte	.LLST42
+ 1143 04ad 0B       		.uleb128 0xb
+ 1144 04ae D6010000 		.4byte	.LASF52
+ 1145 04b2 01       		.byte	0x1
+ 1146 04b3 7802     		.2byte	0x278
+ 1147 04b5 AB000000 		.4byte	0xab
+ 1148 04b9 4A090000 		.4byte	.LLST43
+ 1149 04bd 0B       		.uleb128 0xb
+ 1150 04be 0A030000 		.4byte	.LASF42
+ 1151 04c2 01       		.byte	0x1
+ 1152 04c3 7902     		.2byte	0x279
+ 1153 04c5 2C000000 		.4byte	0x2c
+ 1154 04c9 F4090000 		.4byte	.LLST44
+ 1155 04cd 0B       		.uleb128 0xb
+ 1156 04ce 8A000000 		.4byte	.LASF53
+ 1157 04d2 01       		.byte	0x1
+ 1158 04d3 7A02     		.2byte	0x27a
+ 1159 04d5 2C000000 		.4byte	0x2c
+ 1160 04d9 1D0A0000 		.4byte	.LLST45
+ 1161 04dd 00       		.byte	0
+ 1162 04de 00       		.byte	0
+ 1163              		.section	.debug_abbrev,"",%progbits
+ 1164              	.Ldebug_abbrev0:
+ 1165 0000 01       		.uleb128 0x1
+ 1166 0001 11       		.uleb128 0x11
+ 1167 0002 01       		.byte	0x1
+ 1168 0003 25       		.uleb128 0x25
+ 1169 0004 0E       		.uleb128 0xe
+ 1170 0005 13       		.uleb128 0x13
+ 1171 0006 0B       		.uleb128 0xb
+ 1172 0007 03       		.uleb128 0x3
+ 1173 0008 0E       		.uleb128 0xe
+ 1174 0009 1B       		.uleb128 0x1b
+ 1175 000a 0E       		.uleb128 0xe
+ 1176 000b 55       		.uleb128 0x55
+ 1177 000c 17       		.uleb128 0x17
+ 1178 000d 11       		.uleb128 0x11
+ 1179 000e 01       		.uleb128 0x1
+ 1180 000f 10       		.uleb128 0x10
+ 1181 0010 17       		.uleb128 0x17
+ 1182 0011 00       		.byte	0
+ 1183 0012 00       		.byte	0
+ 1184 0013 02       		.uleb128 0x2
+ 1185 0014 24       		.uleb128 0x24
+ 1186 0015 00       		.byte	0
+ 1187 0016 0B       		.uleb128 0xb
+ 1188 0017 0B       		.uleb128 0xb
+ 1189 0018 3E       		.uleb128 0x3e
+ 1190 0019 0B       		.uleb128 0xb
+ 1191 001a 03       		.uleb128 0x3
+ 1192 001b 0E       		.uleb128 0xe
+ 1193 001c 00       		.byte	0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 35
+
+
+ 1194 001d 00       		.byte	0
+ 1195 001e 03       		.uleb128 0x3
+ 1196 001f 16       		.uleb128 0x16
+ 1197 0020 00       		.byte	0
+ 1198 0021 03       		.uleb128 0x3
+ 1199 0022 0E       		.uleb128 0xe
+ 1200 0023 3A       		.uleb128 0x3a
+ 1201 0024 0B       		.uleb128 0xb
+ 1202 0025 3B       		.uleb128 0x3b
+ 1203 0026 0B       		.uleb128 0xb
+ 1204 0027 49       		.uleb128 0x49
+ 1205 0028 13       		.uleb128 0x13
+ 1206 0029 00       		.byte	0
+ 1207 002a 00       		.byte	0
+ 1208 002b 04       		.uleb128 0x4
+ 1209 002c 24       		.uleb128 0x24
+ 1210 002d 00       		.byte	0
+ 1211 002e 0B       		.uleb128 0xb
+ 1212 002f 0B       		.uleb128 0xb
+ 1213 0030 3E       		.uleb128 0x3e
+ 1214 0031 0B       		.uleb128 0xb
+ 1215 0032 03       		.uleb128 0x3
+ 1216 0033 08       		.uleb128 0x8
+ 1217 0034 00       		.byte	0
+ 1218 0035 00       		.byte	0
+ 1219 0036 05       		.uleb128 0x5
+ 1220 0037 0F       		.uleb128 0xf
+ 1221 0038 00       		.byte	0
+ 1222 0039 0B       		.uleb128 0xb
+ 1223 003a 0B       		.uleb128 0xb
+ 1224 003b 00       		.byte	0
+ 1225 003c 00       		.byte	0
+ 1226 003d 06       		.uleb128 0x6
+ 1227 003e 2E       		.uleb128 0x2e
+ 1228 003f 00       		.byte	0
+ 1229 0040 3F       		.uleb128 0x3f
+ 1230 0041 19       		.uleb128 0x19
+ 1231 0042 03       		.uleb128 0x3
+ 1232 0043 0E       		.uleb128 0xe
+ 1233 0044 3A       		.uleb128 0x3a
+ 1234 0045 0B       		.uleb128 0xb
+ 1235 0046 3B       		.uleb128 0x3b
+ 1236 0047 0B       		.uleb128 0xb
+ 1237 0048 27       		.uleb128 0x27
+ 1238 0049 19       		.uleb128 0x19
+ 1239 004a 11       		.uleb128 0x11
+ 1240 004b 01       		.uleb128 0x1
+ 1241 004c 12       		.uleb128 0x12
+ 1242 004d 06       		.uleb128 0x6
+ 1243 004e 40       		.uleb128 0x40
+ 1244 004f 18       		.uleb128 0x18
+ 1245 0050 9742     		.uleb128 0x2117
+ 1246 0052 19       		.uleb128 0x19
+ 1247 0053 00       		.byte	0
+ 1248 0054 00       		.byte	0
+ 1249 0055 07       		.uleb128 0x7
+ 1250 0056 2E       		.uleb128 0x2e
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 36
+
+
+ 1251 0057 01       		.byte	0x1
+ 1252 0058 3F       		.uleb128 0x3f
+ 1253 0059 19       		.uleb128 0x19
+ 1254 005a 03       		.uleb128 0x3
+ 1255 005b 0E       		.uleb128 0xe
+ 1256 005c 3A       		.uleb128 0x3a
+ 1257 005d 0B       		.uleb128 0xb
+ 1258 005e 3B       		.uleb128 0x3b
+ 1259 005f 05       		.uleb128 0x5
+ 1260 0060 27       		.uleb128 0x27
+ 1261 0061 19       		.uleb128 0x19
+ 1262 0062 11       		.uleb128 0x11
+ 1263 0063 01       		.uleb128 0x1
+ 1264 0064 12       		.uleb128 0x12
+ 1265 0065 06       		.uleb128 0x6
+ 1266 0066 40       		.uleb128 0x40
+ 1267 0067 18       		.uleb128 0x18
+ 1268 0068 9742     		.uleb128 0x2117
+ 1269 006a 19       		.uleb128 0x19
+ 1270 006b 01       		.uleb128 0x1
+ 1271 006c 13       		.uleb128 0x13
+ 1272 006d 00       		.byte	0
+ 1273 006e 00       		.byte	0
+ 1274 006f 08       		.uleb128 0x8
+ 1275 0070 05       		.uleb128 0x5
+ 1276 0071 00       		.byte	0
+ 1277 0072 03       		.uleb128 0x3
+ 1278 0073 0E       		.uleb128 0xe
+ 1279 0074 3A       		.uleb128 0x3a
+ 1280 0075 0B       		.uleb128 0xb
+ 1281 0076 3B       		.uleb128 0x3b
+ 1282 0077 05       		.uleb128 0x5
+ 1283 0078 49       		.uleb128 0x49
+ 1284 0079 13       		.uleb128 0x13
+ 1285 007a 02       		.uleb128 0x2
+ 1286 007b 17       		.uleb128 0x17
+ 1287 007c 00       		.byte	0
+ 1288 007d 00       		.byte	0
+ 1289 007e 09       		.uleb128 0x9
+ 1290 007f 05       		.uleb128 0x5
+ 1291 0080 00       		.byte	0
+ 1292 0081 03       		.uleb128 0x3
+ 1293 0082 0E       		.uleb128 0xe
+ 1294 0083 3A       		.uleb128 0x3a
+ 1295 0084 0B       		.uleb128 0xb
+ 1296 0085 3B       		.uleb128 0x3b
+ 1297 0086 05       		.uleb128 0x5
+ 1298 0087 49       		.uleb128 0x49
+ 1299 0088 13       		.uleb128 0x13
+ 1300 0089 02       		.uleb128 0x2
+ 1301 008a 18       		.uleb128 0x18
+ 1302 008b 00       		.byte	0
+ 1303 008c 00       		.byte	0
+ 1304 008d 0A       		.uleb128 0xa
+ 1305 008e 34       		.uleb128 0x34
+ 1306 008f 00       		.byte	0
+ 1307 0090 03       		.uleb128 0x3
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 37
+
+
+ 1308 0091 0E       		.uleb128 0xe
+ 1309 0092 3A       		.uleb128 0x3a
+ 1310 0093 0B       		.uleb128 0xb
+ 1311 0094 3B       		.uleb128 0x3b
+ 1312 0095 05       		.uleb128 0x5
+ 1313 0096 49       		.uleb128 0x49
+ 1314 0097 13       		.uleb128 0x13
+ 1315 0098 02       		.uleb128 0x2
+ 1316 0099 18       		.uleb128 0x18
+ 1317 009a 00       		.byte	0
+ 1318 009b 00       		.byte	0
+ 1319 009c 0B       		.uleb128 0xb
+ 1320 009d 34       		.uleb128 0x34
+ 1321 009e 00       		.byte	0
+ 1322 009f 03       		.uleb128 0x3
+ 1323 00a0 0E       		.uleb128 0xe
+ 1324 00a1 3A       		.uleb128 0x3a
+ 1325 00a2 0B       		.uleb128 0xb
+ 1326 00a3 3B       		.uleb128 0x3b
+ 1327 00a4 05       		.uleb128 0x5
+ 1328 00a5 49       		.uleb128 0x49
+ 1329 00a6 13       		.uleb128 0x13
+ 1330 00a7 02       		.uleb128 0x2
+ 1331 00a8 17       		.uleb128 0x17
+ 1332 00a9 00       		.byte	0
+ 1333 00aa 00       		.byte	0
+ 1334 00ab 0C       		.uleb128 0xc
+ 1335 00ac 34       		.uleb128 0x34
+ 1336 00ad 00       		.byte	0
+ 1337 00ae 03       		.uleb128 0x3
+ 1338 00af 08       		.uleb128 0x8
+ 1339 00b0 3A       		.uleb128 0x3a
+ 1340 00b1 0B       		.uleb128 0xb
+ 1341 00b2 3B       		.uleb128 0x3b
+ 1342 00b3 05       		.uleb128 0x5
+ 1343 00b4 49       		.uleb128 0x49
+ 1344 00b5 13       		.uleb128 0x13
+ 1345 00b6 02       		.uleb128 0x2
+ 1346 00b7 17       		.uleb128 0x17
+ 1347 00b8 00       		.byte	0
+ 1348 00b9 00       		.byte	0
+ 1349 00ba 0D       		.uleb128 0xd
+ 1350 00bb 0F       		.uleb128 0xf
+ 1351 00bc 00       		.byte	0
+ 1352 00bd 0B       		.uleb128 0xb
+ 1353 00be 0B       		.uleb128 0xb
+ 1354 00bf 49       		.uleb128 0x49
+ 1355 00c0 13       		.uleb128 0x13
+ 1356 00c1 00       		.byte	0
+ 1357 00c2 00       		.byte	0
+ 1358 00c3 0E       		.uleb128 0xe
+ 1359 00c4 2E       		.uleb128 0x2e
+ 1360 00c5 01       		.byte	0x1
+ 1361 00c6 3F       		.uleb128 0x3f
+ 1362 00c7 19       		.uleb128 0x19
+ 1363 00c8 03       		.uleb128 0x3
+ 1364 00c9 0E       		.uleb128 0xe
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 38
+
+
+ 1365 00ca 3A       		.uleb128 0x3a
+ 1366 00cb 0B       		.uleb128 0xb
+ 1367 00cc 3B       		.uleb128 0x3b
+ 1368 00cd 0B       		.uleb128 0xb
+ 1369 00ce 27       		.uleb128 0x27
+ 1370 00cf 19       		.uleb128 0x19
+ 1371 00d0 11       		.uleb128 0x11
+ 1372 00d1 01       		.uleb128 0x1
+ 1373 00d2 12       		.uleb128 0x12
+ 1374 00d3 06       		.uleb128 0x6
+ 1375 00d4 40       		.uleb128 0x40
+ 1376 00d5 18       		.uleb128 0x18
+ 1377 00d6 9742     		.uleb128 0x2117
+ 1378 00d8 19       		.uleb128 0x19
+ 1379 00d9 01       		.uleb128 0x1
+ 1380 00da 13       		.uleb128 0x13
+ 1381 00db 00       		.byte	0
+ 1382 00dc 00       		.byte	0
+ 1383 00dd 0F       		.uleb128 0xf
+ 1384 00de 05       		.uleb128 0x5
+ 1385 00df 00       		.byte	0
+ 1386 00e0 03       		.uleb128 0x3
+ 1387 00e1 0E       		.uleb128 0xe
+ 1388 00e2 3A       		.uleb128 0x3a
+ 1389 00e3 0B       		.uleb128 0xb
+ 1390 00e4 3B       		.uleb128 0x3b
+ 1391 00e5 0B       		.uleb128 0xb
+ 1392 00e6 49       		.uleb128 0x49
+ 1393 00e7 13       		.uleb128 0x13
+ 1394 00e8 02       		.uleb128 0x2
+ 1395 00e9 17       		.uleb128 0x17
+ 1396 00ea 00       		.byte	0
+ 1397 00eb 00       		.byte	0
+ 1398 00ec 10       		.uleb128 0x10
+ 1399 00ed 898201   		.uleb128 0x4109
+ 1400 00f0 01       		.byte	0x1
+ 1401 00f1 11       		.uleb128 0x11
+ 1402 00f2 01       		.uleb128 0x1
+ 1403 00f3 31       		.uleb128 0x31
+ 1404 00f4 13       		.uleb128 0x13
+ 1405 00f5 00       		.byte	0
+ 1406 00f6 00       		.byte	0
+ 1407 00f7 11       		.uleb128 0x11
+ 1408 00f8 8A8201   		.uleb128 0x410a
+ 1409 00fb 00       		.byte	0
+ 1410 00fc 02       		.uleb128 0x2
+ 1411 00fd 18       		.uleb128 0x18
+ 1412 00fe 9142     		.uleb128 0x2111
+ 1413 0100 18       		.uleb128 0x18
+ 1414 0101 00       		.byte	0
+ 1415 0102 00       		.byte	0
+ 1416 0103 12       		.uleb128 0x12
+ 1417 0104 26       		.uleb128 0x26
+ 1418 0105 00       		.byte	0
+ 1419 0106 00       		.byte	0
+ 1420 0107 00       		.byte	0
+ 1421 0108 13       		.uleb128 0x13
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 39
+
+
+ 1422 0109 26       		.uleb128 0x26
+ 1423 010a 00       		.byte	0
+ 1424 010b 49       		.uleb128 0x49
+ 1425 010c 13       		.uleb128 0x13
+ 1426 010d 00       		.byte	0
+ 1427 010e 00       		.byte	0
+ 1428 010f 14       		.uleb128 0x14
+ 1429 0110 2E       		.uleb128 0x2e
+ 1430 0111 01       		.byte	0x1
+ 1431 0112 3F       		.uleb128 0x3f
+ 1432 0113 19       		.uleb128 0x19
+ 1433 0114 03       		.uleb128 0x3
+ 1434 0115 0E       		.uleb128 0xe
+ 1435 0116 3A       		.uleb128 0x3a
+ 1436 0117 0B       		.uleb128 0xb
+ 1437 0118 3B       		.uleb128 0x3b
+ 1438 0119 05       		.uleb128 0x5
+ 1439 011a 27       		.uleb128 0x27
+ 1440 011b 19       		.uleb128 0x19
+ 1441 011c 49       		.uleb128 0x49
+ 1442 011d 13       		.uleb128 0x13
+ 1443 011e 11       		.uleb128 0x11
+ 1444 011f 01       		.uleb128 0x1
+ 1445 0120 12       		.uleb128 0x12
+ 1446 0121 06       		.uleb128 0x6
+ 1447 0122 40       		.uleb128 0x40
+ 1448 0123 18       		.uleb128 0x18
+ 1449 0124 9742     		.uleb128 0x2117
+ 1450 0126 19       		.uleb128 0x19
+ 1451 0127 00       		.byte	0
+ 1452 0128 00       		.byte	0
+ 1453 0129 00       		.byte	0
+ 1454              		.section	.debug_loc,"",%progbits
+ 1455              	.Ldebug_loc0:
+ 1456              	.LLST0:
+ 1457 0000 00000000 		.4byte	.LVL0
+ 1458 0004 1A000000 		.4byte	.LVL7
+ 1459 0008 0100     		.2byte	0x1
+ 1460 000a 50       		.byte	0x50
+ 1461 000b 1A000000 		.4byte	.LVL7
+ 1462 000f 44000000 		.4byte	.LFE3
+ 1463 0013 0400     		.2byte	0x4
+ 1464 0015 F3       		.byte	0xf3
+ 1465 0016 01       		.uleb128 0x1
+ 1466 0017 50       		.byte	0x50
+ 1467 0018 9F       		.byte	0x9f
+ 1468 0019 00000000 		.4byte	0
+ 1469 001d 00000000 		.4byte	0
+ 1470              	.LLST1:
+ 1471 0021 00000000 		.4byte	.LVL0
+ 1472 0025 1A000000 		.4byte	.LVL7
+ 1473 0029 0100     		.2byte	0x1
+ 1474 002b 52       		.byte	0x52
+ 1475 002c 1A000000 		.4byte	.LVL7
+ 1476 0030 44000000 		.4byte	.LFE3
+ 1477 0034 0400     		.2byte	0x4
+ 1478 0036 F3       		.byte	0xf3
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 40
+
+
+ 1479 0037 01       		.uleb128 0x1
+ 1480 0038 52       		.byte	0x52
+ 1481 0039 9F       		.byte	0x9f
+ 1482 003a 00000000 		.4byte	0
+ 1483 003e 00000000 		.4byte	0
+ 1484              	.LLST2:
+ 1485 0042 02000000 		.4byte	.LVL1
+ 1486 0046 08000000 		.4byte	.LVL2
+ 1487 004a 0200     		.2byte	0x2
+ 1488 004c 30       		.byte	0x30
+ 1489 004d 9F       		.byte	0x9f
+ 1490 004e 08000000 		.4byte	.LVL2
+ 1491 0052 0C000000 		.4byte	.LVL3
+ 1492 0056 0500     		.2byte	0x5
+ 1493 0058 73       		.byte	0x73
+ 1494 0059 00       		.sleb128 0
+ 1495 005a 38       		.byte	0x38
+ 1496 005b 24       		.byte	0x24
+ 1497 005c 9F       		.byte	0x9f
+ 1498 005d 0C000000 		.4byte	.LVL3
+ 1499 0061 44000000 		.4byte	.LFE3
+ 1500 0065 0100     		.2byte	0x1
+ 1501 0067 53       		.byte	0x53
+ 1502 0068 00000000 		.4byte	0
+ 1503 006c 00000000 		.4byte	0
+ 1504              	.LLST3:
+ 1505 0070 2A000000 		.4byte	.LVL11
+ 1506 0074 30000000 		.4byte	.LVL13
+ 1507 0078 0300     		.2byte	0x3
+ 1508 007a 70       		.byte	0x70
+ 1509 007b 04       		.sleb128 4
+ 1510 007c 9F       		.byte	0x9f
+ 1511 007d 30000000 		.4byte	.LVL13
+ 1512 0081 36000000 		.4byte	.LVL14
+ 1513 0085 0100     		.2byte	0x1
+ 1514 0087 50       		.byte	0x50
+ 1515 0088 00000000 		.4byte	0
+ 1516 008c 00000000 		.4byte	0
+ 1517              	.LLST4:
+ 1518 0090 12000000 		.4byte	.LVL5
+ 1519 0094 1A000000 		.4byte	.LVL7
+ 1520 0098 0100     		.2byte	0x1
+ 1521 009a 50       		.byte	0x50
+ 1522 009b 1A000000 		.4byte	.LVL7
+ 1523 009f 22000000 		.4byte	.LVL10
+ 1524 00a3 0300     		.2byte	0x3
+ 1525 00a5 70       		.byte	0x70
+ 1526 00a6 01       		.sleb128 1
+ 1527 00a7 9F       		.byte	0x9f
+ 1528 00a8 22000000 		.4byte	.LVL10
+ 1529 00ac 2A000000 		.4byte	.LVL11
+ 1530 00b0 0100     		.2byte	0x1
+ 1531 00b2 50       		.byte	0x50
+ 1532 00b3 36000000 		.4byte	.LVL14
+ 1533 00b7 3C000000 		.4byte	.LVL16
+ 1534 00bb 0300     		.2byte	0x3
+ 1535 00bd 70       		.byte	0x70
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 41
+
+
+ 1536 00be 01       		.sleb128 1
+ 1537 00bf 9F       		.byte	0x9f
+ 1538 00c0 3C000000 		.4byte	.LVL16
+ 1539 00c4 44000000 		.4byte	.LFE3
+ 1540 00c8 0100     		.2byte	0x1
+ 1541 00ca 50       		.byte	0x50
+ 1542 00cb 00000000 		.4byte	0
+ 1543 00cf 00000000 		.4byte	0
+ 1544              	.LLST5:
+ 1545 00d3 12000000 		.4byte	.LVL5
+ 1546 00d7 16000000 		.4byte	.LVL6
+ 1547 00db 0500     		.2byte	0x5
+ 1548 00dd 70       		.byte	0x70
+ 1549 00de 00       		.sleb128 0
+ 1550 00df 33       		.byte	0x33
+ 1551 00e0 1A       		.byte	0x1a
+ 1552 00e1 9F       		.byte	0x9f
+ 1553 00e2 16000000 		.4byte	.LVL6
+ 1554 00e6 1A000000 		.4byte	.LVL7
+ 1555 00ea 0100     		.2byte	0x1
+ 1556 00ec 54       		.byte	0x54
+ 1557 00ed 1A000000 		.4byte	.LVL7
+ 1558 00f1 44000000 		.4byte	.LFE3
+ 1559 00f5 0600     		.2byte	0x6
+ 1560 00f7 F3       		.byte	0xf3
+ 1561 00f8 01       		.uleb128 0x1
+ 1562 00f9 50       		.byte	0x50
+ 1563 00fa 33       		.byte	0x33
+ 1564 00fb 1A       		.byte	0x1a
+ 1565 00fc 9F       		.byte	0x9f
+ 1566 00fd 00000000 		.4byte	0
+ 1567 0101 00000000 		.4byte	0
+ 1568              	.LLST6:
+ 1569 0105 02000000 		.4byte	.LVL1
+ 1570 0109 08000000 		.4byte	.LVL2
+ 1571 010d 0200     		.2byte	0x2
+ 1572 010f 30       		.byte	0x30
+ 1573 0110 9F       		.byte	0x9f
+ 1574 0111 08000000 		.4byte	.LVL2
+ 1575 0115 16000000 		.4byte	.LVL6
+ 1576 0119 0100     		.2byte	0x1
+ 1577 011b 54       		.byte	0x54
+ 1578 011c 1A000000 		.4byte	.LVL7
+ 1579 0120 2A000000 		.4byte	.LVL11
+ 1580 0124 0100     		.2byte	0x1
+ 1581 0126 54       		.byte	0x54
+ 1582 0127 00000000 		.4byte	0
+ 1583 012b 00000000 		.4byte	0
+ 1584              	.LLST7:
+ 1585 012f 00000000 		.4byte	.LVL17
+ 1586 0133 09000000 		.4byte	.LVL19-1
+ 1587 0137 0100     		.2byte	0x1
+ 1588 0139 50       		.byte	0x50
+ 1589 013a 09000000 		.4byte	.LVL19-1
+ 1590 013e 0C000000 		.4byte	.LFE2
+ 1591 0142 0400     		.2byte	0x4
+ 1592 0144 F3       		.byte	0xf3
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 42
+
+
+ 1593 0145 01       		.uleb128 0x1
+ 1594 0146 50       		.byte	0x50
+ 1595 0147 9F       		.byte	0x9f
+ 1596 0148 00000000 		.4byte	0
+ 1597 014c 00000000 		.4byte	0
+ 1598              	.LLST8:
+ 1599 0150 00000000 		.4byte	.LVL17
+ 1600 0154 06000000 		.4byte	.LVL18
+ 1601 0158 0100     		.2byte	0x1
+ 1602 015a 51       		.byte	0x51
+ 1603 015b 06000000 		.4byte	.LVL18
+ 1604 015f 09000000 		.4byte	.LVL19-1
+ 1605 0163 0100     		.2byte	0x1
+ 1606 0165 52       		.byte	0x52
+ 1607 0166 09000000 		.4byte	.LVL19-1
+ 1608 016a 0C000000 		.4byte	.LFE2
+ 1609 016e 0400     		.2byte	0x4
+ 1610 0170 F3       		.byte	0xf3
+ 1611 0171 01       		.uleb128 0x1
+ 1612 0172 51       		.byte	0x51
+ 1613 0173 9F       		.byte	0x9f
+ 1614 0174 00000000 		.4byte	0
+ 1615 0178 00000000 		.4byte	0
+ 1616              	.LLST9:
+ 1617 017c 00000000 		.4byte	.LVL20
+ 1618 0180 20000000 		.4byte	.LVL28
+ 1619 0184 0100     		.2byte	0x1
+ 1620 0186 50       		.byte	0x50
+ 1621 0187 20000000 		.4byte	.LVL28
+ 1622 018b 56000000 		.4byte	.LFE4
+ 1623 018f 0400     		.2byte	0x4
+ 1624 0191 F3       		.byte	0xf3
+ 1625 0192 01       		.uleb128 0x1
+ 1626 0193 50       		.byte	0x50
+ 1627 0194 9F       		.byte	0x9f
+ 1628 0195 00000000 		.4byte	0
+ 1629 0199 00000000 		.4byte	0
+ 1630              	.LLST10:
+ 1631 019d 00000000 		.4byte	.LVL20
+ 1632 01a1 20000000 		.4byte	.LVL28
+ 1633 01a5 0100     		.2byte	0x1
+ 1634 01a7 51       		.byte	0x51
+ 1635 01a8 20000000 		.4byte	.LVL28
+ 1636 01ac 56000000 		.4byte	.LFE4
+ 1637 01b0 0400     		.2byte	0x4
+ 1638 01b2 F3       		.byte	0xf3
+ 1639 01b3 01       		.uleb128 0x1
+ 1640 01b4 51       		.byte	0x51
+ 1641 01b5 9F       		.byte	0x9f
+ 1642 01b6 00000000 		.4byte	0
+ 1643 01ba 00000000 		.4byte	0
+ 1644              	.LLST11:
+ 1645 01be 00000000 		.4byte	.LVL20
+ 1646 01c2 20000000 		.4byte	.LVL28
+ 1647 01c6 0100     		.2byte	0x1
+ 1648 01c8 52       		.byte	0x52
+ 1649 01c9 20000000 		.4byte	.LVL28
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 43
+
+
+ 1650 01cd 56000000 		.4byte	.LFE4
+ 1651 01d1 0400     		.2byte	0x4
+ 1652 01d3 F3       		.byte	0xf3
+ 1653 01d4 01       		.uleb128 0x1
+ 1654 01d5 52       		.byte	0x52
+ 1655 01d6 9F       		.byte	0x9f
+ 1656 01d7 00000000 		.4byte	0
+ 1657 01db 00000000 		.4byte	0
+ 1658              	.LLST12:
+ 1659 01df 04000000 		.4byte	.LVL22
+ 1660 01e3 0C000000 		.4byte	.LVL23
+ 1661 01e7 0100     		.2byte	0x1
+ 1662 01e9 53       		.byte	0x53
+ 1663 01ea 0C000000 		.4byte	.LVL23
+ 1664 01ee 20000000 		.4byte	.LVL28
+ 1665 01f2 0600     		.2byte	0x6
+ 1666 01f4 71       		.byte	0x71
+ 1667 01f5 00       		.sleb128 0
+ 1668 01f6 70       		.byte	0x70
+ 1669 01f7 00       		.sleb128 0
+ 1670 01f8 1C       		.byte	0x1c
+ 1671 01f9 9F       		.byte	0x9f
+ 1672 01fa 20000000 		.4byte	.LVL28
+ 1673 01fe 56000000 		.4byte	.LFE4
+ 1674 0202 0800     		.2byte	0x8
+ 1675 0204 F3       		.byte	0xf3
+ 1676 0205 01       		.uleb128 0x1
+ 1677 0206 51       		.byte	0x51
+ 1678 0207 F3       		.byte	0xf3
+ 1679 0208 01       		.uleb128 0x1
+ 1680 0209 50       		.byte	0x50
+ 1681 020a 1C       		.byte	0x1c
+ 1682 020b 9F       		.byte	0x9f
+ 1683 020c 00000000 		.4byte	0
+ 1684 0210 00000000 		.4byte	0
+ 1685              	.LLST13:
+ 1686 0214 34000000 		.4byte	.LVL33
+ 1687 0218 3E000000 		.4byte	.LVL36
+ 1688 021c 0300     		.2byte	0x3
+ 1689 021e 70       		.byte	0x70
+ 1690 021f 04       		.sleb128 4
+ 1691 0220 9F       		.byte	0x9f
+ 1692 0221 3E000000 		.4byte	.LVL36
+ 1693 0225 44000000 		.4byte	.LVL37
+ 1694 0229 0100     		.2byte	0x1
+ 1695 022b 50       		.byte	0x50
+ 1696 022c 00000000 		.4byte	0
+ 1697 0230 00000000 		.4byte	0
+ 1698              	.LLST14:
+ 1699 0234 34000000 		.4byte	.LVL33
+ 1700 0238 3C000000 		.4byte	.LVL35
+ 1701 023c 0300     		.2byte	0x3
+ 1702 023e 71       		.byte	0x71
+ 1703 023f 04       		.sleb128 4
+ 1704 0240 9F       		.byte	0x9f
+ 1705 0241 3C000000 		.4byte	.LVL35
+ 1706 0245 44000000 		.4byte	.LVL37
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 44
+
+
+ 1707 0249 0100     		.2byte	0x1
+ 1708 024b 51       		.byte	0x51
+ 1709 024c 00000000 		.4byte	0
+ 1710 0250 00000000 		.4byte	0
+ 1711              	.LLST15:
+ 1712 0254 02000000 		.4byte	.LVL21
+ 1713 0258 20000000 		.4byte	.LVL28
+ 1714 025c 0100     		.2byte	0x1
+ 1715 025e 50       		.byte	0x50
+ 1716 025f 20000000 		.4byte	.LVL28
+ 1717 0263 2C000000 		.4byte	.LVL32
+ 1718 0267 0300     		.2byte	0x3
+ 1719 0269 70       		.byte	0x70
+ 1720 026a 01       		.sleb128 1
+ 1721 026b 9F       		.byte	0x9f
+ 1722 026c 2C000000 		.4byte	.LVL32
+ 1723 0270 34000000 		.4byte	.LVL33
+ 1724 0274 0100     		.2byte	0x1
+ 1725 0276 50       		.byte	0x50
+ 1726 0277 44000000 		.4byte	.LVL37
+ 1727 027b 4E000000 		.4byte	.LVL40
+ 1728 027f 0300     		.2byte	0x3
+ 1729 0281 70       		.byte	0x70
+ 1730 0282 01       		.sleb128 1
+ 1731 0283 9F       		.byte	0x9f
+ 1732 0284 4E000000 		.4byte	.LVL40
+ 1733 0288 56000000 		.4byte	.LFE4
+ 1734 028c 0100     		.2byte	0x1
+ 1735 028e 50       		.byte	0x50
+ 1736 028f 00000000 		.4byte	0
+ 1737 0293 00000000 		.4byte	0
+ 1738              	.LLST16:
+ 1739 0297 02000000 		.4byte	.LVL21
+ 1740 029b 20000000 		.4byte	.LVL28
+ 1741 029f 0100     		.2byte	0x1
+ 1742 02a1 51       		.byte	0x51
+ 1743 02a2 20000000 		.4byte	.LVL28
+ 1744 02a6 2A000000 		.4byte	.LVL31
+ 1745 02aa 0300     		.2byte	0x3
+ 1746 02ac 71       		.byte	0x71
+ 1747 02ad 01       		.sleb128 1
+ 1748 02ae 9F       		.byte	0x9f
+ 1749 02af 2A000000 		.4byte	.LVL31
+ 1750 02b3 34000000 		.4byte	.LVL33
+ 1751 02b7 0100     		.2byte	0x1
+ 1752 02b9 51       		.byte	0x51
+ 1753 02ba 44000000 		.4byte	.LVL37
+ 1754 02be 4C000000 		.4byte	.LVL39
+ 1755 02c2 0300     		.2byte	0x3
+ 1756 02c4 71       		.byte	0x71
+ 1757 02c5 01       		.sleb128 1
+ 1758 02c6 9F       		.byte	0x9f
+ 1759 02c7 4C000000 		.4byte	.LVL39
+ 1760 02cb 56000000 		.4byte	.LFE4
+ 1761 02cf 0100     		.2byte	0x1
+ 1762 02d1 51       		.byte	0x51
+ 1763 02d2 00000000 		.4byte	0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 45
+
+
+ 1764 02d6 00000000 		.4byte	0
+ 1765              	.LLST17:
+ 1766 02da 20000000 		.4byte	.LVL28
+ 1767 02de 34000000 		.4byte	.LVL33
+ 1768 02e2 0100     		.2byte	0x1
+ 1769 02e4 53       		.byte	0x53
+ 1770 02e5 00000000 		.4byte	0
+ 1771 02e9 00000000 		.4byte	0
+ 1772              	.LLST18:
+ 1773 02ed 0C000000 		.4byte	.LVL23
+ 1774 02f1 20000000 		.4byte	.LVL28
+ 1775 02f5 0100     		.2byte	0x1
+ 1776 02f7 53       		.byte	0x53
+ 1777 02f8 20000000 		.4byte	.LVL28
+ 1778 02fc 44000000 		.4byte	.LVL37
+ 1779 0300 0600     		.2byte	0x6
+ 1780 0302 F3       		.byte	0xf3
+ 1781 0303 01       		.uleb128 0x1
+ 1782 0304 50       		.byte	0x50
+ 1783 0305 33       		.byte	0x33
+ 1784 0306 1A       		.byte	0x1a
+ 1785 0307 9F       		.byte	0x9f
+ 1786 0308 00000000 		.4byte	0
+ 1787 030c 00000000 		.4byte	0
+ 1788              	.LLST19:
+ 1789 0310 10000000 		.4byte	.LVL24
+ 1790 0314 16000000 		.4byte	.LVL25
+ 1791 0318 0100     		.2byte	0x1
+ 1792 031a 54       		.byte	0x54
+ 1793 031b 16000000 		.4byte	.LVL25
+ 1794 031f 18000000 		.4byte	.LVL26
+ 1795 0323 0500     		.2byte	0x5
+ 1796 0325 71       		.byte	0x71
+ 1797 0326 00       		.sleb128 0
+ 1798 0327 33       		.byte	0x33
+ 1799 0328 1A       		.byte	0x1a
+ 1800 0329 9F       		.byte	0x9f
+ 1801 032a 18000000 		.4byte	.LVL26
+ 1802 032e 1A000000 		.4byte	.LVL27
+ 1803 0332 0100     		.2byte	0x1
+ 1804 0334 54       		.byte	0x54
+ 1805 0335 1A000000 		.4byte	.LVL27
+ 1806 0339 20000000 		.4byte	.LVL28
+ 1807 033d 0500     		.2byte	0x5
+ 1808 033f 71       		.byte	0x71
+ 1809 0340 00       		.sleb128 0
+ 1810 0341 33       		.byte	0x33
+ 1811 0342 1A       		.byte	0x1a
+ 1812 0343 9F       		.byte	0x9f
+ 1813 0344 20000000 		.4byte	.LVL28
+ 1814 0348 44000000 		.4byte	.LVL37
+ 1815 034c 0600     		.2byte	0x6
+ 1816 034e F3       		.byte	0xf3
+ 1817 034f 01       		.uleb128 0x1
+ 1818 0350 51       		.byte	0x51
+ 1819 0351 33       		.byte	0x33
+ 1820 0352 1A       		.byte	0x1a
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 46
+
+
+ 1821 0353 9F       		.byte	0x9f
+ 1822 0354 00000000 		.4byte	0
+ 1823 0358 00000000 		.4byte	0
+ 1824              	.LLST20:
+ 1825 035c 1A000000 		.4byte	.LVL27
+ 1826 0360 20000000 		.4byte	.LVL28
+ 1827 0364 0100     		.2byte	0x1
+ 1828 0366 54       		.byte	0x54
+ 1829 0367 00000000 		.4byte	0
+ 1830 036b 00000000 		.4byte	0
+ 1831              	.LLST21:
+ 1832 036f 00000000 		.4byte	.LVL41
+ 1833 0373 09000000 		.4byte	.LVL43-1
+ 1834 0377 0100     		.2byte	0x1
+ 1835 0379 50       		.byte	0x50
+ 1836 037a 09000000 		.4byte	.LVL43-1
+ 1837 037e 0C000000 		.4byte	.LVL44
+ 1838 0382 0400     		.2byte	0x4
+ 1839 0384 F3       		.byte	0xf3
+ 1840 0385 01       		.uleb128 0x1
+ 1841 0386 50       		.byte	0x50
+ 1842 0387 9F       		.byte	0x9f
+ 1843 0388 0C000000 		.4byte	.LVL44
+ 1844 038c 10000000 		.4byte	.LVL45
+ 1845 0390 0100     		.2byte	0x1
+ 1846 0392 50       		.byte	0x50
+ 1847 0393 10000000 		.4byte	.LVL45
+ 1848 0397 72000000 		.4byte	.LFE5
+ 1849 039b 0400     		.2byte	0x4
+ 1850 039d F3       		.byte	0xf3
+ 1851 039e 01       		.uleb128 0x1
+ 1852 039f 50       		.byte	0x50
+ 1853 03a0 9F       		.byte	0x9f
+ 1854 03a1 00000000 		.4byte	0
+ 1855 03a5 00000000 		.4byte	0
+ 1856              	.LLST22:
+ 1857 03a9 00000000 		.4byte	.LVL41
+ 1858 03ad 09000000 		.4byte	.LVL43-1
+ 1859 03b1 0100     		.2byte	0x1
+ 1860 03b3 51       		.byte	0x51
+ 1861 03b4 09000000 		.4byte	.LVL43-1
+ 1862 03b8 0C000000 		.4byte	.LVL44
+ 1863 03bc 0400     		.2byte	0x4
+ 1864 03be F3       		.byte	0xf3
+ 1865 03bf 01       		.uleb128 0x1
+ 1866 03c0 51       		.byte	0x51
+ 1867 03c1 9F       		.byte	0x9f
+ 1868 03c2 0C000000 		.4byte	.LVL44
+ 1869 03c6 12000000 		.4byte	.LVL46
+ 1870 03ca 0100     		.2byte	0x1
+ 1871 03cc 51       		.byte	0x51
+ 1872 03cd 12000000 		.4byte	.LVL46
+ 1873 03d1 72000000 		.4byte	.LFE5
+ 1874 03d5 0400     		.2byte	0x4
+ 1875 03d7 F3       		.byte	0xf3
+ 1876 03d8 01       		.uleb128 0x1
+ 1877 03d9 51       		.byte	0x51
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 47
+
+
+ 1878 03da 9F       		.byte	0x9f
+ 1879 03db 00000000 		.4byte	0
+ 1880 03df 00000000 		.4byte	0
+ 1881              	.LLST23:
+ 1882 03e3 00000000 		.4byte	.LVL41
+ 1883 03e7 09000000 		.4byte	.LVL43-1
+ 1884 03eb 0100     		.2byte	0x1
+ 1885 03ed 52       		.byte	0x52
+ 1886 03ee 09000000 		.4byte	.LVL43-1
+ 1887 03f2 0C000000 		.4byte	.LVL44
+ 1888 03f6 0400     		.2byte	0x4
+ 1889 03f8 F3       		.byte	0xf3
+ 1890 03f9 01       		.uleb128 0x1
+ 1891 03fa 52       		.byte	0x52
+ 1892 03fb 9F       		.byte	0x9f
+ 1893 03fc 0C000000 		.4byte	.LVL44
+ 1894 0400 34000000 		.4byte	.LVL54
+ 1895 0404 0100     		.2byte	0x1
+ 1896 0406 52       		.byte	0x52
+ 1897 0407 34000000 		.4byte	.LVL54
+ 1898 040b 72000000 		.4byte	.LFE5
+ 1899 040f 0400     		.2byte	0x4
+ 1900 0411 F3       		.byte	0xf3
+ 1901 0412 01       		.uleb128 0x1
+ 1902 0413 52       		.byte	0x52
+ 1903 0414 9F       		.byte	0x9f
+ 1904 0415 00000000 		.4byte	0
+ 1905 0419 00000000 		.4byte	0
+ 1906              	.LLST24:
+ 1907 041d 14000000 		.4byte	.LVL47
+ 1908 0421 1C000000 		.4byte	.LVL48
+ 1909 0425 0100     		.2byte	0x1
+ 1910 0427 53       		.byte	0x53
+ 1911 0428 1C000000 		.4byte	.LVL48
+ 1912 042c 34000000 		.4byte	.LVL54
+ 1913 0430 0600     		.2byte	0x6
+ 1914 0432 70       		.byte	0x70
+ 1915 0433 00       		.sleb128 0
+ 1916 0434 71       		.byte	0x71
+ 1917 0435 00       		.sleb128 0
+ 1918 0436 1C       		.byte	0x1c
+ 1919 0437 9F       		.byte	0x9f
+ 1920 0438 34000000 		.4byte	.LVL54
+ 1921 043c 72000000 		.4byte	.LFE5
+ 1922 0440 0800     		.2byte	0x8
+ 1923 0442 F3       		.byte	0xf3
+ 1924 0443 01       		.uleb128 0x1
+ 1925 0444 50       		.byte	0x50
+ 1926 0445 F3       		.byte	0xf3
+ 1927 0446 01       		.uleb128 0x1
+ 1928 0447 51       		.byte	0x51
+ 1929 0448 1C       		.byte	0x1c
+ 1930 0449 9F       		.byte	0x9f
+ 1931 044a 00000000 		.4byte	0
+ 1932 044e 00000000 		.4byte	0
+ 1933              	.LLST25:
+ 1934 0452 4A000000 		.4byte	.LVL61
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 48
+
+
+ 1935 0456 4E000000 		.4byte	.LVL63
+ 1936 045a 0100     		.2byte	0x1
+ 1937 045c 50       		.byte	0x50
+ 1938 045d 4E000000 		.4byte	.LVL63
+ 1939 0461 58000000 		.4byte	.LVL66
+ 1940 0465 0300     		.2byte	0x3
+ 1941 0467 70       		.byte	0x70
+ 1942 0468 7C       		.sleb128 -4
+ 1943 0469 9F       		.byte	0x9f
+ 1944 046a 58000000 		.4byte	.LVL66
+ 1945 046e 5E000000 		.4byte	.LVL67
+ 1946 0472 0100     		.2byte	0x1
+ 1947 0474 50       		.byte	0x50
+ 1948 0475 5E000000 		.4byte	.LVL67
+ 1949 0479 62000000 		.4byte	.LVL69
+ 1950 047d 0300     		.2byte	0x3
+ 1951 047f 70       		.byte	0x70
+ 1952 0480 7D       		.sleb128 -3
+ 1953 0481 9F       		.byte	0x9f
+ 1954 0482 00000000 		.4byte	0
+ 1955 0486 00000000 		.4byte	0
+ 1956              	.LLST26:
+ 1957 048a 4C000000 		.4byte	.LVL62
+ 1958 048e 4E000000 		.4byte	.LVL63
+ 1959 0492 0100     		.2byte	0x1
+ 1960 0494 51       		.byte	0x51
+ 1961 0495 4E000000 		.4byte	.LVL63
+ 1962 0499 56000000 		.4byte	.LVL65
+ 1963 049d 0300     		.2byte	0x3
+ 1964 049f 71       		.byte	0x71
+ 1965 04a0 7C       		.sleb128 -4
+ 1966 04a1 9F       		.byte	0x9f
+ 1967 04a2 56000000 		.4byte	.LVL65
+ 1968 04a6 60000000 		.4byte	.LVL68
+ 1969 04aa 0100     		.2byte	0x1
+ 1970 04ac 51       		.byte	0x51
+ 1971 04ad 60000000 		.4byte	.LVL68
+ 1972 04b1 62000000 		.4byte	.LVL69
+ 1973 04b5 0300     		.2byte	0x3
+ 1974 04b7 71       		.byte	0x71
+ 1975 04b8 7D       		.sleb128 -3
+ 1976 04b9 9F       		.byte	0x9f
+ 1977 04ba 00000000 		.4byte	0
+ 1978 04be 00000000 		.4byte	0
+ 1979              	.LLST27:
+ 1980 04c2 02000000 		.4byte	.LVL42
+ 1981 04c6 09000000 		.4byte	.LVL43-1
+ 1982 04ca 0100     		.2byte	0x1
+ 1983 04cc 50       		.byte	0x50
+ 1984 04cd 09000000 		.4byte	.LVL43-1
+ 1985 04d1 0C000000 		.4byte	.LVL44
+ 1986 04d5 0400     		.2byte	0x4
+ 1987 04d7 F3       		.byte	0xf3
+ 1988 04d8 01       		.uleb128 0x1
+ 1989 04d9 50       		.byte	0x50
+ 1990 04da 9F       		.byte	0x9f
+ 1991 04db 0C000000 		.4byte	.LVL44
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 49
+
+
+ 1992 04df 34000000 		.4byte	.LVL54
+ 1993 04e3 0100     		.2byte	0x1
+ 1994 04e5 50       		.byte	0x50
+ 1995 04e6 34000000 		.4byte	.LVL54
+ 1996 04ea 42000000 		.4byte	.LVL59
+ 1997 04ee 0300     		.2byte	0x3
+ 1998 04f0 70       		.byte	0x70
+ 1999 04f1 7F       		.sleb128 -1
+ 2000 04f2 9F       		.byte	0x9f
+ 2001 04f3 42000000 		.4byte	.LVL59
+ 2002 04f7 4A000000 		.4byte	.LVL61
+ 2003 04fb 0100     		.2byte	0x1
+ 2004 04fd 50       		.byte	0x50
+ 2005 04fe 4A000000 		.4byte	.LVL61
+ 2006 0502 4E000000 		.4byte	.LVL63
+ 2007 0506 0300     		.2byte	0x3
+ 2008 0508 70       		.byte	0x70
+ 2009 0509 0C       		.sleb128 12
+ 2010 050a 9F       		.byte	0x9f
+ 2011 050b 5E000000 		.4byte	.LVL67
+ 2012 050f 62000000 		.4byte	.LVL69
+ 2013 0513 0100     		.2byte	0x1
+ 2014 0515 50       		.byte	0x50
+ 2015 0516 62000000 		.4byte	.LVL69
+ 2016 051a 6C000000 		.4byte	.LVL72
+ 2017 051e 0300     		.2byte	0x3
+ 2018 0520 70       		.byte	0x70
+ 2019 0521 7F       		.sleb128 -1
+ 2020 0522 9F       		.byte	0x9f
+ 2021 0523 6C000000 		.4byte	.LVL72
+ 2022 0527 72000000 		.4byte	.LFE5
+ 2023 052b 0100     		.2byte	0x1
+ 2024 052d 50       		.byte	0x50
+ 2025 052e 00000000 		.4byte	0
+ 2026 0532 00000000 		.4byte	0
+ 2027              	.LLST28:
+ 2028 0536 02000000 		.4byte	.LVL42
+ 2029 053a 09000000 		.4byte	.LVL43-1
+ 2030 053e 0100     		.2byte	0x1
+ 2031 0540 51       		.byte	0x51
+ 2032 0541 09000000 		.4byte	.LVL43-1
+ 2033 0545 0C000000 		.4byte	.LVL44
+ 2034 0549 0400     		.2byte	0x4
+ 2035 054b F3       		.byte	0xf3
+ 2036 054c 01       		.uleb128 0x1
+ 2037 054d 51       		.byte	0x51
+ 2038 054e 9F       		.byte	0x9f
+ 2039 054f 0C000000 		.4byte	.LVL44
+ 2040 0553 34000000 		.4byte	.LVL54
+ 2041 0557 0100     		.2byte	0x1
+ 2042 0559 51       		.byte	0x51
+ 2043 055a 34000000 		.4byte	.LVL54
+ 2044 055e 40000000 		.4byte	.LVL58
+ 2045 0562 0300     		.2byte	0x3
+ 2046 0564 71       		.byte	0x71
+ 2047 0565 7F       		.sleb128 -1
+ 2048 0566 9F       		.byte	0x9f
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 50
+
+
+ 2049 0567 40000000 		.4byte	.LVL58
+ 2050 056b 4C000000 		.4byte	.LVL62
+ 2051 056f 0100     		.2byte	0x1
+ 2052 0571 51       		.byte	0x51
+ 2053 0572 4C000000 		.4byte	.LVL62
+ 2054 0576 4E000000 		.4byte	.LVL63
+ 2055 057a 0300     		.2byte	0x3
+ 2056 057c 71       		.byte	0x71
+ 2057 057d 0C       		.sleb128 12
+ 2058 057e 9F       		.byte	0x9f
+ 2059 057f 60000000 		.4byte	.LVL68
+ 2060 0583 62000000 		.4byte	.LVL69
+ 2061 0587 0100     		.2byte	0x1
+ 2062 0589 51       		.byte	0x51
+ 2063 058a 62000000 		.4byte	.LVL69
+ 2064 058e 6A000000 		.4byte	.LVL71
+ 2065 0592 0300     		.2byte	0x3
+ 2066 0594 71       		.byte	0x71
+ 2067 0595 7F       		.sleb128 -1
+ 2068 0596 9F       		.byte	0x9f
+ 2069 0597 6A000000 		.4byte	.LVL71
+ 2070 059b 72000000 		.4byte	.LFE5
+ 2071 059f 0100     		.2byte	0x1
+ 2072 05a1 51       		.byte	0x51
+ 2073 05a2 00000000 		.4byte	0
+ 2074 05a6 00000000 		.4byte	0
+ 2075              	.LLST29:
+ 2076 05aa 32000000 		.4byte	.LVL53
+ 2077 05ae 3C000000 		.4byte	.LVL56
+ 2078 05b2 0100     		.2byte	0x1
+ 2079 05b4 53       		.byte	0x53
+ 2080 05b5 3E000000 		.4byte	.LVL57
+ 2081 05b9 48000000 		.4byte	.LVL60
+ 2082 05bd 0100     		.2byte	0x1
+ 2083 05bf 53       		.byte	0x53
+ 2084 05c0 00000000 		.4byte	0
+ 2085 05c4 00000000 		.4byte	0
+ 2086              	.LLST30:
+ 2087 05c8 1C000000 		.4byte	.LVL48
+ 2088 05cc 32000000 		.4byte	.LVL53
+ 2089 05d0 0100     		.2byte	0x1
+ 2090 05d2 53       		.byte	0x53
+ 2091 05d3 32000000 		.4byte	.LVL53
+ 2092 05d7 34000000 		.4byte	.LVL54
+ 2093 05db 0500     		.2byte	0x5
+ 2094 05dd 70       		.byte	0x70
+ 2095 05de 00       		.sleb128 0
+ 2096 05df 33       		.byte	0x33
+ 2097 05e0 1A       		.byte	0x1a
+ 2098 05e1 9F       		.byte	0x9f
+ 2099 05e2 34000000 		.4byte	.LVL54
+ 2100 05e6 62000000 		.4byte	.LVL69
+ 2101 05ea 0C00     		.2byte	0xc
+ 2102 05ec F3       		.byte	0xf3
+ 2103 05ed 01       		.uleb128 0x1
+ 2104 05ee 52       		.byte	0x52
+ 2105 05ef F3       		.byte	0xf3
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 51
+
+
+ 2106 05f0 01       		.uleb128 0x1
+ 2107 05f1 50       		.byte	0x50
+ 2108 05f2 22       		.byte	0x22
+ 2109 05f3 31       		.byte	0x31
+ 2110 05f4 1C       		.byte	0x1c
+ 2111 05f5 33       		.byte	0x33
+ 2112 05f6 1A       		.byte	0x1a
+ 2113 05f7 9F       		.byte	0x9f
+ 2114 05f8 00000000 		.4byte	0
+ 2115 05fc 00000000 		.4byte	0
+ 2116              	.LLST31:
+ 2117 0600 20000000 		.4byte	.LVL49
+ 2118 0604 26000000 		.4byte	.LVL50
+ 2119 0608 0100     		.2byte	0x1
+ 2120 060a 54       		.byte	0x54
+ 2121 060b 26000000 		.4byte	.LVL50
+ 2122 060f 28000000 		.4byte	.LVL51
+ 2123 0613 0500     		.2byte	0x5
+ 2124 0615 71       		.byte	0x71
+ 2125 0616 00       		.sleb128 0
+ 2126 0617 33       		.byte	0x33
+ 2127 0618 1A       		.byte	0x1a
+ 2128 0619 9F       		.byte	0x9f
+ 2129 061a 28000000 		.4byte	.LVL51
+ 2130 061e 2A000000 		.4byte	.LVL52
+ 2131 0622 0100     		.2byte	0x1
+ 2132 0624 54       		.byte	0x54
+ 2133 0625 2A000000 		.4byte	.LVL52
+ 2134 0629 34000000 		.4byte	.LVL54
+ 2135 062d 0500     		.2byte	0x5
+ 2136 062f 71       		.byte	0x71
+ 2137 0630 00       		.sleb128 0
+ 2138 0631 33       		.byte	0x33
+ 2139 0632 1A       		.byte	0x1a
+ 2140 0633 9F       		.byte	0x9f
+ 2141 0634 34000000 		.4byte	.LVL54
+ 2142 0638 62000000 		.4byte	.LVL69
+ 2143 063c 0C00     		.2byte	0xc
+ 2144 063e F3       		.byte	0xf3
+ 2145 063f 01       		.uleb128 0x1
+ 2146 0640 52       		.byte	0x52
+ 2147 0641 F3       		.byte	0xf3
+ 2148 0642 01       		.uleb128 0x1
+ 2149 0643 51       		.byte	0x51
+ 2150 0644 22       		.byte	0x22
+ 2151 0645 31       		.byte	0x31
+ 2152 0646 1C       		.byte	0x1c
+ 2153 0647 33       		.byte	0x33
+ 2154 0648 1A       		.byte	0x1a
+ 2155 0649 9F       		.byte	0x9f
+ 2156 064a 00000000 		.4byte	0
+ 2157 064e 00000000 		.4byte	0
+ 2158              	.LLST32:
+ 2159 0652 2A000000 		.4byte	.LVL52
+ 2160 0656 34000000 		.4byte	.LVL54
+ 2161 065a 0100     		.2byte	0x1
+ 2162 065c 54       		.byte	0x54
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 52
+
+
+ 2163 065d 00000000 		.4byte	0
+ 2164 0661 00000000 		.4byte	0
+ 2165              	.LLST33:
+ 2166 0665 00000000 		.4byte	.LVL73
+ 2167 0669 1C000000 		.4byte	.LVL78
+ 2168 066d 0100     		.2byte	0x1
+ 2169 066f 50       		.byte	0x50
+ 2170 0670 1C000000 		.4byte	.LVL78
+ 2171 0674 84000000 		.4byte	.LVL104
+ 2172 0678 0400     		.2byte	0x4
+ 2173 067a F3       		.byte	0xf3
+ 2174 067b 01       		.uleb128 0x1
+ 2175 067c 50       		.byte	0x50
+ 2176 067d 9F       		.byte	0x9f
+ 2177 067e 84000000 		.4byte	.LVL104
+ 2178 0682 86000000 		.4byte	.LVL105
+ 2179 0686 0100     		.2byte	0x1
+ 2180 0688 50       		.byte	0x50
+ 2181 0689 86000000 		.4byte	.LVL105
+ 2182 068d 88000000 		.4byte	.LVL106
+ 2183 0691 0400     		.2byte	0x4
+ 2184 0693 F3       		.byte	0xf3
+ 2185 0694 01       		.uleb128 0x1
+ 2186 0695 50       		.byte	0x50
+ 2187 0696 9F       		.byte	0x9f
+ 2188 0697 88000000 		.4byte	.LVL106
+ 2189 069b 8A000000 		.4byte	.LVL107
+ 2190 069f 0100     		.2byte	0x1
+ 2191 06a1 50       		.byte	0x50
+ 2192 06a2 8A000000 		.4byte	.LVL107
+ 2193 06a6 8C000000 		.4byte	.LVL108
+ 2194 06aa 0400     		.2byte	0x4
+ 2195 06ac F3       		.byte	0xf3
+ 2196 06ad 01       		.uleb128 0x1
+ 2197 06ae 50       		.byte	0x50
+ 2198 06af 9F       		.byte	0x9f
+ 2199 06b0 8C000000 		.4byte	.LVL108
+ 2200 06b4 8E000000 		.4byte	.LVL109
+ 2201 06b8 0100     		.2byte	0x1
+ 2202 06ba 50       		.byte	0x50
+ 2203 06bb 8E000000 		.4byte	.LVL109
+ 2204 06bf 94000000 		.4byte	.LFE6
+ 2205 06c3 0400     		.2byte	0x4
+ 2206 06c5 F3       		.byte	0xf3
+ 2207 06c6 01       		.uleb128 0x1
+ 2208 06c7 50       		.byte	0x50
+ 2209 06c8 9F       		.byte	0x9f
+ 2210 06c9 00000000 		.4byte	0
+ 2211 06cd 00000000 		.4byte	0
+ 2212              	.LLST34:
+ 2213 06d1 00000000 		.4byte	.LVL73
+ 2214 06d5 14000000 		.4byte	.LVL76
+ 2215 06d9 0100     		.2byte	0x1
+ 2216 06db 51       		.byte	0x51
+ 2217 06dc 14000000 		.4byte	.LVL76
+ 2218 06e0 84000000 		.4byte	.LVL104
+ 2219 06e4 0400     		.2byte	0x4
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 53
+
+
+ 2220 06e6 F3       		.byte	0xf3
+ 2221 06e7 01       		.uleb128 0x1
+ 2222 06e8 51       		.byte	0x51
+ 2223 06e9 9F       		.byte	0x9f
+ 2224 06ea 84000000 		.4byte	.LVL104
+ 2225 06ee 90000000 		.4byte	.LVL110
+ 2226 06f2 0100     		.2byte	0x1
+ 2227 06f4 51       		.byte	0x51
+ 2228 06f5 90000000 		.4byte	.LVL110
+ 2229 06f9 94000000 		.4byte	.LFE6
+ 2230 06fd 0400     		.2byte	0x4
+ 2231 06ff F3       		.byte	0xf3
+ 2232 0700 01       		.uleb128 0x1
+ 2233 0701 51       		.byte	0x51
+ 2234 0702 9F       		.byte	0x9f
+ 2235 0703 00000000 		.4byte	0
+ 2236 0707 00000000 		.4byte	0
+ 2237              	.LLST35:
+ 2238 070b 00000000 		.4byte	.LVL73
+ 2239 070f 12000000 		.4byte	.LVL75
+ 2240 0713 0100     		.2byte	0x1
+ 2241 0715 52       		.byte	0x52
+ 2242 0716 12000000 		.4byte	.LVL75
+ 2243 071a 2E000000 		.4byte	.LVL83
+ 2244 071e 0100     		.2byte	0x1
+ 2245 0720 53       		.byte	0x53
+ 2246 0721 2E000000 		.4byte	.LVL83
+ 2247 0725 42000000 		.4byte	.LVL89
+ 2248 0729 0400     		.2byte	0x4
+ 2249 072b F3       		.byte	0xf3
+ 2250 072c 01       		.uleb128 0x1
+ 2251 072d 52       		.byte	0x52
+ 2252 072e 9F       		.byte	0x9f
+ 2253 072f 42000000 		.4byte	.LVL89
+ 2254 0733 44000000 		.4byte	.LVL90
+ 2255 0737 0100     		.2byte	0x1
+ 2256 0739 53       		.byte	0x53
+ 2257 073a 44000000 		.4byte	.LVL90
+ 2258 073e 50000000 		.4byte	.LVL92
+ 2259 0742 0400     		.2byte	0x4
+ 2260 0744 F3       		.byte	0xf3
+ 2261 0745 01       		.uleb128 0x1
+ 2262 0746 52       		.byte	0x52
+ 2263 0747 9F       		.byte	0x9f
+ 2264 0748 50000000 		.4byte	.LVL92
+ 2265 074c 54000000 		.4byte	.LVL94
+ 2266 0750 0100     		.2byte	0x1
+ 2267 0752 53       		.byte	0x53
+ 2268 0753 54000000 		.4byte	.LVL94
+ 2269 0757 84000000 		.4byte	.LVL104
+ 2270 075b 0400     		.2byte	0x4
+ 2271 075d F3       		.byte	0xf3
+ 2272 075e 01       		.uleb128 0x1
+ 2273 075f 52       		.byte	0x52
+ 2274 0760 9F       		.byte	0x9f
+ 2275 0761 84000000 		.4byte	.LVL104
+ 2276 0765 90000000 		.4byte	.LVL110
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 54
+
+
+ 2277 0769 0100     		.2byte	0x1
+ 2278 076b 52       		.byte	0x52
+ 2279 076c 90000000 		.4byte	.LVL110
+ 2280 0770 94000000 		.4byte	.LFE6
+ 2281 0774 0400     		.2byte	0x4
+ 2282 0776 F3       		.byte	0xf3
+ 2283 0777 01       		.uleb128 0x1
+ 2284 0778 52       		.byte	0x52
+ 2285 0779 9F       		.byte	0x9f
+ 2286 077a 00000000 		.4byte	0
+ 2287 077e 00000000 		.4byte	0
+ 2288              	.LLST36:
+ 2289 0782 10000000 		.4byte	.LVL74
+ 2290 0786 12000000 		.4byte	.LVL75
+ 2291 078a 0100     		.2byte	0x1
+ 2292 078c 52       		.byte	0x52
+ 2293 078d 12000000 		.4byte	.LVL75
+ 2294 0791 84000000 		.4byte	.LVL104
+ 2295 0795 0100     		.2byte	0x1
+ 2296 0797 53       		.byte	0x53
+ 2297 0798 90000000 		.4byte	.LVL110
+ 2298 079c 94000000 		.4byte	.LFE6
+ 2299 07a0 0100     		.2byte	0x1
+ 2300 07a2 53       		.byte	0x53
+ 2301 07a3 00000000 		.4byte	0
+ 2302 07a7 00000000 		.4byte	0
+ 2303              	.LLST37:
+ 2304 07ab 54000000 		.4byte	.LVL94
+ 2305 07af 58000000 		.4byte	.LVL95
+ 2306 07b3 0100     		.2byte	0x1
+ 2307 07b5 52       		.byte	0x52
+ 2308 07b6 58000000 		.4byte	.LVL95
+ 2309 07ba 64000000 		.4byte	.LVL98
+ 2310 07be 0300     		.2byte	0x3
+ 2311 07c0 72       		.byte	0x72
+ 2312 07c1 04       		.sleb128 4
+ 2313 07c2 9F       		.byte	0x9f
+ 2314 07c3 64000000 		.4byte	.LVL98
+ 2315 07c7 6C000000 		.4byte	.LVL99
+ 2316 07cb 0100     		.2byte	0x1
+ 2317 07cd 52       		.byte	0x52
+ 2318 07ce 00000000 		.4byte	0
+ 2319 07d2 00000000 		.4byte	0
+ 2320              	.LLST38:
+ 2321 07d6 54000000 		.4byte	.LVL94
+ 2322 07da 5C000000 		.4byte	.LVL96
+ 2323 07de 0100     		.2byte	0x1
+ 2324 07e0 51       		.byte	0x51
+ 2325 07e1 5C000000 		.4byte	.LVL96
+ 2326 07e5 64000000 		.4byte	.LVL98
+ 2327 07e9 0300     		.2byte	0x3
+ 2328 07eb 71       		.byte	0x71
+ 2329 07ec 04       		.sleb128 4
+ 2330 07ed 9F       		.byte	0x9f
+ 2331 07ee 64000000 		.4byte	.LVL98
+ 2332 07f2 6C000000 		.4byte	.LVL99
+ 2333 07f6 0100     		.2byte	0x1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 55
+
+
+ 2334 07f8 51       		.byte	0x51
+ 2335 07f9 00000000 		.4byte	0
+ 2336 07fd 00000000 		.4byte	0
+ 2337              	.LLST39:
+ 2338 0801 12000000 		.4byte	.LVL75
+ 2339 0805 32000000 		.4byte	.LVL84
+ 2340 0809 0100     		.2byte	0x1
+ 2341 080b 52       		.byte	0x52
+ 2342 080c 32000000 		.4byte	.LVL84
+ 2343 0810 42000000 		.4byte	.LVL89
+ 2344 0814 0300     		.2byte	0x3
+ 2345 0816 72       		.byte	0x72
+ 2346 0817 01       		.sleb128 1
+ 2347 0818 9F       		.byte	0x9f
+ 2348 0819 42000000 		.4byte	.LVL89
+ 2349 081d 54000000 		.4byte	.LVL94
+ 2350 0821 0100     		.2byte	0x1
+ 2351 0823 52       		.byte	0x52
+ 2352 0824 6C000000 		.4byte	.LVL99
+ 2353 0828 70000000 		.4byte	.LVL100
+ 2354 082c 0100     		.2byte	0x1
+ 2355 082e 52       		.byte	0x52
+ 2356 082f 70000000 		.4byte	.LVL100
+ 2357 0833 7C000000 		.4byte	.LVL103
+ 2358 0837 0300     		.2byte	0x3
+ 2359 0839 72       		.byte	0x72
+ 2360 083a 01       		.sleb128 1
+ 2361 083b 9F       		.byte	0x9f
+ 2362 083c 7C000000 		.4byte	.LVL103
+ 2363 0840 84000000 		.4byte	.LVL104
+ 2364 0844 0100     		.2byte	0x1
+ 2365 0846 52       		.byte	0x52
+ 2366 0847 90000000 		.4byte	.LVL110
+ 2367 084b 94000000 		.4byte	.LFE6
+ 2368 084f 0100     		.2byte	0x1
+ 2369 0851 52       		.byte	0x52
+ 2370 0852 00000000 		.4byte	0
+ 2371 0856 00000000 		.4byte	0
+ 2372              	.LLST40:
+ 2373 085a 14000000 		.4byte	.LVL76
+ 2374 085e 36000000 		.4byte	.LVL85
+ 2375 0862 0100     		.2byte	0x1
+ 2376 0864 51       		.byte	0x51
+ 2377 0865 36000000 		.4byte	.LVL85
+ 2378 0869 42000000 		.4byte	.LVL89
+ 2379 086d 0300     		.2byte	0x3
+ 2380 086f 71       		.byte	0x71
+ 2381 0870 01       		.sleb128 1
+ 2382 0871 9F       		.byte	0x9f
+ 2383 0872 42000000 		.4byte	.LVL89
+ 2384 0876 54000000 		.4byte	.LVL94
+ 2385 087a 0100     		.2byte	0x1
+ 2386 087c 51       		.byte	0x51
+ 2387 087d 6C000000 		.4byte	.LVL99
+ 2388 0881 74000000 		.4byte	.LVL101
+ 2389 0885 0100     		.2byte	0x1
+ 2390 0887 51       		.byte	0x51
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 56
+
+
+ 2391 0888 74000000 		.4byte	.LVL101
+ 2392 088c 7C000000 		.4byte	.LVL103
+ 2393 0890 0300     		.2byte	0x3
+ 2394 0892 71       		.byte	0x71
+ 2395 0893 01       		.sleb128 1
+ 2396 0894 9F       		.byte	0x9f
+ 2397 0895 7C000000 		.4byte	.LVL103
+ 2398 0899 84000000 		.4byte	.LVL104
+ 2399 089d 0100     		.2byte	0x1
+ 2400 089f 51       		.byte	0x51
+ 2401 08a0 90000000 		.4byte	.LVL110
+ 2402 08a4 94000000 		.4byte	.LFE6
+ 2403 08a8 0100     		.2byte	0x1
+ 2404 08aa 51       		.byte	0x51
+ 2405 08ab 00000000 		.4byte	0
+ 2406 08af 00000000 		.4byte	0
+ 2407              	.LLST41:
+ 2408 08b3 2E000000 		.4byte	.LVL83
+ 2409 08b7 42000000 		.4byte	.LVL89
+ 2410 08bb 0100     		.2byte	0x1
+ 2411 08bd 54       		.byte	0x54
+ 2412 08be 44000000 		.4byte	.LVL90
+ 2413 08c2 4C000000 		.4byte	.LVL91
+ 2414 08c6 0100     		.2byte	0x1
+ 2415 08c8 54       		.byte	0x54
+ 2416 08c9 00000000 		.4byte	0
+ 2417 08cd 00000000 		.4byte	0
+ 2418              	.LLST42:
+ 2419 08d1 18000000 		.4byte	.LVL77
+ 2420 08d5 2E000000 		.4byte	.LVL83
+ 2421 08d9 0100     		.2byte	0x1
+ 2422 08db 54       		.byte	0x54
+ 2423 08dc 2E000000 		.4byte	.LVL83
+ 2424 08e0 42000000 		.4byte	.LVL89
+ 2425 08e4 0A00     		.2byte	0xa
+ 2426 08e6 F3       		.byte	0xf3
+ 2427 08e7 01       		.uleb128 0x1
+ 2428 08e8 50       		.byte	0x50
+ 2429 08e9 F3       		.byte	0xf3
+ 2430 08ea 01       		.uleb128 0x1
+ 2431 08eb 52       		.byte	0x52
+ 2432 08ec 22       		.byte	0x22
+ 2433 08ed 33       		.byte	0x33
+ 2434 08ee 1A       		.byte	0x1a
+ 2435 08ef 9F       		.byte	0x9f
+ 2436 08f0 42000000 		.4byte	.LVL89
+ 2437 08f4 44000000 		.4byte	.LVL90
+ 2438 08f8 0100     		.2byte	0x1
+ 2439 08fa 54       		.byte	0x54
+ 2440 08fb 44000000 		.4byte	.LVL90
+ 2441 08ff 50000000 		.4byte	.LVL92
+ 2442 0903 0A00     		.2byte	0xa
+ 2443 0905 F3       		.byte	0xf3
+ 2444 0906 01       		.uleb128 0x1
+ 2445 0907 50       		.byte	0x50
+ 2446 0908 F3       		.byte	0xf3
+ 2447 0909 01       		.uleb128 0x1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 57
+
+
+ 2448 090a 52       		.byte	0x52
+ 2449 090b 22       		.byte	0x22
+ 2450 090c 33       		.byte	0x33
+ 2451 090d 1A       		.byte	0x1a
+ 2452 090e 9F       		.byte	0x9f
+ 2453 090f 50000000 		.4byte	.LVL92
+ 2454 0913 54000000 		.4byte	.LVL94
+ 2455 0917 0100     		.2byte	0x1
+ 2456 0919 54       		.byte	0x54
+ 2457 091a 54000000 		.4byte	.LVL94
+ 2458 091e 84000000 		.4byte	.LVL104
+ 2459 0922 0A00     		.2byte	0xa
+ 2460 0924 F3       		.byte	0xf3
+ 2461 0925 01       		.uleb128 0x1
+ 2462 0926 50       		.byte	0x50
+ 2463 0927 F3       		.byte	0xf3
+ 2464 0928 01       		.uleb128 0x1
+ 2465 0929 52       		.byte	0x52
+ 2466 092a 22       		.byte	0x22
+ 2467 092b 33       		.byte	0x33
+ 2468 092c 1A       		.byte	0x1a
+ 2469 092d 9F       		.byte	0x9f
+ 2470 092e 90000000 		.4byte	.LVL110
+ 2471 0932 94000000 		.4byte	.LFE6
+ 2472 0936 0A00     		.2byte	0xa
+ 2473 0938 F3       		.byte	0xf3
+ 2474 0939 01       		.uleb128 0x1
+ 2475 093a 50       		.byte	0x50
+ 2476 093b F3       		.byte	0xf3
+ 2477 093c 01       		.uleb128 0x1
+ 2478 093d 52       		.byte	0x52
+ 2479 093e 22       		.byte	0x22
+ 2480 093f 33       		.byte	0x33
+ 2481 0940 1A       		.byte	0x1a
+ 2482 0941 9F       		.byte	0x9f
+ 2483 0942 00000000 		.4byte	0
+ 2484 0946 00000000 		.4byte	0
+ 2485              	.LLST43:
+ 2486 094a 1C000000 		.4byte	.LVL78
+ 2487 094e 22000000 		.4byte	.LVL79
+ 2488 0952 0100     		.2byte	0x1
+ 2489 0954 50       		.byte	0x50
+ 2490 0955 22000000 		.4byte	.LVL79
+ 2491 0959 24000000 		.4byte	.LVL80
+ 2492 095d 0500     		.2byte	0x5
+ 2493 095f 71       		.byte	0x71
+ 2494 0960 00       		.sleb128 0
+ 2495 0961 33       		.byte	0x33
+ 2496 0962 1A       		.byte	0x1a
+ 2497 0963 9F       		.byte	0x9f
+ 2498 0964 24000000 		.4byte	.LVL80
+ 2499 0968 26000000 		.4byte	.LVL81
+ 2500 096c 0100     		.2byte	0x1
+ 2501 096e 50       		.byte	0x50
+ 2502 096f 26000000 		.4byte	.LVL81
+ 2503 0973 2E000000 		.4byte	.LVL83
+ 2504 0977 0500     		.2byte	0x5
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 58
+
+
+ 2505 0979 71       		.byte	0x71
+ 2506 097a 00       		.sleb128 0
+ 2507 097b 33       		.byte	0x33
+ 2508 097c 1A       		.byte	0x1a
+ 2509 097d 9F       		.byte	0x9f
+ 2510 097e 2E000000 		.4byte	.LVL83
+ 2511 0982 42000000 		.4byte	.LVL89
+ 2512 0986 0A00     		.2byte	0xa
+ 2513 0988 F3       		.byte	0xf3
+ 2514 0989 01       		.uleb128 0x1
+ 2515 098a 51       		.byte	0x51
+ 2516 098b F3       		.byte	0xf3
+ 2517 098c 01       		.uleb128 0x1
+ 2518 098d 52       		.byte	0x52
+ 2519 098e 22       		.byte	0x22
+ 2520 098f 33       		.byte	0x33
+ 2521 0990 1A       		.byte	0x1a
+ 2522 0991 9F       		.byte	0x9f
+ 2523 0992 42000000 		.4byte	.LVL89
+ 2524 0996 44000000 		.4byte	.LVL90
+ 2525 099a 0500     		.2byte	0x5
+ 2526 099c 71       		.byte	0x71
+ 2527 099d 00       		.sleb128 0
+ 2528 099e 33       		.byte	0x33
+ 2529 099f 1A       		.byte	0x1a
+ 2530 09a0 9F       		.byte	0x9f
+ 2531 09a1 44000000 		.4byte	.LVL90
+ 2532 09a5 50000000 		.4byte	.LVL92
+ 2533 09a9 0A00     		.2byte	0xa
+ 2534 09ab F3       		.byte	0xf3
+ 2535 09ac 01       		.uleb128 0x1
+ 2536 09ad 51       		.byte	0x51
+ 2537 09ae F3       		.byte	0xf3
+ 2538 09af 01       		.uleb128 0x1
+ 2539 09b0 52       		.byte	0x52
+ 2540 09b1 22       		.byte	0x22
+ 2541 09b2 33       		.byte	0x33
+ 2542 09b3 1A       		.byte	0x1a
+ 2543 09b4 9F       		.byte	0x9f
+ 2544 09b5 50000000 		.4byte	.LVL92
+ 2545 09b9 54000000 		.4byte	.LVL94
+ 2546 09bd 0500     		.2byte	0x5
+ 2547 09bf 71       		.byte	0x71
+ 2548 09c0 00       		.sleb128 0
+ 2549 09c1 33       		.byte	0x33
+ 2550 09c2 1A       		.byte	0x1a
+ 2551 09c3 9F       		.byte	0x9f
+ 2552 09c4 54000000 		.4byte	.LVL94
+ 2553 09c8 84000000 		.4byte	.LVL104
+ 2554 09cc 0A00     		.2byte	0xa
+ 2555 09ce F3       		.byte	0xf3
+ 2556 09cf 01       		.uleb128 0x1
+ 2557 09d0 51       		.byte	0x51
+ 2558 09d1 F3       		.byte	0xf3
+ 2559 09d2 01       		.uleb128 0x1
+ 2560 09d3 52       		.byte	0x52
+ 2561 09d4 22       		.byte	0x22
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 59
+
+
+ 2562 09d5 33       		.byte	0x33
+ 2563 09d6 1A       		.byte	0x1a
+ 2564 09d7 9F       		.byte	0x9f
+ 2565 09d8 90000000 		.4byte	.LVL110
+ 2566 09dc 94000000 		.4byte	.LFE6
+ 2567 09e0 0A00     		.2byte	0xa
+ 2568 09e2 F3       		.byte	0xf3
+ 2569 09e3 01       		.uleb128 0x1
+ 2570 09e4 51       		.byte	0x51
+ 2571 09e5 F3       		.byte	0xf3
+ 2572 09e6 01       		.uleb128 0x1
+ 2573 09e7 52       		.byte	0x52
+ 2574 09e8 22       		.byte	0x22
+ 2575 09e9 33       		.byte	0x33
+ 2576 09ea 1A       		.byte	0x1a
+ 2577 09eb 9F       		.byte	0x9f
+ 2578 09ec 00000000 		.4byte	0
+ 2579 09f0 00000000 		.4byte	0
+ 2580              	.LLST44:
+ 2581 09f4 26000000 		.4byte	.LVL81
+ 2582 09f8 2C000000 		.4byte	.LVL82
+ 2583 09fc 0100     		.2byte	0x1
+ 2584 09fe 50       		.byte	0x50
+ 2585 09ff 42000000 		.4byte	.LVL89
+ 2586 0a03 44000000 		.4byte	.LVL90
+ 2587 0a07 0100     		.2byte	0x1
+ 2588 0a09 50       		.byte	0x50
+ 2589 0a0a 50000000 		.4byte	.LVL92
+ 2590 0a0e 52000000 		.4byte	.LVL93
+ 2591 0a12 0100     		.2byte	0x1
+ 2592 0a14 50       		.byte	0x50
+ 2593 0a15 00000000 		.4byte	0
+ 2594 0a19 00000000 		.4byte	0
+ 2595              	.LLST45:
+ 2596 0a1d 10000000 		.4byte	.LVL74
+ 2597 0a21 2E000000 		.4byte	.LVL83
+ 2598 0a25 0200     		.2byte	0x2
+ 2599 0a27 31       		.byte	0x31
+ 2600 0a28 9F       		.byte	0x9f
+ 2601 0a29 2E000000 		.4byte	.LVL83
+ 2602 0a2d 42000000 		.4byte	.LVL89
+ 2603 0a31 0100     		.2byte	0x1
+ 2604 0a33 50       		.byte	0x50
+ 2605 0a34 42000000 		.4byte	.LVL89
+ 2606 0a38 44000000 		.4byte	.LVL90
+ 2607 0a3c 0200     		.2byte	0x2
+ 2608 0a3e 31       		.byte	0x31
+ 2609 0a3f 9F       		.byte	0x9f
+ 2610 0a40 44000000 		.4byte	.LVL90
+ 2611 0a44 50000000 		.4byte	.LVL92
+ 2612 0a48 0100     		.2byte	0x1
+ 2613 0a4a 50       		.byte	0x50
+ 2614 0a4b 50000000 		.4byte	.LVL92
+ 2615 0a4f 54000000 		.4byte	.LVL94
+ 2616 0a53 0200     		.2byte	0x2
+ 2617 0a55 31       		.byte	0x31
+ 2618 0a56 9F       		.byte	0x9f
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 60
+
+
+ 2619 0a57 54000000 		.4byte	.LVL94
+ 2620 0a5b 84000000 		.4byte	.LVL104
+ 2621 0a5f 0100     		.2byte	0x1
+ 2622 0a61 50       		.byte	0x50
+ 2623 0a62 90000000 		.4byte	.LVL110
+ 2624 0a66 94000000 		.4byte	.LFE6
+ 2625 0a6a 0100     		.2byte	0x1
+ 2626 0a6c 50       		.byte	0x50
+ 2627 0a6d 00000000 		.4byte	0
+ 2628 0a71 00000000 		.4byte	0
+ 2629              		.section	.debug_aranges,"",%progbits
+ 2630 0000 44000000 		.4byte	0x44
+ 2631 0004 0200     		.2byte	0x2
+ 2632 0006 00000000 		.4byte	.Ldebug_info0
+ 2633 000a 04       		.byte	0x4
+ 2634 000b 00       		.byte	0
+ 2635 000c 0000     		.2byte	0
+ 2636 000e 0000     		.2byte	0
+ 2637 0010 00000000 		.4byte	.LFB1
+ 2638 0014 02000000 		.4byte	.LFE1-.LFB1
+ 2639 0018 00000000 		.4byte	.LFB3
+ 2640 001c 44000000 		.4byte	.LFE3-.LFB3
+ 2641 0020 00000000 		.4byte	.LFB2
+ 2642 0024 0C000000 		.4byte	.LFE2-.LFB2
+ 2643 0028 00000000 		.4byte	.LFB4
+ 2644 002c 56000000 		.4byte	.LFE4-.LFB4
+ 2645 0030 00000000 		.4byte	.LFB5
+ 2646 0034 72000000 		.4byte	.LFE5-.LFB5
+ 2647 0038 00000000 		.4byte	.LFB6
+ 2648 003c 94000000 		.4byte	.LFE6-.LFB6
+ 2649 0040 00000000 		.4byte	0
+ 2650 0044 00000000 		.4byte	0
+ 2651              		.section	.debug_ranges,"",%progbits
+ 2652              	.Ldebug_ranges0:
+ 2653 0000 00000000 		.4byte	.LFB1
+ 2654 0004 02000000 		.4byte	.LFE1
+ 2655 0008 00000000 		.4byte	.LFB3
+ 2656 000c 44000000 		.4byte	.LFE3
+ 2657 0010 00000000 		.4byte	.LFB2
+ 2658 0014 0C000000 		.4byte	.LFE2
+ 2659 0018 00000000 		.4byte	.LFB4
+ 2660 001c 56000000 		.4byte	.LFE4
+ 2661 0020 00000000 		.4byte	.LFB5
+ 2662 0024 72000000 		.4byte	.LFE5
+ 2663 0028 00000000 		.4byte	.LFB6
+ 2664 002c 94000000 		.4byte	.LFE6
+ 2665 0030 00000000 		.4byte	0
+ 2666 0034 00000000 		.4byte	0
+ 2667              		.section	.debug_line,"",%progbits
+ 2668              	.Ldebug_line0:
+ 2669 0000 93010000 		.section	.debug_str,"MS",%progbits,1
+ 2669      02004B00 
+ 2669      00000201 
+ 2669      FB0E0D00 
+ 2669      01010101 
+ 2670              	.LASF55:
+ 2671 0000 75432D4C 		.ascii	"uC-LIB\\lib_mem.c\000"
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 61
+
+
+ 2671      49425C6C 
+ 2671      69625F6D 
+ 2671      656D2E63 
+ 2671      00
+ 2672              	.LASF34:
+ 2673 0011 70737263 		.ascii	"psrc\000"
+ 2673      00
+ 2674              	.LASF33:
+ 2675 0016 70646573 		.ascii	"pdest\000"
+ 2675      7400
+ 2676              	.LASF25:
+ 2677 001c 73697A65 		.ascii	"size_rem\000"
+ 2677      5F72656D 
+ 2677      00
+ 2678              	.LASF41:
+ 2679 0025 6D656D5F 		.ascii	"mem_align_mod_src\000"
+ 2679      616C6967 
+ 2679      6E5F6D6F 
+ 2679      645F7372 
+ 2679      6300
+ 2680              	.LASF26:
+ 2681 0037 64617461 		.ascii	"data_align\000"
+ 2681      5F616C69 
+ 2681      676E00
+ 2682              	.LASF15:
+ 2683 0042 4350555F 		.ascii	"CPU_DATA\000"
+ 2683      44415441 
+ 2683      00
+ 2684              	.LASF6:
+ 2685 004b 73686F72 		.ascii	"short unsigned int\000"
+ 2685      7420756E 
+ 2685      7369676E 
+ 2685      65642069 
+ 2685      6E7400
+ 2686              	.LASF48:
+ 2687 005e 70325F6D 		.ascii	"p2_mem_align\000"
+ 2687      656D5F61 
+ 2687      6C69676E 
+ 2687      00
+ 2688              	.LASF22:
+ 2689 006b 706D656D 		.ascii	"pmem\000"
+ 2689      00
+ 2690              	.LASF49:
+ 2691 0070 70315F6D 		.ascii	"p1_mem_08\000"
+ 2691      656D5F30 
+ 2691      3800
+ 2692              	.LASF36:
+ 2693 007a 706D656D 		.ascii	"pmem_align_dest\000"
+ 2693      5F616C69 
+ 2693      676E5F64 
+ 2693      65737400 
+ 2694              	.LASF53:
+ 2695 008a 6D656D5F 		.ascii	"mem_cmp\000"
+ 2695      636D7000 
+ 2696              	.LASF32:
+ 2697 0092 4D656D5F 		.ascii	"Mem_Copy\000"
+ 2697      436F7079 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 62
+
+
+ 2697      00
+ 2698              	.LASF8:
+ 2699 009b 4350555F 		.ascii	"CPU_INT32U\000"
+ 2699      494E5433 
+ 2699      325500
+ 2700              	.LASF12:
+ 2701 00a6 666C6F61 		.ascii	"float\000"
+ 2701      7400
+ 2702              	.LASF45:
+ 2703 00ac 70315F6D 		.ascii	"p1_mem\000"
+ 2703      656D00
+ 2704              	.LASF24:
+ 2705 00b3 73697A65 		.ascii	"size\000"
+ 2705      00
+ 2706              	.LASF54:
+ 2707 00b8 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2707      43313120 
+ 2707      352E342E 
+ 2707      31203230 
+ 2707      31363036 
+ 2708 00eb 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2708      20726576 
+ 2708      6973696F 
+ 2708      6E203233 
+ 2708      37373135 
+ 2709 011e 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 2709      66756E63 
+ 2709      74696F6E 
+ 2709      2D736563 
+ 2709      74696F6E 
+ 2710              	.LASF4:
+ 2711 0146 4350555F 		.ascii	"CPU_INT08S\000"
+ 2711      494E5430 
+ 2711      385300
+ 2712              	.LASF19:
+ 2713 0151 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2713      20756E73 
+ 2713      69676E65 
+ 2713      6420696E 
+ 2713      7400
+ 2714              	.LASF44:
+ 2715 0163 4D656D5F 		.ascii	"Mem_Cmp\000"
+ 2715      436D7000 
+ 2716              	.LASF3:
+ 2717 016b 4350555F 		.ascii	"CPU_INT08U\000"
+ 2717      494E5430 
+ 2717      385500
+ 2718              	.LASF38:
+ 2719 0176 706D656D 		.ascii	"pmem_08_dest\000"
+ 2719      5F30385F 
+ 2719      64657374 
+ 2719      00
+ 2720              	.LASF57:
+ 2721 0183 4D656D5F 		.ascii	"Mem_Init\000"
+ 2721      496E6974 
+ 2721      00
+ 2722              	.LASF35:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 63
+
+
+ 2723 018c 6D656D5F 		.ascii	"mem_gap_octets\000"
+ 2723      6761705F 
+ 2723      6F637465 
+ 2723      747300
+ 2724              	.LASF47:
+ 2725 019b 70315F6D 		.ascii	"p1_mem_align\000"
+ 2725      656D5F61 
+ 2725      6C69676E 
+ 2725      00
+ 2726              	.LASF17:
+ 2727 01a8 4350555F 		.ascii	"CPU_SIZE_T\000"
+ 2727      53495A45 
+ 2727      5F5400
+ 2728              	.LASF13:
+ 2729 01b3 646F7562 		.ascii	"double\000"
+ 2729      6C6500
+ 2730              	.LASF39:
+ 2731 01ba 706D656D 		.ascii	"pmem_08_src\000"
+ 2731      5F30385F 
+ 2731      73726300 
+ 2732              	.LASF51:
+ 2733 01c6 6D656D5F 		.ascii	"mem_align_mod_1\000"
+ 2733      616C6967 
+ 2733      6E5F6D6F 
+ 2733      645F3100 
+ 2734              	.LASF52:
+ 2735 01d6 6D656D5F 		.ascii	"mem_align_mod_2\000"
+ 2735      616C6967 
+ 2735      6E5F6D6F 
+ 2735      645F3200 
+ 2736              	.LASF56:
+ 2737 01e6 433A5C63 		.ascii	"C:\\cypress\\esw_uCOS3_cykit\\esw_uCOS3_cykit.cydsn"
+ 2737      79707265 
+ 2737      73735C65 
+ 2737      73775F75 
+ 2737      434F5333 
+ 2738 0216 00       		.ascii	"\000"
+ 2739              	.LASF29:
+ 2740 0217 6D656D5F 		.ascii	"mem_align_mod\000"
+ 2740      616C6967 
+ 2740      6E5F6D6F 
+ 2740      6400
+ 2741              	.LASF43:
+ 2742 0225 4D656D5F 		.ascii	"Mem_Move\000"
+ 2742      4D6F7665 
+ 2742      00
+ 2743              	.LASF50:
+ 2744 022e 70325F6D 		.ascii	"p2_mem_08\000"
+ 2744      656D5F30 
+ 2744      3800
+ 2745              	.LASF1:
+ 2746 0238 756E7369 		.ascii	"unsigned char\000"
+ 2746      676E6564 
+ 2746      20636861 
+ 2746      7200
+ 2747              	.LASF9:
+ 2748 0246 756E7369 		.ascii	"unsigned int\000"
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 64
+
+
+ 2748      676E6564 
+ 2748      20696E74 
+ 2748      00
+ 2749              	.LASF23:
+ 2750 0253 64617461 		.ascii	"data_val\000"
+ 2750      5F76616C 
+ 2750      00
+ 2751              	.LASF16:
+ 2752 025c 4350555F 		.ascii	"CPU_ALIGN\000"
+ 2752      414C4947 
+ 2752      4E00
+ 2753              	.LASF10:
+ 2754 0266 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2754      206C6F6E 
+ 2754      6720756E 
+ 2754      7369676E 
+ 2754      65642069 
+ 2755              	.LASF2:
+ 2756 027d 4350555F 		.ascii	"CPU_BOOLEAN\000"
+ 2756      424F4F4C 
+ 2756      45414E00 
+ 2757              	.LASF37:
+ 2758 0289 706D656D 		.ascii	"pmem_align_src\000"
+ 2758      5F616C69 
+ 2758      676E5F73 
+ 2758      726300
+ 2759              	.LASF20:
+ 2760 0298 6C6F6E67 		.ascii	"long double\000"
+ 2760      20646F75 
+ 2760      626C6500 
+ 2761              	.LASF21:
+ 2762 02a4 73697A65 		.ascii	"sizetype\000"
+ 2762      74797065 
+ 2762      00
+ 2763              	.LASF11:
+ 2764 02ad 6C6F6E67 		.ascii	"long long int\000"
+ 2764      206C6F6E 
+ 2764      6720696E 
+ 2764      7400
+ 2765              	.LASF30:
+ 2766 02bb 4D656D5F 		.ascii	"Mem_Set\000"
+ 2766      53657400 
+ 2767              	.LASF0:
+ 2768 02c3 63686172 		.ascii	"char\000"
+ 2768      00
+ 2769              	.LASF7:
+ 2770 02c8 73686F72 		.ascii	"short int\000"
+ 2770      7420696E 
+ 2770      7400
+ 2771              	.LASF46:
+ 2772 02d2 70325F6D 		.ascii	"p2_mem\000"
+ 2772      656D00
+ 2773              	.LASF31:
+ 2774 02d9 4D656D5F 		.ascii	"Mem_Clr\000"
+ 2774      436C7200 
+ 2775              	.LASF18:
+ 2776 02e1 6C6F6E67 		.ascii	"long int\000"
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccxeOzpe.s 			page 65
+
+
+ 2776      20696E74 
+ 2776      00
+ 2777              	.LASF27:
+ 2778 02ea 706D656D 		.ascii	"pmem_align\000"
+ 2778      5F616C69 
+ 2778      676E00
+ 2779              	.LASF14:
+ 2780 02f5 4350555F 		.ascii	"CPU_ADDR\000"
+ 2780      41444452 
+ 2780      00
+ 2781              	.LASF5:
+ 2782 02fe 7369676E 		.ascii	"signed char\000"
+ 2782      65642063 
+ 2782      68617200 
+ 2783              	.LASF42:
+ 2784 030a 6D656D5F 		.ascii	"mem_aligned\000"
+ 2784      616C6967 
+ 2784      6E656400 
+ 2785              	.LASF40:
+ 2786 0316 6D656D5F 		.ascii	"mem_align_mod_dest\000"
+ 2786      616C6967 
+ 2786      6E5F6D6F 
+ 2786      645F6465 
+ 2786      737400
+ 2787              	.LASF28:
+ 2788 0329 706D656D 		.ascii	"pmem_08\000"
+ 2788      5F303800 
+ 2789              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

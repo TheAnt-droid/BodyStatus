@@ -1,0 +1,714 @@
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccj3Fns1.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"bsp_uart.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.init_uart,"ax",%progbits
+  20              		.align	2
+  21              		.global	init_uart
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	init_uart, %function
+  25              	init_uart:
+  26              	.LFB0:
+  27              		.file 1 "bsp_uart.c"
+   1:bsp_uart.c    **** /* ========================================
+   2:bsp_uart.c    ****  *
+   3:bsp_uart.c    ****  * Copyright YOUR COMPANY, THE YEAR
+   4:bsp_uart.c    ****  * All Rights Reserved
+   5:bsp_uart.c    ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:bsp_uart.c    ****  *
+   7:bsp_uart.c    ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:bsp_uart.c    ****  * WHICH IS THE PROPERTY OF your company.
+   9:bsp_uart.c    ****  *
+  10:bsp_uart.c    ****  * ========================================
+  11:bsp_uart.c    **** */
+  12:bsp_uart.c    **** 
+  13:bsp_uart.c    **** #include <bsp_uart.h>
+  14:bsp_uart.c    **** 
+  15:bsp_uart.c    **** /*
+  16:bsp_uart.c    **** ***************************************************************************************************
+  17:bsp_uart.c    **** *                                       init_uart()
+  18:bsp_uart.c    **** *
+  19:bsp_uart.c    **** * Description : This function initializes the UART_1 communication module. Configuration: 115200,8N
+  20:bsp_uart.c    **** *
+  21:bsp_uart.c    **** * Argument(s) : none.
+  22:bsp_uart.c    **** *
+  23:bsp_uart.c    **** * Return(s)   : none.
+  24:bsp_uart.c    **** *
+  25:bsp_uart.c    **** * Caller(s)   : Application.
+  26:bsp_uart.c    **** *
+  27:bsp_uart.c    **** * Note(s)     : Not re-entrant.
+  28:bsp_uart.c    **** ***************************************************************************************************
+  29:bsp_uart.c    **** */
+  30:bsp_uart.c    **** 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccj3Fns1.s 			page 2
+
+
+  31:bsp_uart.c    **** CPU_VOID init_uart(CPU_VOID)
+  32:bsp_uart.c    **** {
+  28              		.loc 1 32 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+  33:bsp_uart.c    ****     UART_1_Start();
+  36              		.loc 1 33 0
+  37 0002 FFF7FEFF 		bl	UART_1_Start
+  38              	.LVL0:
+  39 0006 08BD     		pop	{r3, pc}
+  40              		.cfi_endproc
+  41              	.LFE0:
+  42              		.size	init_uart, .-init_uart
+  43              		.section	.text.uart_get_byte,"ax",%progbits
+  44              		.align	2
+  45              		.global	uart_get_byte
+  46              		.thumb
+  47              		.thumb_func
+  48              		.type	uart_get_byte, %function
+  49              	uart_get_byte:
+  50              	.LFB1:
+  34:bsp_uart.c    **** }
+  35:bsp_uart.c    **** 
+  36:bsp_uart.c    **** /*
+  37:bsp_uart.c    **** ***************************************************************************************************
+  38:bsp_uart.c    **** *                                       uart_get_byte()
+  39:bsp_uart.c    **** *
+  40:bsp_uart.c    **** * Description : Returns the last received byte of data. UART_1_GetChar() is
+  41:bsp_uart.c    **** *               designed for ASCII characters and returns a uint8 where 1 to 255 are values
+  42:bsp_uart.c    **** *               for valid characters and 0 indicates an error occurred or no data is present 
+  43:bsp_uart.c    **** *
+  44:bsp_uart.c    **** * Argument(s) : none.
+  45:bsp_uart.c    **** *
+  46:bsp_uart.c    **** * Return(s)   : Character read from UART RX buffer. ASCII characters from 1 to 255 are valid.
+  47:bsp_uart.c    **** *               A returned zero signifies an error condition or no data available.
+  48:bsp_uart.c    **** *
+  49:bsp_uart.c    **** * Caller(s)   : Application.
+  50:bsp_uart.c    **** *
+  51:bsp_uart.c    **** * Note(s)     : Not re-entrant, non-blocking.
+  52:bsp_uart.c    **** ***************************************************************************************************
+  53:bsp_uart.c    **** */
+  54:bsp_uart.c    **** 
+  55:bsp_uart.c    **** CPU_INT08U uart_get_byte(CPU_VOID)
+  56:bsp_uart.c    **** {
+  51              		.loc 1 56 0
+  52              		.cfi_startproc
+  53              		@ args = 0, pretend = 0, frame = 0
+  54              		@ frame_needed = 0, uses_anonymous_args = 0
+  55 0000 08B5     		push	{r3, lr}
+  56              		.cfi_def_cfa_offset 8
+  57              		.cfi_offset 3, -8
+  58              		.cfi_offset 14, -4
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccj3Fns1.s 			page 3
+
+
+  57:bsp_uart.c    ****     return UART_1_GetChar();
+  59              		.loc 1 57 0
+  60 0002 FFF7FEFF 		bl	UART_1_GetChar
+  61              	.LVL1:
+  58:bsp_uart.c    **** }
+  62              		.loc 1 58 0
+  63 0006 08BD     		pop	{r3, pc}
+  64              		.cfi_endproc
+  65              	.LFE1:
+  66              		.size	uart_get_byte, .-uart_get_byte
+  67              		.section	.text.uart_send_byte,"ax",%progbits
+  68              		.align	2
+  69              		.global	uart_send_byte
+  70              		.thumb
+  71              		.thumb_func
+  72              		.type	uart_send_byte, %function
+  73              	uart_send_byte:
+  74              	.LFB2:
+  59:bsp_uart.c    **** 
+  60:bsp_uart.c    **** /*
+  61:bsp_uart.c    **** ***************************************************************************************************
+  62:bsp_uart.c    **** *                                       uart_send_byte()
+  63:bsp_uart.c    **** *
+  64:bsp_uart.c    **** * Description : Puts a byte of data into the transmit buffer to be sent when the bus is
+  65:bsp_uart.c    **** *               available. This is a blocking API that waits until the TX buffer has room to
+  66:bsp_uart.c    **** *               hold the data. 
+  67:bsp_uart.c    **** *
+  68:bsp_uart.c    **** * Argument(s) : byte ... containing the data to transmit
+  69:bsp_uart.c    **** *
+  70:bsp_uart.c    **** * Return(s)   : None.
+  71:bsp_uart.c    **** *
+  72:bsp_uart.c    **** * Caller(s)   : Application.
+  73:bsp_uart.c    **** *
+  74:bsp_uart.c    **** * Note(s)     : Not re-entrant.
+  75:bsp_uart.c    **** ***************************************************************************************************
+  76:bsp_uart.c    **** */
+  77:bsp_uart.c    **** 
+  78:bsp_uart.c    **** CPU_VOID uart_send_byte(CPU_INT08U byte)
+  79:bsp_uart.c    **** {
+  75              		.loc 1 79 0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 0, uses_anonymous_args = 0
+  79              	.LVL2:
+  80 0000 08B5     		push	{r3, lr}
+  81              		.cfi_def_cfa_offset 8
+  82              		.cfi_offset 3, -8
+  83              		.cfi_offset 14, -4
+  80:bsp_uart.c    ****     UART_1_PutChar(byte);
+  84              		.loc 1 80 0
+  85 0002 FFF7FEFF 		bl	UART_1_PutChar
+  86              	.LVL3:
+  87 0006 08BD     		pop	{r3, pc}
+  88              		.cfi_endproc
+  89              	.LFE2:
+  90              		.size	uart_send_byte, .-uart_send_byte
+  91              		.text
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccj3Fns1.s 			page 4
+
+
+  92              	.Letext0:
+  93              		.file 2 "./bsp_uart.h"
+  94              		.file 3 "Generated_Source\\PSoC5/UART_1.h"
+  95              		.file 4 ".\\uC-CPU\\ARM-Cortex-M3\\GNU/cpu.h"
+  96              		.section	.debug_info,"",%progbits
+  97              	.Ldebug_info0:
+  98 0000 3F010000 		.4byte	0x13f
+  99 0004 0400     		.2byte	0x4
+ 100 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 101 000a 04       		.byte	0x4
+ 102 000b 01       		.uleb128 0x1
+ 103 000c 68000000 		.4byte	.LASF21
+ 104 0010 0C       		.byte	0xc
+ 105 0011 71010000 		.4byte	.LASF22
+ 106 0015 37000000 		.4byte	.LASF23
+ 107 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 108 001d 00000000 		.4byte	0
+ 109 0021 00000000 		.4byte	.Ldebug_line0
+ 110 0025 02       		.uleb128 0x2
+ 111 0026 01       		.byte	0x1
+ 112 0027 08       		.byte	0x8
+ 113 0028 63010000 		.4byte	.LASF0
+ 114 002c 02       		.uleb128 0x2
+ 115 002d 01       		.byte	0x1
+ 116 002e 08       		.byte	0x8
+ 117 002f 55010000 		.4byte	.LASF1
+ 118 0033 03       		.uleb128 0x3
+ 119 0034 E1010000 		.4byte	.LASF24
+ 120 0038 04       		.byte	0x4
+ 121 0039 78       		.byte	0x78
+ 122 003a 2C000000 		.4byte	0x2c
+ 123 003e 02       		.uleb128 0x2
+ 124 003f 01       		.byte	0x1
+ 125 0040 06       		.byte	0x6
+ 126 0041 B9010000 		.4byte	.LASF2
+ 127 0045 02       		.uleb128 0x2
+ 128 0046 02       		.byte	0x2
+ 129 0047 07       		.byte	0x7
+ 130 0048 A6010000 		.4byte	.LASF3
+ 131 004c 02       		.uleb128 0x2
+ 132 004d 02       		.byte	0x2
+ 133 004e 05       		.byte	0x5
+ 134 004f 12010000 		.4byte	.LASF4
+ 135 0053 02       		.uleb128 0x2
+ 136 0054 04       		.byte	0x4
+ 137 0055 07       		.byte	0x7
+ 138 0056 2A000000 		.4byte	.LASF5
+ 139 005a 04       		.uleb128 0x4
+ 140 005b 04       		.byte	0x4
+ 141 005c 05       		.byte	0x5
+ 142 005d 696E7400 		.ascii	"int\000"
+ 143 0061 02       		.uleb128 0x2
+ 144 0062 08       		.byte	0x8
+ 145 0063 07       		.byte	0x7
+ 146 0064 1C010000 		.4byte	.LASF6
+ 147 0068 02       		.uleb128 0x2
+ 148 0069 08       		.byte	0x8
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccj3Fns1.s 			page 5
+
+
+ 149 006a 05       		.byte	0x5
+ 150 006b 00000000 		.4byte	.LASF7
+ 151 006f 02       		.uleb128 0x2
+ 152 0070 04       		.byte	0x4
+ 153 0071 04       		.byte	0x4
+ 154 0072 33010000 		.4byte	.LASF8
+ 155 0076 02       		.uleb128 0x2
+ 156 0077 08       		.byte	0x8
+ 157 0078 04       		.byte	0x4
+ 158 0079 8B010000 		.4byte	.LASF9
+ 159 007d 02       		.uleb128 0x2
+ 160 007e 04       		.byte	0x4
+ 161 007f 05       		.byte	0x5
+ 162 0080 68010000 		.4byte	.LASF10
+ 163 0084 02       		.uleb128 0x2
+ 164 0085 04       		.byte	0x4
+ 165 0086 07       		.byte	0x7
+ 166 0087 00010000 		.4byte	.LASF11
+ 167 008b 02       		.uleb128 0x2
+ 168 008c 08       		.byte	0x8
+ 169 008d 04       		.byte	0x4
+ 170 008e D5010000 		.4byte	.LASF12
+ 171 0092 02       		.uleb128 0x2
+ 172 0093 04       		.byte	0x4
+ 173 0094 07       		.byte	0x7
+ 174 0095 EC010000 		.4byte	.LASF13
+ 175 0099 05       		.uleb128 0x5
+ 176 009a F6000000 		.4byte	.LASF14
+ 177 009e 01       		.byte	0x1
+ 178 009f 1F       		.byte	0x1f
+ 179 00a0 00000000 		.4byte	.LFB0
+ 180 00a4 08000000 		.4byte	.LFE0-.LFB0
+ 181 00a8 01       		.uleb128 0x1
+ 182 00a9 9C       		.byte	0x9c
+ 183 00aa B8000000 		.4byte	0xb8
+ 184 00ae 06       		.uleb128 0x6
+ 185 00af 06000000 		.4byte	.LVL0
+ 186 00b3 21010000 		.4byte	0x121
+ 187 00b7 00       		.byte	0
+ 188 00b8 07       		.uleb128 0x7
+ 189 00b9 0E000000 		.4byte	.LASF25
+ 190 00bd 01       		.byte	0x1
+ 191 00be 37       		.byte	0x37
+ 192 00bf 33000000 		.4byte	0x33
+ 193 00c3 00000000 		.4byte	.LFB1
+ 194 00c7 08000000 		.4byte	.LFE1-.LFB1
+ 195 00cb 01       		.uleb128 0x1
+ 196 00cc 9C       		.byte	0x9c
+ 197 00cd DB000000 		.4byte	0xdb
+ 198 00d1 06       		.uleb128 0x6
+ 199 00d2 06000000 		.4byte	.LVL1
+ 200 00d6 2C010000 		.4byte	0x12c
+ 201 00da 00       		.byte	0
+ 202 00db 05       		.uleb128 0x5
+ 203 00dc 39010000 		.4byte	.LASF15
+ 204 00e0 01       		.byte	0x1
+ 205 00e1 4E       		.byte	0x4e
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccj3Fns1.s 			page 6
+
+
+ 206 00e2 00000000 		.4byte	.LFB2
+ 207 00e6 08000000 		.4byte	.LFE2-.LFB2
+ 208 00ea 01       		.uleb128 0x1
+ 209 00eb 9C       		.byte	0x9c
+ 210 00ec 09010000 		.4byte	0x109
+ 211 00f0 08       		.uleb128 0x8
+ 212 00f1 92010000 		.4byte	.LASF26
+ 213 00f5 01       		.byte	0x1
+ 214 00f6 4E       		.byte	0x4e
+ 215 00f7 33000000 		.4byte	0x33
+ 216 00fb 00000000 		.4byte	.LLST0
+ 217 00ff 06       		.uleb128 0x6
+ 218 0100 06000000 		.4byte	.LVL3
+ 219 0104 37010000 		.4byte	0x137
+ 220 0108 00       		.byte	0
+ 221 0109 09       		.uleb128 0x9
+ 222 010a C5010000 		.4byte	.LASF16
+ 223 010e 02       		.byte	0x2
+ 224 010f 11       		.byte	0x11
+ 225 0110 33000000 		.4byte	0x33
+ 226 0114 23       		.byte	0x23
+ 227 0115 09       		.uleb128 0x9
+ 228 0116 1C000000 		.4byte	.LASF17
+ 229 011a 02       		.byte	0x2
+ 230 011b 12       		.byte	0x12
+ 231 011c 33000000 		.4byte	0x33
+ 232 0120 24       		.byte	0x24
+ 233 0121 0A       		.uleb128 0xa
+ 234 0122 48010000 		.4byte	.LASF18
+ 235 0126 48010000 		.4byte	.LASF18
+ 236 012a 03       		.byte	0x3
+ 237 012b 54       		.byte	0x54
+ 238 012c 0A       		.uleb128 0xa
+ 239 012d 97010000 		.4byte	.LASF19
+ 240 0131 97010000 		.4byte	.LASF19
+ 241 0135 03       		.byte	0x3
+ 242 0136 71       		.byte	0x71
+ 243 0137 0A       		.uleb128 0xa
+ 244 0138 7C010000 		.4byte	.LASF20
+ 245 013c 7C010000 		.4byte	.LASF20
+ 246 0140 03       		.byte	0x3
+ 247 0141 8A       		.byte	0x8a
+ 248 0142 00       		.byte	0
+ 249              		.section	.debug_abbrev,"",%progbits
+ 250              	.Ldebug_abbrev0:
+ 251 0000 01       		.uleb128 0x1
+ 252 0001 11       		.uleb128 0x11
+ 253 0002 01       		.byte	0x1
+ 254 0003 25       		.uleb128 0x25
+ 255 0004 0E       		.uleb128 0xe
+ 256 0005 13       		.uleb128 0x13
+ 257 0006 0B       		.uleb128 0xb
+ 258 0007 03       		.uleb128 0x3
+ 259 0008 0E       		.uleb128 0xe
+ 260 0009 1B       		.uleb128 0x1b
+ 261 000a 0E       		.uleb128 0xe
+ 262 000b 55       		.uleb128 0x55
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccj3Fns1.s 			page 7
+
+
+ 263 000c 17       		.uleb128 0x17
+ 264 000d 11       		.uleb128 0x11
+ 265 000e 01       		.uleb128 0x1
+ 266 000f 10       		.uleb128 0x10
+ 267 0010 17       		.uleb128 0x17
+ 268 0011 00       		.byte	0
+ 269 0012 00       		.byte	0
+ 270 0013 02       		.uleb128 0x2
+ 271 0014 24       		.uleb128 0x24
+ 272 0015 00       		.byte	0
+ 273 0016 0B       		.uleb128 0xb
+ 274 0017 0B       		.uleb128 0xb
+ 275 0018 3E       		.uleb128 0x3e
+ 276 0019 0B       		.uleb128 0xb
+ 277 001a 03       		.uleb128 0x3
+ 278 001b 0E       		.uleb128 0xe
+ 279 001c 00       		.byte	0
+ 280 001d 00       		.byte	0
+ 281 001e 03       		.uleb128 0x3
+ 282 001f 16       		.uleb128 0x16
+ 283 0020 00       		.byte	0
+ 284 0021 03       		.uleb128 0x3
+ 285 0022 0E       		.uleb128 0xe
+ 286 0023 3A       		.uleb128 0x3a
+ 287 0024 0B       		.uleb128 0xb
+ 288 0025 3B       		.uleb128 0x3b
+ 289 0026 0B       		.uleb128 0xb
+ 290 0027 49       		.uleb128 0x49
+ 291 0028 13       		.uleb128 0x13
+ 292 0029 00       		.byte	0
+ 293 002a 00       		.byte	0
+ 294 002b 04       		.uleb128 0x4
+ 295 002c 24       		.uleb128 0x24
+ 296 002d 00       		.byte	0
+ 297 002e 0B       		.uleb128 0xb
+ 298 002f 0B       		.uleb128 0xb
+ 299 0030 3E       		.uleb128 0x3e
+ 300 0031 0B       		.uleb128 0xb
+ 301 0032 03       		.uleb128 0x3
+ 302 0033 08       		.uleb128 0x8
+ 303 0034 00       		.byte	0
+ 304 0035 00       		.byte	0
+ 305 0036 05       		.uleb128 0x5
+ 306 0037 2E       		.uleb128 0x2e
+ 307 0038 01       		.byte	0x1
+ 308 0039 3F       		.uleb128 0x3f
+ 309 003a 19       		.uleb128 0x19
+ 310 003b 03       		.uleb128 0x3
+ 311 003c 0E       		.uleb128 0xe
+ 312 003d 3A       		.uleb128 0x3a
+ 313 003e 0B       		.uleb128 0xb
+ 314 003f 3B       		.uleb128 0x3b
+ 315 0040 0B       		.uleb128 0xb
+ 316 0041 27       		.uleb128 0x27
+ 317 0042 19       		.uleb128 0x19
+ 318 0043 11       		.uleb128 0x11
+ 319 0044 01       		.uleb128 0x1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccj3Fns1.s 			page 8
+
+
+ 320 0045 12       		.uleb128 0x12
+ 321 0046 06       		.uleb128 0x6
+ 322 0047 40       		.uleb128 0x40
+ 323 0048 18       		.uleb128 0x18
+ 324 0049 9742     		.uleb128 0x2117
+ 325 004b 19       		.uleb128 0x19
+ 326 004c 01       		.uleb128 0x1
+ 327 004d 13       		.uleb128 0x13
+ 328 004e 00       		.byte	0
+ 329 004f 00       		.byte	0
+ 330 0050 06       		.uleb128 0x6
+ 331 0051 898201   		.uleb128 0x4109
+ 332 0054 00       		.byte	0
+ 333 0055 11       		.uleb128 0x11
+ 334 0056 01       		.uleb128 0x1
+ 335 0057 31       		.uleb128 0x31
+ 336 0058 13       		.uleb128 0x13
+ 337 0059 00       		.byte	0
+ 338 005a 00       		.byte	0
+ 339 005b 07       		.uleb128 0x7
+ 340 005c 2E       		.uleb128 0x2e
+ 341 005d 01       		.byte	0x1
+ 342 005e 3F       		.uleb128 0x3f
+ 343 005f 19       		.uleb128 0x19
+ 344 0060 03       		.uleb128 0x3
+ 345 0061 0E       		.uleb128 0xe
+ 346 0062 3A       		.uleb128 0x3a
+ 347 0063 0B       		.uleb128 0xb
+ 348 0064 3B       		.uleb128 0x3b
+ 349 0065 0B       		.uleb128 0xb
+ 350 0066 27       		.uleb128 0x27
+ 351 0067 19       		.uleb128 0x19
+ 352 0068 49       		.uleb128 0x49
+ 353 0069 13       		.uleb128 0x13
+ 354 006a 11       		.uleb128 0x11
+ 355 006b 01       		.uleb128 0x1
+ 356 006c 12       		.uleb128 0x12
+ 357 006d 06       		.uleb128 0x6
+ 358 006e 40       		.uleb128 0x40
+ 359 006f 18       		.uleb128 0x18
+ 360 0070 9742     		.uleb128 0x2117
+ 361 0072 19       		.uleb128 0x19
+ 362 0073 01       		.uleb128 0x1
+ 363 0074 13       		.uleb128 0x13
+ 364 0075 00       		.byte	0
+ 365 0076 00       		.byte	0
+ 366 0077 08       		.uleb128 0x8
+ 367 0078 05       		.uleb128 0x5
+ 368 0079 00       		.byte	0
+ 369 007a 03       		.uleb128 0x3
+ 370 007b 0E       		.uleb128 0xe
+ 371 007c 3A       		.uleb128 0x3a
+ 372 007d 0B       		.uleb128 0xb
+ 373 007e 3B       		.uleb128 0x3b
+ 374 007f 0B       		.uleb128 0xb
+ 375 0080 49       		.uleb128 0x49
+ 376 0081 13       		.uleb128 0x13
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccj3Fns1.s 			page 9
+
+
+ 377 0082 02       		.uleb128 0x2
+ 378 0083 17       		.uleb128 0x17
+ 379 0084 00       		.byte	0
+ 380 0085 00       		.byte	0
+ 381 0086 09       		.uleb128 0x9
+ 382 0087 34       		.uleb128 0x34
+ 383 0088 00       		.byte	0
+ 384 0089 03       		.uleb128 0x3
+ 385 008a 0E       		.uleb128 0xe
+ 386 008b 3A       		.uleb128 0x3a
+ 387 008c 0B       		.uleb128 0xb
+ 388 008d 3B       		.uleb128 0x3b
+ 389 008e 0B       		.uleb128 0xb
+ 390 008f 49       		.uleb128 0x49
+ 391 0090 13       		.uleb128 0x13
+ 392 0091 1C       		.uleb128 0x1c
+ 393 0092 0B       		.uleb128 0xb
+ 394 0093 00       		.byte	0
+ 395 0094 00       		.byte	0
+ 396 0095 0A       		.uleb128 0xa
+ 397 0096 2E       		.uleb128 0x2e
+ 398 0097 00       		.byte	0
+ 399 0098 3F       		.uleb128 0x3f
+ 400 0099 19       		.uleb128 0x19
+ 401 009a 3C       		.uleb128 0x3c
+ 402 009b 19       		.uleb128 0x19
+ 403 009c 6E       		.uleb128 0x6e
+ 404 009d 0E       		.uleb128 0xe
+ 405 009e 03       		.uleb128 0x3
+ 406 009f 0E       		.uleb128 0xe
+ 407 00a0 3A       		.uleb128 0x3a
+ 408 00a1 0B       		.uleb128 0xb
+ 409 00a2 3B       		.uleb128 0x3b
+ 410 00a3 0B       		.uleb128 0xb
+ 411 00a4 00       		.byte	0
+ 412 00a5 00       		.byte	0
+ 413 00a6 00       		.byte	0
+ 414              		.section	.debug_loc,"",%progbits
+ 415              	.Ldebug_loc0:
+ 416              	.LLST0:
+ 417 0000 00000000 		.4byte	.LVL2
+ 418 0004 05000000 		.4byte	.LVL3-1
+ 419 0008 0100     		.2byte	0x1
+ 420 000a 50       		.byte	0x50
+ 421 000b 05000000 		.4byte	.LVL3-1
+ 422 000f 08000000 		.4byte	.LFE2
+ 423 0013 0400     		.2byte	0x4
+ 424 0015 F3       		.byte	0xf3
+ 425 0016 01       		.uleb128 0x1
+ 426 0017 50       		.byte	0x50
+ 427 0018 9F       		.byte	0x9f
+ 428 0019 00000000 		.4byte	0
+ 429 001d 00000000 		.4byte	0
+ 430              		.section	.debug_aranges,"",%progbits
+ 431 0000 2C000000 		.4byte	0x2c
+ 432 0004 0200     		.2byte	0x2
+ 433 0006 00000000 		.4byte	.Ldebug_info0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccj3Fns1.s 			page 10
+
+
+ 434 000a 04       		.byte	0x4
+ 435 000b 00       		.byte	0
+ 436 000c 0000     		.2byte	0
+ 437 000e 0000     		.2byte	0
+ 438 0010 00000000 		.4byte	.LFB0
+ 439 0014 08000000 		.4byte	.LFE0-.LFB0
+ 440 0018 00000000 		.4byte	.LFB1
+ 441 001c 08000000 		.4byte	.LFE1-.LFB1
+ 442 0020 00000000 		.4byte	.LFB2
+ 443 0024 08000000 		.4byte	.LFE2-.LFB2
+ 444 0028 00000000 		.4byte	0
+ 445 002c 00000000 		.4byte	0
+ 446              		.section	.debug_ranges,"",%progbits
+ 447              	.Ldebug_ranges0:
+ 448 0000 00000000 		.4byte	.LFB0
+ 449 0004 08000000 		.4byte	.LFE0
+ 450 0008 00000000 		.4byte	.LFB1
+ 451 000c 08000000 		.4byte	.LFE1
+ 452 0010 00000000 		.4byte	.LFB2
+ 453 0014 08000000 		.4byte	.LFE2
+ 454 0018 00000000 		.4byte	0
+ 455 001c 00000000 		.4byte	0
+ 456              		.section	.debug_line,"",%progbits
+ 457              	.Ldebug_line0:
+ 458 0000 B0000000 		.section	.debug_str,"MS",%progbits,1
+ 458      02007800 
+ 458      00000201 
+ 458      FB0E0D00 
+ 458      01010101 
+ 459              	.LASF7:
+ 460 0000 6C6F6E67 		.ascii	"long long int\000"
+ 460      206C6F6E 
+ 460      6720696E 
+ 460      7400
+ 461              	.LASF25:
+ 462 000e 75617274 		.ascii	"uart_get_byte\000"
+ 462      5F676574 
+ 462      5F627974 
+ 462      6500
+ 463              	.LASF17:
+ 464 001c 456E645F 		.ascii	"End_of_Packet\000"
+ 464      6F665F50 
+ 464      61636B65 
+ 464      7400
+ 465              	.LASF5:
+ 466 002a 756E7369 		.ascii	"unsigned int\000"
+ 466      676E6564 
+ 466      20696E74 
+ 466      00
+ 467              	.LASF23:
+ 468 0037 433A5C63 		.ascii	"C:\\cypress\\esw_uCOS3_cykit\\esw_uCOS3_cykit.cydsn"
+ 468      79707265 
+ 468      73735C65 
+ 468      73775F75 
+ 468      434F5333 
+ 469 0067 00       		.ascii	"\000"
+ 470              	.LASF21:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccj3Fns1.s 			page 11
+
+
+ 471 0068 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 471      43313120 
+ 471      352E342E 
+ 471      31203230 
+ 471      31363036 
+ 472 009b 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 472      20726576 
+ 472      6973696F 
+ 472      6E203233 
+ 472      37373135 
+ 473 00ce 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 473      66756E63 
+ 473      74696F6E 
+ 473      2D736563 
+ 473      74696F6E 
+ 474              	.LASF14:
+ 475 00f6 696E6974 		.ascii	"init_uart\000"
+ 475      5F756172 
+ 475      7400
+ 476              	.LASF11:
+ 477 0100 6C6F6E67 		.ascii	"long unsigned int\000"
+ 477      20756E73 
+ 477      69676E65 
+ 477      6420696E 
+ 477      7400
+ 478              	.LASF4:
+ 479 0112 73686F72 		.ascii	"short int\000"
+ 479      7420696E 
+ 479      7400
+ 480              	.LASF6:
+ 481 011c 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 481      206C6F6E 
+ 481      6720756E 
+ 481      7369676E 
+ 481      65642069 
+ 482              	.LASF8:
+ 483 0133 666C6F61 		.ascii	"float\000"
+ 483      7400
+ 484              	.LASF15:
+ 485 0139 75617274 		.ascii	"uart_send_byte\000"
+ 485      5F73656E 
+ 485      645F6279 
+ 485      746500
+ 486              	.LASF18:
+ 487 0148 55415254 		.ascii	"UART_1_Start\000"
+ 487      5F315F53 
+ 487      74617274 
+ 487      00
+ 488              	.LASF1:
+ 489 0155 756E7369 		.ascii	"unsigned char\000"
+ 489      676E6564 
+ 489      20636861 
+ 489      7200
+ 490              	.LASF0:
+ 491 0163 63686172 		.ascii	"char\000"
+ 491      00
+ 492              	.LASF10:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccj3Fns1.s 			page 12
+
+
+ 493 0168 6C6F6E67 		.ascii	"long int\000"
+ 493      20696E74 
+ 493      00
+ 494              	.LASF22:
+ 495 0171 6273705F 		.ascii	"bsp_uart.c\000"
+ 495      75617274 
+ 495      2E6300
+ 496              	.LASF20:
+ 497 017c 55415254 		.ascii	"UART_1_PutChar\000"
+ 497      5F315F50 
+ 497      75744368 
+ 497      617200
+ 498              	.LASF9:
+ 499 018b 646F7562 		.ascii	"double\000"
+ 499      6C6500
+ 500              	.LASF26:
+ 501 0192 62797465 		.ascii	"byte\000"
+ 501      00
+ 502              	.LASF19:
+ 503 0197 55415254 		.ascii	"UART_1_GetChar\000"
+ 503      5F315F47 
+ 503      65744368 
+ 503      617200
+ 504              	.LASF3:
+ 505 01a6 73686F72 		.ascii	"short unsigned int\000"
+ 505      7420756E 
+ 505      7369676E 
+ 505      65642069 
+ 505      6E7400
+ 506              	.LASF2:
+ 507 01b9 7369676E 		.ascii	"signed char\000"
+ 507      65642063 
+ 507      68617200 
+ 508              	.LASF16:
+ 509 01c5 53746172 		.ascii	"Start_of_Packet\000"
+ 509      745F6F66 
+ 509      5F506163 
+ 509      6B657400 
+ 510              	.LASF12:
+ 511 01d5 6C6F6E67 		.ascii	"long double\000"
+ 511      20646F75 
+ 511      626C6500 
+ 512              	.LASF24:
+ 513 01e1 4350555F 		.ascii	"CPU_INT08U\000"
+ 513      494E5430 
+ 513      385500
+ 514              	.LASF13:
+ 515 01ec 73697A65 		.ascii	"sizetype\000"
+ 515      74797065 
+ 515      00
+ 516              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

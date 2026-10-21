@@ -1,0 +1,627 @@
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccibc3jc.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"app_probe.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.App_ProbeInit,"ax",%progbits
+  20              		.align	2
+  21              		.global	App_ProbeInit
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	App_ProbeInit, %function
+  25              	App_ProbeInit:
+  26              	.LFB64:
+  27              		.file 1 "APP\\app_probe.c"
+   1:APP/app_probe.c **** /*
+   2:APP/app_probe.c **** ***************************************************************************************************
+   3:APP/app_probe.c **** *                                              EXAMPLE CODE
+   4:APP/app_probe.c **** *
+   5:APP/app_probe.c **** *                          (c) Copyright 2003-2009; Micrium, Inc.; Weston, FL
+   6:APP/app_probe.c **** *
+   7:APP/app_probe.c **** *               All rights reserved.  Protected by international copyright laws.
+   8:APP/app_probe.c **** *               Knowledge of the source code may NOT be used to develop a similar product.
+   9:APP/app_probe.c **** *               Please help us continue to provide the Embedded community with the finest
+  10:APP/app_probe.c **** *               software available.  Your honesty is greatly appreciated.
+  11:APP/app_probe.c **** ***************************************************************************************************
+  12:APP/app_probe.c **** */
+  13:APP/app_probe.c **** 
+  14:APP/app_probe.c **** /*
+  15:APP/app_probe.c **** ***************************************************************************************************
+  16:APP/app_probe.c **** *
+  17:APP/app_probe.c **** *                                           uC/Probe
+  18:APP/app_probe.c **** *                                      Application Code
+  19:APP/app_probe.c **** *
+  20:APP/app_probe.c **** *                                           CYPRESS PSoC5
+  21:APP/app_probe.c **** *                                              with the
+  22:APP/app_probe.c **** *                                     CY8CKIT-050 Development Kit
+  23:APP/app_probe.c **** *
+  24:APP/app_probe.c **** *
+  25:APP/app_probe.c **** * Filename      : app_probe.c
+  26:APP/app_probe.c **** * Version       : V1.00
+  27:APP/app_probe.c **** * Programmer(s) : DC
+  28:APP/app_probe.c **** ***************************************************************************************************
+  29:APP/app_probe.c **** */
+  30:APP/app_probe.c **** 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccibc3jc.s 			page 2
+
+
+  31:APP/app_probe.c **** /*
+  32:APP/app_probe.c **** ***************************************************************************************************
+  33:APP/app_probe.c **** *                                             INCLUDE FILES
+  34:APP/app_probe.c **** ***************************************************************************************************
+  35:APP/app_probe.c **** */            
+  36:APP/app_probe.c **** 
+  37:APP/app_probe.c **** 
+  38:APP/app_probe.c **** #define  APP_PROBE_MODULE
+  39:APP/app_probe.c **** #include <app_probe.h>
+  40:APP/app_probe.c **** #include <device.h>
+  41:APP/app_probe.c **** 
+  42:APP/app_probe.c **** 
+  43:APP/app_probe.c **** /*
+  44:APP/app_probe.c **** ***************************************************************************************************
+  45:APP/app_probe.c **** *                                                 ENABLE
+  46:APP/app_probe.c **** ***************************************************************************************************
+  47:APP/app_probe.c **** */
+  48:APP/app_probe.c **** 
+  49:APP/app_probe.c **** #if (APP_CFG_PROBE_COM_EN == DEF_ENABLED)
+  50:APP/app_probe.c **** 
+  51:APP/app_probe.c **** /*
+  52:APP/app_probe.c **** ***************************************************************************************************
+  53:APP/app_probe.c **** *                                       LOCAL GLOBAL VARIABLES
+  54:APP/app_probe.c **** ***************************************************************************************************
+  55:APP/app_probe.c **** */
+  56:APP/app_probe.c **** 
+  57:APP/app_probe.c **** 
+  58:APP/app_probe.c **** /*
+  59:APP/app_probe.c **** ***************************************************************************************************
+  60:APP/app_probe.c **** *                                          FUNCTION PROTOTYPES
+  61:APP/app_probe.c **** ***************************************************************************************************
+  62:APP/app_probe.c **** */
+  63:APP/app_probe.c **** 
+  64:APP/app_probe.c **** 
+  65:APP/app_probe.c **** /*
+  66:APP/app_probe.c **** ***************************************************************************************************
+  67:APP/app_probe.c **** *                                    LOCAL CONFIGURATION ERRORS
+  68:APP/app_probe.c **** ***************************************************************************************************
+  69:APP/app_probe.c **** */
+  70:APP/app_probe.c **** 
+  71:APP/app_probe.c **** 
+  72:APP/app_probe.c **** /*
+  73:APP/app_probe.c **** ***************************************************************************************************
+  74:APP/app_probe.c **** *                                         App_ProbeInit()
+  75:APP/app_probe.c **** *
+  76:APP/app_probe.c **** * Description : Initialize all uC/Probe modules.
+  77:APP/app_probe.c **** *
+  78:APP/app_probe.c **** * Argument(s) : none.
+  79:APP/app_probe.c **** *
+  80:APP/app_probe.c **** * Return(s)   : none.
+  81:APP/app_probe.c **** *
+  82:APP/app_probe.c **** * Note(s)     : none
+  83:APP/app_probe.c **** ***************************************************************************************************
+  84:APP/app_probe.c **** */
+  85:APP/app_probe.c **** 
+  86:APP/app_probe.c **** 
+  87:APP/app_probe.c **** void  App_ProbeInit (void)
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccibc3jc.s 			page 3
+
+
+  88:APP/app_probe.c **** {
+  28              		.loc 1 88 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+  89:APP/app_probe.c **** #if (PROBE_COM_CFG_SERIAL_EN == DEF_ENABLED)
+  90:APP/app_probe.c ****     SERIAL_IF_CFG  uart_cfg;
+  91:APP/app_probe.c **** #endif    
+  92:APP/app_probe.c ****     
+  93:APP/app_probe.c ****     
+  94:APP/app_probe.c ****     APP_TRACE_INFO(("Initializing uC/Probe ... \n\r"));    
+  95:APP/app_probe.c ****     ProbeCom_Init();                                            /* Initialize the uC/Probe communic
+  36              		.loc 1 95 0
+  37 0002 FFF7FEFF 		bl	ProbeCom_Init
+  38              	.LVL0:
+  96:APP/app_probe.c **** 
+  97:APP/app_probe.c **** #if (PROBE_COM_CFG_RS232_EN == DEF_ENABLED)
+  98:APP/app_probe.c ****     ProbeRS232_Init(9600);
+  39              		.loc 1 98 0
+  40 0006 4FF41650 		mov	r0, #9600
+  41 000a FFF7FEFF 		bl	ProbeRS232_Init
+  42              	.LVL1:
+  99:APP/app_probe.c ****     ProbeRS232_RxIntEn();
+  43              		.loc 1 99 0
+  44 000e FFF7FEFF 		bl	ProbeRS232_RxIntEn
+  45              	.LVL2:
+  46 0012 08BD     		pop	{r3, pc}
+  47              		.cfi_endproc
+  48              	.LFE64:
+  49              		.size	App_ProbeInit, .-App_ProbeInit
+  50              		.text
+  51              	.Letext0:
+  52              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+  53              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+  54              		.file 4 ".\\uC-Probe\\Target\\Communication\\Generic\\Source/probe_com.h"
+  55              		.file 5 ".\\uC-Probe\\Target\\Communication\\Generic\\RS-232\\Source/probe_rs232.h"
+  56              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
+  57              		.section	.debug_info,"",%progbits
+  58              	.Ldebug_info0:
+  59 0000 10010000 		.4byte	0x110
+  60 0004 0400     		.2byte	0x4
+  61 0006 00000000 		.4byte	.Ldebug_abbrev0
+  62 000a 04       		.byte	0x4
+  63 000b 01       		.uleb128 0x1
+  64 000c 72000000 		.4byte	.LASF19
+  65 0010 0C       		.byte	0xc
+  66 0011 D2010000 		.4byte	.LASF20
+  67 0015 2E000000 		.4byte	.LASF21
+  68 0019 00000000 		.4byte	.Ldebug_ranges0+0
+  69 001d 00000000 		.4byte	0
+  70 0021 00000000 		.4byte	.Ldebug_line0
+  71 0025 02       		.uleb128 0x2
+  72 0026 01       		.byte	0x1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccibc3jc.s 			page 4
+
+
+  73 0027 06       		.byte	0x6
+  74 0028 6F010000 		.4byte	.LASF0
+  75 002c 02       		.uleb128 0x2
+  76 002d 01       		.byte	0x1
+  77 002e 08       		.byte	0x8
+  78 002f 31010000 		.4byte	.LASF1
+  79 0033 02       		.uleb128 0x2
+  80 0034 02       		.byte	0x2
+  81 0035 05       		.byte	0x5
+  82 0036 BA010000 		.4byte	.LASF2
+  83 003a 02       		.uleb128 0x2
+  84 003b 02       		.byte	0x2
+  85 003c 07       		.byte	0x7
+  86 003d 0E000000 		.4byte	.LASF3
+  87 0041 03       		.uleb128 0x3
+  88 0042 87010000 		.4byte	.LASF12
+  89 0046 02       		.byte	0x2
+  90 0047 3F       		.byte	0x3f
+  91 0048 4C000000 		.4byte	0x4c
+  92 004c 02       		.uleb128 0x2
+  93 004d 04       		.byte	0x4
+  94 004e 05       		.byte	0x5
+  95 004f 44010000 		.4byte	.LASF4
+  96 0053 02       		.uleb128 0x2
+  97 0054 04       		.byte	0x4
+  98 0055 07       		.byte	0x7
+  99 0056 08010000 		.4byte	.LASF5
+ 100 005a 02       		.uleb128 0x2
+ 101 005b 08       		.byte	0x8
+ 102 005c 05       		.byte	0x5
+ 103 005d 00000000 		.4byte	.LASF6
+ 104 0061 02       		.uleb128 0x2
+ 105 0062 08       		.byte	0x8
+ 106 0063 07       		.byte	0x7
+ 107 0064 1A010000 		.4byte	.LASF7
+ 108 0068 04       		.uleb128 0x4
+ 109 0069 04       		.byte	0x4
+ 110 006a 05       		.byte	0x5
+ 111 006b 696E7400 		.ascii	"int\000"
+ 112 006f 02       		.uleb128 0x2
+ 113 0070 04       		.byte	0x4
+ 114 0071 07       		.byte	0x7
+ 115 0072 21000000 		.4byte	.LASF8
+ 116 0076 02       		.uleb128 0x2
+ 117 0077 08       		.byte	0x8
+ 118 0078 04       		.byte	0x4
+ 119 0079 7B010000 		.4byte	.LASF9
+ 120 007d 02       		.uleb128 0x2
+ 121 007e 04       		.byte	0x4
+ 122 007f 07       		.byte	0x7
+ 123 0080 E2010000 		.4byte	.LASF10
+ 124 0084 02       		.uleb128 0x2
+ 125 0085 01       		.byte	0x1
+ 126 0086 08       		.byte	0x8
+ 127 0087 3F010000 		.4byte	.LASF11
+ 128 008b 03       		.uleb128 0x3
+ 129 008c 00010000 		.4byte	.LASF13
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccibc3jc.s 			page 5
+
+
+ 130 0090 03       		.byte	0x3
+ 131 0091 2C       		.byte	0x2c
+ 132 0092 41000000 		.4byte	0x41
+ 133 0096 02       		.uleb128 0x2
+ 134 0097 04       		.byte	0x4
+ 135 0098 04       		.byte	0x4
+ 136 0099 A4010000 		.4byte	.LASF14
+ 137 009d 02       		.uleb128 0x2
+ 138 009e 08       		.byte	0x8
+ 139 009f 04       		.byte	0x4
+ 140 00a0 5B010000 		.4byte	.LASF15
+ 141 00a4 05       		.uleb128 0x5
+ 142 00a5 C4010000 		.4byte	.LASF22
+ 143 00a9 01       		.byte	0x1
+ 144 00aa 57       		.byte	0x57
+ 145 00ab 00000000 		.4byte	.LFB64
+ 146 00af 14000000 		.4byte	.LFE64-.LFB64
+ 147 00b3 01       		.uleb128 0x1
+ 148 00b4 9C       		.byte	0x9c
+ 149 00b5 E1000000 		.4byte	0xe1
+ 150 00b9 06       		.uleb128 0x6
+ 151 00ba 06000000 		.4byte	.LVL0
+ 152 00be F2000000 		.4byte	0xf2
+ 153 00c2 07       		.uleb128 0x7
+ 154 00c3 0E000000 		.4byte	.LVL1
+ 155 00c7 FD000000 		.4byte	0xfd
+ 156 00cb D7000000 		.4byte	0xd7
+ 157 00cf 08       		.uleb128 0x8
+ 158 00d0 01       		.uleb128 0x1
+ 159 00d1 50       		.byte	0x50
+ 160 00d2 03       		.uleb128 0x3
+ 161 00d3 0A       		.byte	0xa
+ 162 00d4 8025     		.2byte	0x2580
+ 163 00d6 00       		.byte	0
+ 164 00d7 06       		.uleb128 0x6
+ 165 00d8 12000000 		.4byte	.LVL2
+ 166 00dc 08010000 		.4byte	0x108
+ 167 00e0 00       		.byte	0
+ 168 00e1 09       		.uleb128 0x9
+ 169 00e2 62010000 		.4byte	.LASF23
+ 170 00e6 06       		.byte	0x6
+ 171 00e7 1207     		.2byte	0x712
+ 172 00e9 ED000000 		.4byte	0xed
+ 173 00ed 0A       		.uleb128 0xa
+ 174 00ee 8B000000 		.4byte	0x8b
+ 175 00f2 0B       		.uleb128 0xb
+ 176 00f3 4D010000 		.4byte	.LASF16
+ 177 00f7 4D010000 		.4byte	.LASF16
+ 178 00fb 04       		.byte	0x4
+ 179 00fc 9F       		.byte	0x9f
+ 180 00fd 0B       		.uleb128 0xb
+ 181 00fe AA010000 		.4byte	.LASF17
+ 182 0102 AA010000 		.4byte	.LASF17
+ 183 0106 05       		.byte	0x5
+ 184 0107 70       		.byte	0x70
+ 185 0108 0B       		.uleb128 0xb
+ 186 0109 91010000 		.4byte	.LASF18
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccibc3jc.s 			page 6
+
+
+ 187 010d 91010000 		.4byte	.LASF18
+ 188 0111 05       		.byte	0x5
+ 189 0112 8B       		.byte	0x8b
+ 190 0113 00       		.byte	0
+ 191              		.section	.debug_abbrev,"",%progbits
+ 192              	.Ldebug_abbrev0:
+ 193 0000 01       		.uleb128 0x1
+ 194 0001 11       		.uleb128 0x11
+ 195 0002 01       		.byte	0x1
+ 196 0003 25       		.uleb128 0x25
+ 197 0004 0E       		.uleb128 0xe
+ 198 0005 13       		.uleb128 0x13
+ 199 0006 0B       		.uleb128 0xb
+ 200 0007 03       		.uleb128 0x3
+ 201 0008 0E       		.uleb128 0xe
+ 202 0009 1B       		.uleb128 0x1b
+ 203 000a 0E       		.uleb128 0xe
+ 204 000b 55       		.uleb128 0x55
+ 205 000c 17       		.uleb128 0x17
+ 206 000d 11       		.uleb128 0x11
+ 207 000e 01       		.uleb128 0x1
+ 208 000f 10       		.uleb128 0x10
+ 209 0010 17       		.uleb128 0x17
+ 210 0011 00       		.byte	0
+ 211 0012 00       		.byte	0
+ 212 0013 02       		.uleb128 0x2
+ 213 0014 24       		.uleb128 0x24
+ 214 0015 00       		.byte	0
+ 215 0016 0B       		.uleb128 0xb
+ 216 0017 0B       		.uleb128 0xb
+ 217 0018 3E       		.uleb128 0x3e
+ 218 0019 0B       		.uleb128 0xb
+ 219 001a 03       		.uleb128 0x3
+ 220 001b 0E       		.uleb128 0xe
+ 221 001c 00       		.byte	0
+ 222 001d 00       		.byte	0
+ 223 001e 03       		.uleb128 0x3
+ 224 001f 16       		.uleb128 0x16
+ 225 0020 00       		.byte	0
+ 226 0021 03       		.uleb128 0x3
+ 227 0022 0E       		.uleb128 0xe
+ 228 0023 3A       		.uleb128 0x3a
+ 229 0024 0B       		.uleb128 0xb
+ 230 0025 3B       		.uleb128 0x3b
+ 231 0026 0B       		.uleb128 0xb
+ 232 0027 49       		.uleb128 0x49
+ 233 0028 13       		.uleb128 0x13
+ 234 0029 00       		.byte	0
+ 235 002a 00       		.byte	0
+ 236 002b 04       		.uleb128 0x4
+ 237 002c 24       		.uleb128 0x24
+ 238 002d 00       		.byte	0
+ 239 002e 0B       		.uleb128 0xb
+ 240 002f 0B       		.uleb128 0xb
+ 241 0030 3E       		.uleb128 0x3e
+ 242 0031 0B       		.uleb128 0xb
+ 243 0032 03       		.uleb128 0x3
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccibc3jc.s 			page 7
+
+
+ 244 0033 08       		.uleb128 0x8
+ 245 0034 00       		.byte	0
+ 246 0035 00       		.byte	0
+ 247 0036 05       		.uleb128 0x5
+ 248 0037 2E       		.uleb128 0x2e
+ 249 0038 01       		.byte	0x1
+ 250 0039 3F       		.uleb128 0x3f
+ 251 003a 19       		.uleb128 0x19
+ 252 003b 03       		.uleb128 0x3
+ 253 003c 0E       		.uleb128 0xe
+ 254 003d 3A       		.uleb128 0x3a
+ 255 003e 0B       		.uleb128 0xb
+ 256 003f 3B       		.uleb128 0x3b
+ 257 0040 0B       		.uleb128 0xb
+ 258 0041 27       		.uleb128 0x27
+ 259 0042 19       		.uleb128 0x19
+ 260 0043 11       		.uleb128 0x11
+ 261 0044 01       		.uleb128 0x1
+ 262 0045 12       		.uleb128 0x12
+ 263 0046 06       		.uleb128 0x6
+ 264 0047 40       		.uleb128 0x40
+ 265 0048 18       		.uleb128 0x18
+ 266 0049 9742     		.uleb128 0x2117
+ 267 004b 19       		.uleb128 0x19
+ 268 004c 01       		.uleb128 0x1
+ 269 004d 13       		.uleb128 0x13
+ 270 004e 00       		.byte	0
+ 271 004f 00       		.byte	0
+ 272 0050 06       		.uleb128 0x6
+ 273 0051 898201   		.uleb128 0x4109
+ 274 0054 00       		.byte	0
+ 275 0055 11       		.uleb128 0x11
+ 276 0056 01       		.uleb128 0x1
+ 277 0057 31       		.uleb128 0x31
+ 278 0058 13       		.uleb128 0x13
+ 279 0059 00       		.byte	0
+ 280 005a 00       		.byte	0
+ 281 005b 07       		.uleb128 0x7
+ 282 005c 898201   		.uleb128 0x4109
+ 283 005f 01       		.byte	0x1
+ 284 0060 11       		.uleb128 0x11
+ 285 0061 01       		.uleb128 0x1
+ 286 0062 31       		.uleb128 0x31
+ 287 0063 13       		.uleb128 0x13
+ 288 0064 01       		.uleb128 0x1
+ 289 0065 13       		.uleb128 0x13
+ 290 0066 00       		.byte	0
+ 291 0067 00       		.byte	0
+ 292 0068 08       		.uleb128 0x8
+ 293 0069 8A8201   		.uleb128 0x410a
+ 294 006c 00       		.byte	0
+ 295 006d 02       		.uleb128 0x2
+ 296 006e 18       		.uleb128 0x18
+ 297 006f 9142     		.uleb128 0x2111
+ 298 0071 18       		.uleb128 0x18
+ 299 0072 00       		.byte	0
+ 300 0073 00       		.byte	0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccibc3jc.s 			page 8
+
+
+ 301 0074 09       		.uleb128 0x9
+ 302 0075 34       		.uleb128 0x34
+ 303 0076 00       		.byte	0
+ 304 0077 03       		.uleb128 0x3
+ 305 0078 0E       		.uleb128 0xe
+ 306 0079 3A       		.uleb128 0x3a
+ 307 007a 0B       		.uleb128 0xb
+ 308 007b 3B       		.uleb128 0x3b
+ 309 007c 05       		.uleb128 0x5
+ 310 007d 49       		.uleb128 0x49
+ 311 007e 13       		.uleb128 0x13
+ 312 007f 3F       		.uleb128 0x3f
+ 313 0080 19       		.uleb128 0x19
+ 314 0081 3C       		.uleb128 0x3c
+ 315 0082 19       		.uleb128 0x19
+ 316 0083 00       		.byte	0
+ 317 0084 00       		.byte	0
+ 318 0085 0A       		.uleb128 0xa
+ 319 0086 35       		.uleb128 0x35
+ 320 0087 00       		.byte	0
+ 321 0088 49       		.uleb128 0x49
+ 322 0089 13       		.uleb128 0x13
+ 323 008a 00       		.byte	0
+ 324 008b 00       		.byte	0
+ 325 008c 0B       		.uleb128 0xb
+ 326 008d 2E       		.uleb128 0x2e
+ 327 008e 00       		.byte	0
+ 328 008f 3F       		.uleb128 0x3f
+ 329 0090 19       		.uleb128 0x19
+ 330 0091 3C       		.uleb128 0x3c
+ 331 0092 19       		.uleb128 0x19
+ 332 0093 6E       		.uleb128 0x6e
+ 333 0094 0E       		.uleb128 0xe
+ 334 0095 03       		.uleb128 0x3
+ 335 0096 0E       		.uleb128 0xe
+ 336 0097 3A       		.uleb128 0x3a
+ 337 0098 0B       		.uleb128 0xb
+ 338 0099 3B       		.uleb128 0x3b
+ 339 009a 0B       		.uleb128 0xb
+ 340 009b 00       		.byte	0
+ 341 009c 00       		.byte	0
+ 342 009d 00       		.byte	0
+ 343              		.section	.debug_aranges,"",%progbits
+ 344 0000 1C000000 		.4byte	0x1c
+ 345 0004 0200     		.2byte	0x2
+ 346 0006 00000000 		.4byte	.Ldebug_info0
+ 347 000a 04       		.byte	0x4
+ 348 000b 00       		.byte	0
+ 349 000c 0000     		.2byte	0
+ 350 000e 0000     		.2byte	0
+ 351 0010 00000000 		.4byte	.LFB64
+ 352 0014 14000000 		.4byte	.LFE64-.LFB64
+ 353 0018 00000000 		.4byte	0
+ 354 001c 00000000 		.4byte	0
+ 355              		.section	.debug_ranges,"",%progbits
+ 356              	.Ldebug_ranges0:
+ 357 0000 00000000 		.4byte	.LFB64
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccibc3jc.s 			page 9
+
+
+ 358 0004 14000000 		.4byte	.LFE64
+ 359 0008 00000000 		.4byte	0
+ 360 000c 00000000 		.4byte	0
+ 361              		.section	.debug_line,"",%progbits
+ 362              	.Ldebug_line0:
+ 363 0000 E6010000 		.section	.debug_str,"MS",%progbits,1
+ 363      0200CD01 
+ 363      00000201 
+ 363      FB0E0D00 
+ 363      01010101 
+ 364              	.LASF6:
+ 365 0000 6C6F6E67 		.ascii	"long long int\000"
+ 365      206C6F6E 
+ 365      6720696E 
+ 365      7400
+ 366              	.LASF3:
+ 367 000e 73686F72 		.ascii	"short unsigned int\000"
+ 367      7420756E 
+ 367      7369676E 
+ 367      65642069 
+ 367      6E7400
+ 368              	.LASF8:
+ 369 0021 756E7369 		.ascii	"unsigned int\000"
+ 369      676E6564 
+ 369      20696E74 
+ 369      00
+ 370              	.LASF21:
+ 371 002e 433A5C63 		.ascii	"C:\\cypress\\template_workspace\\esw_uCOS3_cykit\\e"
+ 371      79707265 
+ 371      73735C74 
+ 371      656D706C 
+ 371      6174655F 
+ 372 005d 73775F75 		.ascii	"sw_uCOS3_cykit.cydsn\000"
+ 372      434F5333 
+ 372      5F63796B 
+ 372      69742E63 
+ 372      7964736E 
+ 373              	.LASF19:
+ 374 0072 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 374      43313120 
+ 374      352E342E 
+ 374      31203230 
+ 374      31363036 
+ 375 00a5 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 375      20726576 
+ 375      6973696F 
+ 375      6E203233 
+ 375      37373135 
+ 376 00d8 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 376      66756E63 
+ 376      74696F6E 
+ 376      2D736563 
+ 376      74696F6E 
+ 377              	.LASF13:
+ 378 0100 696E7433 		.ascii	"int32_t\000"
+ 378      325F7400 
+ 379              	.LASF5:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccibc3jc.s 			page 10
+
+
+ 380 0108 6C6F6E67 		.ascii	"long unsigned int\000"
+ 380      20756E73 
+ 380      69676E65 
+ 380      6420696E 
+ 380      7400
+ 381              	.LASF7:
+ 382 011a 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 382      206C6F6E 
+ 382      6720756E 
+ 382      7369676E 
+ 382      65642069 
+ 383              	.LASF1:
+ 384 0131 756E7369 		.ascii	"unsigned char\000"
+ 384      676E6564 
+ 384      20636861 
+ 384      7200
+ 385              	.LASF11:
+ 386 013f 63686172 		.ascii	"char\000"
+ 386      00
+ 387              	.LASF4:
+ 388 0144 6C6F6E67 		.ascii	"long int\000"
+ 388      20696E74 
+ 388      00
+ 389              	.LASF16:
+ 390 014d 50726F62 		.ascii	"ProbeCom_Init\000"
+ 390      65436F6D 
+ 390      5F496E69 
+ 390      7400
+ 391              	.LASF15:
+ 392 015b 646F7562 		.ascii	"double\000"
+ 392      6C6500
+ 393              	.LASF23:
+ 394 0162 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 394      52784275 
+ 394      66666572 
+ 394      00
+ 395              	.LASF0:
+ 396 016f 7369676E 		.ascii	"signed char\000"
+ 396      65642063 
+ 396      68617200 
+ 397              	.LASF9:
+ 398 017b 6C6F6E67 		.ascii	"long double\000"
+ 398      20646F75 
+ 398      626C6500 
+ 399              	.LASF12:
+ 400 0187 5F5F696E 		.ascii	"__int32_t\000"
+ 400      7433325F 
+ 400      7400
+ 401              	.LASF18:
+ 402 0191 50726F62 		.ascii	"ProbeRS232_RxIntEn\000"
+ 402      65525332 
+ 402      33325F52 
+ 402      78496E74 
+ 402      456E00
+ 403              	.LASF14:
+ 404 01a4 666C6F61 		.ascii	"float\000"
+ 404      7400
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccibc3jc.s 			page 11
+
+
+ 405              	.LASF17:
+ 406 01aa 50726F62 		.ascii	"ProbeRS232_Init\000"
+ 406      65525332 
+ 406      33325F49 
+ 406      6E697400 
+ 407              	.LASF2:
+ 408 01ba 73686F72 		.ascii	"short int\000"
+ 408      7420696E 
+ 408      7400
+ 409              	.LASF22:
+ 410 01c4 4170705F 		.ascii	"App_ProbeInit\000"
+ 410      50726F62 
+ 410      65496E69 
+ 410      7400
+ 411              	.LASF20:
+ 412 01d2 4150505C 		.ascii	"APP\\app_probe.c\000"
+ 412      6170705F 
+ 412      70726F62 
+ 412      652E6300 
+ 413              	.LASF10:
+ 414 01e2 73697A65 		.ascii	"sizetype\000"
+ 414      74797065 
+ 414      00
+ 415              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -1,0 +1,2252 @@
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"bsp.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.BSP_PreInit,"ax",%progbits
+  20              		.align	2
+  21              		.global	BSP_PreInit
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	BSP_PreInit, %function
+  25              	BSP_PreInit:
+  26              	.LFB1:
+  27              		.file 1 "BSP\\bsp.c"
+   1:BSP/bsp.c     **** /*
+   2:BSP/bsp.c     **** ***************************************************************************************************
+   3:BSP/bsp.c     **** *                                     MICIRUM BOARD SUPPORT PACKAGE
+   4:BSP/bsp.c     **** *
+   5:BSP/bsp.c     **** *                             (c) Copyright 2012; Micrium, Inc.; Weston, FL
+   6:BSP/bsp.c     **** *
+   7:BSP/bsp.c     **** *               All rights reserved.  Protected by international copyright laws.
+   8:BSP/bsp.c     **** *               Knowledge of the source code may NOT be used to develop a similar product.
+   9:BSP/bsp.c     **** *               Please help us continue to provide the Embedded community with the finest
+  10:BSP/bsp.c     **** *               software available.  Your honesty is greatly appreciated.
+  11:BSP/bsp.c     **** ***************************************************************************************************
+  12:BSP/bsp.c     **** */
+  13:BSP/bsp.c     **** 
+  14:BSP/bsp.c     **** /*
+  15:BSP/bsp.c     **** ***************************************************************************************************
+  16:BSP/bsp.c     **** *
+  17:BSP/bsp.c     **** *                                        BOARD SUPPORT PACKAGE
+  18:BSP/bsp.c     **** *
+  19:BSP/bsp.c     **** *                                           CYPRESS PSoC5
+  20:BSP/bsp.c     **** *                                              with the
+  21:BSP/bsp.c     **** *                                     CY8CKIT-050 Development Kit
+  22:BSP/bsp.c     **** *
+  23:BSP/bsp.c     **** * Filename      : bsp.c
+  24:BSP/bsp.c     **** * Version       : V1.00
+  25:BSP/bsp.c     **** * Programmer(s) : DC
+  26:BSP/bsp.c     **** ***************************************************************************************************
+  27:BSP/bsp.c     **** */
+  28:BSP/bsp.c     **** 
+  29:BSP/bsp.c     **** /*
+  30:BSP/bsp.c     **** ***************************************************************************************************
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 2
+
+
+  31:BSP/bsp.c     **** *                                             INCLUDE FILES
+  32:BSP/bsp.c     **** ***************************************************************************************************
+  33:BSP/bsp.c     **** */
+  34:BSP/bsp.c     **** 
+  35:BSP/bsp.c     **** #define  BSP_MODULE
+  36:BSP/bsp.c     **** #include <bsp.h>
+  37:BSP/bsp.c     **** #include <bsp_psoc.h>
+  38:BSP/bsp.c     **** 
+  39:BSP/bsp.c     **** #include <bsp_uart.h>
+  40:BSP/bsp.c     **** #include <bsp_gpio.h>
+  41:BSP/bsp.c     **** 
+  42:BSP/bsp.c     **** 
+  43:BSP/bsp.c     **** /*
+  44:BSP/bsp.c     **** ***************************************************************************************************
+  45:BSP/bsp.c     **** *                                            LOCAL DEFINES
+  46:BSP/bsp.c     **** ***************************************************************************************************
+  47:BSP/bsp.c     **** */
+  48:BSP/bsp.c     **** 
+  49:BSP/bsp.c     **** 
+  50:BSP/bsp.c     **** /*
+  51:BSP/bsp.c     **** ***************************************************************************************************
+  52:BSP/bsp.c     **** *                                           LOCAL CONSTANTS
+  53:BSP/bsp.c     **** ***************************************************************************************************
+  54:BSP/bsp.c     **** */
+  55:BSP/bsp.c     ****                                                                   
+  56:BSP/bsp.c     **** 
+  57:BSP/bsp.c     **** /*
+  58:BSP/bsp.c     **** ***************************************************************************************************
+  59:BSP/bsp.c     **** *                                          LOCAL DATA TYPES
+  60:BSP/bsp.c     **** ***************************************************************************************************
+  61:BSP/bsp.c     **** */
+  62:BSP/bsp.c     **** 
+  63:BSP/bsp.c     **** 
+  64:BSP/bsp.c     **** /*
+  65:BSP/bsp.c     **** ***************************************************************************************************
+  66:BSP/bsp.c     **** *                                            LOCAL TABLES
+  67:BSP/bsp.c     **** ***************************************************************************************************
+  68:BSP/bsp.c     **** */
+  69:BSP/bsp.c     **** 
+  70:BSP/bsp.c     **** 
+  71:BSP/bsp.c     **** /*
+  72:BSP/bsp.c     **** ***************************************************************************************************
+  73:BSP/bsp.c     **** *                                       LOCAL GLOBAL VARIABLES
+  74:BSP/bsp.c     **** ***************************************************************************************************
+  75:BSP/bsp.c     **** */
+  76:BSP/bsp.c     **** 
+  77:BSP/bsp.c     **** 
+  78:BSP/bsp.c     **** 
+  79:BSP/bsp.c     **** /*
+  80:BSP/bsp.c     **** ***************************************************************************************************
+  81:BSP/bsp.c     **** *                                      LOCAL FUNCTION PROTOTYPES
+  82:BSP/bsp.c     **** ***************************************************************************************************
+  83:BSP/bsp.c     **** */
+  84:BSP/bsp.c     **** 
+  85:BSP/bsp.c     **** 
+  86:BSP/bsp.c     **** /*
+  87:BSP/bsp.c     **** ***************************************************************************************************
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 3
+
+
+  88:BSP/bsp.c     **** *                                            REGISTER BITS
+  89:BSP/bsp.c     **** ***************************************************************************************************
+  90:BSP/bsp.c     **** */
+  91:BSP/bsp.c     **** 
+  92:BSP/bsp.c     **** 
+  93:BSP/bsp.c     **** /*
+  94:BSP/bsp.c     **** ***************************************************************************************************
+  95:BSP/bsp.c     **** *                                     LOCAL CONFIGURATION ERRORS
+  96:BSP/bsp.c     **** ***************************************************************************************************
+  97:BSP/bsp.c     **** */
+  98:BSP/bsp.c     **** 
+  99:BSP/bsp.c     **** 
+ 100:BSP/bsp.c     **** /*
+ 101:BSP/bsp.c     **** ***************************************************************************************************
+ 102:BSP/bsp.c     **** *                                             BSP_PreInit()
+ 103:BSP/bsp.c     **** *
+ 104:BSP/bsp.c     **** * Description : Board support package pre-initialization funtion.
+ 105:BSP/bsp.c     **** *
+ 106:BSP/bsp.c     **** * Argument(s) : none.
+ 107:BSP/bsp.c     **** *
+ 108:BSP/bsp.c     **** * Return(s)   : none.
+ 109:BSP/bsp.c     **** *
+ 110:BSP/bsp.c     **** * Caller(s)   : Application.
+ 111:BSP/bsp.c     **** *
+ 112:BSP/bsp.c     **** * Note(s)     : (1) This funtion initializes peripherals required before the OS is initialized (e.g
+ 113:BSP/bsp.c     **** *                   external memory.
+ 114:BSP/bsp.c     **** ***************************************************************************************************
+ 115:BSP/bsp.c     **** */
+ 116:BSP/bsp.c     **** 
+ 117:BSP/bsp.c     **** 
+ 118:BSP/bsp.c     **** void BSP_PreInit (void)
+ 119:BSP/bsp.c     **** {
+  28              		.loc 1 119 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+ 120:BSP/bsp.c     ****     CPU_INT32U  reg_val;
+ 121:BSP/bsp.c     ****     CPU_INT32U *p_vect_tbl;
+ 122:BSP/bsp.c     ****     
+ 123:BSP/bsp.c     ****     
+ 124:BSP/bsp.c     ****     reg_val = CPU_REG_NVIC_VTOR;                                   /* Get the NVIC offset table    
+  33              		.loc 1 124 0
+  34 0000 044B     		ldr	r3, .L2
+  35 0002 1B68     		ldr	r3, [r3]
+  36              	.LVL0:
+ 125:BSP/bsp.c     ****     DEF_BIT_CLR(reg_val, DEF_BIT_29);                              /* Clear the TBLBASE bit        
+  37              		.loc 1 125 0
+  38 0004 23F00053 		bic	r3, r3, #536870912
+  39              	.LVL1:
+ 126:BSP/bsp.c     ****     
+ 127:BSP/bsp.c     ****      
+ 128:BSP/bsp.c     ****     p_vect_tbl                  = (CPU_INT32U *)reg_val;           
+ 129:BSP/bsp.c     ****                                                                    /* Install the PendSV & Systick 
+ 130:BSP/bsp.c     ****     p_vect_tbl[CPU_INT_PENDSV]  = (CPU_INT32U  )OS_CPU_PendSVHandler;
+  40              		.loc 1 130 0
+  41 0008 034A     		ldr	r2, .L2+4
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 4
+
+
+  42 000a 9A63     		str	r2, [r3, #56]
+ 131:BSP/bsp.c     ****     p_vect_tbl[CPU_INT_SYSTICK] = (CPU_INT32U  )OS_CPU_SysTickHandler;
+  43              		.loc 1 131 0
+  44 000c 034A     		ldr	r2, .L2+8
+  45 000e DA63     		str	r2, [r3, #60]
+  46 0010 7047     		bx	lr
+  47              	.L3:
+  48 0012 00BF     		.align	2
+  49              	.L2:
+  50 0014 08ED00E0 		.word	-536810232
+  51 0018 00000000 		.word	OS_CPU_PendSVHandler
+  52 001c 00000000 		.word	OS_CPU_SysTickHandler
+  53              		.cfi_endproc
+  54              	.LFE1:
+  55              		.size	BSP_PreInit, .-BSP_PreInit
+  56              		.section	.text.BSP_PostInit,"ax",%progbits
+  57              		.align	2
+  58              		.global	BSP_PostInit
+  59              		.thumb
+  60              		.thumb_func
+  61              		.type	BSP_PostInit, %function
+  62              	BSP_PostInit:
+  63              	.LFB2:
+ 132:BSP/bsp.c     **** }
+ 133:BSP/bsp.c     **** 
+ 134:BSP/bsp.c     **** 
+ 135:BSP/bsp.c     **** /*
+ 136:BSP/bsp.c     **** ***************************************************************************************************
+ 137:BSP/bsp.c     **** *                                               BSP_PostInit()
+ 138:BSP/bsp.c     **** *
+ 139:BSP/bsp.c     **** * Description : Board Support Package Post initialization.
+ 140:BSP/bsp.c     **** *
+ 141:BSP/bsp.c     **** * Argument(s) : none.
+ 142:BSP/bsp.c     **** *
+ 143:BSP/bsp.c     **** * Return(s)   : none.
+ 144:BSP/bsp.c     **** *
+ 145:BSP/bsp.c     **** * Caller(s)   : Application.
+ 146:BSP/bsp.c     **** *
+ 147:BSP/bsp.c     **** * Note(s)     : (1) This funtion initilize peripherlas that requires the OS to be initialized.
+ 148:BSP/bsp.c     **** ***************************************************************************************************
+ 149:BSP/bsp.c     **** */
+ 150:BSP/bsp.c     **** 
+ 151:BSP/bsp.c     **** void  BSP_PostInit (void)
+ 152:BSP/bsp.c     **** {
+  64              		.loc 1 152 0
+  65              		.cfi_startproc
+  66              		@ args = 0, pretend = 0, frame = 0
+  67              		@ frame_needed = 0, uses_anonymous_args = 0
+  68 0000 08B5     		push	{r3, lr}
+  69              		.cfi_def_cfa_offset 8
+  70              		.cfi_offset 3, -8
+  71              		.cfi_offset 14, -4
+ 153:BSP/bsp.c     ****     init_gpio();
+  72              		.loc 1 153 0
+  73 0002 FFF7FEFF 		bl	init_gpio
+  74              	.LVL2:
+ 154:BSP/bsp.c     ****     init_uart();
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 5
+
+
+  75              		.loc 1 154 0
+  76 0006 FFF7FEFF 		bl	init_uart
+  77              	.LVL3:
+  78 000a 08BD     		pop	{r3, pc}
+  79              		.cfi_endproc
+  80              	.LFE2:
+  81              		.size	BSP_PostInit, .-BSP_PostInit
+  82              		.section	.text.BSP_CPU_ClkFreq,"ax",%progbits
+  83              		.align	2
+  84              		.global	BSP_CPU_ClkFreq
+  85              		.thumb
+  86              		.thumb_func
+  87              		.type	BSP_CPU_ClkFreq, %function
+  88              	BSP_CPU_ClkFreq:
+  89              	.LFB4:
+ 155:BSP/bsp.c     **** }
+ 156:BSP/bsp.c     **** 
+ 157:BSP/bsp.c     **** 
+ 158:BSP/bsp.c     **** /*
+ 159:BSP/bsp.c     **** ***************************************************************************************************
+ 160:BSP/bsp.c     **** *                                       BSP_CPU_TickInit()
+ 161:BSP/bsp.c     **** *
+ 162:BSP/bsp.c     **** * Description : This function reads CPU registers to determine the CPU clock frequency of the chip 
+ 163:BSP/bsp.c     **** *
+ 164:BSP/bsp.c     **** * Argument(s) : none.
+ 165:BSP/bsp.c     **** *
+ 166:BSP/bsp.c     **** * Return(s)   : none.
+ 167:BSP/bsp.c     **** *
+ 168:BSP/bsp.c     **** * Caller(s)   : Application.
+ 169:BSP/bsp.c     **** *
+ 170:BSP/bsp.c     **** * Note(s)     : none.
+ 171:BSP/bsp.c     **** ***************************************************************************************************
+ 172:BSP/bsp.c     **** */
+ 173:BSP/bsp.c     **** void  BSP_CPU_TickInit  (void)
+ 174:BSP/bsp.c     **** {
+ 175:BSP/bsp.c     ****     CPU_INT32U   cpu_clk_freq;
+ 176:BSP/bsp.c     ****     CPU_INT32U   cnts;
+ 177:BSP/bsp.c     ****     
+ 178:BSP/bsp.c     ****     cpu_clk_freq = BSP_CPU_ClkFreq();                             /* Determine SysTick reference fr
+ 179:BSP/bsp.c     **** #if (OS_VERSION > 30000u)                                         /* Determine nbr SysTick incremen
+ 180:BSP/bsp.c     ****     cnts         = (cpu_clk_freq / OSCfg_TickRate_Hz);
+ 181:BSP/bsp.c     **** #else
+ 182:BSP/bsp.c     ****     cnts         = (cpu_clk_freq / OS_TICKS_PER_SEC);
+ 183:BSP/bsp.c     **** #endif
+ 184:BSP/bsp.c     ****     OS_CPU_SysTickInit(cnts);                                     /* Init uC/OS periodic time src (
+ 185:BSP/bsp.c     ****     
+ 186:BSP/bsp.c     **** }
+ 187:BSP/bsp.c     **** 
+ 188:BSP/bsp.c     **** /*
+ 189:BSP/bsp.c     **** ***************************************************************************************************
+ 190:BSP/bsp.c     **** *                                            BSP_CPU_ClkFreq()
+ 191:BSP/bsp.c     **** *
+ 192:BSP/bsp.c     **** * Description : Read CPU registers to determine the CPU clock frequency of the chip.
+ 193:BSP/bsp.c     **** *
+ 194:BSP/bsp.c     **** * Argument(s) : none.
+ 195:BSP/bsp.c     **** *
+ 196:BSP/bsp.c     **** * Return(s)   : The CPU clock frequency, in Hz.
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 6
+
+
+ 197:BSP/bsp.c     **** *
+ 198:BSP/bsp.c     **** * Caller(s)   : Application.
+ 199:BSP/bsp.c     **** *
+ 200:BSP/bsp.c     **** * Note(s)     : none.
+ 201:BSP/bsp.c     **** ***************************************************************************************************
+ 202:BSP/bsp.c     **** */
+ 203:BSP/bsp.c     **** 
+ 204:BSP/bsp.c     **** CPU_INT32U  BSP_CPU_ClkFreq (void)
+ 205:BSP/bsp.c     **** {
+  90              		.loc 1 205 0
+  91              		.cfi_startproc
+  92              		@ args = 0, pretend = 0, frame = 0
+  93              		@ frame_needed = 0, uses_anonymous_args = 0
+  94              		@ link register save eliminated.
+ 206:BSP/bsp.c     ****     return ((CPU_INT32U)BSP_PSOC_CPU_FREQ);
+ 207:BSP/bsp.c     **** }
+  95              		.loc 1 207 0
+  96 0000 0048     		ldr	r0, .L7
+  97 0002 7047     		bx	lr
+  98              	.L8:
+  99              		.align	2
+ 100              	.L7:
+ 101 0004 00366E01 		.word	24000000
+ 102              		.cfi_endproc
+ 103              	.LFE4:
+ 104              		.size	BSP_CPU_ClkFreq, .-BSP_CPU_ClkFreq
+ 105              		.section	.text.BSP_CPU_TickInit,"ax",%progbits
+ 106              		.align	2
+ 107              		.global	BSP_CPU_TickInit
+ 108              		.thumb
+ 109              		.thumb_func
+ 110              		.type	BSP_CPU_TickInit, %function
+ 111              	BSP_CPU_TickInit:
+ 112              	.LFB3:
+ 174:BSP/bsp.c     ****     CPU_INT32U   cpu_clk_freq;
+ 113              		.loc 1 174 0
+ 114              		.cfi_startproc
+ 115              		@ args = 0, pretend = 0, frame = 0
+ 116              		@ frame_needed = 0, uses_anonymous_args = 0
+ 117 0000 08B5     		push	{r3, lr}
+ 118              		.cfi_def_cfa_offset 8
+ 119              		.cfi_offset 3, -8
+ 120              		.cfi_offset 14, -4
+ 178:BSP/bsp.c     **** #if (OS_VERSION > 30000u)                                         /* Determine nbr SysTick incremen
+ 121              		.loc 1 178 0
+ 122 0002 FFF7FEFF 		bl	BSP_CPU_ClkFreq
+ 123              	.LVL4:
+ 180:BSP/bsp.c     **** #else
+ 124              		.loc 1 180 0
+ 125 0006 034B     		ldr	r3, .L11
+ 126 0008 1B68     		ldr	r3, [r3]
+ 127              	.LVL5:
+ 184:BSP/bsp.c     ****     
+ 128              		.loc 1 184 0
+ 129 000a B0FBF3F0 		udiv	r0, r0, r3
+ 130              	.LVL6:
+ 131 000e FFF7FEFF 		bl	OS_CPU_SysTickInit
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 7
+
+
+ 132              	.LVL7:
+ 133 0012 08BD     		pop	{r3, pc}
+ 134              	.L12:
+ 135              		.align	2
+ 136              	.L11:
+ 137 0014 00000000 		.word	OSCfg_TickRate_Hz
+ 138              		.cfi_endproc
+ 139              	.LFE3:
+ 140              		.size	BSP_CPU_TickInit, .-BSP_CPU_TickInit
+ 141              		.section	.text.BSP_LED_On,"ax",%progbits
+ 142              		.align	2
+ 143              		.global	BSP_LED_On
+ 144              		.thumb
+ 145              		.thumb_func
+ 146              		.type	BSP_LED_On, %function
+ 147              	BSP_LED_On:
+ 148              	.LFB5:
+ 208:BSP/bsp.c     **** 
+ 209:BSP/bsp.c     **** 
+ 210:BSP/bsp.c     **** /*
+ 211:BSP/bsp.c     **** ***************************************************************************************************
+ 212:BSP/bsp.c     **** ***************************************************************************************************
+ 213:BSP/bsp.c     **** *                                              LED FUNCTIONS
+ 214:BSP/bsp.c     **** ***************************************************************************************************
+ 215:BSP/bsp.c     **** ***************************************************************************************************
+ 216:BSP/bsp.c     **** */
+ 217:BSP/bsp.c     **** 
+ 218:BSP/bsp.c     **** 
+ 219:BSP/bsp.c     **** /*
+ 220:BSP/bsp.c     **** ***************************************************************************************************
+ 221:BSP/bsp.c     **** *                                             BSP_LED_On()
+ 222:BSP/bsp.c     **** *
+ 223:BSP/bsp.c     **** * Description : Turn ON any pin on the board.
+ 224:BSP/bsp.c     **** *
+ 225:BSP/bsp.c     **** * Argument(s) : led     The ID of the pin to control:
+ 226:BSP/bsp.c     **** *
+ 227:BSP/bsp.c     **** *                       P1_6    turns ON P1_6 on J1 Pin 23 on the board
+ 228:BSP/bsp.c     **** *                       P2_0    turns ON P2_0 on J1 Pin  1 on the board
+ 229:BSP/bsp.c     **** *                       P2_1    turns ON P2_1 on J1 Pin  2 on the board (Blue LED)
+ 230:BSP/bsp.c     **** *
+ 231:BSP/bsp.c     **** * Return(s)   : none.
+ 232:BSP/bsp.c     **** *
+ 233:BSP/bsp.c     **** * Caller(s)   : Application.
+ 234:BSP/bsp.c     **** *
+ 235:BSP/bsp.c     **** * Note(s)     : none.
+ 236:BSP/bsp.c     **** ***************************************************************************************************
+ 237:BSP/bsp.c     **** */
+ 238:BSP/bsp.c     **** 
+ 239:BSP/bsp.c     **** CPU_INT08U  BSP_LED_On (CPU_INT08U led)
+ 240:BSP/bsp.c     **** {
+ 149              		.loc 1 240 0
+ 150              		.cfi_startproc
+ 151              		@ args = 0, pretend = 0, frame = 0
+ 152              		@ frame_needed = 0, uses_anonymous_args = 0
+ 153              	.LVL8:
+ 154 0000 08B5     		push	{r3, lr}
+ 155              		.cfi_def_cfa_offset 8
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 8
+
+
+ 156              		.cfi_offset 3, -8
+ 157              		.cfi_offset 14, -4
+ 158              	.LVL9:
+ 241:BSP/bsp.c     ****   CPU_INT08U err = 0;
+ 242:BSP/bsp.c     ****   
+ 243:BSP/bsp.c     ****   if(led == P1_6){
+ 159              		.loc 1 243 0
+ 160 0002 4028     		cmp	r0, #64
+ 161 0004 04D1     		bne	.L14
+ 244:BSP/bsp.c     ****     err = gpio_high(PORT1,P1_6);
+ 162              		.loc 1 244 0
+ 163 0006 4021     		movs	r1, #64
+ 164 0008 0120     		movs	r0, #1
+ 165              	.LVL10:
+ 166 000a FFF7FEFF 		bl	gpio_high
+ 167              	.LVL11:
+ 168 000e 08BD     		pop	{r3, pc}
+ 169              	.LVL12:
+ 170              	.L14:
+ 245:BSP/bsp.c     ****   }
+ 246:BSP/bsp.c     ****   else if(led == P2_0){
+ 171              		.loc 1 246 0
+ 172 0010 0128     		cmp	r0, #1
+ 173 0012 04D1     		bne	.L16
+ 247:BSP/bsp.c     ****     err = gpio_high(PORT2,P2_0);
+ 174              		.loc 1 247 0
+ 175 0014 0121     		movs	r1, #1
+ 176 0016 0220     		movs	r0, #2
+ 177              	.LVL13:
+ 178 0018 FFF7FEFF 		bl	gpio_high
+ 179              	.LVL14:
+ 180 001c 08BD     		pop	{r3, pc}
+ 181              	.LVL15:
+ 182              	.L16:
+ 248:BSP/bsp.c     ****   }
+ 249:BSP/bsp.c     ****   else if(led == P2_1){
+ 183              		.loc 1 249 0
+ 184 001e 0228     		cmp	r0, #2
+ 185 0020 04D1     		bne	.L17
+ 250:BSP/bsp.c     ****     err = gpio_high(PORT2,P2_1);
+ 186              		.loc 1 250 0
+ 187 0022 0221     		movs	r1, #2
+ 188 0024 0846     		mov	r0, r1
+ 189              	.LVL16:
+ 190 0026 FFF7FEFF 		bl	gpio_high
+ 191              	.LVL17:
+ 192 002a 08BD     		pop	{r3, pc}
+ 193              	.LVL18:
+ 194              	.L17:
+ 251:BSP/bsp.c     ****   }
+ 252:BSP/bsp.c     ****   else{
+ 253:BSP/bsp.c     ****     err++;
+ 195              		.loc 1 253 0
+ 196 002c 0120     		movs	r0, #1
+ 197              	.LVL19:
+ 254:BSP/bsp.c     ****   }
+ 255:BSP/bsp.c     ****   return err;
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 9
+
+
+ 256:BSP/bsp.c     **** }
+ 198              		.loc 1 256 0
+ 199 002e 08BD     		pop	{r3, pc}
+ 200              		.cfi_endproc
+ 201              	.LFE5:
+ 202              		.size	BSP_LED_On, .-BSP_LED_On
+ 203              		.section	.text.BSP_LED_Off,"ax",%progbits
+ 204              		.align	2
+ 205              		.global	BSP_LED_Off
+ 206              		.thumb
+ 207              		.thumb_func
+ 208              		.type	BSP_LED_Off, %function
+ 209              	BSP_LED_Off:
+ 210              	.LFB6:
+ 257:BSP/bsp.c     **** 
+ 258:BSP/bsp.c     **** 
+ 259:BSP/bsp.c     **** /*
+ 260:BSP/bsp.c     **** ***************************************************************************************************
+ 261:BSP/bsp.c     **** *                                              BSP_LED_Off()
+ 262:BSP/bsp.c     **** *
+ 263:BSP/bsp.c     **** * Description : Turn OFF any pin on the board.
+ 264:BSP/bsp.c     **** *
+ 265:BSP/bsp.c     **** * Argument(s) : led     The ID of the pin to control:
+ 266:BSP/bsp.c     **** *
+ 267:BSP/bsp.c     **** *                       P1_6    turns OFF P1_6 on J1 Pin 23 on the board
+ 268:BSP/bsp.c     **** *                       P2_0    turns OFF P2_0 on J1 Pin  1 on the board
+ 269:BSP/bsp.c     **** *                       P2_1    turns OFF P2_1 on J1 Pin  2 on the board (Blue LED)
+ 270:BSP/bsp.c     **** *
+ 271:BSP/bsp.c     **** * Return(s)   : none.
+ 272:BSP/bsp.c     **** *
+ 273:BSP/bsp.c     **** * Caller(s)   : Application.
+ 274:BSP/bsp.c     **** *
+ 275:BSP/bsp.c     **** * Note(s)     : none.
+ 276:BSP/bsp.c     **** ***************************************************************************************************
+ 277:BSP/bsp.c     **** */
+ 278:BSP/bsp.c     **** 
+ 279:BSP/bsp.c     **** CPU_INT08U  BSP_LED_Off (CPU_INT08U led)
+ 280:BSP/bsp.c     **** {
+ 211              		.loc 1 280 0
+ 212              		.cfi_startproc
+ 213              		@ args = 0, pretend = 0, frame = 0
+ 214              		@ frame_needed = 0, uses_anonymous_args = 0
+ 215              	.LVL20:
+ 216 0000 08B5     		push	{r3, lr}
+ 217              		.cfi_def_cfa_offset 8
+ 218              		.cfi_offset 3, -8
+ 219              		.cfi_offset 14, -4
+ 220              	.LVL21:
+ 281:BSP/bsp.c     ****   CPU_INT08U err = 0;
+ 282:BSP/bsp.c     ****   
+ 283:BSP/bsp.c     ****   if(led == P1_6){
+ 221              		.loc 1 283 0
+ 222 0002 4028     		cmp	r0, #64
+ 223 0004 04D1     		bne	.L20
+ 284:BSP/bsp.c     ****     err = gpio_low(PORT1,P1_6);
+ 224              		.loc 1 284 0
+ 225 0006 4021     		movs	r1, #64
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 10
+
+
+ 226 0008 0120     		movs	r0, #1
+ 227              	.LVL22:
+ 228 000a FFF7FEFF 		bl	gpio_low
+ 229              	.LVL23:
+ 230 000e 08BD     		pop	{r3, pc}
+ 231              	.LVL24:
+ 232              	.L20:
+ 285:BSP/bsp.c     ****   }
+ 286:BSP/bsp.c     ****   else if(led == P2_0){
+ 233              		.loc 1 286 0
+ 234 0010 0128     		cmp	r0, #1
+ 235 0012 04D1     		bne	.L22
+ 287:BSP/bsp.c     ****     err = gpio_low(PORT2,P2_0);
+ 236              		.loc 1 287 0
+ 237 0014 0121     		movs	r1, #1
+ 238 0016 0220     		movs	r0, #2
+ 239              	.LVL25:
+ 240 0018 FFF7FEFF 		bl	gpio_low
+ 241              	.LVL26:
+ 242 001c 08BD     		pop	{r3, pc}
+ 243              	.LVL27:
+ 244              	.L22:
+ 288:BSP/bsp.c     ****   }
+ 289:BSP/bsp.c     ****   else if(led == P2_1){
+ 245              		.loc 1 289 0
+ 246 001e 0228     		cmp	r0, #2
+ 247 0020 04D1     		bne	.L23
+ 290:BSP/bsp.c     ****     err = gpio_low(PORT2,P2_1);
+ 248              		.loc 1 290 0
+ 249 0022 0221     		movs	r1, #2
+ 250 0024 0846     		mov	r0, r1
+ 251              	.LVL28:
+ 252 0026 FFF7FEFF 		bl	gpio_low
+ 253              	.LVL29:
+ 254 002a 08BD     		pop	{r3, pc}
+ 255              	.LVL30:
+ 256              	.L23:
+ 291:BSP/bsp.c     ****   }
+ 292:BSP/bsp.c     ****   else{
+ 293:BSP/bsp.c     ****     err++;
+ 257              		.loc 1 293 0
+ 258 002c 0120     		movs	r0, #1
+ 259              	.LVL31:
+ 294:BSP/bsp.c     ****   }
+ 295:BSP/bsp.c     ****   return err;
+ 296:BSP/bsp.c     **** }
+ 260              		.loc 1 296 0
+ 261 002e 08BD     		pop	{r3, pc}
+ 262              		.cfi_endproc
+ 263              	.LFE6:
+ 264              		.size	BSP_LED_Off, .-BSP_LED_Off
+ 265              		.section	.text.BSP_LED_Toggle,"ax",%progbits
+ 266              		.align	2
+ 267              		.global	BSP_LED_Toggle
+ 268              		.thumb
+ 269              		.thumb_func
+ 270              		.type	BSP_LED_Toggle, %function
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 11
+
+
+ 271              	BSP_LED_Toggle:
+ 272              	.LFB7:
+ 297:BSP/bsp.c     **** 
+ 298:BSP/bsp.c     **** 
+ 299:BSP/bsp.c     **** /*
+ 300:BSP/bsp.c     **** ***************************************************************************************************
+ 301:BSP/bsp.c     **** *                                            BSP_LED_Toggle()
+ 302:BSP/bsp.c     **** *
+ 303:BSP/bsp.c     **** * Description : Turn TOGGLE any pin on the board.
+ 304:BSP/bsp.c     **** *
+ 305:BSP/bsp.c     **** * Argument(s) : led     The ID of the pin to control:
+ 306:BSP/bsp.c     **** *
+ 307:BSP/bsp.c     **** *                       P1_6    turns TOGGLE P1_6 on J1 Pin 23 on the board
+ 308:BSP/bsp.c     **** *                       P2_0    turns TOGGLE P2_0 on J1 Pin  1 on the board
+ 309:BSP/bsp.c     **** *                       P2_1    turns TOGGLE P2_1 on J1 Pin  2 on the board (Blue LED)
+ 310:BSP/bsp.c     **** *
+ 311:BSP/bsp.c     **** * Return(s)   : none.
+ 312:BSP/bsp.c     **** *
+ 313:BSP/bsp.c     **** * Caller(s)   : Application.
+ 314:BSP/bsp.c     **** *
+ 315:BSP/bsp.c     **** * Note(s)     : Not re-entrant.
+ 316:BSP/bsp.c     **** ***************************************************************************************************
+ 317:BSP/bsp.c     **** */
+ 318:BSP/bsp.c     **** 
+ 319:BSP/bsp.c     **** CPU_INT08U  BSP_LED_Toggle (CPU_INT08U led)
+ 320:BSP/bsp.c     **** {
+ 273              		.loc 1 320 0
+ 274              		.cfi_startproc
+ 275              		@ args = 0, pretend = 0, frame = 0
+ 276              		@ frame_needed = 0, uses_anonymous_args = 0
+ 277              	.LVL32:
+ 278 0000 08B5     		push	{r3, lr}
+ 279              		.cfi_def_cfa_offset 8
+ 280              		.cfi_offset 3, -8
+ 281              		.cfi_offset 14, -4
+ 282              	.LVL33:
+ 321:BSP/bsp.c     ****   CPU_INT08U err = 0;
+ 322:BSP/bsp.c     ****   static CPU_BOOLEAN toggle_status = 0;
+ 323:BSP/bsp.c     ****   
+ 324:BSP/bsp.c     ****   if(!toggle_status){
+ 283              		.loc 1 324 0
+ 284 0002 094B     		ldr	r3, .L30
+ 285 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 286 0006 2BB9     		cbnz	r3, .L26
+ 325:BSP/bsp.c     ****     err = BSP_LED_On(led);
+ 287              		.loc 1 325 0
+ 288 0008 FFF7FEFF 		bl	BSP_LED_On
+ 289              	.LVL34:
+ 326:BSP/bsp.c     ****     toggle_status = 1;
+ 290              		.loc 1 326 0
+ 291 000c 0122     		movs	r2, #1
+ 292 000e 064B     		ldr	r3, .L30
+ 293 0010 1A70     		strb	r2, [r3]
+ 294 0012 08BD     		pop	{r3, pc}
+ 295              	.LVL35:
+ 296              	.L26:
+ 327:BSP/bsp.c     ****   }
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 12
+
+
+ 328:BSP/bsp.c     ****   else if(toggle_status){
+ 297              		.loc 1 328 0
+ 298 0014 2BB1     		cbz	r3, .L28
+ 329:BSP/bsp.c     ****     err = BSP_LED_Off(led);
+ 299              		.loc 1 329 0
+ 300 0016 FFF7FEFF 		bl	BSP_LED_Off
+ 301              	.LVL36:
+ 330:BSP/bsp.c     ****     toggle_status = 0;
+ 302              		.loc 1 330 0
+ 303 001a 0022     		movs	r2, #0
+ 304 001c 024B     		ldr	r3, .L30
+ 305 001e 1A70     		strb	r2, [r3]
+ 306 0020 08BD     		pop	{r3, pc}
+ 307              	.LVL37:
+ 308              	.L28:
+ 321:BSP/bsp.c     ****   static CPU_BOOLEAN toggle_status = 0;
+ 309              		.loc 1 321 0
+ 310 0022 0020     		movs	r0, #0
+ 311              	.LVL38:
+ 331:BSP/bsp.c     ****   }
+ 332:BSP/bsp.c     ****   return err;
+ 333:BSP/bsp.c     **** }
+ 312              		.loc 1 333 0
+ 313 0024 08BD     		pop	{r3, pc}
+ 314              	.L31:
+ 315 0026 00BF     		.align	2
+ 316              	.L30:
+ 317 0028 00000000 		.word	.LANCHOR0
+ 318              		.cfi_endproc
+ 319              	.LFE7:
+ 320              		.size	BSP_LED_Toggle, .-BSP_LED_Toggle
+ 321              		.section	.text.BSP_PB_StatusGet,"ax",%progbits
+ 322              		.align	2
+ 323              		.global	BSP_PB_StatusGet
+ 324              		.thumb
+ 325              		.thumb_func
+ 326              		.type	BSP_PB_StatusGet, %function
+ 327              	BSP_PB_StatusGet:
+ 328              	.LFB8:
+ 334:BSP/bsp.c     **** 
+ 335:BSP/bsp.c     **** 
+ 336:BSP/bsp.c     **** /*
+ 337:BSP/bsp.c     **** ***************************************************************************************************
+ 338:BSP/bsp.c     **** *                                            BSP_PB_StatusGet()
+ 339:BSP/bsp.c     **** *
+ 340:BSP/bsp.c     **** * Description : Get the current status of the push button.
+ 341:BSP/bsp.c     **** *
+ 342:BSP/bsp.c     **** * Argument(s) : pb    Push button identifier.
+ 343:BSP/bsp.c     **** *
+ 344:BSP/bsp.c     **** *                           P2_2 Board SW1 (on J1 Pin 3)
+ 345:BSP/bsp.c     **** *
+ 346:BSP/bsp.c     **** * Return(s)   : DEF_ON    If the push button is pressed.
+ 347:BSP/bsp.c     **** *               DEF_OFF   If the push button is not pressed
+ 348:BSP/bsp.c     **** *               -1        If error occured
+ 349:BSP/bsp.c     **** *
+ 350:BSP/bsp.c     **** * Caller(s)   : application
+ 351:BSP/bsp.c     **** *
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 13
+
+
+ 352:BSP/bsp.c     **** * Note(s)     : none.
+ 353:BSP/bsp.c     **** ***************************************************************************************************
+ 354:BSP/bsp.c     **** */
+ 355:BSP/bsp.c     **** 
+ 356:BSP/bsp.c     **** CPU_INT08S  BSP_PB_StatusGet (CPU_INT08U  pb)
+ 357:BSP/bsp.c     **** {
+ 329              		.loc 1 357 0
+ 330              		.cfi_startproc
+ 331              		@ args = 0, pretend = 0, frame = 0
+ 332              		@ frame_needed = 0, uses_anonymous_args = 0
+ 333              	.LVL39:
+ 358:BSP/bsp.c     ****   if(pb == P2_2){
+ 334              		.loc 1 358 0
+ 335 0000 0428     		cmp	r0, #4
+ 336 0002 05D1     		bne	.L34
+ 357:BSP/bsp.c     ****   if(pb == P2_2){
+ 337              		.loc 1 357 0
+ 338 0004 08B5     		push	{r3, lr}
+ 339              		.cfi_def_cfa_offset 8
+ 340              		.cfi_offset 3, -8
+ 341              		.cfi_offset 14, -4
+ 359:BSP/bsp.c     ****     return gpio_read(PORT2, P2_2);    
+ 342              		.loc 1 359 0
+ 343 0006 0421     		movs	r1, #4
+ 344 0008 0220     		movs	r0, #2
+ 345              	.LVL40:
+ 346 000a FFF7FEFF 		bl	gpio_read
+ 347              	.LVL41:
+ 348 000e 08BD     		pop	{r3, pc}
+ 349              	.LVL42:
+ 350              	.L34:
+ 351              		.cfi_def_cfa_offset 0
+ 352              		.cfi_restore 3
+ 353              		.cfi_restore 14
+ 360:BSP/bsp.c     ****   }
+ 361:BSP/bsp.c     ****   else{
+ 362:BSP/bsp.c     ****     return -1;
+ 354              		.loc 1 362 0
+ 355 0010 4FF0FF30 		mov	r0, #-1
+ 356              	.LVL43:
+ 357 0014 7047     		bx	lr
+ 358              		.cfi_endproc
+ 359              	.LFE8:
+ 360              		.size	BSP_PB_StatusGet, .-BSP_PB_StatusGet
+ 361 0016 00BF     		.bss
+ 362              		.set	.LANCHOR0,. + 0
+ 363              		.type	toggle_status.7348, %object
+ 364              		.size	toggle_status.7348, 1
+ 365              	toggle_status.7348:
+ 366 0000 00       		.space	1
+ 367              		.text
+ 368              	.Letext0:
+ 369              		.file 2 ".\\uC-CPU\\ARM-Cortex-M3\\GNU/cpu.h"
+ 370              		.file 3 ".\\uCOS-III\\Source/os_type.h"
+ 371              		.file 4 "./bsp_uart.h"
+ 372              		.file 5 "./bsp_gpio.h"
+ 373              		.file 6 ".\\uCOS-III\\Ports\\ARM-Cortex-M3\\Generic\\GNU/os_cpu.h"
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 14
+
+
+ 374              		.file 7 ".\\uCOS-III\\Source/os.h"
+ 375              		.section	.debug_info,"",%progbits
+ 376              	.Ldebug_info0:
+ 377 0000 A6030000 		.4byte	0x3a6
+ 378 0004 0400     		.2byte	0x4
+ 379 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 380 000a 04       		.byte	0x4
+ 381 000b 01       		.uleb128 0x1
+ 382 000c A7000000 		.4byte	.LASF42
+ 383 0010 0C       		.byte	0xc
+ 384 0011 12000000 		.4byte	.LASF43
+ 385 0015 A4010000 		.4byte	.LASF44
+ 386 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 387 001d 00000000 		.4byte	0
+ 388 0021 00000000 		.4byte	.Ldebug_line0
+ 389 0025 02       		.uleb128 0x2
+ 390 0026 04       		.byte	0x4
+ 391 0027 07       		.byte	0x7
+ 392 0028 F3010000 		.4byte	.LASF0
+ 393 002c 02       		.uleb128 0x2
+ 394 002d 01       		.byte	0x1
+ 395 002e 08       		.byte	0x8
+ 396 002f 6A020000 		.4byte	.LASF1
+ 397 0033 03       		.uleb128 0x3
+ 398 0034 17020000 		.4byte	.LASF3
+ 399 0038 02       		.byte	0x2
+ 400 0039 77       		.byte	0x77
+ 401 003a 3E000000 		.4byte	0x3e
+ 402 003e 02       		.uleb128 0x2
+ 403 003f 01       		.byte	0x1
+ 404 0040 08       		.byte	0x8
+ 405 0041 99000000 		.4byte	.LASF2
+ 406 0045 03       		.uleb128 0x3
+ 407 0046 53010000 		.4byte	.LASF4
+ 408 004a 02       		.byte	0x2
+ 409 004b 78       		.byte	0x78
+ 410 004c 3E000000 		.4byte	0x3e
+ 411 0050 03       		.uleb128 0x3
+ 412 0051 48010000 		.4byte	.LASF5
+ 413 0055 02       		.byte	0x2
+ 414 0056 79       		.byte	0x79
+ 415 0057 5B000000 		.4byte	0x5b
+ 416 005b 02       		.uleb128 0x2
+ 417 005c 01       		.byte	0x1
+ 418 005d 06       		.byte	0x6
+ 419 005e 2D020000 		.4byte	.LASF6
+ 420 0062 03       		.uleb128 0x3
+ 421 0063 39020000 		.4byte	.LASF7
+ 422 0067 02       		.byte	0x2
+ 423 0068 7A       		.byte	0x7a
+ 424 0069 6D000000 		.4byte	0x6d
+ 425 006d 02       		.uleb128 0x2
+ 426 006e 02       		.byte	0x2
+ 427 006f 07       		.byte	0x7
+ 428 0070 2E000000 		.4byte	.LASF8
+ 429 0074 02       		.uleb128 0x2
+ 430 0075 02       		.byte	0x2
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 15
+
+
+ 431 0076 05       		.byte	0x5
+ 432 0077 86020000 		.4byte	.LASF9
+ 433 007b 03       		.uleb128 0x3
+ 434 007c 8E000000 		.4byte	.LASF10
+ 435 0080 02       		.byte	0x2
+ 436 0081 7C       		.byte	0x7c
+ 437 0082 25000000 		.4byte	0x25
+ 438 0086 04       		.uleb128 0x4
+ 439 0087 04       		.byte	0x4
+ 440 0088 05       		.byte	0x5
+ 441 0089 696E7400 		.ascii	"int\000"
+ 442 008d 03       		.uleb128 0x3
+ 443 008e 3D010000 		.4byte	.LASF11
+ 444 0092 02       		.byte	0x2
+ 445 0093 7E       		.byte	0x7e
+ 446 0094 98000000 		.4byte	0x98
+ 447 0098 02       		.uleb128 0x2
+ 448 0099 08       		.byte	0x8
+ 449 009a 07       		.byte	0x7
+ 450 009b 00020000 		.4byte	.LASF12
+ 451 009f 02       		.uleb128 0x2
+ 452 00a0 08       		.byte	0x8
+ 453 00a1 05       		.byte	0x5
+ 454 00a2 5C020000 		.4byte	.LASF13
+ 455 00a6 02       		.uleb128 0x2
+ 456 00a7 04       		.byte	0x4
+ 457 00a8 04       		.byte	0x4
+ 458 00a9 0C000000 		.4byte	.LASF14
+ 459 00ad 02       		.uleb128 0x2
+ 460 00ae 08       		.byte	0x8
+ 461 00af 04       		.byte	0x4
+ 462 00b0 4C000000 		.4byte	.LASF15
+ 463 00b4 03       		.uleb128 0x3
+ 464 00b5 7C020000 		.4byte	.LASF16
+ 465 00b9 02       		.byte	0x2
+ 466 00ba 87       		.byte	0x87
+ 467 00bb BF000000 		.4byte	0xbf
+ 468 00bf 05       		.uleb128 0x5
+ 469 00c0 7B000000 		.4byte	0x7b
+ 470 00c4 02       		.uleb128 0x2
+ 471 00c5 04       		.byte	0x4
+ 472 00c6 05       		.byte	0x5
+ 473 00c7 BC020000 		.4byte	.LASF17
+ 474 00cb 02       		.uleb128 0x2
+ 475 00cc 04       		.byte	0x4
+ 476 00cd 07       		.byte	0x7
+ 477 00ce 78010000 		.4byte	.LASF18
+ 478 00d2 02       		.uleb128 0x2
+ 479 00d3 08       		.byte	0x8
+ 480 00d4 04       		.byte	0x4
+ 481 00d5 C5020000 		.4byte	.LASF19
+ 482 00d9 02       		.uleb128 0x2
+ 483 00da 04       		.byte	0x4
+ 484 00db 07       		.byte	0x7
+ 485 00dc 4E020000 		.4byte	.LASF20
+ 486 00e0 03       		.uleb128 0x3
+ 487 00e1 41000000 		.4byte	.LASF21
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 16
+
+
+ 488 00e5 03       		.byte	0x3
+ 489 00e6 4D       		.byte	0x4d
+ 490 00e7 7B000000 		.4byte	0x7b
+ 491 00eb 06       		.uleb128 0x6
+ 492 00ec 00000000 		.4byte	.LASF24
+ 493 00f0 01       		.byte	0x1
+ 494 00f1 76       		.byte	0x76
+ 495 00f2 00000000 		.4byte	.LFB1
+ 496 00f6 20000000 		.4byte	.LFE1-.LFB1
+ 497 00fa 01       		.uleb128 0x1
+ 498 00fb 9C       		.byte	0x9c
+ 499 00fc 1B010000 		.4byte	0x11b
+ 500 0100 07       		.uleb128 0x7
+ 501 0101 35010000 		.4byte	.LASF22
+ 502 0105 01       		.byte	0x1
+ 503 0106 78       		.byte	0x78
+ 504 0107 7B000000 		.4byte	0x7b
+ 505 010b 01       		.uleb128 0x1
+ 506 010c 53       		.byte	0x53
+ 507 010d 07       		.uleb128 0x7
+ 508 010e B1020000 		.4byte	.LASF23
+ 509 0112 01       		.byte	0x1
+ 510 0113 79       		.byte	0x79
+ 511 0114 1B010000 		.4byte	0x11b
+ 512 0118 01       		.uleb128 0x1
+ 513 0119 53       		.byte	0x53
+ 514 011a 00       		.byte	0
+ 515 011b 08       		.uleb128 0x8
+ 516 011c 04       		.byte	0x4
+ 517 011d 7B000000 		.4byte	0x7b
+ 518 0121 06       		.uleb128 0x6
+ 519 0122 6F020000 		.4byte	.LASF25
+ 520 0126 01       		.byte	0x1
+ 521 0127 97       		.byte	0x97
+ 522 0128 00000000 		.4byte	.LFB2
+ 523 012c 0C000000 		.4byte	.LFE2-.LFB2
+ 524 0130 01       		.uleb128 0x1
+ 525 0131 9C       		.byte	0x9c
+ 526 0132 49010000 		.4byte	0x149
+ 527 0136 09       		.uleb128 0x9
+ 528 0137 06000000 		.4byte	.LVL2
+ 529 013b 67030000 		.4byte	0x367
+ 530 013f 09       		.uleb128 0x9
+ 531 0140 0A000000 		.4byte	.LVL3
+ 532 0144 72030000 		.4byte	0x372
+ 533 0148 00       		.byte	0
+ 534 0149 0A       		.uleb128 0xa
+ 535 014a D5010000 		.4byte	.LASF45
+ 536 014e 01       		.byte	0x1
+ 537 014f CC       		.byte	0xcc
+ 538 0150 7B000000 		.4byte	0x7b
+ 539 0154 00000000 		.4byte	.LFB4
+ 540 0158 08000000 		.4byte	.LFE4-.LFB4
+ 541 015c 01       		.uleb128 0x1
+ 542 015d 9C       		.byte	0x9c
+ 543 015e 06       		.uleb128 0x6
+ 544 015f 90020000 		.4byte	.LASF26
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 17
+
+
+ 545 0163 01       		.byte	0x1
+ 546 0164 AD       		.byte	0xad
+ 547 0165 00000000 		.4byte	.LFB3
+ 548 0169 18000000 		.4byte	.LFE3-.LFB3
+ 549 016d 01       		.uleb128 0x1
+ 550 016e 9C       		.byte	0x9c
+ 551 016f A4010000 		.4byte	0x1a4
+ 552 0173 0B       		.uleb128 0xb
+ 553 0174 67000000 		.4byte	.LASF27
+ 554 0178 01       		.byte	0x1
+ 555 0179 AF       		.byte	0xaf
+ 556 017a 7B000000 		.4byte	0x7b
+ 557 017e 00000000 		.4byte	.LLST0
+ 558 0182 0B       		.uleb128 0xb
+ 559 0183 57020000 		.4byte	.LASF28
+ 560 0187 01       		.byte	0x1
+ 561 0188 B0       		.byte	0xb0
+ 562 0189 7B000000 		.4byte	0x7b
+ 563 018d 13000000 		.4byte	.LLST1
+ 564 0191 09       		.uleb128 0x9
+ 565 0192 06000000 		.4byte	.LVL4
+ 566 0196 49010000 		.4byte	0x149
+ 567 019a 09       		.uleb128 0x9
+ 568 019b 12000000 		.4byte	.LVL7
+ 569 019f 7D030000 		.4byte	0x37d
+ 570 01a3 00       		.byte	0
+ 571 01a4 0C       		.uleb128 0xc
+ 572 01a5 99010000 		.4byte	.LASF29
+ 573 01a9 01       		.byte	0x1
+ 574 01aa EF       		.byte	0xef
+ 575 01ab 45000000 		.4byte	0x45
+ 576 01af 00000000 		.4byte	.LFB5
+ 577 01b3 30000000 		.4byte	.LFE5-.LFB5
+ 578 01b7 01       		.uleb128 0x1
+ 579 01b8 9C       		.byte	0x9c
+ 580 01b9 21020000 		.4byte	0x221
+ 581 01bd 0D       		.uleb128 0xd
+ 582 01be 6C656400 		.ascii	"led\000"
+ 583 01c2 01       		.byte	0x1
+ 584 01c3 EF       		.byte	0xef
+ 585 01c4 45000000 		.4byte	0x45
+ 586 01c8 3C000000 		.4byte	.LLST2
+ 587 01cc 0E       		.uleb128 0xe
+ 588 01cd 65727200 		.ascii	"err\000"
+ 589 01d1 01       		.byte	0x1
+ 590 01d2 F1       		.byte	0xf1
+ 591 01d3 45000000 		.4byte	0x45
+ 592 01d7 A8000000 		.4byte	.LLST3
+ 593 01db 0F       		.uleb128 0xf
+ 594 01dc 0E000000 		.4byte	.LVL11
+ 595 01e0 88030000 		.4byte	0x388
+ 596 01e4 F4010000 		.4byte	0x1f4
+ 597 01e8 10       		.uleb128 0x10
+ 598 01e9 01       		.uleb128 0x1
+ 599 01ea 50       		.byte	0x50
+ 600 01eb 01       		.uleb128 0x1
+ 601 01ec 31       		.byte	0x31
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 18
+
+
+ 602 01ed 10       		.uleb128 0x10
+ 603 01ee 01       		.uleb128 0x1
+ 604 01ef 51       		.byte	0x51
+ 605 01f0 02       		.uleb128 0x2
+ 606 01f1 08       		.byte	0x8
+ 607 01f2 40       		.byte	0x40
+ 608 01f3 00       		.byte	0
+ 609 01f4 0F       		.uleb128 0xf
+ 610 01f5 1C000000 		.4byte	.LVL14
+ 611 01f9 88030000 		.4byte	0x388
+ 612 01fd 0C020000 		.4byte	0x20c
+ 613 0201 10       		.uleb128 0x10
+ 614 0202 01       		.uleb128 0x1
+ 615 0203 50       		.byte	0x50
+ 616 0204 01       		.uleb128 0x1
+ 617 0205 32       		.byte	0x32
+ 618 0206 10       		.uleb128 0x10
+ 619 0207 01       		.uleb128 0x1
+ 620 0208 51       		.byte	0x51
+ 621 0209 01       		.uleb128 0x1
+ 622 020a 31       		.byte	0x31
+ 623 020b 00       		.byte	0
+ 624 020c 11       		.uleb128 0x11
+ 625 020d 2A000000 		.4byte	.LVL17
+ 626 0211 88030000 		.4byte	0x388
+ 627 0215 10       		.uleb128 0x10
+ 628 0216 01       		.uleb128 0x1
+ 629 0217 50       		.byte	0x50
+ 630 0218 01       		.uleb128 0x1
+ 631 0219 32       		.byte	0x32
+ 632 021a 10       		.uleb128 0x10
+ 633 021b 01       		.uleb128 0x1
+ 634 021c 51       		.byte	0x51
+ 635 021d 01       		.uleb128 0x1
+ 636 021e 32       		.byte	0x32
+ 637 021f 00       		.byte	0
+ 638 0220 00       		.byte	0
+ 639 0221 12       		.uleb128 0x12
+ 640 0222 6C010000 		.4byte	.LASF30
+ 641 0226 01       		.byte	0x1
+ 642 0227 1701     		.2byte	0x117
+ 643 0229 45000000 		.4byte	0x45
+ 644 022d 00000000 		.4byte	.LFB6
+ 645 0231 30000000 		.4byte	.LFE6-.LFB6
+ 646 0235 01       		.uleb128 0x1
+ 647 0236 9C       		.byte	0x9c
+ 648 0237 A1020000 		.4byte	0x2a1
+ 649 023b 13       		.uleb128 0x13
+ 650 023c 6C656400 		.ascii	"led\000"
+ 651 0240 01       		.byte	0x1
+ 652 0241 1701     		.2byte	0x117
+ 653 0243 45000000 		.4byte	0x45
+ 654 0247 0C010000 		.4byte	.LLST4
+ 655 024b 14       		.uleb128 0x14
+ 656 024c 65727200 		.ascii	"err\000"
+ 657 0250 01       		.byte	0x1
+ 658 0251 1901     		.2byte	0x119
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 19
+
+
+ 659 0253 45000000 		.4byte	0x45
+ 660 0257 78010000 		.4byte	.LLST5
+ 661 025b 0F       		.uleb128 0xf
+ 662 025c 0E000000 		.4byte	.LVL23
+ 663 0260 93030000 		.4byte	0x393
+ 664 0264 74020000 		.4byte	0x274
+ 665 0268 10       		.uleb128 0x10
+ 666 0269 01       		.uleb128 0x1
+ 667 026a 50       		.byte	0x50
+ 668 026b 01       		.uleb128 0x1
+ 669 026c 31       		.byte	0x31
+ 670 026d 10       		.uleb128 0x10
+ 671 026e 01       		.uleb128 0x1
+ 672 026f 51       		.byte	0x51
+ 673 0270 02       		.uleb128 0x2
+ 674 0271 08       		.byte	0x8
+ 675 0272 40       		.byte	0x40
+ 676 0273 00       		.byte	0
+ 677 0274 0F       		.uleb128 0xf
+ 678 0275 1C000000 		.4byte	.LVL26
+ 679 0279 93030000 		.4byte	0x393
+ 680 027d 8C020000 		.4byte	0x28c
+ 681 0281 10       		.uleb128 0x10
+ 682 0282 01       		.uleb128 0x1
+ 683 0283 50       		.byte	0x50
+ 684 0284 01       		.uleb128 0x1
+ 685 0285 32       		.byte	0x32
+ 686 0286 10       		.uleb128 0x10
+ 687 0287 01       		.uleb128 0x1
+ 688 0288 51       		.byte	0x51
+ 689 0289 01       		.uleb128 0x1
+ 690 028a 31       		.byte	0x31
+ 691 028b 00       		.byte	0
+ 692 028c 11       		.uleb128 0x11
+ 693 028d 2A000000 		.4byte	.LVL29
+ 694 0291 93030000 		.4byte	0x393
+ 695 0295 10       		.uleb128 0x10
+ 696 0296 01       		.uleb128 0x1
+ 697 0297 50       		.byte	0x50
+ 698 0298 01       		.uleb128 0x1
+ 699 0299 32       		.byte	0x32
+ 700 029a 10       		.uleb128 0x10
+ 701 029b 01       		.uleb128 0x1
+ 702 029c 51       		.byte	0x51
+ 703 029d 01       		.uleb128 0x1
+ 704 029e 32       		.byte	0x32
+ 705 029f 00       		.byte	0
+ 706 02a0 00       		.byte	0
+ 707 02a1 12       		.uleb128 0x12
+ 708 02a2 8A010000 		.4byte	.LASF31
+ 709 02a6 01       		.byte	0x1
+ 710 02a7 3F01     		.2byte	0x13f
+ 711 02a9 45000000 		.4byte	0x45
+ 712 02ad 00000000 		.4byte	.LFB7
+ 713 02b1 2C000000 		.4byte	.LFE7-.LFB7
+ 714 02b5 01       		.uleb128 0x1
+ 715 02b6 9C       		.byte	0x9c
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 20
+
+
+ 716 02b7 00030000 		.4byte	0x300
+ 717 02bb 13       		.uleb128 0x13
+ 718 02bc 6C656400 		.ascii	"led\000"
+ 719 02c0 01       		.byte	0x1
+ 720 02c1 3F01     		.2byte	0x13f
+ 721 02c3 45000000 		.4byte	0x45
+ 722 02c7 DC010000 		.4byte	.LLST6
+ 723 02cb 14       		.uleb128 0x14
+ 724 02cc 65727200 		.ascii	"err\000"
+ 725 02d0 01       		.byte	0x1
+ 726 02d1 4101     		.2byte	0x141
+ 727 02d3 45000000 		.4byte	0x45
+ 728 02d7 2F020000 		.4byte	.LLST7
+ 729 02db 15       		.uleb128 0x15
+ 730 02dc E5010000 		.4byte	.LASF32
+ 731 02e0 01       		.byte	0x1
+ 732 02e1 4201     		.2byte	0x142
+ 733 02e3 33000000 		.4byte	0x33
+ 734 02e7 05       		.uleb128 0x5
+ 735 02e8 03       		.byte	0x3
+ 736 02e9 00000000 		.4byte	toggle_status.7348
+ 737 02ed 09       		.uleb128 0x9
+ 738 02ee 0C000000 		.4byte	.LVL34
+ 739 02f2 A4010000 		.4byte	0x1a4
+ 740 02f6 09       		.uleb128 0x9
+ 741 02f7 1A000000 		.4byte	.LVL36
+ 742 02fb 21020000 		.4byte	0x221
+ 743 02ff 00       		.byte	0
+ 744 0300 12       		.uleb128 0x12
+ 745 0301 7D000000 		.4byte	.LASF33
+ 746 0305 01       		.byte	0x1
+ 747 0306 6401     		.2byte	0x164
+ 748 0308 50000000 		.4byte	0x50
+ 749 030c 00000000 		.4byte	.LFB8
+ 750 0310 16000000 		.4byte	.LFE8-.LFB8
+ 751 0314 01       		.uleb128 0x1
+ 752 0315 9C       		.byte	0x9c
+ 753 0316 3E030000 		.4byte	0x33e
+ 754 031a 13       		.uleb128 0x13
+ 755 031b 706200   		.ascii	"pb\000"
+ 756 031e 01       		.byte	0x1
+ 757 031f 6401     		.2byte	0x164
+ 758 0321 45000000 		.4byte	0x45
+ 759 0325 7C020000 		.4byte	.LLST8
+ 760 0329 11       		.uleb128 0x11
+ 761 032a 0E000000 		.4byte	.LVL41
+ 762 032e 9E030000 		.4byte	0x39e
+ 763 0332 10       		.uleb128 0x10
+ 764 0333 01       		.uleb128 0x1
+ 765 0334 50       		.byte	0x50
+ 766 0335 01       		.uleb128 0x1
+ 767 0336 32       		.byte	0x32
+ 768 0337 10       		.uleb128 0x10
+ 769 0338 01       		.uleb128 0x1
+ 770 0339 51       		.byte	0x51
+ 771 033a 01       		.uleb128 0x1
+ 772 033b 34       		.byte	0x34
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 21
+
+
+ 773 033c 00       		.byte	0
+ 774 033d 00       		.byte	0
+ 775 033e 16       		.uleb128 0x16
+ 776 033f A1020000 		.4byte	.LASF34
+ 777 0343 04       		.byte	0x4
+ 778 0344 11       		.byte	0x11
+ 779 0345 45000000 		.4byte	0x45
+ 780 0349 23       		.byte	0x23
+ 781 034a 16       		.uleb128 0x16
+ 782 034b 5E010000 		.4byte	.LASF35
+ 783 034f 04       		.byte	0x4
+ 784 0350 12       		.byte	0x12
+ 785 0351 45000000 		.4byte	0x45
+ 786 0355 24       		.byte	0x24
+ 787 0356 17       		.uleb128 0x17
+ 788 0357 1C000000 		.4byte	.LASF46
+ 789 035b 07       		.byte	0x7
+ 790 035c 0F05     		.2byte	0x50f
+ 791 035e 62030000 		.4byte	0x362
+ 792 0362 18       		.uleb128 0x18
+ 793 0363 E0000000 		.4byte	0xe0
+ 794 0367 19       		.uleb128 0x19
+ 795 0368 23020000 		.4byte	.LASF36
+ 796 036c 23020000 		.4byte	.LASF36
+ 797 0370 05       		.byte	0x5
+ 798 0371 1E       		.byte	0x1e
+ 799 0372 19       		.uleb128 0x19
+ 800 0373 53000000 		.4byte	.LASF37
+ 801 0377 53000000 		.4byte	.LASF37
+ 802 037b 04       		.byte	0x4
+ 803 037c 14       		.byte	0x14
+ 804 037d 19       		.uleb128 0x19
+ 805 037e D1020000 		.4byte	.LASF38
+ 806 0382 D1020000 		.4byte	.LASF38
+ 807 0386 06       		.byte	0x6
+ 808 0387 89       		.byte	0x89
+ 809 0388 19       		.uleb128 0x19
+ 810 0389 44020000 		.4byte	.LASF39
+ 811 038d 44020000 		.4byte	.LASF39
+ 812 0391 05       		.byte	0x5
+ 813 0392 1F       		.byte	0x1f
+ 814 0393 19       		.uleb128 0x19
+ 815 0394 74000000 		.4byte	.LASF40
+ 816 0398 74000000 		.4byte	.LASF40
+ 817 039c 05       		.byte	0x5
+ 818 039d 20       		.byte	0x20
+ 819 039e 19       		.uleb128 0x19
+ 820 039f 5D000000 		.4byte	.LASF41
+ 821 03a3 5D000000 		.4byte	.LASF41
+ 822 03a7 05       		.byte	0x5
+ 823 03a8 21       		.byte	0x21
+ 824 03a9 00       		.byte	0
+ 825              		.section	.debug_abbrev,"",%progbits
+ 826              	.Ldebug_abbrev0:
+ 827 0000 01       		.uleb128 0x1
+ 828 0001 11       		.uleb128 0x11
+ 829 0002 01       		.byte	0x1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 22
+
+
+ 830 0003 25       		.uleb128 0x25
+ 831 0004 0E       		.uleb128 0xe
+ 832 0005 13       		.uleb128 0x13
+ 833 0006 0B       		.uleb128 0xb
+ 834 0007 03       		.uleb128 0x3
+ 835 0008 0E       		.uleb128 0xe
+ 836 0009 1B       		.uleb128 0x1b
+ 837 000a 0E       		.uleb128 0xe
+ 838 000b 55       		.uleb128 0x55
+ 839 000c 17       		.uleb128 0x17
+ 840 000d 11       		.uleb128 0x11
+ 841 000e 01       		.uleb128 0x1
+ 842 000f 10       		.uleb128 0x10
+ 843 0010 17       		.uleb128 0x17
+ 844 0011 00       		.byte	0
+ 845 0012 00       		.byte	0
+ 846 0013 02       		.uleb128 0x2
+ 847 0014 24       		.uleb128 0x24
+ 848 0015 00       		.byte	0
+ 849 0016 0B       		.uleb128 0xb
+ 850 0017 0B       		.uleb128 0xb
+ 851 0018 3E       		.uleb128 0x3e
+ 852 0019 0B       		.uleb128 0xb
+ 853 001a 03       		.uleb128 0x3
+ 854 001b 0E       		.uleb128 0xe
+ 855 001c 00       		.byte	0
+ 856 001d 00       		.byte	0
+ 857 001e 03       		.uleb128 0x3
+ 858 001f 16       		.uleb128 0x16
+ 859 0020 00       		.byte	0
+ 860 0021 03       		.uleb128 0x3
+ 861 0022 0E       		.uleb128 0xe
+ 862 0023 3A       		.uleb128 0x3a
+ 863 0024 0B       		.uleb128 0xb
+ 864 0025 3B       		.uleb128 0x3b
+ 865 0026 0B       		.uleb128 0xb
+ 866 0027 49       		.uleb128 0x49
+ 867 0028 13       		.uleb128 0x13
+ 868 0029 00       		.byte	0
+ 869 002a 00       		.byte	0
+ 870 002b 04       		.uleb128 0x4
+ 871 002c 24       		.uleb128 0x24
+ 872 002d 00       		.byte	0
+ 873 002e 0B       		.uleb128 0xb
+ 874 002f 0B       		.uleb128 0xb
+ 875 0030 3E       		.uleb128 0x3e
+ 876 0031 0B       		.uleb128 0xb
+ 877 0032 03       		.uleb128 0x3
+ 878 0033 08       		.uleb128 0x8
+ 879 0034 00       		.byte	0
+ 880 0035 00       		.byte	0
+ 881 0036 05       		.uleb128 0x5
+ 882 0037 35       		.uleb128 0x35
+ 883 0038 00       		.byte	0
+ 884 0039 49       		.uleb128 0x49
+ 885 003a 13       		.uleb128 0x13
+ 886 003b 00       		.byte	0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 23
+
+
+ 887 003c 00       		.byte	0
+ 888 003d 06       		.uleb128 0x6
+ 889 003e 2E       		.uleb128 0x2e
+ 890 003f 01       		.byte	0x1
+ 891 0040 3F       		.uleb128 0x3f
+ 892 0041 19       		.uleb128 0x19
+ 893 0042 03       		.uleb128 0x3
+ 894 0043 0E       		.uleb128 0xe
+ 895 0044 3A       		.uleb128 0x3a
+ 896 0045 0B       		.uleb128 0xb
+ 897 0046 3B       		.uleb128 0x3b
+ 898 0047 0B       		.uleb128 0xb
+ 899 0048 27       		.uleb128 0x27
+ 900 0049 19       		.uleb128 0x19
+ 901 004a 11       		.uleb128 0x11
+ 902 004b 01       		.uleb128 0x1
+ 903 004c 12       		.uleb128 0x12
+ 904 004d 06       		.uleb128 0x6
+ 905 004e 40       		.uleb128 0x40
+ 906 004f 18       		.uleb128 0x18
+ 907 0050 9742     		.uleb128 0x2117
+ 908 0052 19       		.uleb128 0x19
+ 909 0053 01       		.uleb128 0x1
+ 910 0054 13       		.uleb128 0x13
+ 911 0055 00       		.byte	0
+ 912 0056 00       		.byte	0
+ 913 0057 07       		.uleb128 0x7
+ 914 0058 34       		.uleb128 0x34
+ 915 0059 00       		.byte	0
+ 916 005a 03       		.uleb128 0x3
+ 917 005b 0E       		.uleb128 0xe
+ 918 005c 3A       		.uleb128 0x3a
+ 919 005d 0B       		.uleb128 0xb
+ 920 005e 3B       		.uleb128 0x3b
+ 921 005f 0B       		.uleb128 0xb
+ 922 0060 49       		.uleb128 0x49
+ 923 0061 13       		.uleb128 0x13
+ 924 0062 02       		.uleb128 0x2
+ 925 0063 18       		.uleb128 0x18
+ 926 0064 00       		.byte	0
+ 927 0065 00       		.byte	0
+ 928 0066 08       		.uleb128 0x8
+ 929 0067 0F       		.uleb128 0xf
+ 930 0068 00       		.byte	0
+ 931 0069 0B       		.uleb128 0xb
+ 932 006a 0B       		.uleb128 0xb
+ 933 006b 49       		.uleb128 0x49
+ 934 006c 13       		.uleb128 0x13
+ 935 006d 00       		.byte	0
+ 936 006e 00       		.byte	0
+ 937 006f 09       		.uleb128 0x9
+ 938 0070 898201   		.uleb128 0x4109
+ 939 0073 00       		.byte	0
+ 940 0074 11       		.uleb128 0x11
+ 941 0075 01       		.uleb128 0x1
+ 942 0076 31       		.uleb128 0x31
+ 943 0077 13       		.uleb128 0x13
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 24
+
+
+ 944 0078 00       		.byte	0
+ 945 0079 00       		.byte	0
+ 946 007a 0A       		.uleb128 0xa
+ 947 007b 2E       		.uleb128 0x2e
+ 948 007c 00       		.byte	0
+ 949 007d 3F       		.uleb128 0x3f
+ 950 007e 19       		.uleb128 0x19
+ 951 007f 03       		.uleb128 0x3
+ 952 0080 0E       		.uleb128 0xe
+ 953 0081 3A       		.uleb128 0x3a
+ 954 0082 0B       		.uleb128 0xb
+ 955 0083 3B       		.uleb128 0x3b
+ 956 0084 0B       		.uleb128 0xb
+ 957 0085 27       		.uleb128 0x27
+ 958 0086 19       		.uleb128 0x19
+ 959 0087 49       		.uleb128 0x49
+ 960 0088 13       		.uleb128 0x13
+ 961 0089 11       		.uleb128 0x11
+ 962 008a 01       		.uleb128 0x1
+ 963 008b 12       		.uleb128 0x12
+ 964 008c 06       		.uleb128 0x6
+ 965 008d 40       		.uleb128 0x40
+ 966 008e 18       		.uleb128 0x18
+ 967 008f 9742     		.uleb128 0x2117
+ 968 0091 19       		.uleb128 0x19
+ 969 0092 00       		.byte	0
+ 970 0093 00       		.byte	0
+ 971 0094 0B       		.uleb128 0xb
+ 972 0095 34       		.uleb128 0x34
+ 973 0096 00       		.byte	0
+ 974 0097 03       		.uleb128 0x3
+ 975 0098 0E       		.uleb128 0xe
+ 976 0099 3A       		.uleb128 0x3a
+ 977 009a 0B       		.uleb128 0xb
+ 978 009b 3B       		.uleb128 0x3b
+ 979 009c 0B       		.uleb128 0xb
+ 980 009d 49       		.uleb128 0x49
+ 981 009e 13       		.uleb128 0x13
+ 982 009f 02       		.uleb128 0x2
+ 983 00a0 17       		.uleb128 0x17
+ 984 00a1 00       		.byte	0
+ 985 00a2 00       		.byte	0
+ 986 00a3 0C       		.uleb128 0xc
+ 987 00a4 2E       		.uleb128 0x2e
+ 988 00a5 01       		.byte	0x1
+ 989 00a6 3F       		.uleb128 0x3f
+ 990 00a7 19       		.uleb128 0x19
+ 991 00a8 03       		.uleb128 0x3
+ 992 00a9 0E       		.uleb128 0xe
+ 993 00aa 3A       		.uleb128 0x3a
+ 994 00ab 0B       		.uleb128 0xb
+ 995 00ac 3B       		.uleb128 0x3b
+ 996 00ad 0B       		.uleb128 0xb
+ 997 00ae 27       		.uleb128 0x27
+ 998 00af 19       		.uleb128 0x19
+ 999 00b0 49       		.uleb128 0x49
+ 1000 00b1 13       		.uleb128 0x13
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 25
+
+
+ 1001 00b2 11       		.uleb128 0x11
+ 1002 00b3 01       		.uleb128 0x1
+ 1003 00b4 12       		.uleb128 0x12
+ 1004 00b5 06       		.uleb128 0x6
+ 1005 00b6 40       		.uleb128 0x40
+ 1006 00b7 18       		.uleb128 0x18
+ 1007 00b8 9742     		.uleb128 0x2117
+ 1008 00ba 19       		.uleb128 0x19
+ 1009 00bb 01       		.uleb128 0x1
+ 1010 00bc 13       		.uleb128 0x13
+ 1011 00bd 00       		.byte	0
+ 1012 00be 00       		.byte	0
+ 1013 00bf 0D       		.uleb128 0xd
+ 1014 00c0 05       		.uleb128 0x5
+ 1015 00c1 00       		.byte	0
+ 1016 00c2 03       		.uleb128 0x3
+ 1017 00c3 08       		.uleb128 0x8
+ 1018 00c4 3A       		.uleb128 0x3a
+ 1019 00c5 0B       		.uleb128 0xb
+ 1020 00c6 3B       		.uleb128 0x3b
+ 1021 00c7 0B       		.uleb128 0xb
+ 1022 00c8 49       		.uleb128 0x49
+ 1023 00c9 13       		.uleb128 0x13
+ 1024 00ca 02       		.uleb128 0x2
+ 1025 00cb 17       		.uleb128 0x17
+ 1026 00cc 00       		.byte	0
+ 1027 00cd 00       		.byte	0
+ 1028 00ce 0E       		.uleb128 0xe
+ 1029 00cf 34       		.uleb128 0x34
+ 1030 00d0 00       		.byte	0
+ 1031 00d1 03       		.uleb128 0x3
+ 1032 00d2 08       		.uleb128 0x8
+ 1033 00d3 3A       		.uleb128 0x3a
+ 1034 00d4 0B       		.uleb128 0xb
+ 1035 00d5 3B       		.uleb128 0x3b
+ 1036 00d6 0B       		.uleb128 0xb
+ 1037 00d7 49       		.uleb128 0x49
+ 1038 00d8 13       		.uleb128 0x13
+ 1039 00d9 02       		.uleb128 0x2
+ 1040 00da 17       		.uleb128 0x17
+ 1041 00db 00       		.byte	0
+ 1042 00dc 00       		.byte	0
+ 1043 00dd 0F       		.uleb128 0xf
+ 1044 00de 898201   		.uleb128 0x4109
+ 1045 00e1 01       		.byte	0x1
+ 1046 00e2 11       		.uleb128 0x11
+ 1047 00e3 01       		.uleb128 0x1
+ 1048 00e4 31       		.uleb128 0x31
+ 1049 00e5 13       		.uleb128 0x13
+ 1050 00e6 01       		.uleb128 0x1
+ 1051 00e7 13       		.uleb128 0x13
+ 1052 00e8 00       		.byte	0
+ 1053 00e9 00       		.byte	0
+ 1054 00ea 10       		.uleb128 0x10
+ 1055 00eb 8A8201   		.uleb128 0x410a
+ 1056 00ee 00       		.byte	0
+ 1057 00ef 02       		.uleb128 0x2
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 26
+
+
+ 1058 00f0 18       		.uleb128 0x18
+ 1059 00f1 9142     		.uleb128 0x2111
+ 1060 00f3 18       		.uleb128 0x18
+ 1061 00f4 00       		.byte	0
+ 1062 00f5 00       		.byte	0
+ 1063 00f6 11       		.uleb128 0x11
+ 1064 00f7 898201   		.uleb128 0x4109
+ 1065 00fa 01       		.byte	0x1
+ 1066 00fb 11       		.uleb128 0x11
+ 1067 00fc 01       		.uleb128 0x1
+ 1068 00fd 31       		.uleb128 0x31
+ 1069 00fe 13       		.uleb128 0x13
+ 1070 00ff 00       		.byte	0
+ 1071 0100 00       		.byte	0
+ 1072 0101 12       		.uleb128 0x12
+ 1073 0102 2E       		.uleb128 0x2e
+ 1074 0103 01       		.byte	0x1
+ 1075 0104 3F       		.uleb128 0x3f
+ 1076 0105 19       		.uleb128 0x19
+ 1077 0106 03       		.uleb128 0x3
+ 1078 0107 0E       		.uleb128 0xe
+ 1079 0108 3A       		.uleb128 0x3a
+ 1080 0109 0B       		.uleb128 0xb
+ 1081 010a 3B       		.uleb128 0x3b
+ 1082 010b 05       		.uleb128 0x5
+ 1083 010c 27       		.uleb128 0x27
+ 1084 010d 19       		.uleb128 0x19
+ 1085 010e 49       		.uleb128 0x49
+ 1086 010f 13       		.uleb128 0x13
+ 1087 0110 11       		.uleb128 0x11
+ 1088 0111 01       		.uleb128 0x1
+ 1089 0112 12       		.uleb128 0x12
+ 1090 0113 06       		.uleb128 0x6
+ 1091 0114 40       		.uleb128 0x40
+ 1092 0115 18       		.uleb128 0x18
+ 1093 0116 9742     		.uleb128 0x2117
+ 1094 0118 19       		.uleb128 0x19
+ 1095 0119 01       		.uleb128 0x1
+ 1096 011a 13       		.uleb128 0x13
+ 1097 011b 00       		.byte	0
+ 1098 011c 00       		.byte	0
+ 1099 011d 13       		.uleb128 0x13
+ 1100 011e 05       		.uleb128 0x5
+ 1101 011f 00       		.byte	0
+ 1102 0120 03       		.uleb128 0x3
+ 1103 0121 08       		.uleb128 0x8
+ 1104 0122 3A       		.uleb128 0x3a
+ 1105 0123 0B       		.uleb128 0xb
+ 1106 0124 3B       		.uleb128 0x3b
+ 1107 0125 05       		.uleb128 0x5
+ 1108 0126 49       		.uleb128 0x49
+ 1109 0127 13       		.uleb128 0x13
+ 1110 0128 02       		.uleb128 0x2
+ 1111 0129 17       		.uleb128 0x17
+ 1112 012a 00       		.byte	0
+ 1113 012b 00       		.byte	0
+ 1114 012c 14       		.uleb128 0x14
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 27
+
+
+ 1115 012d 34       		.uleb128 0x34
+ 1116 012e 00       		.byte	0
+ 1117 012f 03       		.uleb128 0x3
+ 1118 0130 08       		.uleb128 0x8
+ 1119 0131 3A       		.uleb128 0x3a
+ 1120 0132 0B       		.uleb128 0xb
+ 1121 0133 3B       		.uleb128 0x3b
+ 1122 0134 05       		.uleb128 0x5
+ 1123 0135 49       		.uleb128 0x49
+ 1124 0136 13       		.uleb128 0x13
+ 1125 0137 02       		.uleb128 0x2
+ 1126 0138 17       		.uleb128 0x17
+ 1127 0139 00       		.byte	0
+ 1128 013a 00       		.byte	0
+ 1129 013b 15       		.uleb128 0x15
+ 1130 013c 34       		.uleb128 0x34
+ 1131 013d 00       		.byte	0
+ 1132 013e 03       		.uleb128 0x3
+ 1133 013f 0E       		.uleb128 0xe
+ 1134 0140 3A       		.uleb128 0x3a
+ 1135 0141 0B       		.uleb128 0xb
+ 1136 0142 3B       		.uleb128 0x3b
+ 1137 0143 05       		.uleb128 0x5
+ 1138 0144 49       		.uleb128 0x49
+ 1139 0145 13       		.uleb128 0x13
+ 1140 0146 02       		.uleb128 0x2
+ 1141 0147 18       		.uleb128 0x18
+ 1142 0148 00       		.byte	0
+ 1143 0149 00       		.byte	0
+ 1144 014a 16       		.uleb128 0x16
+ 1145 014b 34       		.uleb128 0x34
+ 1146 014c 00       		.byte	0
+ 1147 014d 03       		.uleb128 0x3
+ 1148 014e 0E       		.uleb128 0xe
+ 1149 014f 3A       		.uleb128 0x3a
+ 1150 0150 0B       		.uleb128 0xb
+ 1151 0151 3B       		.uleb128 0x3b
+ 1152 0152 0B       		.uleb128 0xb
+ 1153 0153 49       		.uleb128 0x49
+ 1154 0154 13       		.uleb128 0x13
+ 1155 0155 1C       		.uleb128 0x1c
+ 1156 0156 0B       		.uleb128 0xb
+ 1157 0157 00       		.byte	0
+ 1158 0158 00       		.byte	0
+ 1159 0159 17       		.uleb128 0x17
+ 1160 015a 34       		.uleb128 0x34
+ 1161 015b 00       		.byte	0
+ 1162 015c 03       		.uleb128 0x3
+ 1163 015d 0E       		.uleb128 0xe
+ 1164 015e 3A       		.uleb128 0x3a
+ 1165 015f 0B       		.uleb128 0xb
+ 1166 0160 3B       		.uleb128 0x3b
+ 1167 0161 05       		.uleb128 0x5
+ 1168 0162 49       		.uleb128 0x49
+ 1169 0163 13       		.uleb128 0x13
+ 1170 0164 3F       		.uleb128 0x3f
+ 1171 0165 19       		.uleb128 0x19
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 28
+
+
+ 1172 0166 3C       		.uleb128 0x3c
+ 1173 0167 19       		.uleb128 0x19
+ 1174 0168 00       		.byte	0
+ 1175 0169 00       		.byte	0
+ 1176 016a 18       		.uleb128 0x18
+ 1177 016b 26       		.uleb128 0x26
+ 1178 016c 00       		.byte	0
+ 1179 016d 49       		.uleb128 0x49
+ 1180 016e 13       		.uleb128 0x13
+ 1181 016f 00       		.byte	0
+ 1182 0170 00       		.byte	0
+ 1183 0171 19       		.uleb128 0x19
+ 1184 0172 2E       		.uleb128 0x2e
+ 1185 0173 00       		.byte	0
+ 1186 0174 3F       		.uleb128 0x3f
+ 1187 0175 19       		.uleb128 0x19
+ 1188 0176 3C       		.uleb128 0x3c
+ 1189 0177 19       		.uleb128 0x19
+ 1190 0178 6E       		.uleb128 0x6e
+ 1191 0179 0E       		.uleb128 0xe
+ 1192 017a 03       		.uleb128 0x3
+ 1193 017b 0E       		.uleb128 0xe
+ 1194 017c 3A       		.uleb128 0x3a
+ 1195 017d 0B       		.uleb128 0xb
+ 1196 017e 3B       		.uleb128 0x3b
+ 1197 017f 0B       		.uleb128 0xb
+ 1198 0180 00       		.byte	0
+ 1199 0181 00       		.byte	0
+ 1200 0182 00       		.byte	0
+ 1201              		.section	.debug_loc,"",%progbits
+ 1202              	.Ldebug_loc0:
+ 1203              	.LLST0:
+ 1204 0000 06000000 		.4byte	.LVL4
+ 1205 0004 0E000000 		.4byte	.LVL6
+ 1206 0008 0100     		.2byte	0x1
+ 1207 000a 50       		.byte	0x50
+ 1208 000b 00000000 		.4byte	0
+ 1209 000f 00000000 		.4byte	0
+ 1210              	.LLST1:
+ 1211 0013 0A000000 		.4byte	.LVL5
+ 1212 0017 0E000000 		.4byte	.LVL6
+ 1213 001b 0C00     		.2byte	0xc
+ 1214 001d 70       		.byte	0x70
+ 1215 001e 00       		.sleb128 0
+ 1216 001f F7       		.byte	0xf7
+ 1217 0020 25       		.uleb128 0x25
+ 1218 0021 73       		.byte	0x73
+ 1219 0022 00       		.sleb128 0
+ 1220 0023 F7       		.byte	0xf7
+ 1221 0024 25       		.uleb128 0x25
+ 1222 0025 1B       		.byte	0x1b
+ 1223 0026 F7       		.byte	0xf7
+ 1224 0027 00       		.uleb128 0
+ 1225 0028 9F       		.byte	0x9f
+ 1226 0029 0E000000 		.4byte	.LVL6
+ 1227 002d 11000000 		.4byte	.LVL7-1
+ 1228 0031 0100     		.2byte	0x1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 29
+
+
+ 1229 0033 50       		.byte	0x50
+ 1230 0034 00000000 		.4byte	0
+ 1231 0038 00000000 		.4byte	0
+ 1232              	.LLST2:
+ 1233 003c 00000000 		.4byte	.LVL8
+ 1234 0040 0A000000 		.4byte	.LVL10
+ 1235 0044 0100     		.2byte	0x1
+ 1236 0046 50       		.byte	0x50
+ 1237 0047 0A000000 		.4byte	.LVL10
+ 1238 004b 10000000 		.4byte	.LVL12
+ 1239 004f 0400     		.2byte	0x4
+ 1240 0051 F3       		.byte	0xf3
+ 1241 0052 01       		.uleb128 0x1
+ 1242 0053 50       		.byte	0x50
+ 1243 0054 9F       		.byte	0x9f
+ 1244 0055 10000000 		.4byte	.LVL12
+ 1245 0059 18000000 		.4byte	.LVL13
+ 1246 005d 0100     		.2byte	0x1
+ 1247 005f 50       		.byte	0x50
+ 1248 0060 18000000 		.4byte	.LVL13
+ 1249 0064 1E000000 		.4byte	.LVL15
+ 1250 0068 0400     		.2byte	0x4
+ 1251 006a F3       		.byte	0xf3
+ 1252 006b 01       		.uleb128 0x1
+ 1253 006c 50       		.byte	0x50
+ 1254 006d 9F       		.byte	0x9f
+ 1255 006e 1E000000 		.4byte	.LVL15
+ 1256 0072 26000000 		.4byte	.LVL16
+ 1257 0076 0100     		.2byte	0x1
+ 1258 0078 50       		.byte	0x50
+ 1259 0079 26000000 		.4byte	.LVL16
+ 1260 007d 2C000000 		.4byte	.LVL18
+ 1261 0081 0400     		.2byte	0x4
+ 1262 0083 F3       		.byte	0xf3
+ 1263 0084 01       		.uleb128 0x1
+ 1264 0085 50       		.byte	0x50
+ 1265 0086 9F       		.byte	0x9f
+ 1266 0087 2C000000 		.4byte	.LVL18
+ 1267 008b 2E000000 		.4byte	.LVL19
+ 1268 008f 0100     		.2byte	0x1
+ 1269 0091 50       		.byte	0x50
+ 1270 0092 2E000000 		.4byte	.LVL19
+ 1271 0096 30000000 		.4byte	.LFE5
+ 1272 009a 0400     		.2byte	0x4
+ 1273 009c F3       		.byte	0xf3
+ 1274 009d 01       		.uleb128 0x1
+ 1275 009e 50       		.byte	0x50
+ 1276 009f 9F       		.byte	0x9f
+ 1277 00a0 00000000 		.4byte	0
+ 1278 00a4 00000000 		.4byte	0
+ 1279              	.LLST3:
+ 1280 00a8 02000000 		.4byte	.LVL9
+ 1281 00ac 0E000000 		.4byte	.LVL11
+ 1282 00b0 0200     		.2byte	0x2
+ 1283 00b2 30       		.byte	0x30
+ 1284 00b3 9F       		.byte	0x9f
+ 1285 00b4 0E000000 		.4byte	.LVL11
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 30
+
+
+ 1286 00b8 10000000 		.4byte	.LVL12
+ 1287 00bc 0100     		.2byte	0x1
+ 1288 00be 50       		.byte	0x50
+ 1289 00bf 10000000 		.4byte	.LVL12
+ 1290 00c3 1C000000 		.4byte	.LVL14
+ 1291 00c7 0200     		.2byte	0x2
+ 1292 00c9 30       		.byte	0x30
+ 1293 00ca 9F       		.byte	0x9f
+ 1294 00cb 1C000000 		.4byte	.LVL14
+ 1295 00cf 1E000000 		.4byte	.LVL15
+ 1296 00d3 0100     		.2byte	0x1
+ 1297 00d5 50       		.byte	0x50
+ 1298 00d6 1E000000 		.4byte	.LVL15
+ 1299 00da 2A000000 		.4byte	.LVL17
+ 1300 00de 0200     		.2byte	0x2
+ 1301 00e0 30       		.byte	0x30
+ 1302 00e1 9F       		.byte	0x9f
+ 1303 00e2 2A000000 		.4byte	.LVL17
+ 1304 00e6 2C000000 		.4byte	.LVL18
+ 1305 00ea 0100     		.2byte	0x1
+ 1306 00ec 50       		.byte	0x50
+ 1307 00ed 2C000000 		.4byte	.LVL18
+ 1308 00f1 2E000000 		.4byte	.LVL19
+ 1309 00f5 0200     		.2byte	0x2
+ 1310 00f7 30       		.byte	0x30
+ 1311 00f8 9F       		.byte	0x9f
+ 1312 00f9 2E000000 		.4byte	.LVL19
+ 1313 00fd 30000000 		.4byte	.LFE5
+ 1314 0101 0100     		.2byte	0x1
+ 1315 0103 50       		.byte	0x50
+ 1316 0104 00000000 		.4byte	0
+ 1317 0108 00000000 		.4byte	0
+ 1318              	.LLST4:
+ 1319 010c 00000000 		.4byte	.LVL20
+ 1320 0110 0A000000 		.4byte	.LVL22
+ 1321 0114 0100     		.2byte	0x1
+ 1322 0116 50       		.byte	0x50
+ 1323 0117 0A000000 		.4byte	.LVL22
+ 1324 011b 10000000 		.4byte	.LVL24
+ 1325 011f 0400     		.2byte	0x4
+ 1326 0121 F3       		.byte	0xf3
+ 1327 0122 01       		.uleb128 0x1
+ 1328 0123 50       		.byte	0x50
+ 1329 0124 9F       		.byte	0x9f
+ 1330 0125 10000000 		.4byte	.LVL24
+ 1331 0129 18000000 		.4byte	.LVL25
+ 1332 012d 0100     		.2byte	0x1
+ 1333 012f 50       		.byte	0x50
+ 1334 0130 18000000 		.4byte	.LVL25
+ 1335 0134 1E000000 		.4byte	.LVL27
+ 1336 0138 0400     		.2byte	0x4
+ 1337 013a F3       		.byte	0xf3
+ 1338 013b 01       		.uleb128 0x1
+ 1339 013c 50       		.byte	0x50
+ 1340 013d 9F       		.byte	0x9f
+ 1341 013e 1E000000 		.4byte	.LVL27
+ 1342 0142 26000000 		.4byte	.LVL28
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 31
+
+
+ 1343 0146 0100     		.2byte	0x1
+ 1344 0148 50       		.byte	0x50
+ 1345 0149 26000000 		.4byte	.LVL28
+ 1346 014d 2C000000 		.4byte	.LVL30
+ 1347 0151 0400     		.2byte	0x4
+ 1348 0153 F3       		.byte	0xf3
+ 1349 0154 01       		.uleb128 0x1
+ 1350 0155 50       		.byte	0x50
+ 1351 0156 9F       		.byte	0x9f
+ 1352 0157 2C000000 		.4byte	.LVL30
+ 1353 015b 2E000000 		.4byte	.LVL31
+ 1354 015f 0100     		.2byte	0x1
+ 1355 0161 50       		.byte	0x50
+ 1356 0162 2E000000 		.4byte	.LVL31
+ 1357 0166 30000000 		.4byte	.LFE6
+ 1358 016a 0400     		.2byte	0x4
+ 1359 016c F3       		.byte	0xf3
+ 1360 016d 01       		.uleb128 0x1
+ 1361 016e 50       		.byte	0x50
+ 1362 016f 9F       		.byte	0x9f
+ 1363 0170 00000000 		.4byte	0
+ 1364 0174 00000000 		.4byte	0
+ 1365              	.LLST5:
+ 1366 0178 02000000 		.4byte	.LVL21
+ 1367 017c 0E000000 		.4byte	.LVL23
+ 1368 0180 0200     		.2byte	0x2
+ 1369 0182 30       		.byte	0x30
+ 1370 0183 9F       		.byte	0x9f
+ 1371 0184 0E000000 		.4byte	.LVL23
+ 1372 0188 10000000 		.4byte	.LVL24
+ 1373 018c 0100     		.2byte	0x1
+ 1374 018e 50       		.byte	0x50
+ 1375 018f 10000000 		.4byte	.LVL24
+ 1376 0193 1C000000 		.4byte	.LVL26
+ 1377 0197 0200     		.2byte	0x2
+ 1378 0199 30       		.byte	0x30
+ 1379 019a 9F       		.byte	0x9f
+ 1380 019b 1C000000 		.4byte	.LVL26
+ 1381 019f 1E000000 		.4byte	.LVL27
+ 1382 01a3 0100     		.2byte	0x1
+ 1383 01a5 50       		.byte	0x50
+ 1384 01a6 1E000000 		.4byte	.LVL27
+ 1385 01aa 2A000000 		.4byte	.LVL29
+ 1386 01ae 0200     		.2byte	0x2
+ 1387 01b0 30       		.byte	0x30
+ 1388 01b1 9F       		.byte	0x9f
+ 1389 01b2 2A000000 		.4byte	.LVL29
+ 1390 01b6 2C000000 		.4byte	.LVL30
+ 1391 01ba 0100     		.2byte	0x1
+ 1392 01bc 50       		.byte	0x50
+ 1393 01bd 2C000000 		.4byte	.LVL30
+ 1394 01c1 2E000000 		.4byte	.LVL31
+ 1395 01c5 0200     		.2byte	0x2
+ 1396 01c7 30       		.byte	0x30
+ 1397 01c8 9F       		.byte	0x9f
+ 1398 01c9 2E000000 		.4byte	.LVL31
+ 1399 01cd 30000000 		.4byte	.LFE6
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 32
+
+
+ 1400 01d1 0100     		.2byte	0x1
+ 1401 01d3 50       		.byte	0x50
+ 1402 01d4 00000000 		.4byte	0
+ 1403 01d8 00000000 		.4byte	0
+ 1404              	.LLST6:
+ 1405 01dc 00000000 		.4byte	.LVL32
+ 1406 01e0 0B000000 		.4byte	.LVL34-1
+ 1407 01e4 0100     		.2byte	0x1
+ 1408 01e6 50       		.byte	0x50
+ 1409 01e7 0B000000 		.4byte	.LVL34-1
+ 1410 01eb 14000000 		.4byte	.LVL35
+ 1411 01ef 0400     		.2byte	0x4
+ 1412 01f1 F3       		.byte	0xf3
+ 1413 01f2 01       		.uleb128 0x1
+ 1414 01f3 50       		.byte	0x50
+ 1415 01f4 9F       		.byte	0x9f
+ 1416 01f5 14000000 		.4byte	.LVL35
+ 1417 01f9 19000000 		.4byte	.LVL36-1
+ 1418 01fd 0100     		.2byte	0x1
+ 1419 01ff 50       		.byte	0x50
+ 1420 0200 19000000 		.4byte	.LVL36-1
+ 1421 0204 22000000 		.4byte	.LVL37
+ 1422 0208 0400     		.2byte	0x4
+ 1423 020a F3       		.byte	0xf3
+ 1424 020b 01       		.uleb128 0x1
+ 1425 020c 50       		.byte	0x50
+ 1426 020d 9F       		.byte	0x9f
+ 1427 020e 22000000 		.4byte	.LVL37
+ 1428 0212 24000000 		.4byte	.LVL38
+ 1429 0216 0100     		.2byte	0x1
+ 1430 0218 50       		.byte	0x50
+ 1431 0219 24000000 		.4byte	.LVL38
+ 1432 021d 2C000000 		.4byte	.LFE7
+ 1433 0221 0400     		.2byte	0x4
+ 1434 0223 F3       		.byte	0xf3
+ 1435 0224 01       		.uleb128 0x1
+ 1436 0225 50       		.byte	0x50
+ 1437 0226 9F       		.byte	0x9f
+ 1438 0227 00000000 		.4byte	0
+ 1439 022b 00000000 		.4byte	0
+ 1440              	.LLST7:
+ 1441 022f 02000000 		.4byte	.LVL33
+ 1442 0233 0C000000 		.4byte	.LVL34
+ 1443 0237 0200     		.2byte	0x2
+ 1444 0239 30       		.byte	0x30
+ 1445 023a 9F       		.byte	0x9f
+ 1446 023b 0C000000 		.4byte	.LVL34
+ 1447 023f 14000000 		.4byte	.LVL35
+ 1448 0243 0100     		.2byte	0x1
+ 1449 0245 50       		.byte	0x50
+ 1450 0246 14000000 		.4byte	.LVL35
+ 1451 024a 1A000000 		.4byte	.LVL36
+ 1452 024e 0200     		.2byte	0x2
+ 1453 0250 30       		.byte	0x30
+ 1454 0251 9F       		.byte	0x9f
+ 1455 0252 1A000000 		.4byte	.LVL36
+ 1456 0256 22000000 		.4byte	.LVL37
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 33
+
+
+ 1457 025a 0100     		.2byte	0x1
+ 1458 025c 50       		.byte	0x50
+ 1459 025d 22000000 		.4byte	.LVL37
+ 1460 0261 24000000 		.4byte	.LVL38
+ 1461 0265 0200     		.2byte	0x2
+ 1462 0267 30       		.byte	0x30
+ 1463 0268 9F       		.byte	0x9f
+ 1464 0269 24000000 		.4byte	.LVL38
+ 1465 026d 2C000000 		.4byte	.LFE7
+ 1466 0271 0100     		.2byte	0x1
+ 1467 0273 50       		.byte	0x50
+ 1468 0274 00000000 		.4byte	0
+ 1469 0278 00000000 		.4byte	0
+ 1470              	.LLST8:
+ 1471 027c 00000000 		.4byte	.LVL39
+ 1472 0280 0A000000 		.4byte	.LVL40
+ 1473 0284 0100     		.2byte	0x1
+ 1474 0286 50       		.byte	0x50
+ 1475 0287 0A000000 		.4byte	.LVL40
+ 1476 028b 10000000 		.4byte	.LVL42
+ 1477 028f 0400     		.2byte	0x4
+ 1478 0291 F3       		.byte	0xf3
+ 1479 0292 01       		.uleb128 0x1
+ 1480 0293 50       		.byte	0x50
+ 1481 0294 9F       		.byte	0x9f
+ 1482 0295 10000000 		.4byte	.LVL42
+ 1483 0299 14000000 		.4byte	.LVL43
+ 1484 029d 0100     		.2byte	0x1
+ 1485 029f 50       		.byte	0x50
+ 1486 02a0 14000000 		.4byte	.LVL43
+ 1487 02a4 16000000 		.4byte	.LFE8
+ 1488 02a8 0400     		.2byte	0x4
+ 1489 02aa F3       		.byte	0xf3
+ 1490 02ab 01       		.uleb128 0x1
+ 1491 02ac 50       		.byte	0x50
+ 1492 02ad 9F       		.byte	0x9f
+ 1493 02ae 00000000 		.4byte	0
+ 1494 02b2 00000000 		.4byte	0
+ 1495              		.section	.debug_aranges,"",%progbits
+ 1496 0000 54000000 		.4byte	0x54
+ 1497 0004 0200     		.2byte	0x2
+ 1498 0006 00000000 		.4byte	.Ldebug_info0
+ 1499 000a 04       		.byte	0x4
+ 1500 000b 00       		.byte	0
+ 1501 000c 0000     		.2byte	0
+ 1502 000e 0000     		.2byte	0
+ 1503 0010 00000000 		.4byte	.LFB1
+ 1504 0014 20000000 		.4byte	.LFE1-.LFB1
+ 1505 0018 00000000 		.4byte	.LFB2
+ 1506 001c 0C000000 		.4byte	.LFE2-.LFB2
+ 1507 0020 00000000 		.4byte	.LFB4
+ 1508 0024 08000000 		.4byte	.LFE4-.LFB4
+ 1509 0028 00000000 		.4byte	.LFB3
+ 1510 002c 18000000 		.4byte	.LFE3-.LFB3
+ 1511 0030 00000000 		.4byte	.LFB5
+ 1512 0034 30000000 		.4byte	.LFE5-.LFB5
+ 1513 0038 00000000 		.4byte	.LFB6
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 34
+
+
+ 1514 003c 30000000 		.4byte	.LFE6-.LFB6
+ 1515 0040 00000000 		.4byte	.LFB7
+ 1516 0044 2C000000 		.4byte	.LFE7-.LFB7
+ 1517 0048 00000000 		.4byte	.LFB8
+ 1518 004c 16000000 		.4byte	.LFE8-.LFB8
+ 1519 0050 00000000 		.4byte	0
+ 1520 0054 00000000 		.4byte	0
+ 1521              		.section	.debug_ranges,"",%progbits
+ 1522              	.Ldebug_ranges0:
+ 1523 0000 00000000 		.4byte	.LFB1
+ 1524 0004 20000000 		.4byte	.LFE1
+ 1525 0008 00000000 		.4byte	.LFB2
+ 1526 000c 0C000000 		.4byte	.LFE2
+ 1527 0010 00000000 		.4byte	.LFB4
+ 1528 0014 08000000 		.4byte	.LFE4
+ 1529 0018 00000000 		.4byte	.LFB3
+ 1530 001c 18000000 		.4byte	.LFE3
+ 1531 0020 00000000 		.4byte	.LFB5
+ 1532 0024 30000000 		.4byte	.LFE5
+ 1533 0028 00000000 		.4byte	.LFB6
+ 1534 002c 30000000 		.4byte	.LFE6
+ 1535 0030 00000000 		.4byte	.LFB7
+ 1536 0034 2C000000 		.4byte	.LFE7
+ 1537 0038 00000000 		.4byte	.LFB8
+ 1538 003c 16000000 		.4byte	.LFE8
+ 1539 0040 00000000 		.4byte	0
+ 1540 0044 00000000 		.4byte	0
+ 1541              		.section	.debug_line,"",%progbits
+ 1542              	.Ldebug_line0:
+ 1543 0000 72010000 		.section	.debug_str,"MS",%progbits,1
+ 1543      0200C200 
+ 1543      00000201 
+ 1543      FB0E0D00 
+ 1543      01010101 
+ 1544              	.LASF24:
+ 1545 0000 4253505F 		.ascii	"BSP_PreInit\000"
+ 1545      50726549 
+ 1545      6E697400 
+ 1546              	.LASF14:
+ 1547 000c 666C6F61 		.ascii	"float\000"
+ 1547      7400
+ 1548              	.LASF43:
+ 1549 0012 4253505C 		.ascii	"BSP\\bsp.c\000"
+ 1549      6273702E 
+ 1549      6300
+ 1550              	.LASF46:
+ 1551 001c 4F534366 		.ascii	"OSCfg_TickRate_Hz\000"
+ 1551      675F5469 
+ 1551      636B5261 
+ 1551      74655F48 
+ 1551      7A00
+ 1552              	.LASF8:
+ 1553 002e 73686F72 		.ascii	"short unsigned int\000"
+ 1553      7420756E 
+ 1553      7369676E 
+ 1553      65642069 
+ 1553      6E7400
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 35
+
+
+ 1554              	.LASF21:
+ 1555 0041 4F535F52 		.ascii	"OS_RATE_HZ\000"
+ 1555      4154455F 
+ 1555      485A00
+ 1556              	.LASF15:
+ 1557 004c 646F7562 		.ascii	"double\000"
+ 1557      6C6500
+ 1558              	.LASF37:
+ 1559 0053 696E6974 		.ascii	"init_uart\000"
+ 1559      5F756172 
+ 1559      7400
+ 1560              	.LASF41:
+ 1561 005d 6770696F 		.ascii	"gpio_read\000"
+ 1561      5F726561 
+ 1561      6400
+ 1562              	.LASF27:
+ 1563 0067 6370755F 		.ascii	"cpu_clk_freq\000"
+ 1563      636C6B5F 
+ 1563      66726571 
+ 1563      00
+ 1564              	.LASF40:
+ 1565 0074 6770696F 		.ascii	"gpio_low\000"
+ 1565      5F6C6F77 
+ 1565      00
+ 1566              	.LASF33:
+ 1567 007d 4253505F 		.ascii	"BSP_PB_StatusGet\000"
+ 1567      50425F53 
+ 1567      74617475 
+ 1567      73476574 
+ 1567      00
+ 1568              	.LASF10:
+ 1569 008e 4350555F 		.ascii	"CPU_INT32U\000"
+ 1569      494E5433 
+ 1569      325500
+ 1570              	.LASF2:
+ 1571 0099 756E7369 		.ascii	"unsigned char\000"
+ 1571      676E6564 
+ 1571      20636861 
+ 1571      7200
+ 1572              	.LASF42:
+ 1573 00a7 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1573      43313120 
+ 1573      352E342E 
+ 1573      31203230 
+ 1573      31363036 
+ 1574 00da 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1574      20726576 
+ 1574      6973696F 
+ 1574      6E203233 
+ 1574      37373135 
+ 1575 010d 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1575      66756E63 
+ 1575      74696F6E 
+ 1575      2D736563 
+ 1575      74696F6E 
+ 1576              	.LASF22:
+ 1577 0135 7265675F 		.ascii	"reg_val\000"
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 36
+
+
+ 1577      76616C00 
+ 1578              	.LASF11:
+ 1579 013d 4350555F 		.ascii	"CPU_INT64U\000"
+ 1579      494E5436 
+ 1579      345500
+ 1580              	.LASF5:
+ 1581 0148 4350555F 		.ascii	"CPU_INT08S\000"
+ 1581      494E5430 
+ 1581      385300
+ 1582              	.LASF4:
+ 1583 0153 4350555F 		.ascii	"CPU_INT08U\000"
+ 1583      494E5430 
+ 1583      385500
+ 1584              	.LASF35:
+ 1585 015e 456E645F 		.ascii	"End_of_Packet\000"
+ 1585      6F665F50 
+ 1585      61636B65 
+ 1585      7400
+ 1586              	.LASF30:
+ 1587 016c 4253505F 		.ascii	"BSP_LED_Off\000"
+ 1587      4C45445F 
+ 1587      4F666600 
+ 1588              	.LASF18:
+ 1589 0178 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1589      20756E73 
+ 1589      69676E65 
+ 1589      6420696E 
+ 1589      7400
+ 1590              	.LASF31:
+ 1591 018a 4253505F 		.ascii	"BSP_LED_Toggle\000"
+ 1591      4C45445F 
+ 1591      546F6767 
+ 1591      6C6500
+ 1592              	.LASF29:
+ 1593 0199 4253505F 		.ascii	"BSP_LED_On\000"
+ 1593      4C45445F 
+ 1593      4F6E00
+ 1594              	.LASF44:
+ 1595 01a4 433A5C63 		.ascii	"C:\\cypress\\esw_uCOS3_cykit\\esw_uCOS3_cykit.cydsn"
+ 1595      79707265 
+ 1595      73735C65 
+ 1595      73775F75 
+ 1595      434F5333 
+ 1596 01d4 00       		.ascii	"\000"
+ 1597              	.LASF45:
+ 1598 01d5 4253505F 		.ascii	"BSP_CPU_ClkFreq\000"
+ 1598      4350555F 
+ 1598      436C6B46 
+ 1598      72657100 
+ 1599              	.LASF32:
+ 1600 01e5 746F6767 		.ascii	"toggle_status\000"
+ 1600      6C655F73 
+ 1600      74617475 
+ 1600      7300
+ 1601              	.LASF0:
+ 1602 01f3 756E7369 		.ascii	"unsigned int\000"
+ 1602      676E6564 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 37
+
+
+ 1602      20696E74 
+ 1602      00
+ 1603              	.LASF12:
+ 1604 0200 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1604      206C6F6E 
+ 1604      6720756E 
+ 1604      7369676E 
+ 1604      65642069 
+ 1605              	.LASF3:
+ 1606 0217 4350555F 		.ascii	"CPU_BOOLEAN\000"
+ 1606      424F4F4C 
+ 1606      45414E00 
+ 1607              	.LASF36:
+ 1608 0223 696E6974 		.ascii	"init_gpio\000"
+ 1608      5F677069 
+ 1608      6F00
+ 1609              	.LASF6:
+ 1610 022d 7369676E 		.ascii	"signed char\000"
+ 1610      65642063 
+ 1610      68617200 
+ 1611              	.LASF7:
+ 1612 0239 4350555F 		.ascii	"CPU_INT16U\000"
+ 1612      494E5431 
+ 1612      365500
+ 1613              	.LASF39:
+ 1614 0244 6770696F 		.ascii	"gpio_high\000"
+ 1614      5F686967 
+ 1614      6800
+ 1615              	.LASF20:
+ 1616 024e 73697A65 		.ascii	"sizetype\000"
+ 1616      74797065 
+ 1616      00
+ 1617              	.LASF28:
+ 1618 0257 636E7473 		.ascii	"cnts\000"
+ 1618      00
+ 1619              	.LASF13:
+ 1620 025c 6C6F6E67 		.ascii	"long long int\000"
+ 1620      206C6F6E 
+ 1620      6720696E 
+ 1620      7400
+ 1621              	.LASF1:
+ 1622 026a 63686172 		.ascii	"char\000"
+ 1622      00
+ 1623              	.LASF25:
+ 1624 026f 4253505F 		.ascii	"BSP_PostInit\000"
+ 1624      506F7374 
+ 1624      496E6974 
+ 1624      00
+ 1625              	.LASF16:
+ 1626 027c 4350555F 		.ascii	"CPU_REG32\000"
+ 1626      52454733 
+ 1626      3200
+ 1627              	.LASF9:
+ 1628 0286 73686F72 		.ascii	"short int\000"
+ 1628      7420696E 
+ 1628      7400
+ 1629              	.LASF26:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccbpZmAL.s 			page 38
+
+
+ 1630 0290 4253505F 		.ascii	"BSP_CPU_TickInit\000"
+ 1630      4350555F 
+ 1630      5469636B 
+ 1630      496E6974 
+ 1630      00
+ 1631              	.LASF34:
+ 1632 02a1 53746172 		.ascii	"Start_of_Packet\000"
+ 1632      745F6F66 
+ 1632      5F506163 
+ 1632      6B657400 
+ 1633              	.LASF23:
+ 1634 02b1 705F7665 		.ascii	"p_vect_tbl\000"
+ 1634      63745F74 
+ 1634      626C00
+ 1635              	.LASF17:
+ 1636 02bc 6C6F6E67 		.ascii	"long int\000"
+ 1636      20696E74 
+ 1636      00
+ 1637              	.LASF19:
+ 1638 02c5 6C6F6E67 		.ascii	"long double\000"
+ 1638      20646F75 
+ 1638      626C6500 
+ 1639              	.LASF38:
+ 1640 02d1 4F535F43 		.ascii	"OS_CPU_SysTickInit\000"
+ 1640      50555F53 
+ 1640      79735469 
+ 1640      636B496E 
+ 1640      697400
+ 1641              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -1,0 +1,1089 @@
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"cpu_bsp.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.CPU_TS_TmrInit,"ax",%progbits
+  20              		.align	2
+  21              		.global	CPU_TS_TmrInit
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	CPU_TS_TmrInit, %function
+  25              	CPU_TS_TmrInit:
+  26              	.LFB1:
+  27              		.file 1 "BSP\\cpu_bsp.c"
+   1:BSP/cpu_bsp.c **** /*
+   2:BSP/cpu_bsp.c **** ***************************************************************************************************
+   3:BSP/cpu_bsp.c **** *                                                uC/CPU
+   4:BSP/cpu_bsp.c **** *                                    CPU CONFIGURATION & PORT LAYER
+   5:BSP/cpu_bsp.c **** *
+   6:BSP/cpu_bsp.c **** *                          (c) Copyright 2004-2012; Micrium, Inc.; Weston, FL
+   7:BSP/cpu_bsp.c **** *
+   8:BSP/cpu_bsp.c **** *               All rights reserved.  Protected by international copyright laws.
+   9:BSP/cpu_bsp.c **** *
+  10:BSP/cpu_bsp.c **** *               uC/CPU is provided in source form to registered licensees ONLY.  It is 
+  11:BSP/cpu_bsp.c **** *               illegal to distribute this source code to any third party unless you receive 
+  12:BSP/cpu_bsp.c **** *               written permission by an authorized Micrium representative.  Knowledge of 
+  13:BSP/cpu_bsp.c **** *               the source code may NOT be used to develop a similar product.
+  14:BSP/cpu_bsp.c **** *
+  15:BSP/cpu_bsp.c **** *               Please help us continue to provide the Embedded community with the finest 
+  16:BSP/cpu_bsp.c **** *               software available.  Your honesty is greatly appreciated.
+  17:BSP/cpu_bsp.c **** *
+  18:BSP/cpu_bsp.c **** *               You can contact us at www.micrium.com.
+  19:BSP/cpu_bsp.c **** ***************************************************************************************************
+  20:BSP/cpu_bsp.c **** */
+  21:BSP/cpu_bsp.c **** 
+  22:BSP/cpu_bsp.c **** /*
+  23:BSP/cpu_bsp.c **** ***************************************************************************************************
+  24:BSP/cpu_bsp.c **** *
+  25:BSP/cpu_bsp.c **** *                               CPU BOARD SUPPORT PACKAGE (BSP) FUNCTIONS
+  26:BSP/cpu_bsp.c **** *
+  27:BSP/cpu_bsp.c **** *                                           CYPRESS PSoC5
+  28:BSP/cpu_bsp.c **** *                                              with the
+  29:BSP/cpu_bsp.c **** *                                     CY8CKIT-050 Development Kit
+  30:BSP/cpu_bsp.c **** *
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 2
+
+
+  31:BSP/cpu_bsp.c **** * Filename      : cpu_bsp.c
+  32:BSP/cpu_bsp.c **** * Version       : V1.25
+  33:BSP/cpu_bsp.c **** * Programmer(s) : ITJ
+  34:BSP/cpu_bsp.c **** *                 DC
+  35:BSP/cpu_bsp.c **** ***************************************************************************************************
+  36:BSP/cpu_bsp.c **** */
+  37:BSP/cpu_bsp.c **** 
+  38:BSP/cpu_bsp.c **** 
+  39:BSP/cpu_bsp.c **** /*
+  40:BSP/cpu_bsp.c **** ***************************************************************************************************
+  41:BSP/cpu_bsp.c **** *                                            INCLUDE FILES
+  42:BSP/cpu_bsp.c **** ***************************************************************************************************
+  43:BSP/cpu_bsp.c **** */
+  44:BSP/cpu_bsp.c **** 
+  45:BSP/cpu_bsp.c **** #define    CPU_BSP_MODULE
+  46:BSP/cpu_bsp.c **** #include  <cpu_core.h>
+  47:BSP/cpu_bsp.c **** #include  <bsp.h>
+  48:BSP/cpu_bsp.c **** 
+  49:BSP/cpu_bsp.c **** 
+  50:BSP/cpu_bsp.c **** /*$PAGE*/
+  51:BSP/cpu_bsp.c **** /*
+  52:BSP/cpu_bsp.c **** ***************************************************************************************************
+  53:BSP/cpu_bsp.c **** *                                            LOCAL DEFINES
+  54:BSP/cpu_bsp.c **** ***************************************************************************************************
+  55:BSP/cpu_bsp.c **** */
+  56:BSP/cpu_bsp.c **** 
+  57:BSP/cpu_bsp.c **** #define  CPU_BSP_REG_DEMCR             (*(CPU_REG32 *)0xE000EDFC)
+  58:BSP/cpu_bsp.c **** #define  CPU_BSP_REG_DWT_CR            (*(CPU_REG32 *)0xE0001000)
+  59:BSP/cpu_bsp.c **** #define  CPU_BSP_REG_DWT_CYCCNT        (*(CPU_REG32 *)0xE0001004)
+  60:BSP/cpu_bsp.c **** 
+  61:BSP/cpu_bsp.c **** 
+  62:BSP/cpu_bsp.c **** /*
+  63:BSP/cpu_bsp.c **** ***************************************************************************************************
+  64:BSP/cpu_bsp.c **** *                                           LOCAL CONSTANTS
+  65:BSP/cpu_bsp.c **** ***************************************************************************************************
+  66:BSP/cpu_bsp.c **** */
+  67:BSP/cpu_bsp.c **** 
+  68:BSP/cpu_bsp.c **** 
+  69:BSP/cpu_bsp.c **** /*
+  70:BSP/cpu_bsp.c **** ***************************************************************************************************
+  71:BSP/cpu_bsp.c **** *                                          LOCAL DATA TYPES
+  72:BSP/cpu_bsp.c **** ***************************************************************************************************
+  73:BSP/cpu_bsp.c **** */
+  74:BSP/cpu_bsp.c **** 
+  75:BSP/cpu_bsp.c **** 
+  76:BSP/cpu_bsp.c **** /*
+  77:BSP/cpu_bsp.c **** ***************************************************************************************************
+  78:BSP/cpu_bsp.c **** *                                            LOCAL TABLES
+  79:BSP/cpu_bsp.c **** ***************************************************************************************************
+  80:BSP/cpu_bsp.c **** */
+  81:BSP/cpu_bsp.c **** 
+  82:BSP/cpu_bsp.c **** 
+  83:BSP/cpu_bsp.c **** /*
+  84:BSP/cpu_bsp.c **** ***************************************************************************************************
+  85:BSP/cpu_bsp.c **** *                                       LOCAL GLOBAL VARIABLES
+  86:BSP/cpu_bsp.c **** ***************************************************************************************************
+  87:BSP/cpu_bsp.c **** */
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 3
+
+
+  88:BSP/cpu_bsp.c **** 
+  89:BSP/cpu_bsp.c **** 
+  90:BSP/cpu_bsp.c **** /*
+  91:BSP/cpu_bsp.c **** ***************************************************************************************************
+  92:BSP/cpu_bsp.c **** *                                      LOCAL FUNCTION PROTOTYPES
+  93:BSP/cpu_bsp.c **** ***************************************************************************************************
+  94:BSP/cpu_bsp.c **** */
+  95:BSP/cpu_bsp.c **** 
+  96:BSP/cpu_bsp.c **** 
+  97:BSP/cpu_bsp.c **** /*
+  98:BSP/cpu_bsp.c **** ***************************************************************************************************
+  99:BSP/cpu_bsp.c **** *                                     LOCAL CONFIGURATION ERRORS
+ 100:BSP/cpu_bsp.c **** ***************************************************************************************************
+ 101:BSP/cpu_bsp.c **** */
+ 102:BSP/cpu_bsp.c **** 
+ 103:BSP/cpu_bsp.c **** 
+ 104:BSP/cpu_bsp.c **** /*$PAGE*/
+ 105:BSP/cpu_bsp.c **** /*
+ 106:BSP/cpu_bsp.c **** ***************************************************************************************************
+ 107:BSP/cpu_bsp.c **** *                                          CPU_TS_TmrInit()
+ 108:BSP/cpu_bsp.c **** *
+ 109:BSP/cpu_bsp.c **** * Description : Initialize & start CPU timestamp timer.
+ 110:BSP/cpu_bsp.c **** *
+ 111:BSP/cpu_bsp.c **** * Argument(s) : none.
+ 112:BSP/cpu_bsp.c **** *
+ 113:BSP/cpu_bsp.c **** * Return(s)   : none.
+ 114:BSP/cpu_bsp.c **** *
+ 115:BSP/cpu_bsp.c **** * Caller(s)   : CPU_TS_Init().
+ 116:BSP/cpu_bsp.c **** *
+ 117:BSP/cpu_bsp.c **** *               This function is an INTERNAL CPU module function & MUST be implemented by applicati
+ 118:BSP/cpu_bsp.c **** *               BSP function(s) [see Note #1] but MUST NOT be called by application function(s).
+ 119:BSP/cpu_bsp.c **** *
+ 120:BSP/cpu_bsp.c **** * Note(s)     : (1) CPU_TS_TmrInit() is an application/BSP function that MUST be defined by the dev
+ 121:BSP/cpu_bsp.c **** *                   if either of the following CPU features is enabled :
+ 122:BSP/cpu_bsp.c **** *
+ 123:BSP/cpu_bsp.c **** *                   (a) CPU timestamps
+ 124:BSP/cpu_bsp.c **** *                   (b) CPU interrupts disabled time measurements
+ 125:BSP/cpu_bsp.c **** *
+ 126:BSP/cpu_bsp.c **** *                   See 'cpu_cfg.h  CPU TIMESTAMP CONFIGURATION  Note #1'
+ 127:BSP/cpu_bsp.c **** *                     & 'cpu_cfg.h  CPU INTERRUPTS DISABLED TIME MEASUREMENT CONFIGURATION  Note #1
+ 128:BSP/cpu_bsp.c **** *
+ 129:BSP/cpu_bsp.c **** *               (2) (a) Timer count values MUST be returned via word-size-configurable 'CPU_TS_TMR'
+ 130:BSP/cpu_bsp.c **** *                       data type.
+ 131:BSP/cpu_bsp.c **** *
+ 132:BSP/cpu_bsp.c **** *                       (1) If timer has more bits, truncate timer values' higher-order bits greate
+ 133:BSP/cpu_bsp.c **** *                           than the configured 'CPU_TS_TMR' timestamp timer data type word size.
+ 134:BSP/cpu_bsp.c **** *
+ 135:BSP/cpu_bsp.c **** *                       (2) Since the timer MUST NOT have less bits than the configured 'CPU_TS_TMR
+ 136:BSP/cpu_bsp.c **** *                           timestamp timer data type word size; 'CPU_CFG_TS_TMR_SIZE' MUST be 
+ 137:BSP/cpu_bsp.c **** *                           configured so that ALL bits in 'CPU_TS_TMR' data type are significant.
+ 138:BSP/cpu_bsp.c **** *
+ 139:BSP/cpu_bsp.c **** *                           In other words, if timer size is not a binary-multiple of 8-bit octets 
+ 140:BSP/cpu_bsp.c **** *                           (e.g. 20-bits or even 24-bits), then the next lower, binary-multiple 
+ 141:BSP/cpu_bsp.c **** *                           octet word size SHOULD be configured (e.g. to 16-bits).  However, the 
+ 142:BSP/cpu_bsp.c **** *                           minimum supported word size for CPU timestamp timers is 8-bits.
+ 143:BSP/cpu_bsp.c **** *
+ 144:BSP/cpu_bsp.c **** *                       See also 'cpu_cfg.h   CPU TIMESTAMP CONFIGURATION  Note #2'
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 4
+
+
+ 145:BSP/cpu_bsp.c **** *                              & 'cpu_core.h  CPU TIMESTAMP DATA TYPES     Note #1'.
+ 146:BSP/cpu_bsp.c **** *
+ 147:BSP/cpu_bsp.c **** *                   (b) Timer SHOULD be an 'up'  counter whose values increase with each time count
+ 148:BSP/cpu_bsp.c **** *
+ 149:BSP/cpu_bsp.c **** *                   (c) When applicable, timer period SHOULD be less than the typical measured time
+ 150:BSP/cpu_bsp.c **** *                       but MUST be less than the maximum measured time; otherwise, timer resolutio
+ 151:BSP/cpu_bsp.c **** *                       inadequate to measure desired times.
+ 152:BSP/cpu_bsp.c **** *
+ 153:BSP/cpu_bsp.c **** *                   See also 'CPU_TS_TmrRd()  Note #2'.
+ 154:BSP/cpu_bsp.c **** ***************************************************************************************************
+ 155:BSP/cpu_bsp.c **** */
+ 156:BSP/cpu_bsp.c **** 
+ 157:BSP/cpu_bsp.c **** #if (CPU_CFG_TS_TMR_EN == DEF_ENABLED)
+ 158:BSP/cpu_bsp.c **** void  CPU_TS_TmrInit (void)
+ 159:BSP/cpu_bsp.c **** {
+  28              		.loc 1 159 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+ 160:BSP/cpu_bsp.c ****     CPU_INT32U  fclk_freq;
+ 161:BSP/cpu_bsp.c ****     
+ 162:BSP/cpu_bsp.c ****     fclk_freq = BSP_CPU_ClkFreq();
+  36              		.loc 1 162 0
+  37 0002 FFF7FEFF 		bl	BSP_CPU_ClkFreq
+  38              	.LVL0:
+ 163:BSP/cpu_bsp.c ****     
+ 164:BSP/cpu_bsp.c ****     CPU_BSP_REG_DEMCR  |= DEF_BIT_24;
+  39              		.loc 1 164 0
+  40 0006 064A     		ldr	r2, .L3
+  41 0008 1368     		ldr	r3, [r2]
+  42 000a 43F08073 		orr	r3, r3, #16777216
+  43 000e 1360     		str	r3, [r2]
+ 165:BSP/cpu_bsp.c ****     CPU_BSP_REG_DWT_CR |= DEF_BIT_00;
+  44              		.loc 1 165 0
+  45 0010 044A     		ldr	r2, .L3+4
+  46 0012 1368     		ldr	r3, [r2]
+  47 0014 43F00103 		orr	r3, r3, #1
+  48 0018 1360     		str	r3, [r2]
+ 166:BSP/cpu_bsp.c **** 
+ 167:BSP/cpu_bsp.c ****     CPU_TS_TmrFreqSet((CPU_TS_TMR_FREQ)fclk_freq);    
+  49              		.loc 1 167 0
+  50 001a FFF7FEFF 		bl	CPU_TS_TmrFreqSet
+  51              	.LVL1:
+  52 001e 08BD     		pop	{r3, pc}
+  53              	.L4:
+  54              		.align	2
+  55              	.L3:
+  56 0020 FCED00E0 		.word	-536809988
+  57 0024 001000E0 		.word	-536866816
+  58              		.cfi_endproc
+  59              	.LFE1:
+  60              		.size	CPU_TS_TmrInit, .-CPU_TS_TmrInit
+  61              		.section	.text.CPU_TS_TmrRd,"ax",%progbits
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 5
+
+
+  62              		.align	2
+  63              		.global	CPU_TS_TmrRd
+  64              		.thumb
+  65              		.thumb_func
+  66              		.type	CPU_TS_TmrRd, %function
+  67              	CPU_TS_TmrRd:
+  68              	.LFB2:
+ 168:BSP/cpu_bsp.c **** }
+ 169:BSP/cpu_bsp.c **** #endif
+ 170:BSP/cpu_bsp.c **** 
+ 171:BSP/cpu_bsp.c **** 
+ 172:BSP/cpu_bsp.c **** /*$PAGE*/
+ 173:BSP/cpu_bsp.c **** /*
+ 174:BSP/cpu_bsp.c **** ***************************************************************************************************
+ 175:BSP/cpu_bsp.c **** *                                           CPU_TS_TmrRd()
+ 176:BSP/cpu_bsp.c **** *
+ 177:BSP/cpu_bsp.c **** * Description : Get current CPU timestamp timer count value.
+ 178:BSP/cpu_bsp.c **** *
+ 179:BSP/cpu_bsp.c **** * Argument(s) : none.
+ 180:BSP/cpu_bsp.c **** *
+ 181:BSP/cpu_bsp.c **** * Return(s)   : Timestamp timer count (see Notes #2a & #2b).
+ 182:BSP/cpu_bsp.c **** *
+ 183:BSP/cpu_bsp.c **** * Caller(s)   : CPU_TS_Init(),
+ 184:BSP/cpu_bsp.c **** *               CPU_TS_Get32(),
+ 185:BSP/cpu_bsp.c **** *               CPU_TS_Get64(),
+ 186:BSP/cpu_bsp.c **** *               CPU_IntDisMeasStart(),
+ 187:BSP/cpu_bsp.c **** *               CPU_IntDisMeasStop().
+ 188:BSP/cpu_bsp.c **** *
+ 189:BSP/cpu_bsp.c **** *               This function is an INTERNAL CPU module function & MUST be implemented by applicati
+ 190:BSP/cpu_bsp.c **** *               BSP function(s) [see Note #1] but SHOULD NOT be called by application function(s).
+ 191:BSP/cpu_bsp.c **** *
+ 192:BSP/cpu_bsp.c **** * Note(s)     : (1) CPU_TS_TmrRd() is an application/BSP function that MUST be defined by the devel
+ 193:BSP/cpu_bsp.c **** *                   if either of the following CPU features is enabled :
+ 194:BSP/cpu_bsp.c **** *
+ 195:BSP/cpu_bsp.c **** *                   (a) CPU timestamps
+ 196:BSP/cpu_bsp.c **** *                   (b) CPU interrupts disabled time measurements
+ 197:BSP/cpu_bsp.c **** *
+ 198:BSP/cpu_bsp.c **** *                   See 'cpu_cfg.h  CPU TIMESTAMP CONFIGURATION  Note #1'
+ 199:BSP/cpu_bsp.c **** *                     & 'cpu_cfg.h  CPU INTERRUPTS DISABLED TIME MEASUREMENT CONFIGURATION  Note #1
+ 200:BSP/cpu_bsp.c **** *
+ 201:BSP/cpu_bsp.c **** *               (2) (a) Timer count values MUST be returned via word-size-configurable 'CPU_TS_TMR'
+ 202:BSP/cpu_bsp.c **** *                       data type.
+ 203:BSP/cpu_bsp.c **** *
+ 204:BSP/cpu_bsp.c **** *                       (1) If timer has more bits, truncate timer values' higher-order bits greate
+ 205:BSP/cpu_bsp.c **** *                           than the configured 'CPU_TS_TMR' timestamp timer data type word size.
+ 206:BSP/cpu_bsp.c **** *
+ 207:BSP/cpu_bsp.c **** *                       (2) Since the timer MUST NOT have less bits than the configured 'CPU_TS_TMR
+ 208:BSP/cpu_bsp.c **** *                           timestamp timer data type word size; 'CPU_CFG_TS_TMR_SIZE' MUST be 
+ 209:BSP/cpu_bsp.c **** *                           configured so that ALL bits in 'CPU_TS_TMR' data type are significant.
+ 210:BSP/cpu_bsp.c **** *
+ 211:BSP/cpu_bsp.c **** *                           In other words, if timer size is not a binary-multiple of 8-bit octets 
+ 212:BSP/cpu_bsp.c **** *                           (e.g. 20-bits or even 24-bits), then the next lower, binary-multiple 
+ 213:BSP/cpu_bsp.c **** *                           octet word size SHOULD be configured (e.g. to 16-bits).  However, the 
+ 214:BSP/cpu_bsp.c **** *                           minimum supported word size for CPU timestamp timers is 8-bits.
+ 215:BSP/cpu_bsp.c **** *
+ 216:BSP/cpu_bsp.c **** *                       See also 'cpu_cfg.h   CPU TIMESTAMP CONFIGURATION  Note #2'
+ 217:BSP/cpu_bsp.c **** *                              & 'cpu_core.h  CPU TIMESTAMP DATA TYPES     Note #1'.
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 6
+
+
+ 218:BSP/cpu_bsp.c **** *
+ 219:BSP/cpu_bsp.c **** *                   (b) Timer SHOULD be an 'up'  counter whose values increase with each time count
+ 220:BSP/cpu_bsp.c **** *
+ 221:BSP/cpu_bsp.c **** *                       (1) If timer is a 'down' counter whose values decrease with each time count
+ 222:BSP/cpu_bsp.c **** *                           then the returned timer value MUST be ones-complemented.
+ 223:BSP/cpu_bsp.c **** *
+ 224:BSP/cpu_bsp.c **** *                   (c) (1) When applicable, the amount of time measured by CPU timestamps is 
+ 225:BSP/cpu_bsp.c **** *                           calculated by either of the following equations :
+ 226:BSP/cpu_bsp.c **** *
+ 227:BSP/cpu_bsp.c **** *                           (A) Time measured  =  Number timer counts  *  Timer period
+ 228:BSP/cpu_bsp.c **** *
+ 229:BSP/cpu_bsp.c **** *                                   where
+ 230:BSP/cpu_bsp.c **** *
+ 231:BSP/cpu_bsp.c **** *                                       Number timer counts     Number of timer counts measured 
+ 232:BSP/cpu_bsp.c **** *                                       Timer period            Timer's period in some units of 
+ 233:BSP/cpu_bsp.c **** *                                                                   (fractional) seconds
+ 234:BSP/cpu_bsp.c **** *                                       Time measured           Amount of time measured, in same 
+ 235:BSP/cpu_bsp.c **** *                                                                   units of (fractional) seconds 
+ 236:BSP/cpu_bsp.c **** *                                                                   as the Timer period
+ 237:BSP/cpu_bsp.c **** *
+ 238:BSP/cpu_bsp.c **** *                                                  Number timer counts
+ 239:BSP/cpu_bsp.c **** *                           (B) Time measured  =  ---------------------
+ 240:BSP/cpu_bsp.c **** *                                                    Timer frequency
+ 241:BSP/cpu_bsp.c **** *
+ 242:BSP/cpu_bsp.c **** *                                   where
+ 243:BSP/cpu_bsp.c **** *
+ 244:BSP/cpu_bsp.c **** *                                       Number timer counts     Number of timer counts measured
+ 245:BSP/cpu_bsp.c **** *                                       Timer frequency         Timer's frequency in some units 
+ 246:BSP/cpu_bsp.c **** *                                                                   of counts per second
+ 247:BSP/cpu_bsp.c **** *                                       Time measured           Amount of time measured, in seconds
+ 248:BSP/cpu_bsp.c **** *
+ 249:BSP/cpu_bsp.c **** *                       (2) Timer period SHOULD be less than the typical measured time but MUST be 
+ 250:BSP/cpu_bsp.c **** *                           than the maximum measured time; otherwise, timer resolution inadequate 
+ 251:BSP/cpu_bsp.c **** *                           measure desired times.
+ 252:BSP/cpu_bsp.c **** ***************************************************************************************************
+ 253:BSP/cpu_bsp.c **** */
+ 254:BSP/cpu_bsp.c **** 
+ 255:BSP/cpu_bsp.c **** #if (CPU_CFG_TS_TMR_EN == DEF_ENABLED)
+ 256:BSP/cpu_bsp.c **** CPU_TS_TMR  CPU_TS_TmrRd (void)
+ 257:BSP/cpu_bsp.c **** {
+  69              		.loc 1 257 0
+  70              		.cfi_startproc
+  71              		@ args = 0, pretend = 0, frame = 0
+  72              		@ frame_needed = 0, uses_anonymous_args = 0
+  73              		@ link register save eliminated.
+ 258:BSP/cpu_bsp.c ****     CPU_TS_TMR  ts_tmr_cnts;
+ 259:BSP/cpu_bsp.c **** 
+ 260:BSP/cpu_bsp.c ****                                                                 
+ 261:BSP/cpu_bsp.c ****     ts_tmr_cnts  = (CPU_TS_TMR)CPU_BSP_REG_DWT_CYCCNT;
+  74              		.loc 1 261 0
+  75 0000 014B     		ldr	r3, .L6
+  76 0002 1868     		ldr	r0, [r3]
+  77              	.LVL2:
+ 262:BSP/cpu_bsp.c ****     
+ 263:BSP/cpu_bsp.c ****     return (ts_tmr_cnts);
+ 264:BSP/cpu_bsp.c **** }
+  78              		.loc 1 264 0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 7
+
+
+  79 0004 7047     		bx	lr
+  80              	.L7:
+  81 0006 00BF     		.align	2
+  82              	.L6:
+  83 0008 041000E0 		.word	-536866812
+  84              		.cfi_endproc
+  85              	.LFE2:
+  86              		.size	CPU_TS_TmrRd, .-CPU_TS_TmrRd
+  87              		.section	.text.CPU_TS32_to_uSec,"ax",%progbits
+  88              		.align	2
+  89              		.global	CPU_TS32_to_uSec
+  90              		.thumb
+  91              		.thumb_func
+  92              		.type	CPU_TS32_to_uSec, %function
+  93              	CPU_TS32_to_uSec:
+  94              	.LFB3:
+ 265:BSP/cpu_bsp.c **** #endif
+ 266:BSP/cpu_bsp.c **** 
+ 267:BSP/cpu_bsp.c **** 
+ 268:BSP/cpu_bsp.c **** /*$PAGE*/
+ 269:BSP/cpu_bsp.c **** /*
+ 270:BSP/cpu_bsp.c **** ***************************************************************************************************
+ 271:BSP/cpu_bsp.c **** *                                         CPU_TSxx_to_uSec()
+ 272:BSP/cpu_bsp.c **** *
+ 273:BSP/cpu_bsp.c **** * Description : Convert a 32-/64-bit CPU timestamp from timer counts to microseconds.
+ 274:BSP/cpu_bsp.c **** *
+ 275:BSP/cpu_bsp.c **** * Argument(s) : ts_cnts   CPU timestamp (in timestamp timer counts [see Note #2aA]).
+ 276:BSP/cpu_bsp.c **** *
+ 277:BSP/cpu_bsp.c **** * Return(s)   : Converted CPU timestamp (in microseconds           [see Note #2aD]).
+ 278:BSP/cpu_bsp.c **** *
+ 279:BSP/cpu_bsp.c **** * Caller(s)   : Application.
+ 280:BSP/cpu_bsp.c **** *
+ 281:BSP/cpu_bsp.c **** *               This function is an (optional) CPU module application interface (API) function whic
+ 282:BSP/cpu_bsp.c **** *               MAY be implemented by application/BSP function(s) [see Note #1] & MAY be called by 
+ 283:BSP/cpu_bsp.c **** *               application function(s).
+ 284:BSP/cpu_bsp.c **** *
+ 285:BSP/cpu_bsp.c **** * Note(s)     : (1) CPU_TS32_to_uSec()/CPU_TS64_to_uSec() are application/BSP functions that MAY be
+ 286:BSP/cpu_bsp.c **** *                   optionally defined by the developer when either of the following CPU features i
+ 287:BSP/cpu_bsp.c **** *                   enabled :
+ 288:BSP/cpu_bsp.c **** *
+ 289:BSP/cpu_bsp.c **** *                   (a) CPU timestamps
+ 290:BSP/cpu_bsp.c **** *                   (b) CPU interrupts disabled time measurements
+ 291:BSP/cpu_bsp.c **** *
+ 292:BSP/cpu_bsp.c **** *                   See 'cpu_cfg.h  CPU TIMESTAMP CONFIGURATION  Note #1'
+ 293:BSP/cpu_bsp.c **** *                     & 'cpu_cfg.h  CPU INTERRUPTS DISABLED TIME MEASUREMENT CONFIGURATION  Note #1
+ 294:BSP/cpu_bsp.c **** *
+ 295:BSP/cpu_bsp.c **** *               (2) (a) The amount of time measured by CPU timestamps is calculated by either of 
+ 296:BSP/cpu_bsp.c **** *                       the following equations :
+ 297:BSP/cpu_bsp.c **** *
+ 298:BSP/cpu_bsp.c **** *                                                                        10^6 microseconds
+ 299:BSP/cpu_bsp.c **** *                       (1) Time measured  =   Number timer counts   *  -------------------  *  Tim
+ 300:BSP/cpu_bsp.c **** *                                                                            1 second
+ 301:BSP/cpu_bsp.c **** *
+ 302:BSP/cpu_bsp.c **** *                                              Number timer counts       10^6 microseconds
+ 303:BSP/cpu_bsp.c **** *                       (2) Time measured  =  ---------------------  *  -------------------
+ 304:BSP/cpu_bsp.c **** *                                                Timer frequency             1 second
+ 305:BSP/cpu_bsp.c **** *
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 8
+
+
+ 306:BSP/cpu_bsp.c **** *                               where
+ 307:BSP/cpu_bsp.c **** *
+ 308:BSP/cpu_bsp.c **** *                                   (A) Number timer counts     Number of timer counts measured
+ 309:BSP/cpu_bsp.c **** *                                   (B) Timer frequency         Timer's frequency in some units 
+ 310:BSP/cpu_bsp.c **** *                                                                   of counts per second
+ 311:BSP/cpu_bsp.c **** *                                   (C) Timer period            Timer's period in some units of 
+ 312:BSP/cpu_bsp.c **** *                                                                   (fractional)  seconds
+ 313:BSP/cpu_bsp.c **** *                                   (D) Time measured           Amount of time measured, 
+ 314:BSP/cpu_bsp.c **** *                                                                   in microseconds
+ 315:BSP/cpu_bsp.c **** *
+ 316:BSP/cpu_bsp.c **** *                   (b) Timer period SHOULD be less than the typical measured time but MUST be less
+ 317:BSP/cpu_bsp.c **** *                       than the maximum measured time; otherwise, timer resolution inadequate to 
+ 318:BSP/cpu_bsp.c **** *                       measure desired times.
+ 319:BSP/cpu_bsp.c **** *
+ 320:BSP/cpu_bsp.c **** *                   (c) Specific implementations may convert any number of CPU_TS32 or CPU_TS64 bit
+ 321:BSP/cpu_bsp.c **** *                       -- up to 32 or 64, respectively -- into microseconds.
+ 322:BSP/cpu_bsp.c **** ***************************************************************************************************
+ 323:BSP/cpu_bsp.c **** */
+ 324:BSP/cpu_bsp.c **** 
+ 325:BSP/cpu_bsp.c **** #if (CPU_CFG_TS_32_EN == DEF_ENABLED)
+ 326:BSP/cpu_bsp.c **** CPU_INT64U  CPU_TS32_to_uSec (CPU_TS32  ts_cnts)
+ 327:BSP/cpu_bsp.c **** {
+  95              		.loc 1 327 0
+  96              		.cfi_startproc
+  97              		@ args = 0, pretend = 0, frame = 0
+  98              		@ frame_needed = 0, uses_anonymous_args = 0
+  99              		@ link register save eliminated.
+ 100              	.LVL3:
+ 328:BSP/cpu_bsp.c **** 
+ 329:BSP/cpu_bsp.c ****     return (0);
+ 330:BSP/cpu_bsp.c **** 
+ 331:BSP/cpu_bsp.c **** }
+ 101              		.loc 1 331 0
+ 102 0000 0020     		movs	r0, #0
+ 103              	.LVL4:
+ 104 0002 0021     		movs	r1, #0
+ 105 0004 7047     		bx	lr
+ 106              		.cfi_endproc
+ 107              	.LFE3:
+ 108              		.size	CPU_TS32_to_uSec, .-CPU_TS32_to_uSec
+ 109 0006 00BF     		.text
+ 110              	.Letext0:
+ 111              		.file 2 ".\\uC-CPU\\ARM-Cortex-M3\\GNU/cpu.h"
+ 112              		.file 3 ".\\uC-CPU/cpu_core.h"
+ 113              		.file 4 ".\\BSP/bsp.h"
+ 114              		.section	.debug_info,"",%progbits
+ 115              	.Ldebug_info0:
+ 116 0000 74010000 		.4byte	0x174
+ 117 0004 0400     		.2byte	0x4
+ 118 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 119 000a 04       		.byte	0x4
+ 120 000b 01       		.uleb128 0x1
+ 121 000c 62000000 		.4byte	.LASF26
+ 122 0010 0C       		.byte	0xc
+ 123 0011 46000000 		.4byte	.LASF27
+ 124 0015 37010000 		.4byte	.LASF28
+ 125 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 9
+
+
+ 126 001d 00000000 		.4byte	0
+ 127 0021 00000000 		.4byte	.Ldebug_line0
+ 128 0025 02       		.uleb128 0x2
+ 129 0026 01       		.byte	0x1
+ 130 0027 08       		.byte	0x8
+ 131 0028 C2010000 		.4byte	.LASF0
+ 132 002c 02       		.uleb128 0x2
+ 133 002d 01       		.byte	0x1
+ 134 002e 08       		.byte	0x8
+ 135 002f 54000000 		.4byte	.LASF1
+ 136 0033 02       		.uleb128 0x2
+ 137 0034 01       		.byte	0x1
+ 138 0035 06       		.byte	0x6
+ 139 0036 3A000000 		.4byte	.LASF2
+ 140 003a 02       		.uleb128 0x2
+ 141 003b 02       		.byte	0x2
+ 142 003c 07       		.byte	0x7
+ 143 003d 16020000 		.4byte	.LASF3
+ 144 0041 02       		.uleb128 0x2
+ 145 0042 02       		.byte	0x2
+ 146 0043 05       		.byte	0x5
+ 147 0044 D1010000 		.4byte	.LASF4
+ 148 0048 03       		.uleb128 0x3
+ 149 0049 29000000 		.4byte	.LASF6
+ 150 004d 02       		.byte	0x2
+ 151 004e 7C       		.byte	0x7c
+ 152 004f 53000000 		.4byte	0x53
+ 153 0053 02       		.uleb128 0x2
+ 154 0054 04       		.byte	0x4
+ 155 0055 07       		.byte	0x7
+ 156 0056 87010000 		.4byte	.LASF5
+ 157 005a 04       		.uleb128 0x4
+ 158 005b 04       		.byte	0x4
+ 159 005c 05       		.byte	0x5
+ 160 005d 696E7400 		.ascii	"int\000"
+ 161 0061 03       		.uleb128 0x3
+ 162 0062 FD000000 		.4byte	.LASF7
+ 163 0066 02       		.byte	0x2
+ 164 0067 7E       		.byte	0x7e
+ 165 0068 6C000000 		.4byte	0x6c
+ 166 006c 02       		.uleb128 0x2
+ 167 006d 08       		.byte	0x8
+ 168 006e 07       		.byte	0x7
+ 169 006f 94010000 		.4byte	.LASF8
+ 170 0073 02       		.uleb128 0x2
+ 171 0074 08       		.byte	0x8
+ 172 0075 05       		.byte	0x5
+ 173 0076 B4010000 		.4byte	.LASF9
+ 174 007a 02       		.uleb128 0x2
+ 175 007b 04       		.byte	0x4
+ 176 007c 04       		.byte	0x4
+ 177 007d 34000000 		.4byte	.LASF10
+ 178 0081 02       		.uleb128 0x2
+ 179 0082 08       		.byte	0x8
+ 180 0083 04       		.byte	0x4
+ 181 0084 24010000 		.4byte	.LASF11
+ 182 0088 03       		.uleb128 0x3
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 10
+
+
+ 183 0089 C7010000 		.4byte	.LASF12
+ 184 008d 02       		.byte	0x2
+ 185 008e 87       		.byte	0x87
+ 186 008f 93000000 		.4byte	0x93
+ 187 0093 05       		.uleb128 0x5
+ 188 0094 48000000 		.4byte	0x48
+ 189 0098 02       		.uleb128 0x2
+ 190 0099 04       		.byte	0x4
+ 191 009a 05       		.byte	0x5
+ 192 009b F8010000 		.4byte	.LASF13
+ 193 009f 02       		.uleb128 0x2
+ 194 00a0 04       		.byte	0x4
+ 195 00a1 07       		.byte	0x7
+ 196 00a2 08010000 		.4byte	.LASF14
+ 197 00a6 02       		.uleb128 0x2
+ 198 00a7 08       		.byte	0x8
+ 199 00a8 04       		.byte	0x4
+ 200 00a9 01020000 		.4byte	.LASF15
+ 201 00ad 02       		.uleb128 0x2
+ 202 00ae 04       		.byte	0x4
+ 203 00af 07       		.byte	0x7
+ 204 00b0 AB010000 		.4byte	.LASF16
+ 205 00b4 03       		.uleb128 0x3
+ 206 00b5 0D020000 		.4byte	.LASF17
+ 207 00b9 03       		.byte	0x3
+ 208 00ba C4       		.byte	0xc4
+ 209 00bb 48000000 		.4byte	0x48
+ 210 00bf 03       		.uleb128 0x3
+ 211 00c0 ED010000 		.4byte	.LASF18
+ 212 00c4 03       		.byte	0x3
+ 213 00c5 D2       		.byte	0xd2
+ 214 00c6 48000000 		.4byte	0x48
+ 215 00ca 03       		.uleb128 0x3
+ 216 00cb 00000000 		.4byte	.LASF19
+ 217 00cf 03       		.byte	0x3
+ 218 00d0 DD       		.byte	0xdd
+ 219 00d1 48000000 		.4byte	0x48
+ 220 00d5 06       		.uleb128 0x6
+ 221 00d6 78010000 		.4byte	.LASF29
+ 222 00da 01       		.byte	0x1
+ 223 00db 9E       		.byte	0x9e
+ 224 00dc 00000000 		.4byte	.LFB1
+ 225 00e0 28000000 		.4byte	.LFE1-.LFB1
+ 226 00e4 01       		.uleb128 0x1
+ 227 00e5 9C       		.byte	0x9c
+ 228 00e6 0C010000 		.4byte	0x10c
+ 229 00ea 07       		.uleb128 0x7
+ 230 00eb 1A010000 		.4byte	.LASF20
+ 231 00ef 01       		.byte	0x1
+ 232 00f0 A0       		.byte	0xa0
+ 233 00f1 48000000 		.4byte	0x48
+ 234 00f5 00000000 		.4byte	.LLST0
+ 235 00f9 08       		.uleb128 0x8
+ 236 00fa 06000000 		.4byte	.LVL0
+ 237 00fe 60010000 		.4byte	0x160
+ 238 0102 08       		.uleb128 0x8
+ 239 0103 1E000000 		.4byte	.LVL1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 11
+
+
+ 240 0107 6B010000 		.4byte	0x16b
+ 241 010b 00       		.byte	0
+ 242 010c 09       		.uleb128 0x9
+ 243 010d F0000000 		.4byte	.LASF22
+ 244 0111 01       		.byte	0x1
+ 245 0112 0001     		.2byte	0x100
+ 246 0114 BF000000 		.4byte	0xbf
+ 247 0118 00000000 		.4byte	.LFB2
+ 248 011c 0C000000 		.4byte	.LFE2-.LFB2
+ 249 0120 01       		.uleb128 0x1
+ 250 0121 9C       		.byte	0x9c
+ 251 0122 35010000 		.4byte	0x135
+ 252 0126 0A       		.uleb128 0xa
+ 253 0127 2B010000 		.4byte	.LASF21
+ 254 012b 01       		.byte	0x1
+ 255 012c 0201     		.2byte	0x102
+ 256 012e BF000000 		.4byte	0xbf
+ 257 0132 01       		.uleb128 0x1
+ 258 0133 50       		.byte	0x50
+ 259 0134 00       		.byte	0
+ 260 0135 09       		.uleb128 0x9
+ 261 0136 10000000 		.4byte	.LASF23
+ 262 013a 01       		.byte	0x1
+ 263 013b 4601     		.2byte	0x146
+ 264 013d 61000000 		.4byte	0x61
+ 265 0141 00000000 		.4byte	.LFB3
+ 266 0145 06000000 		.4byte	.LFE3-.LFB3
+ 267 0149 01       		.uleb128 0x1
+ 268 014a 9C       		.byte	0x9c
+ 269 014b 60010000 		.4byte	0x160
+ 270 014f 0B       		.uleb128 0xb
+ 271 0150 21000000 		.4byte	.LASF30
+ 272 0154 01       		.byte	0x1
+ 273 0155 4601     		.2byte	0x146
+ 274 0157 B4000000 		.4byte	0xb4
+ 275 015b 13000000 		.4byte	.LLST1
+ 276 015f 00       		.byte	0
+ 277 0160 0C       		.uleb128 0xc
+ 278 0161 68010000 		.4byte	.LASF24
+ 279 0165 68010000 		.4byte	.LASF24
+ 280 0169 04       		.byte	0x4
+ 281 016a 73       		.byte	0x73
+ 282 016b 0D       		.uleb128 0xd
+ 283 016c DB010000 		.4byte	.LASF25
+ 284 0170 DB010000 		.4byte	.LASF25
+ 285 0174 03       		.byte	0x3
+ 286 0175 2102     		.2byte	0x221
+ 287 0177 00       		.byte	0
+ 288              		.section	.debug_abbrev,"",%progbits
+ 289              	.Ldebug_abbrev0:
+ 290 0000 01       		.uleb128 0x1
+ 291 0001 11       		.uleb128 0x11
+ 292 0002 01       		.byte	0x1
+ 293 0003 25       		.uleb128 0x25
+ 294 0004 0E       		.uleb128 0xe
+ 295 0005 13       		.uleb128 0x13
+ 296 0006 0B       		.uleb128 0xb
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 12
+
+
+ 297 0007 03       		.uleb128 0x3
+ 298 0008 0E       		.uleb128 0xe
+ 299 0009 1B       		.uleb128 0x1b
+ 300 000a 0E       		.uleb128 0xe
+ 301 000b 55       		.uleb128 0x55
+ 302 000c 17       		.uleb128 0x17
+ 303 000d 11       		.uleb128 0x11
+ 304 000e 01       		.uleb128 0x1
+ 305 000f 10       		.uleb128 0x10
+ 306 0010 17       		.uleb128 0x17
+ 307 0011 00       		.byte	0
+ 308 0012 00       		.byte	0
+ 309 0013 02       		.uleb128 0x2
+ 310 0014 24       		.uleb128 0x24
+ 311 0015 00       		.byte	0
+ 312 0016 0B       		.uleb128 0xb
+ 313 0017 0B       		.uleb128 0xb
+ 314 0018 3E       		.uleb128 0x3e
+ 315 0019 0B       		.uleb128 0xb
+ 316 001a 03       		.uleb128 0x3
+ 317 001b 0E       		.uleb128 0xe
+ 318 001c 00       		.byte	0
+ 319 001d 00       		.byte	0
+ 320 001e 03       		.uleb128 0x3
+ 321 001f 16       		.uleb128 0x16
+ 322 0020 00       		.byte	0
+ 323 0021 03       		.uleb128 0x3
+ 324 0022 0E       		.uleb128 0xe
+ 325 0023 3A       		.uleb128 0x3a
+ 326 0024 0B       		.uleb128 0xb
+ 327 0025 3B       		.uleb128 0x3b
+ 328 0026 0B       		.uleb128 0xb
+ 329 0027 49       		.uleb128 0x49
+ 330 0028 13       		.uleb128 0x13
+ 331 0029 00       		.byte	0
+ 332 002a 00       		.byte	0
+ 333 002b 04       		.uleb128 0x4
+ 334 002c 24       		.uleb128 0x24
+ 335 002d 00       		.byte	0
+ 336 002e 0B       		.uleb128 0xb
+ 337 002f 0B       		.uleb128 0xb
+ 338 0030 3E       		.uleb128 0x3e
+ 339 0031 0B       		.uleb128 0xb
+ 340 0032 03       		.uleb128 0x3
+ 341 0033 08       		.uleb128 0x8
+ 342 0034 00       		.byte	0
+ 343 0035 00       		.byte	0
+ 344 0036 05       		.uleb128 0x5
+ 345 0037 35       		.uleb128 0x35
+ 346 0038 00       		.byte	0
+ 347 0039 49       		.uleb128 0x49
+ 348 003a 13       		.uleb128 0x13
+ 349 003b 00       		.byte	0
+ 350 003c 00       		.byte	0
+ 351 003d 06       		.uleb128 0x6
+ 352 003e 2E       		.uleb128 0x2e
+ 353 003f 01       		.byte	0x1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 13
+
+
+ 354 0040 3F       		.uleb128 0x3f
+ 355 0041 19       		.uleb128 0x19
+ 356 0042 03       		.uleb128 0x3
+ 357 0043 0E       		.uleb128 0xe
+ 358 0044 3A       		.uleb128 0x3a
+ 359 0045 0B       		.uleb128 0xb
+ 360 0046 3B       		.uleb128 0x3b
+ 361 0047 0B       		.uleb128 0xb
+ 362 0048 27       		.uleb128 0x27
+ 363 0049 19       		.uleb128 0x19
+ 364 004a 11       		.uleb128 0x11
+ 365 004b 01       		.uleb128 0x1
+ 366 004c 12       		.uleb128 0x12
+ 367 004d 06       		.uleb128 0x6
+ 368 004e 40       		.uleb128 0x40
+ 369 004f 18       		.uleb128 0x18
+ 370 0050 9742     		.uleb128 0x2117
+ 371 0052 19       		.uleb128 0x19
+ 372 0053 01       		.uleb128 0x1
+ 373 0054 13       		.uleb128 0x13
+ 374 0055 00       		.byte	0
+ 375 0056 00       		.byte	0
+ 376 0057 07       		.uleb128 0x7
+ 377 0058 34       		.uleb128 0x34
+ 378 0059 00       		.byte	0
+ 379 005a 03       		.uleb128 0x3
+ 380 005b 0E       		.uleb128 0xe
+ 381 005c 3A       		.uleb128 0x3a
+ 382 005d 0B       		.uleb128 0xb
+ 383 005e 3B       		.uleb128 0x3b
+ 384 005f 0B       		.uleb128 0xb
+ 385 0060 49       		.uleb128 0x49
+ 386 0061 13       		.uleb128 0x13
+ 387 0062 02       		.uleb128 0x2
+ 388 0063 17       		.uleb128 0x17
+ 389 0064 00       		.byte	0
+ 390 0065 00       		.byte	0
+ 391 0066 08       		.uleb128 0x8
+ 392 0067 898201   		.uleb128 0x4109
+ 393 006a 00       		.byte	0
+ 394 006b 11       		.uleb128 0x11
+ 395 006c 01       		.uleb128 0x1
+ 396 006d 31       		.uleb128 0x31
+ 397 006e 13       		.uleb128 0x13
+ 398 006f 00       		.byte	0
+ 399 0070 00       		.byte	0
+ 400 0071 09       		.uleb128 0x9
+ 401 0072 2E       		.uleb128 0x2e
+ 402 0073 01       		.byte	0x1
+ 403 0074 3F       		.uleb128 0x3f
+ 404 0075 19       		.uleb128 0x19
+ 405 0076 03       		.uleb128 0x3
+ 406 0077 0E       		.uleb128 0xe
+ 407 0078 3A       		.uleb128 0x3a
+ 408 0079 0B       		.uleb128 0xb
+ 409 007a 3B       		.uleb128 0x3b
+ 410 007b 05       		.uleb128 0x5
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 14
+
+
+ 411 007c 27       		.uleb128 0x27
+ 412 007d 19       		.uleb128 0x19
+ 413 007e 49       		.uleb128 0x49
+ 414 007f 13       		.uleb128 0x13
+ 415 0080 11       		.uleb128 0x11
+ 416 0081 01       		.uleb128 0x1
+ 417 0082 12       		.uleb128 0x12
+ 418 0083 06       		.uleb128 0x6
+ 419 0084 40       		.uleb128 0x40
+ 420 0085 18       		.uleb128 0x18
+ 421 0086 9742     		.uleb128 0x2117
+ 422 0088 19       		.uleb128 0x19
+ 423 0089 01       		.uleb128 0x1
+ 424 008a 13       		.uleb128 0x13
+ 425 008b 00       		.byte	0
+ 426 008c 00       		.byte	0
+ 427 008d 0A       		.uleb128 0xa
+ 428 008e 34       		.uleb128 0x34
+ 429 008f 00       		.byte	0
+ 430 0090 03       		.uleb128 0x3
+ 431 0091 0E       		.uleb128 0xe
+ 432 0092 3A       		.uleb128 0x3a
+ 433 0093 0B       		.uleb128 0xb
+ 434 0094 3B       		.uleb128 0x3b
+ 435 0095 05       		.uleb128 0x5
+ 436 0096 49       		.uleb128 0x49
+ 437 0097 13       		.uleb128 0x13
+ 438 0098 02       		.uleb128 0x2
+ 439 0099 18       		.uleb128 0x18
+ 440 009a 00       		.byte	0
+ 441 009b 00       		.byte	0
+ 442 009c 0B       		.uleb128 0xb
+ 443 009d 05       		.uleb128 0x5
+ 444 009e 00       		.byte	0
+ 445 009f 03       		.uleb128 0x3
+ 446 00a0 0E       		.uleb128 0xe
+ 447 00a1 3A       		.uleb128 0x3a
+ 448 00a2 0B       		.uleb128 0xb
+ 449 00a3 3B       		.uleb128 0x3b
+ 450 00a4 05       		.uleb128 0x5
+ 451 00a5 49       		.uleb128 0x49
+ 452 00a6 13       		.uleb128 0x13
+ 453 00a7 02       		.uleb128 0x2
+ 454 00a8 17       		.uleb128 0x17
+ 455 00a9 00       		.byte	0
+ 456 00aa 00       		.byte	0
+ 457 00ab 0C       		.uleb128 0xc
+ 458 00ac 2E       		.uleb128 0x2e
+ 459 00ad 00       		.byte	0
+ 460 00ae 3F       		.uleb128 0x3f
+ 461 00af 19       		.uleb128 0x19
+ 462 00b0 3C       		.uleb128 0x3c
+ 463 00b1 19       		.uleb128 0x19
+ 464 00b2 6E       		.uleb128 0x6e
+ 465 00b3 0E       		.uleb128 0xe
+ 466 00b4 03       		.uleb128 0x3
+ 467 00b5 0E       		.uleb128 0xe
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 15
+
+
+ 468 00b6 3A       		.uleb128 0x3a
+ 469 00b7 0B       		.uleb128 0xb
+ 470 00b8 3B       		.uleb128 0x3b
+ 471 00b9 0B       		.uleb128 0xb
+ 472 00ba 00       		.byte	0
+ 473 00bb 00       		.byte	0
+ 474 00bc 0D       		.uleb128 0xd
+ 475 00bd 2E       		.uleb128 0x2e
+ 476 00be 00       		.byte	0
+ 477 00bf 3F       		.uleb128 0x3f
+ 478 00c0 19       		.uleb128 0x19
+ 479 00c1 3C       		.uleb128 0x3c
+ 480 00c2 19       		.uleb128 0x19
+ 481 00c3 6E       		.uleb128 0x6e
+ 482 00c4 0E       		.uleb128 0xe
+ 483 00c5 03       		.uleb128 0x3
+ 484 00c6 0E       		.uleb128 0xe
+ 485 00c7 3A       		.uleb128 0x3a
+ 486 00c8 0B       		.uleb128 0xb
+ 487 00c9 3B       		.uleb128 0x3b
+ 488 00ca 05       		.uleb128 0x5
+ 489 00cb 00       		.byte	0
+ 490 00cc 00       		.byte	0
+ 491 00cd 00       		.byte	0
+ 492              		.section	.debug_loc,"",%progbits
+ 493              	.Ldebug_loc0:
+ 494              	.LLST0:
+ 495 0000 06000000 		.4byte	.LVL0
+ 496 0004 1D000000 		.4byte	.LVL1-1
+ 497 0008 0100     		.2byte	0x1
+ 498 000a 50       		.byte	0x50
+ 499 000b 00000000 		.4byte	0
+ 500 000f 00000000 		.4byte	0
+ 501              	.LLST1:
+ 502 0013 00000000 		.4byte	.LVL3
+ 503 0017 02000000 		.4byte	.LVL4
+ 504 001b 0100     		.2byte	0x1
+ 505 001d 50       		.byte	0x50
+ 506 001e 02000000 		.4byte	.LVL4
+ 507 0022 06000000 		.4byte	.LFE3
+ 508 0026 0400     		.2byte	0x4
+ 509 0028 F3       		.byte	0xf3
+ 510 0029 01       		.uleb128 0x1
+ 511 002a 50       		.byte	0x50
+ 512 002b 9F       		.byte	0x9f
+ 513 002c 00000000 		.4byte	0
+ 514 0030 00000000 		.4byte	0
+ 515              		.section	.debug_aranges,"",%progbits
+ 516 0000 2C000000 		.4byte	0x2c
+ 517 0004 0200     		.2byte	0x2
+ 518 0006 00000000 		.4byte	.Ldebug_info0
+ 519 000a 04       		.byte	0x4
+ 520 000b 00       		.byte	0
+ 521 000c 0000     		.2byte	0
+ 522 000e 0000     		.2byte	0
+ 523 0010 00000000 		.4byte	.LFB1
+ 524 0014 28000000 		.4byte	.LFE1-.LFB1
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 16
+
+
+ 525 0018 00000000 		.4byte	.LFB2
+ 526 001c 0C000000 		.4byte	.LFE2-.LFB2
+ 527 0020 00000000 		.4byte	.LFB3
+ 528 0024 06000000 		.4byte	.LFE3-.LFB3
+ 529 0028 00000000 		.4byte	0
+ 530 002c 00000000 		.4byte	0
+ 531              		.section	.debug_ranges,"",%progbits
+ 532              	.Ldebug_ranges0:
+ 533 0000 00000000 		.4byte	.LFB1
+ 534 0004 28000000 		.4byte	.LFE1
+ 535 0008 00000000 		.4byte	.LFB2
+ 536 000c 0C000000 		.4byte	.LFE2
+ 537 0010 00000000 		.4byte	.LFB3
+ 538 0014 06000000 		.4byte	.LFE3
+ 539 0018 00000000 		.4byte	0
+ 540 001c 00000000 		.4byte	0
+ 541              		.section	.debug_line,"",%progbits
+ 542              	.Ldebug_line0:
+ 543 0000 AB000000 		.section	.debug_str,"MS",%progbits,1
+ 543      02006E00 
+ 543      00000201 
+ 543      FB0E0D00 
+ 543      01010101 
+ 544              	.LASF19:
+ 545 0000 4350555F 		.ascii	"CPU_TS_TMR_FREQ\000"
+ 545      54535F54 
+ 545      4D525F46 
+ 545      52455100 
+ 546              	.LASF23:
+ 547 0010 4350555F 		.ascii	"CPU_TS32_to_uSec\000"
+ 547      54533332 
+ 547      5F746F5F 
+ 547      75536563 
+ 547      00
+ 548              	.LASF30:
+ 549 0021 74735F63 		.ascii	"ts_cnts\000"
+ 549      6E747300 
+ 550              	.LASF6:
+ 551 0029 4350555F 		.ascii	"CPU_INT32U\000"
+ 551      494E5433 
+ 551      325500
+ 552              	.LASF10:
+ 553 0034 666C6F61 		.ascii	"float\000"
+ 553      7400
+ 554              	.LASF2:
+ 555 003a 7369676E 		.ascii	"signed char\000"
+ 555      65642063 
+ 555      68617200 
+ 556              	.LASF27:
+ 557 0046 4253505C 		.ascii	"BSP\\cpu_bsp.c\000"
+ 557      6370755F 
+ 557      6273702E 
+ 557      6300
+ 558              	.LASF1:
+ 559 0054 756E7369 		.ascii	"unsigned char\000"
+ 559      676E6564 
+ 559      20636861 
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 17
+
+
+ 559      7200
+ 560              	.LASF26:
+ 561 0062 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 561      43313120 
+ 561      352E342E 
+ 561      31203230 
+ 561      31363036 
+ 562 0095 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 562      20726576 
+ 562      6973696F 
+ 562      6E203233 
+ 562      37373135 
+ 563 00c8 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 563      66756E63 
+ 563      74696F6E 
+ 563      2D736563 
+ 563      74696F6E 
+ 564              	.LASF22:
+ 565 00f0 4350555F 		.ascii	"CPU_TS_TmrRd\000"
+ 565      54535F54 
+ 565      6D725264 
+ 565      00
+ 566              	.LASF7:
+ 567 00fd 4350555F 		.ascii	"CPU_INT64U\000"
+ 567      494E5436 
+ 567      345500
+ 568              	.LASF14:
+ 569 0108 6C6F6E67 		.ascii	"long unsigned int\000"
+ 569      20756E73 
+ 569      69676E65 
+ 569      6420696E 
+ 569      7400
+ 570              	.LASF20:
+ 571 011a 66636C6B 		.ascii	"fclk_freq\000"
+ 571      5F667265 
+ 571      7100
+ 572              	.LASF11:
+ 573 0124 646F7562 		.ascii	"double\000"
+ 573      6C6500
+ 574              	.LASF21:
+ 575 012b 74735F74 		.ascii	"ts_tmr_cnts\000"
+ 575      6D725F63 
+ 575      6E747300 
+ 576              	.LASF28:
+ 577 0137 433A5C63 		.ascii	"C:\\cypress\\esw_uCOS3_cykit\\esw_uCOS3_cykit.cydsn"
+ 577      79707265 
+ 577      73735C65 
+ 577      73775F75 
+ 577      434F5333 
+ 578 0167 00       		.ascii	"\000"
+ 579              	.LASF24:
+ 580 0168 4253505F 		.ascii	"BSP_CPU_ClkFreq\000"
+ 580      4350555F 
+ 580      436C6B46 
+ 580      72657100 
+ 581              	.LASF29:
+ 582 0178 4350555F 		.ascii	"CPU_TS_TmrInit\000"
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 18
+
+
+ 582      54535F54 
+ 582      6D72496E 
+ 582      697400
+ 583              	.LASF5:
+ 584 0187 756E7369 		.ascii	"unsigned int\000"
+ 584      676E6564 
+ 584      20696E74 
+ 584      00
+ 585              	.LASF8:
+ 586 0194 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 586      206C6F6E 
+ 586      6720756E 
+ 586      7369676E 
+ 586      65642069 
+ 587              	.LASF16:
+ 588 01ab 73697A65 		.ascii	"sizetype\000"
+ 588      74797065 
+ 588      00
+ 589              	.LASF9:
+ 590 01b4 6C6F6E67 		.ascii	"long long int\000"
+ 590      206C6F6E 
+ 590      6720696E 
+ 590      7400
+ 591              	.LASF0:
+ 592 01c2 63686172 		.ascii	"char\000"
+ 592      00
+ 593              	.LASF12:
+ 594 01c7 4350555F 		.ascii	"CPU_REG32\000"
+ 594      52454733 
+ 594      3200
+ 595              	.LASF4:
+ 596 01d1 73686F72 		.ascii	"short int\000"
+ 596      7420696E 
+ 596      7400
+ 597              	.LASF25:
+ 598 01db 4350555F 		.ascii	"CPU_TS_TmrFreqSet\000"
+ 598      54535F54 
+ 598      6D724672 
+ 598      65715365 
+ 598      7400
+ 599              	.LASF18:
+ 600 01ed 4350555F 		.ascii	"CPU_TS_TMR\000"
+ 600      54535F54 
+ 600      4D5200
+ 601              	.LASF13:
+ 602 01f8 6C6F6E67 		.ascii	"long int\000"
+ 602      20696E74 
+ 602      00
+ 603              	.LASF15:
+ 604 0201 6C6F6E67 		.ascii	"long double\000"
+ 604      20646F75 
+ 604      626C6500 
+ 605              	.LASF17:
+ 606 020d 4350555F 		.ascii	"CPU_TS32\000"
+ 606      54533332 
+ 606      00
+ 607              	.LASF3:
+ARM GAS  C:\Users\roman\AppData\Local\Temp\ccjsbX2M.s 			page 19
+
+
+ 608 0216 73686F72 		.ascii	"short unsigned int\000"
+ 608      7420756E 
+ 608      7369676E 
+ 608      65642069 
+ 608      6E7400
+ 609              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

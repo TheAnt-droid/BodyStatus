@@ -1,0 +1,313 @@
+ARM GAS  uC-CPU\ARM-Cortex-M3\GNU\cpu_a.s 			page 1
+
+
+   1              	@**************************************************************************************************
+   2              	@                                                uC/CPU
+   3              	@                                    CPU CONFIGURATION & PORT LAYER
+   4              	@
+   5              	@                          (c) Copyright 2004-2011; Micrium, Inc.; Weston, FL
+   6              	@
+   7              	@               All rights reserved.  Protected by international copyright laws.
+   8              	@
+   9              	@               uC/CPU is provided in source form to registered licensees ONLY.  It is 
+  10              	@               illegal to distribute this source code to any third party unless you receive 
+  11              	@               written permission by an authorized Micrium representative.  Knowledge of 
+  12              	@               the source code may NOT be used to develop a similar product.
+  13              	@
+  14              	@               Please help us continue to provide the Embedded community with the finest 
+  15              	@               software available.  Your honesty is greatly appreciated.
+  16              	@
+  17              	@               You can contact us at www.micrium.com.
+  18              	@**************************************************************************************************
+  19              	
+  20              	
+  21              	@**************************************************************************************************
+  22              	@
+  23              	@                                            CPU PORT FILE
+  24              	@
+  25              	@                                            ARM-Cortex-M3
+  26              	@                                            GNU C Compiler
+  27              	@
+  28              	@ Filename      : cpu_a.s
+  29              	@ Version       : V1.29.01.00
+  30              	@ Programmer(s) : JJL
+  31              	@**************************************************************************************************
+  32              	
+  33              	
+  34              	@**************************************************************************************************
+  35              	@                                           PUBLIC FUNCTIONS
+  36              	@**************************************************************************************************
+  37              	
+  38              	.global  CPU_IntDis
+  39              	.global  CPU_IntEn
+  40              	
+  41              	.global  CPU_SR_Save
+  42              	.global  CPU_SR_Restore
+  43              	
+  44              	.global  CPU_WaitForInt
+  45              	.global  CPU_WaitForExcept
+  46              	
+  47              	
+  48              	.global  CPU_CntLeadZeros
+  49              	.global  CPU_CntTrailZeros
+  50              	.global  CPU_RevBits
+  51              	
+  52              	
+  53              	@**************************************************************************************************
+  54              	@                                      CODE GENERATION DIRECTIVES
+  55              	@**************************************************************************************************
+  56              	
+  57              	.text
+ARM GAS  uC-CPU\ARM-Cortex-M3\GNU\cpu_a.s 			page 2
+
+
+  58              	.align 2
+  59              	.thumb
+  60              	.syntax unified
+  61              	
+  62              	
+  63              	@$PAGE
+  64              	@**************************************************************************************************
+  65              	@                                    DISABLE and ENABLE INTERRUPTS
+  66              	@
+  67              	@ Description : Disable/Enable interrupts.
+  68              	@
+  69              	@ Prototypes  : void  CPU_IntDis(void);
+  70              	@               void  CPU_IntEn (void);
+  71              	@**************************************************************************************************
+  72              	
+  73              	.thumb_func
+  74              	CPU_IntDis:
+  75 0000 72B6     	        CPSID   I
+  76 0002 7047     	        BX      LR
+  77              	
+  78              	.thumb_func
+  79              	CPU_IntEn:
+  80 0004 62B6     	        CPSIE   I
+  81 0006 7047     	        BX      LR
+  82              	
+  83              	
+  84              	@**************************************************************************************************
+  85              	@                                      CRITICAL SECTION FUNCTIONS
+  86              	@
+  87              	@ Description : Disable/Enable interrupts by preserving the state of interrupts.  Generally speakin
+  88              	@               state of the interrupt disable flag is stored in the local variable 'cpu_sr' & inte
+  89              	@               are then disabled ('cpu_sr' is allocated in all functions that need to disable inte
+  90              	@               The previous interrupt state is restored by copying 'cpu_sr' into the CPU's status 
+  91              	@
+  92              	@ Prototypes  : CPU_SR  CPU_SR_Save   (void);
+  93              	@               void    CPU_SR_Restore(CPU_SR cpu_sr);
+  94              	@
+  95              	@ Note(s)     : (1) These functions are used in general like this :
+  96              	@
+  97              	@                       void  Task (void  *p_arg)
+  98              	@                       {
+  99              	@                           CPU_SR_ALLOC();                     /* Allocate storage for CPU status 
+ 100              	@                               :
+ 101              	@                               :
+ 102              	@                           CPU_CRITICAL_ENTER();               /* cpu_sr = CPU_SR_Save();         
+ 103              	@                               :
+ 104              	@                               :
+ 105              	@                           CPU_CRITICAL_EXIT();                /* CPU_SR_Restore(cpu_sr);         
+ 106              	@                               :
+ 107              	@                       }
+ 108              	@**************************************************************************************************
+ 109              	
+ 110              	.thumb_func
+ 111              	CPU_SR_Save:
+ 112 0008 EFF31080 	        MRS     R0, PRIMASK                     @ Set prio int mask to mask all (except faults)
+ 113 000c 72B6     	        CPSID   I 
+ 114 000e 7047     	        BX      LR
+ARM GAS  uC-CPU\ARM-Cortex-M3\GNU\cpu_a.s 			page 3
+
+
+ 115              	
+ 116              	.thumb_func
+ 117              	CPU_SR_Restore:                                 @ See Note #2.
+ 118 0010 80F31088 	        MSR     PRIMASK, R0
+ 119 0014 7047     	        BX      LR
+ 120              	
+ 121              	
+ 122              	@$PAGE
+ 123              	@**************************************************************************************************
+ 124              	@                                         WAIT FOR INTERRUPT
+ 125              	@
+ 126              	@ Description : Enters sleep state, which will be exited when an interrupt is received.
+ 127              	@
+ 128              	@ Prototypes  : void  CPU_WaitForInt (void)
+ 129              	@
+ 130              	@ Argument(s) : none.
+ 131              	@**************************************************************************************************
+ 132              	
+ 133              	.thumb_func
+ 134              	CPU_WaitForInt:
+ 135 0016 30BF     	        WFI                                     @ Wait for interrupt
+ 136 0018 7047     	        BX      LR
+ 137              	
+ 138              	
+ 139              	@**************************************************************************************************
+ 140              	@                                         WAIT FOR EXCEPTION
+ 141              	@
+ 142              	@ Description : Enters sleep state, which will be exited when an exception is received.
+ 143              	@
+ 144              	@ Prototypes  : void  CPU_WaitForExcept (void)
+ 145              	@
+ 146              	@ Argument(s) : none.
+ 147              	@**************************************************************************************************
+ 148              	
+ 149              	.thumb_func
+ 150              	CPU_WaitForExcept:
+ 151 001a 20BF     	        WFE                                     @ Wait for exception
+ 152 001c 7047     	        BX      LR
+ 153              	
+ 154              	
+ 155              	@$PAGE
+ 156              	@**************************************************************************************************
+ 157              	@                                         CPU_CntLeadZeros()
+ 158              	@                                        COUNT LEADING ZEROS
+ 159              	@
+ 160              	@ Description : Counts the number of contiguous, most-significant, leading zero bits before the 
+ 161              	@                   first binary one bit in a data value.
+ 162              	@
+ 163              	@ Prototype   : CPU_DATA  CPU_CntLeadZeros(CPU_DATA  val);
+ 164              	@
+ 165              	@ Argument(s) : val         Data value to count leading zero bits.
+ 166              	@
+ 167              	@ Return(s)   : Number of contiguous, most-significant, leading zero bits in 'val'.
+ 168              	@
+ 169              	@ Caller(s)   : Application.
+ 170              	@
+ 171              	@               This function is an INTERNAL CPU module function but MAY be called by application 
+ARM GAS  uC-CPU\ARM-Cortex-M3\GNU\cpu_a.s 			page 4
+
+
+ 172              	@               function(s).
+ 173              	@
+ 174              	@ Note(s)     : (1) (a) Supports 32-bit data value size as configured by 'CPU_DATA' (see 'cpu.h  
+ 175              	@                       CPU WORD CONFIGURATION  Note #1').
+ 176              	@
+ 177              	@                   (b) For 32-bit values :
+ 178              	@
+ 179              	@                             b31  b30  b29  ...  b04  b03  b02  b01  b00    # Leading Zeros
+ 180              	@                             ---  ---  ---       ---  ---  ---  ---  ---    ---------------
+ 181              	@                              1    x    x         x    x    x    x    x            0
+ 182              	@                              0    1    x         x    x    x    x    x            1
+ 183              	@                              0    0    1         x    x    x    x    x            2
+ 184              	@                              :    :    :         :    :    :    :    :            :
+ 185              	@                              :    :    :         :    :    :    :    :            :
+ 186              	@                              0    0    0         1    x    x    x    x           27
+ 187              	@                              0    0    0         0    1    x    x    x           28
+ 188              	@                              0    0    0         0    0    1    x    x           29
+ 189              	@                              0    0    0         0    0    0    1    x           30
+ 190              	@                              0    0    0         0    0    0    0    1           31
+ 191              	@                              0    0    0         0    0    0    0    0           32
+ 192              	@
+ 193              	@
+ 194              	@               (2) MUST be defined in 'cpu_a.asm' (or 'cpu_c.c') if CPU_CFG_LEAD_ZEROS_ASM_PRESENT
+ 195              	@                   #define'd in 'cpu_cfg.h' or 'cpu.h'.
+ 196              	@**************************************************************************************************
+ 197              	
+ 198              	.thumb_func
+ 199              	CPU_CntLeadZeros:
+ 200 001e B0FA80F0 	        CLZ     R0, R0                          @ Count leading zeros
+ 201 0022 7047     	        BX      LR
+ 202              	
+ 203              	
+ 204              	@$PAGE
+ 205              	@**************************************************************************************************
+ 206              	@                                         CPU_CntTrailZeros()
+ 207              	@                                        COUNT TRAILING ZEROS
+ 208              	@
+ 209              	@ Description : Counts the number of contiguous, least-significant, trailing zero bits before the 
+ 210              	@                   first binary one bit in a data value.
+ 211              	@
+ 212              	@ Prototype   : CPU_DATA  CPU_CntTrailZeros(CPU_DATA  val);
+ 213              	@
+ 214              	@ Argument(s) : val         Data value to count trailing zero bits.
+ 215              	@
+ 216              	@ Return(s)   : Number of contiguous, least-significant, trailing zero bits in 'val'.
+ 217              	@
+ 218              	@ Caller(s)   : Application.
+ 219              	@
+ 220              	@               This function is an INTERNAL CPU module function but MAY be called by application 
+ 221              	@               function(s).
+ 222              	@
+ 223              	@ Note(s)     : (1) (a) Supports 32-bit data value size as configured by 'CPU_DATA' (see 'cpu.h  
+ 224              	@                       CPU WORD CONFIGURATION  Note #1').
+ 225              	@
+ 226              	@                   (b) For 32-bit values :
+ 227              	@
+ 228              	@                             b31  b30  b29  b28  b27  ...  b02  b01  b00    # Trailing Zeros
+ARM GAS  uC-CPU\ARM-Cortex-M3\GNU\cpu_a.s 			page 5
+
+
+ 229              	@                             ---  ---  ---  ---  ---       ---  ---  ---    ----------------
+ 230              	@                              x    x    x    x    x         x    x    1            0
+ 231              	@                              x    x    x    x    x         x    1    0            1
+ 232              	@                              x    x    x    x    x         1    0    0            2
+ 233              	@                              :    :    :    :    :         :    :    :            :
+ 234              	@                              :    :    :    :    :         :    :    :            :
+ 235              	@                              x    x    x    x    1         0    0    0           27
+ 236              	@                              x    x    x    1    0         0    0    0           28
+ 237              	@                              x    x    1    0    0         0    0    0           29
+ 238              	@                              x    1    0    0    0         0    0    0           30
+ 239              	@                              1    0    0    0    0         0    0    0           31
+ 240              	@                              0    0    0    0    0         0    0    0           32
+ 241              	@
+ 242              	@
+ 243              	@               (2) MUST be defined in 'cpu_a.asm' (or 'cpu_c.c') if CPU_CFG_TRAIL_ZEROS_ASM_PRESEN
+ 244              	@                   #define'd in 'cpu_cfg.h' or 'cpu.h'.
+ 245              	@**************************************************************************************************
+ 246              	
+ 247              	.thumb_func
+ 248              	CPU_CntTrailZeros:
+ 249 0024 90FAA0F0 	        RBIT    R0, R0                          @ Reverse bits
+ 250 0028 B0FA80F0 	        CLZ     R0, R0                          @ Count leading zeros
+ 251 002c 7047     	        BX      LR
+ 252              	
+ 253              	
+ 254              	@$PAGE
+ 255              	@**************************************************************************************************
+ 256              	@                                            CPU_RevBits()
+ 257              	@                                            REVERSE BITS
+ 258              	@
+ 259              	@ Description : Reverses the bits in a data value.
+ 260              	@
+ 261              	@ Prototypes  : CPU_DATA  CPU_RevBits(CPU_DATA  val);
+ 262              	@
+ 263              	@ Argument(s) : val         Data value to reverse bits.
+ 264              	@
+ 265              	@ Return(s)   : Value with all bits in 'val' reversed (see Note #1).
+ 266              	@
+ 267              	@ Caller(s)   : Application.
+ 268              	@
+ 269              	@               This function is an INTERNAL CPU module function but MAY be called by application f
+ 270              	@
+ 271              	@ Note(s)     : (1) The final, reversed data value for 'val' is such that :
+ 272              	@
+ 273              	@                       'val's final bit  0       =  'val's original bit  N
+ 274              	@                       'val's final bit  1       =  'val's original bit (N - 1)
+ 275              	@                       'val's final bit  2       =  'val's original bit (N - 2)
+ 276              	@
+ 277              	@                               ...                           ...
+ 278              	@
+ 279              	@                       'val's final bit (N - 2)  =  'val's original bit  2
+ 280              	@                       'val's final bit (N - 1)  =  'val's original bit  1
+ 281              	@                       'val's final bit  N       =  'val's original bit  0
+ 282              	@**************************************************************************************************
+ 283              	
+ 284              	.thumb_func
+ 285              	CPU_RevBits:
+ARM GAS  uC-CPU\ARM-Cortex-M3\GNU\cpu_a.s 			page 6
+
+
+ 286 002e 90FAA0F0 	        RBIT    R0, R0                          @ Reverse bits
+ 287 0032 7047     	        BX      LR
+ 288              	
+ 289              	
+ 290              	@$PAGE
+ 291              	@**************************************************************************************************
+ 292              	@                                     CPU ASSEMBLY PORT FILE END
+ 293              	@**************************************************************************************************
+ 294              	
+ 295              	.end
