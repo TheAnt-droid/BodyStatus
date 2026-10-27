@@ -33,6 +33,11 @@
 
 #define  USE_BSP_TOGGLE                             1u
 
+#define SPO2_ADDRESS                                0x57u //MAX30102 address from datasheet
+#define MAX_ID_REG                                  0xFFu //MAX30102 Register for ID
+#define MAX_ID                                      0x15u //MAX30102 ID from datasheet
+
+
 /*
 *********************************************************************************************************
 *                                            LOCAL VARIABLES
@@ -69,6 +74,8 @@ static  void  App_TaskSPO2 (void *p_arg);
 static  void  App_TaskCreate (void);
 static  void  App_ObjCreate  (void);
 
+
+
 /*
 *********************************************************************************************************
 *                                                main()
@@ -89,6 +96,7 @@ static  void  App_ObjCreate  (void);
 int  main (void)
 {
   OS_ERR  os_err;
+  
 
 
   BSP_PreInit();                                              /* Perform BSP pre-initialization.                      */
@@ -96,6 +104,11 @@ int  main (void)
   CPU_Init();                                                 /* Initialize the uC/CPU services                       */
 
   OSInit(&os_err);                                            /* Init uC/OS-III.                                      */
+  
+  I2C_spo2_Start();
+  Check_Sensor(SPO2_ADDRESS,MAX_ID_REG,MAX_ID);
+  
+    
 
   OSTaskCreate((OS_TCB      *)&App_TaskStartTCB,              /* Create the start task                                */
                (CPU_CHAR    *)"Start",
@@ -385,5 +398,9 @@ static  void  App_TaskBUTTON (void *p_arg)
 static void App_TaskSPO2(void *p_arg){
     /* prevent compiler warnings */
     (void)p_arg;
+    
+    
+    
+    
 }
 /* END OF FILE */
