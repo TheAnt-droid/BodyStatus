@@ -66,6 +66,7 @@
 #include  <bsp_gpio.h>
 #include  <bsp_spi.h>
 #include  <bsp_os.h>
+#include  <bsp_spo2.h>
 
 
 /*

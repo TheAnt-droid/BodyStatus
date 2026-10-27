@@ -49,6 +49,7 @@
 #define  APP_CFG_TASK_START_PRIO                        2u
 #define  APP_CFG_TASK_LED_PRIO                          4u
 #define  APP_CFG_TASK_BUTTON_PRIO                       5u
+#define  APP_CFG_TASK_SPO2_PRIO                         3u
 
 
 /*
@@ -61,6 +62,7 @@
 #define  APP_CFG_TASK_START_STK_SIZE                    128u
 #define  APP_CFG_TASK_LED_STK_SIZE                      64u
 #define  APP_CFG_TASK_BUTTON_STK_SIZE                   64u
+#define  APP_CFG_TASK_SPO2_STK_SIZE                     128u
 
 
 /*
@@ -77,7 +79,10 @@
   
 #define  APP_CFG_TASK_BUTTON_STK_SIZE_PCT_FULL             90u
 #define  APP_CFG_TASK_BUTTON_STK_SIZE_LIMIT           (APP_CFG_TASK_BUTTON_STK_SIZE  * (100u - APP_CFG_TASK_BUTTON_STK_SIZE_PCT_FULL))  / 100u
-    
+  
+#define  APP_CFG_TASK_SPO2_STK_SIZE_PCT_FULL             90u
+#define  APP_CFG_TASK_SPO2_STK_SIZE_LIMIT           (APP_CFG_TASK_SPO2_STK_SIZE  * (100u - APP_CFG_TASK_SPO2_STK_SIZE_PCT_FULL))  / 100u
+  
 
 /*
 *********************************************************************************************************
