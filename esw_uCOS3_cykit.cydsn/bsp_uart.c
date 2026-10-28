@@ -79,4 +79,13 @@ CPU_VOID uart_send_byte(CPU_INT08U byte)
 {
     UART_1_PutChar(byte);
 }
+
+void uart_send_string(CPU_INT08U *str)
+{
+    while (*str != '\0')
+    {
+        UART_1_PutChar(*str);
+        str++;
+    }
+}
 /* [] END OF FILE */

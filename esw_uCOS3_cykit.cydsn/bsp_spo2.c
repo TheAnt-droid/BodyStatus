@@ -107,8 +107,56 @@ CPU_INT08U spo2_config(CPU_INT08U I2C_addr){
     return err_status;
     }
     
+    spo2_write_register(I2C_addr,FIFO_RD_PTR,0x00);
+    spo2_write_register(I2C_addr,FIFO_WR_PTR,0x00);
+    spo2_write_register(I2C_addr,FIFO_OVF_COUNTER,0x00);
     
     return I2C_spo2_MSTR_NO_ERROR;
+}
+
+CPU_INT08U spo2_read_fifo_sample(CPU_INT08U slave_addr, CPU_INT32U *red, CPU_INT32U *ir){
+    CPU_INT08U err_status;
+    CPU_INT08U data[6];
+    
+    if ((red == NULL) || (ir == NULL))
+    {
+        return 1u;
+    }
+    
+    err_status=I2C_spo2_MasterSendStart(slave_addr,I2C_spo2_WRITE_XFER_MODE);
+    if(err_status!=I2C_spo2_MSTR_NO_ERROR){
+        I2C_spo2_MasterSendStop();
+        return err_status;
+    }
+    
+    err_status=I2C_spo2_MasterWriteByte(FIFO_DATA);
+    if(err_status!=I2C_spo2_MSTR_NO_ERROR){
+        I2C_spo2_MasterSendStop();
+        return err_status;
+    }
+    
+    err_status=I2C_spo2_MasterSendRestart(slave_addr,I2C_spo2_READ_XFER_MODE);
+    if(err_status!=I2C_spo2_MSTR_NO_ERROR){
+        I2C_spo2_MasterSendStop();
+        return err_status;
+    }
+    
+    for(int i;i<=5;i++){
+        data[i]=I2C_spo2_MasterReadByte(I2C_spo2_ACK_DATA);
+    }
+    data[5]=I2C_spo2_MasterReadByte(I2C_spo2_NAK_DATA);
+    I2C_spo2_MasterSendStop();
+    
+     *red = (((CPU_INT32U)(data[0] & 0x03u)) << 16)
+         | (((CPU_INT32U)data[1]) << 8)
+         | ((CPU_INT32U)data[2]);
+
+    *ir  = (((CPU_INT32U)(data[3] & 0x03u)) << 16)
+         | (((CPU_INT32U)data[4]) << 8)
+         | ((CPU_INT32U)data[5]);
+
+    return I2C_spo2_MSTR_NO_ERROR;
+    
 }
 
 /* [] END OF FILE */

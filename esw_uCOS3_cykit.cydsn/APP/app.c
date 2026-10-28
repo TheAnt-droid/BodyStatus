@@ -55,6 +55,17 @@ static  CPU_STK  App_TaskButtonStk[APP_CFG_TASK_BUTTON_STK_SIZE];
 static  OS_TCB   App_TaskSPO2_TCB;
 static  CPU_STK  App_TaskSPO2Stk[APP_CFG_TASK_SPO2_STK_SIZE];
 
+static  OS_TCB   App_TaskUART_TCB;
+static  CPU_STK  App_TaskUARTStk[APP_CFG_TASK_UART_STK_SIZE];
+/*
+*********************************************************************************************************
+*                                            LOCAL STRUCS
+*********************************************************************************************************
+*/
+typedef struct{
+    CPU_INT32U red;
+    CPU_INT32U ir;
+}spo2;
 
 /*
 *********************************************************************************************************
@@ -67,6 +78,8 @@ static  void  App_TaskStart  (void *p_arg);
 static  void  App_TaskLED (void *p_arg);
 static  void  App_TaskBUTTON (void *p_arg);
 static  void  App_TaskSPO2 (void *p_arg);
+static  void  App_TaskUART (void *p_arg);
+
 
 static  void  App_TaskCreate (void);
 static  void  App_ObjCreate  (void);
@@ -234,6 +247,20 @@ static  void  App_TaskCreate (void)
                (void        *)0,
                (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
                (OS_ERR      *)&os_err);
+ /* create UART task */
+  OSTaskCreate((OS_TCB      *)&App_TaskUART_TCB,
+               (CPU_CHAR    *)"TaskUART",
+               (OS_TASK_PTR  )App_TaskUART, 
+               (void        *)0,
+               (OS_PRIO      )APP_CFG_TASK_UART_PRIO,
+               (CPU_STK     *)&App_TaskUARTStk[0],
+               (CPU_STK_SIZE )APP_CFG_TASK_UART_STK_SIZE_LIMIT,
+               (CPU_STK_SIZE )APP_CFG_TASK_UART_STK_SIZE,
+               (OS_MSG_QTY   )0u,
+               (OS_TICK      )0u,
+               (void        *)0,
+               (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+               (OS_ERR      *)&os_err);
 }
 
 
@@ -396,8 +423,87 @@ static void App_TaskSPO2(void *p_arg){
     /* prevent compiler warnings */
     (void)p_arg;
     
+    OS_ERR       os_err;
+    
+    while(DEF_TRUE){
     
     
     
+    
+    
+    OSTimeDlyHMSM(0, 0, 0, 100, 
+              OS_OPT_TIME_HMSM_STRICT, 
+              &os_err);
+    }
+}
+
+/*
+*********************************************************************************************************
+*                                          App_TaskUART()
+*
+* Description :
+*
+* Argument(s) : p_arg   is the argument passed to 'App_TaskSPO2()' by 'OSTaskCreate()'.
+*
+* Return(s)   : none
+*
+* Note(s)     : none
+*********************************************************************************************************
+*/
+static void App_TaskUART(void *p_arg){
+    /* prevent compiler warnings */
+    (void)p_arg;
+    
+    OS_ERR       os_err;
+    CPU_INT08U err_status;
+    
+    CPU_INT08U read_pos;
+    CPU_INT08U write_pos;
+    CPU_INT08U ovf;
+    CPU_INT08U data;
+    CPU_INT32U red;
+    CPU_INT32U ir;
+    CPU_CHAR uart_buffer[32];
+    while(DEF_TRUE){
+        /*
+    err_status=spo2_read_register(SPO2_ADDRESS,FIFO_OVF_COUNTER,&ovf);
+    sprintf(uart_buffer, "Overflow: %u\r\n",(unsigned int)ovf);
+    uart_send_string((CPU_INT08U *)uart_buffer);
+    
+    err_status=spo2_read_register(SPO2_ADDRESS,FIFO_WR_PTR,&write_pos);
+    sprintf(uart_buffer, "Write position: %u\r\n",(unsigned int)write_pos);
+    uart_send_string((CPU_INT08U *)uart_buffer);
+    
+    err_status=spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR,&read_pos);
+    sprintf(uart_buffer, "Read position: %u\r\n",(unsigned int)read_pos);
+    uart_send_string((CPU_INT08U *)uart_buffer);
+    
+    err_status=spo2_read_fifo_sample(SPO2_ADDRESS,&red,&ir);
+    spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR,&read_pos);
+    if (err_status == I2C_spo2_MSTR_NO_ERROR)
+    {
+        sprintf(uart_buffer, "RED: %lu | IR: %lu\r\n",
+                (unsigned long)red,
+                (unsigned long)ir);
+
+        uart_send_string((CPU_INT08U *)uart_buffer);
+        
+        sprintf(uart_buffer, "Read position: %u\r\n\n",(unsigned int)read_pos);
+        uart_send_string((CPU_INT08U *)uart_buffer);
+    }
+    else
+    {
+        uart_send_string(
+            (CPU_INT08U *)"FIFO read error!\r\n");
+    }
+
+    
+    */
+    
+    
+    OSTimeDlyHMSM(0, 0, 1, 0, 
+              OS_OPT_TIME_HMSM_STRICT, 
+              &os_err);
+    }
 }
 /* END OF FILE */
