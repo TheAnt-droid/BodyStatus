@@ -12,7 +12,6 @@
 #include <bsp_spo2.h>
 
 
-
 CPU_INT08U spo2_read_register(CPU_INT08U slave_addr,CPU_INT08U reg, CPU_INT08U *value){
     CPU_INT08U err_status;
     if(value == NULL){
@@ -38,6 +37,30 @@ CPU_INT08U spo2_read_register(CPU_INT08U slave_addr,CPU_INT08U reg, CPU_INT08U *
     return err_status;
 }
 
+CPU_INT08U spo2_write_register(CPU_INT08U slave_addr,CPU_INT08U reg, CPU_INT08U config_value){
+    CPU_INT08U err_status;
+    //Who do you want to write to?
+    err_status=I2C_spo2_MasterSendStart(slave_addr,I2C_spo2_WRITE_XFER_MODE);
+    if(err_status!=I2C_spo2_MSTR_NO_ERROR){
+        I2C_spo2_MasterSendStop();
+        return err_status;
+    }
+    //Where do you want to write?
+    err_status=I2C_spo2_MasterWriteByte(reg);
+    if(err_status!=I2C_spo2_MSTR_NO_ERROR){
+        I2C_spo2_MasterSendStop();
+        return err_status;
+    }
+    //What do you want to write?
+    err_status=I2C_spo2_MasterWriteByte(config_value);
+    if(err_status!=I2C_spo2_MSTR_NO_ERROR){
+        I2C_spo2_MasterSendStop();
+        return err_status;
+    }
+    I2C_spo2_MasterSendStop();
+    return I2C_spo2_MSTR_NO_ERROR;
+}
+
 CPU_INT08S spo2_check_connection(CPU_INT08U slave_addr){
     CPU_INT08U err_status;
     err_status=I2C_spo2_MasterSendStart(slave_addr,I2C_spo2_WRITE_XFER_MODE);
@@ -61,8 +84,31 @@ void Check_Sensor(CPU_INT08U I2C_addr,CPU_INT08U sensor_reg,CPU_INT08U sensor_id
         }
 }
 
-
-
-
+CPU_INT08U spo2_config(CPU_INT08U I2C_addr){
+    CPU_INT08U err_status;
+    err_status=spo2_write_register(I2C_addr,FIFO_Reg,FIFO_Config);
+    if(err_status!=I2C_spo2_MSTR_NO_ERROR){
+    return err_status;
+    }
+    err_status=spo2_write_register(I2C_addr,MODE_Reg,MODE_Config);
+    if(err_status!=I2C_spo2_MSTR_NO_ERROR){
+    return err_status;
+    }
+    err_status=spo2_write_register(I2C_addr,SPO2_Reg,SPO2_Config);
+    if(err_status!=I2C_spo2_MSTR_NO_ERROR){
+    return err_status;
+    }
+    err_status=spo2_write_register(I2C_addr,LED_PA_1_Reg,LED_PA_1_Config);
+    if(err_status!=I2C_spo2_MSTR_NO_ERROR){
+    return err_status;
+    }
+    err_status=spo2_write_register(I2C_addr,LED_PA_2_Reg,LED_PA_2_Config);
+    if(err_status!=I2C_spo2_MSTR_NO_ERROR){
+    return err_status;
+    }
+    
+    
+    return I2C_spo2_MSTR_NO_ERROR;
+}
 
 /* [] END OF FILE */

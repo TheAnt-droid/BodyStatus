@@ -33,9 +33,6 @@
 
 #define  USE_BSP_TOGGLE                             1u
 
-#define SPO2_ADDRESS                                0x57u //MAX30102 address from datasheet
-#define MAX_ID_REG                                  0xFFu //MAX30102 Register for ID
-#define MAX_ID                                      0x15u //MAX30102 ID from datasheet
 
 
 /*
@@ -96,6 +93,7 @@ static  void  App_ObjCreate  (void);
 int  main (void)
 {
   OS_ERR  os_err;
+  CPU_INT08U spo2_error;
   
 
 
@@ -107,8 +105,7 @@ int  main (void)
   
   I2C_spo2_Start();
   Check_Sensor(SPO2_ADDRESS,MAX_ID_REG,MAX_ID);
-  
-    
+  spo2_config(SPO2_ADDRESS);
 
   OSTaskCreate((OS_TCB      *)&App_TaskStartTCB,              /* Create the start task                                */
                (CPU_CHAR    *)"Start",
