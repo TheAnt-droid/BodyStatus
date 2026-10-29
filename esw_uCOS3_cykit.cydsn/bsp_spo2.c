@@ -33,6 +33,7 @@ CPU_INT08U spo2_read_register(CPU_INT08U slave_addr,CPU_INT08U reg, CPU_INT08U *
         return err_status;
     }
     *value=I2C_spo2_MasterReadByte(I2C_spo2_NAK_DATA);
+
     I2C_spo2_MasterSendStop();
     return err_status;
 }
@@ -141,7 +142,7 @@ CPU_INT08U spo2_read_fifo_sample(CPU_INT08U slave_addr, CPU_INT32U *red, CPU_INT
         return err_status;
     }
     
-    for(int i;i<=5;i++){
+    for(int i=0;i<=4;i++){
         data[i]=I2C_spo2_MasterReadByte(I2C_spo2_ACK_DATA);
     }
     data[5]=I2C_spo2_MasterReadByte(I2C_spo2_NAK_DATA);
@@ -159,4 +160,35 @@ CPU_INT08U spo2_read_fifo_sample(CPU_INT08U slave_addr, CPU_INT32U *red, CPU_INT
     
 }
 
+CPU_BOOLEAN sample_available(CPU_INT08U slave_addr, CPU_INT08U *num_samples_available){
+    CPU_INT08U read_idx;
+    CPU_INT08U write_idx;
+    CPU_INT08U ovf;
+    CPU_INT08U error_status;
+    error_status=spo2_read_register(slave_addr,FIFO_RD_PTR,&read_idx);
+    if(error_status!=I2C_spo2_MSTR_NO_ERROR){
+        return 0;
+    }
+    error_status=spo2_read_register(slave_addr,FIFO_WR_PTR,&write_idx);
+    if(error_status!=I2C_spo2_MSTR_NO_ERROR){
+        return 0;
+    }
+    error_status=spo2_read_register(slave_addr,FIFO_OVF_COUNTER,&ovf);
+    if(error_status!=I2C_spo2_MSTR_NO_ERROR){
+        return 0;
+    }
+    
+        if(read_idx<write_idx){
+            *num_samples_available=write_idx-read_idx; 
+            return 1;
+        }
+        if(read_idx>write_idx){
+            *num_samples_available=FIFO_SAMPLE_BUFFER-read_idx+write_idx;
+            return 1;
+        }
+        if(read_idx==write_idx){
+            return 0;
+        }
+    return 0;
+}
 /* [] END OF FILE */

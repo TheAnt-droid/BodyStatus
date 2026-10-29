@@ -33,7 +33,18 @@
 
 #define  USE_BSP_TOGGLE                             1u
 
-
+#define SPO2_POOL_SIZE 16u
+#define SPO2_SAMPLE_COUNT 32
+/*
+*********************************************************************************************************
+*                                            LOCAL STRUCS
+*********************************************************************************************************
+*/
+typedef struct{
+    CPU_INT32U count;
+    CPU_INT32U red;
+    CPU_INT32U ir;
+}spo2;
 
 /*
 *********************************************************************************************************
@@ -42,6 +53,10 @@
 */
 
 OS_SEM button_sem;
+
+
+static OS_MEM SpO2Mem;
+static spo2 SpO2Pool[SPO2_POOL_SIZE];
 
 static  OS_TCB   App_TaskStartTCB;
 static  CPU_STK  App_TaskStartStk[APP_CFG_TASK_START_STK_SIZE];
@@ -57,15 +72,7 @@ static  CPU_STK  App_TaskSPO2Stk[APP_CFG_TASK_SPO2_STK_SIZE];
 
 static  OS_TCB   App_TaskUART_TCB;
 static  CPU_STK  App_TaskUARTStk[APP_CFG_TASK_UART_STK_SIZE];
-/*
-*********************************************************************************************************
-*                                            LOCAL STRUCS
-*********************************************************************************************************
-*/
-typedef struct{
-    CPU_INT32U red;
-    CPU_INT32U ir;
-}spo2;
+
 
 /*
 *********************************************************************************************************
@@ -287,6 +294,13 @@ static  void  App_ObjCreate (void)
   
   /* create button semaphore to synchronize button press events */
   OSSemCreate(&button_sem,"SEM_BUT",0,&os_err);
+
+  OSMemCreate(&SpO2Mem,
+            (void *)SpO2Pool,
+            "Spo2MEM",
+            SPO2_POOL_SIZE,
+            sizeof(spo2),
+            &os_err);
 }
 
 
@@ -424,14 +438,63 @@ static void App_TaskSPO2(void *p_arg){
     (void)p_arg;
     
     OS_ERR       os_err;
+    CPU_INT08U err_status;
+    
+    spo2 *sample;
+    CPU_INT08U samples_available;
+    
+    CPU_INT08U read_idx;
+    CPU_INT08U write_idx;
     
     while(DEF_TRUE){
+        
+        //sample=(spo2*)OSMemGet(&SpO2Mem,&os_err);
+        spo2 sample;
+        sample.count=0;
+        char buffer[80];
+        
+        if(sample_available(SPO2_ADDRESS,&samples_available)){
+            spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR,&read_idx);
+            
+            /*sprintf(buffer,
+                "Samples avpre %lu: Read idx %lu: \r\n",
+                    (unsigned long) samples_available,
+                    (unsigned long) read_idx
+            );
+                uart_send_string((CPU_INT08U *)buffer);*/ //Big debugger
+        
+    
+            
+            for(CPU_INT08U i=1;i<=samples_available;i++){
+                spo2_read_fifo_sample(SPO2_ADDRESS,&sample.red,&sample.ir);
+                spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR,&read_idx);
+                
+                /*CPU_INT08U sample_counter=samples_available-i;
+                sprintf(buffer,
+                "Samples av %lu: RED=%lu, IR=%lu, Read idx: %lu\r\n",
+                    (unsigned long) sample_counter,
+                    (unsigned long)sample.red,
+                    (unsigned long)sample.ir,
+                    (unsigned long) read_idx);
+
+                uart_send_string((CPU_INT08U *)buffer);*/ //Big debugger
+                
+                sprintf(buffer,
+                    "RED=%lu, IR=%lu\r\n",
+                    (unsigned long)sample.red,
+                    (unsigned long)sample.ir);
+
+                uart_send_string((CPU_INT08U *)buffer); //Small Debugger
+            }
+        }
+        
+        //OSMemPut(&SpO2Mem,(void *)sample,&os_err);
+        //OSTaskQPost(&App_TaskUART_TCB,sample,sizeof(*sample),OS_OPT_POST_FIFO,&os_err);
+        
     
     
     
-    
-    
-    OSTimeDlyHMSM(0, 0, 0, 100, 
+    OSTimeDlyHMSM(0, 0, 0, 10, 
               OS_OPT_TIME_HMSM_STRICT, 
               &os_err);
     }
@@ -453,55 +516,18 @@ static void App_TaskSPO2(void *p_arg){
 static void App_TaskUART(void *p_arg){
     /* prevent compiler warnings */
     (void)p_arg;
+    OS_ERR os_err;
+    OS_MSG_SIZE p_msg;
+    CPU_TS ts;
     
-    OS_ERR       os_err;
-    CPU_INT08U err_status;
-    
-    CPU_INT08U read_pos;
-    CPU_INT08U write_pos;
-    CPU_INT08U ovf;
-    CPU_INT08U data;
-    CPU_INT32U red;
-    CPU_INT32U ir;
-    CPU_CHAR uart_buffer[32];
+    spo2 *sample;
     while(DEF_TRUE){
-        /*
-    err_status=spo2_read_register(SPO2_ADDRESS,FIFO_OVF_COUNTER,&ovf);
-    sprintf(uart_buffer, "Overflow: %u\r\n",(unsigned int)ovf);
-    uart_send_string((CPU_INT08U *)uart_buffer);
+       // sample=OSTaskQPend(0,OS_OPT_PEND_BLOCKING, &p_msg, &ts,&os_err);
+      
     
-    err_status=spo2_read_register(SPO2_ADDRESS,FIFO_WR_PTR,&write_pos);
-    sprintf(uart_buffer, "Write position: %u\r\n",(unsigned int)write_pos);
-    uart_send_string((CPU_INT08U *)uart_buffer);
+       // OSMemPut(&SpO2Mem, (void *)sample, &os_err);
     
-    err_status=spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR,&read_pos);
-    sprintf(uart_buffer, "Read position: %u\r\n",(unsigned int)read_pos);
-    uart_send_string((CPU_INT08U *)uart_buffer);
-    
-    err_status=spo2_read_fifo_sample(SPO2_ADDRESS,&red,&ir);
-    spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR,&read_pos);
-    if (err_status == I2C_spo2_MSTR_NO_ERROR)
-    {
-        sprintf(uart_buffer, "RED: %lu | IR: %lu\r\n",
-                (unsigned long)red,
-                (unsigned long)ir);
-
-        uart_send_string((CPU_INT08U *)uart_buffer);
-        
-        sprintf(uart_buffer, "Read position: %u\r\n\n",(unsigned int)read_pos);
-        uart_send_string((CPU_INT08U *)uart_buffer);
-    }
-    else
-    {
-        uart_send_string(
-            (CPU_INT08U *)"FIFO read error!\r\n");
-    }
-
-    
-    */
-    
-    
-    OSTimeDlyHMSM(0, 0, 1, 0, 
+    OSTimeDlyHMSM(0, 0, 0, 100, 
               OS_OPT_TIME_HMSM_STRICT, 
               &os_err);
     }
