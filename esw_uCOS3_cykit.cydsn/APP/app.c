@@ -33,21 +33,14 @@
 
 #define  USE_BSP_TOGGLE                             1u
 
-#define SPO2_MEM_BLOCKS 8u
+#define SPO2_MEM_BLOCKS 32u
 
-#define SPO2_SAMPLE_COUNT 32u
-
-#define SAMPLE_BUFFER_SIZE 15u
 /*
 *********************************************************************************************************
 *                                            LOCAL STRUCS
 *********************************************************************************************************
 */
-typedef struct{
-    CPU_INT32U count;
-    CPU_INT32U red;
-    CPU_INT32U ir;
-}spo2;
+
 
 /*
 *********************************************************************************************************
@@ -59,7 +52,7 @@ OS_SEM button_sem;
 
 
 static OS_MEM SpO2Mem;
-static spo2 SpO2MemPool[SPO2_MEM_BLOCKS*4u];
+static spo2 SpO2MemPool[SPO2_MEM_BLOCKS];
 
 static CPU_BOOLEAN spo2_init_success=DEF_TRUE;
 
@@ -275,7 +268,7 @@ static  void  App_TaskCreate (void)
                    (CPU_STK     *)&App_TaskUARTStk[0],
                    (CPU_STK_SIZE )APP_CFG_TASK_UART_STK_SIZE_LIMIT,
                    (CPU_STK_SIZE )APP_CFG_TASK_UART_STK_SIZE,
-                   (OS_MSG_QTY   )12u,
+                   (OS_MSG_QTY   )32u,
                    (OS_TICK      )0u,
                    (void        *)0,
                    (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
@@ -450,42 +443,42 @@ static  void  App_TaskBUTTON (void *p_arg)
 static void App_TaskSPO2(void *p_arg){
     /* prevent compiler warnings */
     (void)p_arg;
-    
-    OS_ERR       os_err;
-    SPO2_ERROR spo2_err=SPO2_ERR_NONE;
-    
-    spo2 *sample;
-    CPU_INT08U samples_available;
-
-    
-    while(DEF_TRUE){
-
-        if(sample_available(SPO2_ADDRESS,&samples_available,&spo2_err)){
      
-            for(CPU_INT08U i=0;i<samples_available;i++){
-                sample=(spo2*)OSMemGet(&SpO2Mem,&os_err);
-                if(os_err!=OS_ERR_NONE){
-                    break;
-                }
-                spo2_read_fifo_sample(SPO2_ADDRESS,&sample->red,&sample->ir,&spo2_err);
-                if(spo2_err!=SPO2_ERR_NONE){
-                    OSMemPut(&SpO2Mem, (void *)sample, &os_err);
-                    break;
-                }
-         
-                OSTaskQPost(&App_TaskUART_TCB,sample,sizeof(*sample),OS_OPT_POST_FIFO,&os_err);
-                if(os_err!=OS_ERR_NONE){
-                    OSMemPut(&SpO2Mem, (void *)sample, &os_err);
-                    break;
-                }
+    OS_ERR       os_err;
+    SPO2_ERROR   spo2_err = SPO2_ERR_NONE;
+     
+    spo2 *sample;
+    CPU_INT08U samples_available_num;
+    CPU_BOOLEAN samples_available;
+
+    while(DEF_TRUE){
+        samples_available = sample_available(SPO2_ADDRESS, &samples_available_num, &spo2_err);
+        if(samples_available){
+            sample = (spo2 *)OSMemGet(&SpO2Mem, &os_err);
+            if(os_err != OS_ERR_NONE){
+                uart_send_string((CPU_INT08U *)"os_mem_get failed\r\n");
+                OSTimeDlyHMSM(0, 0, 0, 10, OS_OPT_TIME_HMSM_STRICT, &os_err);
+                continue; 
             }
             
+            spo2_read_fifo_sample(SPO2_ADDRESS, &sample->red, &sample->ir, &spo2_err);
+            if(spo2_err != SPO2_ERR_NONE){
+                OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+                OSTimeDlyHMSM(0, 0, 0, 10, OS_OPT_TIME_HMSM_STRICT, &os_err);
+                continue;
+            }
+            if(sample->ir>FINGER_THRESHOLD && sample->red>FINGER_THRESHOLD){
+            OSTaskQPost(&App_TaskUART_TCB, sample, sizeof(*sample), OS_OPT_POST_FIFO, &os_err);
+            if(os_err != OS_ERR_NONE){
+                OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+                
+            }
+            }else{
+                OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+            }
         }
-        
-       
-    OSTimeDlyHMSM(0, 0, 0, 10, 
-              OS_OPT_TIME_HMSM_STRICT, 
-              &os_err);
+         
+        OSTimeDlyHMSM(0, 0, 0, 1, OS_OPT_TIME_HMSM_STRICT, &os_err);
     }
 }
 
@@ -502,6 +495,95 @@ static void App_TaskSPO2(void *p_arg){
 * Note(s)     : none
 *********************************************************************************************************
 */
+void uint32_to_str(CPU_INT32U val, char *p_buf) {
+    char temp[12];
+    int i = 0, j = 0;
+    
+    if (val == 0) {
+        p_buf[0] = '0';
+        p_buf[1] = '\0';
+        return;
+    }
+    
+    while (val > 0) {
+        temp[i++] = (val % 10) + '0';
+        val /= 10;
+    }
+    
+    // Reverse into output buffer
+    while (i > 0) {
+        p_buf[j++] = temp[--i];
+    }
+    p_buf[j] = '\0';
+}
+void float_to_str(float val, char *p_buf, int decimal_places) {
+    int j = 0;
+
+    // 1. Handle negative numbers
+    if (val < 0.0f) {
+        p_buf[j++] = '-';
+        val = -val;
+    }
+
+    // 2. Extract integer part
+    long int_part = (long)val;
+    
+    // 3. Extract and round fractional part
+    float remainder = val - (float)int_part;
+    long mult = 1;
+    for (int p = 0; p < decimal_places; p++) {
+        mult *= 10;
+    }
+    long frac_part = (long)(remainder * (float)mult + 0.5f); // Round up
+
+    // Handle carry-over if rounding rolls over the fractional part
+    if (frac_part >= mult) {
+        int_part += 1;
+        frac_part = 0;
+    }
+
+    // 4. Convert integer part to string (into a temporary stack buffer)
+    char temp[12];
+    int i = 0;
+    if (int_part == 0) {
+        temp[i++] = '0';
+    } else {
+        long temp_val = int_part;
+        while (temp_val > 0) {
+            temp[i++] = (temp_val % 10) + '0';
+            temp_val /= 10;
+        }
+    }
+
+    // Copy reversed integer part to output buffer
+    while (i > 0) {
+        p_buf[j++] = temp[--i];
+    }
+
+    // 5. Append decimal point and fractional part if requested
+    if (decimal_places > 0) {
+        p_buf[j++] = '.';
+
+        char frac_temp[10];
+        int frac_i = 0;
+        
+        for (int p = 0; p < decimal_places; p++) {
+            frac_temp[frac_i++] = (frac_part % 10) + '0';
+            frac_part /= 10;
+        }
+        
+        // Copy reversed fractional part to output buffer
+        while (frac_i > 0) {
+            p_buf[j++] = frac_temp[--frac_i];
+        }
+    }
+
+    // Null-terminate the final string
+    p_buf[j] = '\0';
+}
+
+
+
 static void App_TaskUART(void *p_arg){
     /* prevent compiler warnings */
     (void)p_arg;
@@ -509,19 +591,66 @@ static void App_TaskUART(void *p_arg){
     OS_ERR os_err;
     OS_MSG_SIZE p_msg;
     CPU_TS ts;
-    char buffer[80];
+    
     spo2 *sample;
     
-    while(DEF_TRUE){
-        sample=OSTaskQPend(0,OS_OPT_PEND_BLOCKING, &p_msg, &ts,&os_err);
-        sprintf(buffer,"RED=%lu, IR=%lu\r\n",(unsigned long)sample->red,(unsigned long)sample->ir);
-        uart_send_string((CPU_INT08U *)buffer);
     
-        OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+
+    spo2_buffer buffer;
+    buffer.buffer_idx=0;
+    buffer.samples_count=0;
+    
+    CPU_INT32U red_dc;
+    CPU_INT32U ir_dc;
+    
+    CPU_INT32U red_ac;
+    CPU_INT32U ir_ac;
+    
+    float ratio;
+    CPU_INT08U spo2;
+    
+    
+    while(DEF_TRUE){
+        
+        sample=OSTaskQPend(0,OS_OPT_PEND_BLOCKING, &p_msg, &ts,&os_err);
+        
+        if(os_err==OS_ERR_NONE && sample!=DEF_NULL ){
+            spo2_add_sample(sample->red,sample->ir,&buffer);
+            OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+            if (os_err != OS_ERR_NONE) {
+                uart_send_string((CPU_INT08U *)"ERROR: OSMemPut failed\r\n");
+            }
+
+            if(buffer.samples_count>0){
+                if (spo2_calc_dc(buffer,&red_dc,&ir_dc)){
+                    spo2_calc_ac(buffer,&red_ac,&ir_ac);
+                    
+                    spo2_calc_ratio(red_dc,ir_dc,red_ac,ir_ac,&ratio);
+                    
+                    spo2_calc_percent(ratio,&spo2);
+                    
+                    
+                    char red_str[12], ir_str[12];
+                    char spo2_str[20];
+                    uint32_to_str(spo2, spo2_str);
+                    uint32_to_str(red_dc, red_str);
+                    uint32_to_str(ir_dc, ir_str);            
+                    uart_send_string((CPU_INT08U *)"RED=");
+                    uart_send_string((CPU_INT08U *)red_str);
+                    uart_send_string((CPU_INT08U *)" IR=");
+                    uart_send_string((CPU_INT08U *)ir_str);
+                    uart_send_string((CPU_INT08U *)"SpO2: ");
+                    uart_send_string((CPU_INT08U *)spo2_str);
+                    uart_send_string((CPU_INT08U *)"\r\n"); 
+                }
+            }
+        }
     
         OSTimeDlyHMSM(0, 0, 0, 1, 
-                  OS_OPT_TIME_HMSM_STRICT, 
-                  &os_err);
+                      OS_OPT_TIME_HMSM_STRICT, 
+                      &os_err);
     }
+
 }
+
 /* END OF FILE */

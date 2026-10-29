@@ -63,7 +63,7 @@
 #define  APP_CFG_TASK_LED_STK_SIZE                      64u
 #define  APP_CFG_TASK_BUTTON_STK_SIZE                   64u
 #define  APP_CFG_TASK_SPO2_STK_SIZE                     128u
-#define  APP_CFG_TASK_UART_STK_SIZE                     128u 
+#define  APP_CFG_TASK_UART_STK_SIZE                     512u 
 
 
 /*

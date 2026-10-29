@@ -39,6 +39,22 @@
 #define SPO2_ID_VAL 0x15u //MAX30102 ID from datasheet
 
 #define FIFO_SAMPLE_BUFFER 32u //This many samples get saved in the FIFO buffer before rollover.
+#define SAMPLE_BUFFER_SIZE 100u
+#define FINGER_THRESHOLD 5000u
+
+/*---- Structs ----*/
+typedef struct{
+    CPU_INT32U red;
+    CPU_INT32U ir;
+}spo2;
+
+typedef struct{
+    CPU_INT16U buffer_idx;
+    CPU_INT16U samples_count;
+    CPU_INT32U red[SAMPLE_BUFFER_SIZE];
+    CPU_INT32U ir[SAMPLE_BUFFER_SIZE];
+}spo2_buffer;
+
 
 /*---- Error Codes ----*/
 typedef enum{
@@ -64,5 +80,10 @@ void spo2_config(CPU_INT08U slave_addr,SPO2_ERROR *spo2_err);
 
 void spo2_read_fifo_sample(CPU_INT08U slave_addr, CPU_INT32U *red, CPU_INT32U *ir,SPO2_ERROR *spo2_err);
 CPU_BOOLEAN sample_available(CPU_INT08U slave_addr,CPU_INT08U *num_samples_available,SPO2_ERROR *spo2_err);
+void spo2_add_sample(CPU_INT32U red, CPU_INT32U ir, spo2_buffer *buffer);
+CPU_BOOLEAN spo2_calc_dc(spo2_buffer buffer,CPU_INT32U *avg_red, CPU_INT32U *avg_ir);
+void spo2_calc_ac(spo2_buffer buffer,CPU_INT32U *ac_red, CPU_INT32U *ac_ir);
+void spo2_calc_ratio(CPU_INT32U dc_red, CPU_INT32U dc_ir,CPU_INT32U ac_red, CPU_INT32U ac_ir, float *ratio);
+void spo2_calc_percent(float ratio, CPU_INT08U *spo2);
 
 /* [] END OF FILE */
