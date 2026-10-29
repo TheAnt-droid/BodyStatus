@@ -61,6 +61,8 @@ OS_SEM button_sem;
 static OS_MEM SpO2Mem;
 static spo2 SpO2MemPool[SPO2_MEM_BLOCKS*4u];
 
+static CPU_BOOLEAN spo2_init_success=DEF_TRUE;
+
 static  OS_TCB   App_TaskStartTCB;
 static  CPU_STK  App_TaskStartStk[APP_CFG_TASK_START_STK_SIZE];
 
@@ -116,7 +118,7 @@ static  void  App_ObjCreate  (void);
 int  main (void)
 {
   OS_ERR  os_err;
-  CPU_INT08U spo2_error;
+  SPO2_ERROR spo2_err;
   
 
 
@@ -127,8 +129,14 @@ int  main (void)
   OSInit(&os_err);                                            /* Init uC/OS-III.                                      */
   
   I2C_spo2_Start();
-  Check_Sensor(SPO2_ADDRESS,MAX_ID_REG,MAX_ID);
-  spo2_config(SPO2_ADDRESS);
+  Check_Sensor(SPO2_ADDRESS,SPO2_ID_REG,SPO2_ID_VAL,&spo2_err);
+    if(spo2_err==SPO2_ERR_NONE){
+        spo2_config(SPO2_ADDRESS,&spo2_err);
+    }
+    if(spo2_err!=SPO2_ERR_NONE){
+        I2C_spo2_Stop();
+        spo2_init_success=DEF_FALSE;
+    }
 
   OSTaskCreate((OS_TCB      *)&App_TaskStartTCB,              /* Create the start task                                */
                (CPU_CHAR    *)"Start",
@@ -243,34 +251,36 @@ static  void  App_TaskCreate (void)
                (void        *)0,
                (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
                (OS_ERR      *)&os_err);
-  /* create SPO2 task */
-  OSTaskCreate((OS_TCB      *)&App_TaskSPO2_TCB,
-               (CPU_CHAR    *)"TaskSPO2",
-               (OS_TASK_PTR  )App_TaskSPO2, 
-               (void        *)0,
-               (OS_PRIO      )APP_CFG_TASK_SPO2_PRIO,
-               (CPU_STK     *)&App_TaskSPO2Stk[0],
-               (CPU_STK_SIZE )APP_CFG_TASK_SPO2_STK_SIZE_LIMIT,
-               (CPU_STK_SIZE )APP_CFG_TASK_SPO2_STK_SIZE,
-               (OS_MSG_QTY   )0u,
-               (OS_TICK      )0u,
-               (void        *)0,
-               (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
-               (OS_ERR      *)&os_err);
- /* create UART task */
-  OSTaskCreate((OS_TCB      *)&App_TaskUART_TCB,
-               (CPU_CHAR    *)"TaskUART",
-               (OS_TASK_PTR  )App_TaskUART, 
-               (void        *)0,
-               (OS_PRIO      )APP_CFG_TASK_UART_PRIO,
-               (CPU_STK     *)&App_TaskUARTStk[0],
-               (CPU_STK_SIZE )APP_CFG_TASK_UART_STK_SIZE_LIMIT,
-               (CPU_STK_SIZE )APP_CFG_TASK_UART_STK_SIZE,
-               (OS_MSG_QTY   )12u,
-               (OS_TICK      )0u,
-               (void        *)0,
-               (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
-               (OS_ERR      *)&os_err);
+    if(spo2_init_success){
+      /* create SPO2 task */
+      OSTaskCreate((OS_TCB      *)&App_TaskSPO2_TCB,
+                   (CPU_CHAR    *)"TaskSPO2",
+                   (OS_TASK_PTR  )App_TaskSPO2, 
+                   (void        *)0,
+                   (OS_PRIO      )APP_CFG_TASK_SPO2_PRIO,
+                   (CPU_STK     *)&App_TaskSPO2Stk[0],
+                   (CPU_STK_SIZE )APP_CFG_TASK_SPO2_STK_SIZE_LIMIT,
+                   (CPU_STK_SIZE )APP_CFG_TASK_SPO2_STK_SIZE,
+                   (OS_MSG_QTY   )0u,
+                   (OS_TICK      )0u,
+                   (void        *)0,
+                   (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+                   (OS_ERR      *)&os_err);
+     /* create UART task */
+      OSTaskCreate((OS_TCB      *)&App_TaskUART_TCB,
+                   (CPU_CHAR    *)"TaskUART",
+                   (OS_TASK_PTR  )App_TaskUART, 
+                   (void        *)0,
+                   (OS_PRIO      )APP_CFG_TASK_UART_PRIO,
+                   (CPU_STK     *)&App_TaskUARTStk[0],
+                   (CPU_STK_SIZE )APP_CFG_TASK_UART_STK_SIZE_LIMIT,
+                   (CPU_STK_SIZE )APP_CFG_TASK_UART_STK_SIZE,
+                   (OS_MSG_QTY   )12u,
+                   (OS_TICK      )0u,
+                   (void        *)0,
+                   (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+                   (OS_ERR      *)&os_err);
+    }
 }
 
 
@@ -443,6 +453,7 @@ static void App_TaskSPO2(void *p_arg){
     
     OS_ERR       os_err;
     CPU_INT08U err_status;
+    SPO2_ERROR spo2_err;
     
     spo2 *sample;
     CPU_INT08U samples_available;
@@ -457,8 +468,8 @@ static void App_TaskSPO2(void *p_arg){
        
         //char buffer[80];
         
-        if(sample_available(SPO2_ADDRESS,&samples_available)){
-            /*spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR,&read_idx);
+        if(sample_available(SPO2_ADDRESS,&samples_available,&spo2_err)){
+            /*spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR_REG,&read_idx);
 
             sprintf(buffer,
                 "Samples avpre %lu: Read idx %lu: \r\n",
@@ -469,8 +480,8 @@ static void App_TaskSPO2(void *p_arg){
             
             for(CPU_INT08U i=0;i<samples_available;i++){
                 sample=(spo2*)OSMemGet(&SpO2Mem,&os_err);
-                spo2_read_fifo_sample(SPO2_ADDRESS,&sample->red,&sample->ir);
-                /*spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR,&read_idx);
+                spo2_read_fifo_sample(SPO2_ADDRESS,&sample->red,&sample->ir,&spo2_err);
+                /*spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR_REG,&read_idx);
 
                 CPU_INT08U sample_counter=samples_available-i;
                 sprintf(buffer,
