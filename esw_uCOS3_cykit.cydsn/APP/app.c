@@ -452,63 +452,37 @@ static void App_TaskSPO2(void *p_arg){
     (void)p_arg;
     
     OS_ERR       os_err;
-    CPU_INT08U err_status;
-    SPO2_ERROR spo2_err;
+    SPO2_ERROR spo2_err=SPO2_ERR_NONE;
     
     spo2 *sample;
     CPU_INT08U samples_available;
-    
-    CPU_INT08U read_idx;
-    CPU_INT08U write_idx;
+
     
     while(DEF_TRUE){
-        
-        
-        //spo2 sample;
-       
-        //char buffer[80];
-        
-        if(sample_available(SPO2_ADDRESS,&samples_available,&spo2_err)){
-            /*spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR_REG,&read_idx);
 
-            sprintf(buffer,
-                "Samples avpre %lu: Read idx %lu: \r\n",
-                    (unsigned long) samples_available,
-                    (unsigned long) read_idx
-            );
-                uart_send_string((CPU_INT08U *)buffer);*/ //Big debugger
-            
+        if(sample_available(SPO2_ADDRESS,&samples_available,&spo2_err)){
+     
             for(CPU_INT08U i=0;i<samples_available;i++){
                 sample=(spo2*)OSMemGet(&SpO2Mem,&os_err);
+                if(os_err!=OS_ERR_NONE){
+                    break;
+                }
                 spo2_read_fifo_sample(SPO2_ADDRESS,&sample->red,&sample->ir,&spo2_err);
-                /*spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR_REG,&read_idx);
-
-                CPU_INT08U sample_counter=samples_available-i;
-                sprintf(buffer,
-                "Samples av %lu: RED=%lu, IR=%lu, Read idx: %lu\r\n",
-                    (unsigned long) sample_counter,
-                    (unsigned long)sample.red,
-                    (unsigned long)sample.ir,
-                    (unsigned long) read_idx);
-
-                uart_send_string((CPU_INT08U *)buffer);*/ //Big debugger
-                
-                /*sprintf(buffer,
-                    "RED=%lu, IR=%lu\r\n",
-                    (unsigned long)sample.red,
-                    (unsigned long)sample.ir);
-
-                uart_send_string((CPU_INT08U *)buffer);*/ //Small Debugger
+                if(spo2_err!=SPO2_ERR_NONE){
+                    OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+                    break;
+                }
+         
                 OSTaskQPost(&App_TaskUART_TCB,sample,sizeof(*sample),OS_OPT_POST_FIFO,&os_err);
+                if(os_err!=OS_ERR_NONE){
+                    OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+                    break;
+                }
             }
+            
         }
         
-        //OSMemPut(&SpO2Mem,(void *)sample,&os_err);
-        
-        
-    
-    
-    
+       
     OSTimeDlyHMSM(0, 0, 0, 10, 
               OS_OPT_TIME_HMSM_STRICT, 
               &os_err);
@@ -539,19 +513,15 @@ static void App_TaskUART(void *p_arg){
     spo2 *sample;
     
     while(DEF_TRUE){
-       sample=OSTaskQPend(0,OS_OPT_PEND_BLOCKING, &p_msg, &ts,&os_err);
-      sprintf(buffer,
-                    "RED=%lu, IR=%lu\r\n",
-                    (unsigned long)sample->red,
-                    (unsigned long)sample->ir);
-
-                uart_send_string((CPU_INT08U *)buffer);
+        sample=OSTaskQPend(0,OS_OPT_PEND_BLOCKING, &p_msg, &ts,&os_err);
+        sprintf(buffer,"RED=%lu, IR=%lu\r\n",(unsigned long)sample->red,(unsigned long)sample->ir);
+        uart_send_string((CPU_INT08U *)buffer);
     
-       OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+        OSMemPut(&SpO2Mem, (void *)sample, &os_err);
     
-    OSTimeDlyHMSM(0, 0, 0, 1, 
-              OS_OPT_TIME_HMSM_STRICT, 
-              &os_err);
+        OSTimeDlyHMSM(0, 0, 0, 1, 
+                  OS_OPT_TIME_HMSM_STRICT, 
+                  &os_err);
     }
 }
 /* END OF FILE */
