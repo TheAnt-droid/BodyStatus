@@ -33,8 +33,11 @@
 
 #define  USE_BSP_TOGGLE                             1u
 
-#define SPO2_POOL_SIZE 16u
-#define SPO2_SAMPLE_COUNT 32
+#define SPO2_MEM_BLOCKS 8u
+
+#define SPO2_SAMPLE_COUNT 32u
+
+#define SAMPLE_BUFFER_SIZE 15u
 /*
 *********************************************************************************************************
 *                                            LOCAL STRUCS
@@ -56,7 +59,7 @@ OS_SEM button_sem;
 
 
 static OS_MEM SpO2Mem;
-static spo2 SpO2Pool[SPO2_POOL_SIZE];
+static spo2 SpO2MemPool[SPO2_MEM_BLOCKS*4u];
 
 static  OS_TCB   App_TaskStartTCB;
 static  CPU_STK  App_TaskStartStk[APP_CFG_TASK_START_STK_SIZE];
@@ -263,7 +266,7 @@ static  void  App_TaskCreate (void)
                (CPU_STK     *)&App_TaskUARTStk[0],
                (CPU_STK_SIZE )APP_CFG_TASK_UART_STK_SIZE_LIMIT,
                (CPU_STK_SIZE )APP_CFG_TASK_UART_STK_SIZE,
-               (OS_MSG_QTY   )0u,
+               (OS_MSG_QTY   )12u,
                (OS_TICK      )0u,
                (void        *)0,
                (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
@@ -296,11 +299,12 @@ static  void  App_ObjCreate (void)
   OSSemCreate(&button_sem,"SEM_BUT",0,&os_err);
 
   OSMemCreate(&SpO2Mem,
-            (void *)SpO2Pool,
             "Spo2MEM",
-            SPO2_POOL_SIZE,
+            SpO2MemPool,
+            SPO2_MEM_BLOCKS,
             sizeof(spo2),
             &os_err);
+
 }
 
 
@@ -448,28 +452,27 @@ static void App_TaskSPO2(void *p_arg){
     
     while(DEF_TRUE){
         
-        //sample=(spo2*)OSMemGet(&SpO2Mem,&os_err);
-        spo2 sample;
-        sample.count=0;
-        char buffer[80];
+        
+        //spo2 sample;
+       
+        //char buffer[80];
         
         if(sample_available(SPO2_ADDRESS,&samples_available)){
-            spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR,&read_idx);
-            
-            /*sprintf(buffer,
+            /*spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR,&read_idx);
+
+            sprintf(buffer,
                 "Samples avpre %lu: Read idx %lu: \r\n",
                     (unsigned long) samples_available,
                     (unsigned long) read_idx
             );
                 uart_send_string((CPU_INT08U *)buffer);*/ //Big debugger
-        
-    
             
-            for(CPU_INT08U i=1;i<=samples_available;i++){
-                spo2_read_fifo_sample(SPO2_ADDRESS,&sample.red,&sample.ir);
-                spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR,&read_idx);
-                
-                /*CPU_INT08U sample_counter=samples_available-i;
+            for(CPU_INT08U i=0;i<samples_available;i++){
+                sample=(spo2*)OSMemGet(&SpO2Mem,&os_err);
+                spo2_read_fifo_sample(SPO2_ADDRESS,&sample->red,&sample->ir);
+                /*spo2_read_register(SPO2_ADDRESS,FIFO_RD_PTR,&read_idx);
+
+                CPU_INT08U sample_counter=samples_available-i;
                 sprintf(buffer,
                 "Samples av %lu: RED=%lu, IR=%lu, Read idx: %lu\r\n",
                     (unsigned long) sample_counter,
@@ -479,17 +482,18 @@ static void App_TaskSPO2(void *p_arg){
 
                 uart_send_string((CPU_INT08U *)buffer);*/ //Big debugger
                 
-                sprintf(buffer,
+                /*sprintf(buffer,
                     "RED=%lu, IR=%lu\r\n",
                     (unsigned long)sample.red,
                     (unsigned long)sample.ir);
 
-                uart_send_string((CPU_INT08U *)buffer); //Small Debugger
+                uart_send_string((CPU_INT08U *)buffer);*/ //Small Debugger
+                OSTaskQPost(&App_TaskUART_TCB,sample,sizeof(*sample),OS_OPT_POST_FIFO,&os_err);
             }
         }
         
         //OSMemPut(&SpO2Mem,(void *)sample,&os_err);
-        //OSTaskQPost(&App_TaskUART_TCB,sample,sizeof(*sample),OS_OPT_POST_FIFO,&os_err);
+        
         
     
     
@@ -516,18 +520,25 @@ static void App_TaskSPO2(void *p_arg){
 static void App_TaskUART(void *p_arg){
     /* prevent compiler warnings */
     (void)p_arg;
+    
     OS_ERR os_err;
     OS_MSG_SIZE p_msg;
     CPU_TS ts;
-    
+    char buffer[80];
     spo2 *sample;
+    
     while(DEF_TRUE){
-       // sample=OSTaskQPend(0,OS_OPT_PEND_BLOCKING, &p_msg, &ts,&os_err);
-      
+       sample=OSTaskQPend(0,OS_OPT_PEND_BLOCKING, &p_msg, &ts,&os_err);
+      sprintf(buffer,
+                    "RED=%lu, IR=%lu\r\n",
+                    (unsigned long)sample->red,
+                    (unsigned long)sample->ir);
+
+                uart_send_string((CPU_INT08U *)buffer);
     
-       // OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+       OSMemPut(&SpO2Mem, (void *)sample, &os_err);
     
-    OSTimeDlyHMSM(0, 0, 0, 100, 
+    OSTimeDlyHMSM(0, 0, 0, 1, 
               OS_OPT_TIME_HMSM_STRICT, 
               &os_err);
     }
