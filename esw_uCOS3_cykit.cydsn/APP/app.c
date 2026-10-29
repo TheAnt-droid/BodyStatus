@@ -68,8 +68,8 @@ static  CPU_STK  App_TaskButtonStk[APP_CFG_TASK_BUTTON_STK_SIZE];
 static  OS_TCB   App_TaskSPO2_TCB;
 static  CPU_STK  App_TaskSPO2Stk[APP_CFG_TASK_SPO2_STK_SIZE];
 
-static  OS_TCB   App_TaskUART_TCB;
-static  CPU_STK  App_TaskUARTStk[APP_CFG_TASK_UART_STK_SIZE];
+static  OS_TCB   App_TaskSPO2CALC_TCB;
+static  CPU_STK  App_TaskSPO2CALCStk[APP_CFG_TASK_UART_STK_SIZE];
 
 
 /*
@@ -83,7 +83,7 @@ static  void  App_TaskStart  (void *p_arg);
 static  void  App_TaskLED (void *p_arg);
 static  void  App_TaskBUTTON (void *p_arg);
 static  void  App_TaskSPO2 (void *p_arg);
-static  void  App_TaskUART (void *p_arg);
+static  void  App_TaskSPO2CALC (void *p_arg);
 
 
 static  void  App_TaskCreate (void);
@@ -260,12 +260,12 @@ static  void  App_TaskCreate (void)
                    (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
                    (OS_ERR      *)&os_err);
      /* create UART task */
-      OSTaskCreate((OS_TCB      *)&App_TaskUART_TCB,
-                   (CPU_CHAR    *)"TaskUART",
-                   (OS_TASK_PTR  )App_TaskUART, 
+      OSTaskCreate((OS_TCB      *)&App_TaskSPO2CALC_TCB,
+                   (CPU_CHAR    *)"TaskSPO2CALC",
+                   (OS_TASK_PTR  )App_TaskSPO2CALC, 
                    (void        *)0,
                    (OS_PRIO      )APP_CFG_TASK_UART_PRIO,
-                   (CPU_STK     *)&App_TaskUARTStk[0],
+                   (CPU_STK     *)&App_TaskSPO2CALCStk[0],
                    (CPU_STK_SIZE )APP_CFG_TASK_UART_STK_SIZE_LIMIT,
                    (CPU_STK_SIZE )APP_CFG_TASK_UART_STK_SIZE,
                    (OS_MSG_QTY   )32u,
@@ -447,7 +447,7 @@ static void App_TaskSPO2(void *p_arg){
     OS_ERR       os_err;
     SPO2_ERROR   spo2_err = SPO2_ERR_NONE;
      
-    spo2 *sample;
+    static spo2 *sample;
     CPU_INT08U samples_available_num;
     CPU_BOOLEAN samples_available;
 
@@ -468,7 +468,7 @@ static void App_TaskSPO2(void *p_arg){
                 continue;
             }
             if(sample->ir>FINGER_THRESHOLD && sample->red>FINGER_THRESHOLD){
-            OSTaskQPost(&App_TaskUART_TCB, sample, sizeof(*sample), OS_OPT_POST_FIFO, &os_err);
+            OSTaskQPost(&App_TaskSPO2CALC_TCB, sample, sizeof(*sample), OS_OPT_POST_FIFO, &os_err);
             if(os_err != OS_ERR_NONE){
                 OSMemPut(&SpO2Mem, (void *)sample, &os_err);
                 
@@ -484,7 +484,7 @@ static void App_TaskSPO2(void *p_arg){
 
 /*
 *********************************************************************************************************
-*                                          App_TaskUART()
+*                                          App_TaskSPO2CALC()
 *
 * Description :
 *
@@ -584,7 +584,7 @@ void float_to_str(float val, char *p_buf, int decimal_places) {
 
 
 
-static void App_TaskUART(void *p_arg){
+static void App_TaskSPO2CALC(void *p_arg){
     /* prevent compiler warnings */
     (void)p_arg;
     
@@ -592,7 +592,7 @@ static void App_TaskUART(void *p_arg){
     OS_MSG_SIZE p_msg;
     CPU_TS ts;
     
-    spo2 *sample;
+    static spo2 *sample;
     
     
 
