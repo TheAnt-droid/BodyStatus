@@ -69,7 +69,7 @@ static  OS_TCB   App_TaskSPO2_TCB;
 static  CPU_STK  App_TaskSPO2Stk[APP_CFG_TASK_SPO2_STK_SIZE];
 
 static  OS_TCB   App_TaskSPO2CALC_TCB;
-static  CPU_STK  App_TaskSPO2CALCStk[APP_CFG_TASK_UART_STK_SIZE];
+static  CPU_STK  App_TaskSPO2CALCStk[APP_CFG_TASK_SPO2CALC_STK_SIZE];
 
 
 /*
@@ -264,10 +264,10 @@ static  void  App_TaskCreate (void)
                    (CPU_CHAR    *)"TaskSPO2CALC",
                    (OS_TASK_PTR  )App_TaskSPO2CALC, 
                    (void        *)0,
-                   (OS_PRIO      )APP_CFG_TASK_UART_PRIO,
+                   (OS_PRIO      )APP_CFG_TASK_SPO2CALC_PRIO,
                    (CPU_STK     *)&App_TaskSPO2CALCStk[0],
-                   (CPU_STK_SIZE )APP_CFG_TASK_UART_STK_SIZE_LIMIT,
-                   (CPU_STK_SIZE )APP_CFG_TASK_UART_STK_SIZE,
+                   (CPU_STK_SIZE )APP_CFG_TASK_SPO2CALC_STK_SIZE_LIMIT,
+                   (CPU_STK_SIZE )APP_CFG_TASK_SPO2CALC_STK_SIZE,
                    (OS_MSG_QTY   )32u,
                    (OS_TICK      )0u,
                    (void        *)0,
