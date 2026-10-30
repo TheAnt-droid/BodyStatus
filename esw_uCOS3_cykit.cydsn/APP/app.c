@@ -47,7 +47,7 @@
 *********************************************************************************************************
 */
 
-OS_SEM button_sem;
+OS_SEM spo2_button_sem;
 
 static OS_MEM SpO2Mem;
 static spo2 SpO2MemPool[SPO2_MEM_BLOCKS];
@@ -123,6 +123,8 @@ int main(void)
     {
         I2C_spo2_Stop();
         spo2_init_success = DEF_FALSE;
+    }else{
+        spo2_sleep();
     }
 
     OSTaskCreate((OS_TCB *)&App_TaskStartTCB, /* Create the start task                                */
@@ -292,7 +294,7 @@ static void App_ObjCreate(void)
     OS_ERR os_err;
 
     /* create button semaphore to synchronize button press events */
-    OSSemCreate(&button_sem, "SEM_BUT", 0, &os_err);
+    OSSemCreate(&spo2_button_sem, "SEM_SPO2", 0, &os_err);
 
     OSMemCreate(&SpO2Mem,
                 "Spo2MEM",
@@ -334,10 +336,10 @@ static void App_TaskLED(void *p_arg)
     while (DEF_TRUE)
     {
         /* pend on semaphore - blocking */
-        OSSemPend(&button_sem, 0, OS_OPT_PEND_BLOCKING, &ts, &os_err);
+        //OSSemPend(&spo2_button_sem, 0, OS_OPT_PEND_BLOCKING, &ts, &os_err);
 #if USE_BSP_TOGGLE
         /* toggle LED (P2_1, J1 Pin 2) */
-        BSP_LED_Toggle(P2_1);
+        //BSP_LED_Toggle(P2_1);
         /* initiate scheduler */
         OSTimeDlyHMSM(0, 0, 1, 0,
                       OS_OPT_TIME_HMSM_STRICT,
@@ -402,13 +404,13 @@ static void App_TaskBUTTON(void *p_arg)
             {
                 /* if button_pressed (Button State) was not pressed before - post
                 semaphore */
-                OSSemPost(&button_sem, OS_OPT_POST_ALL, &os_err);
+                OSSemPost(&spo2_button_sem, OS_OPT_POST_ALL, &os_err);
             }
             else
             {
                 /* if button_pressed (Button State) was pressed before - post semaphore
                 and set to 1 that only one pend is accepted*/
-                OSSemSet(&button_sem, 1, &os_err);
+                OSSemSet(&spo2_button_sem, 1, &os_err);
             }
             /* in both cases set button_pressed (Button State) to 1 */
             button_pressed = 1;
@@ -545,6 +547,8 @@ static void App_TaskSPO2(void *p_arg)
     (void)p_arg;
 
     OS_ERR os_err;
+    CPU_TS ts;
+    CPU_BOOLEAN active=DEF_FALSE;
     SPO2_ERROR spo2_err = SPO2_ERR_NONE;
 
     static spo2 *sample;
@@ -553,14 +557,58 @@ static void App_TaskSPO2(void *p_arg)
 
     while (DEF_TRUE)
     {
+        
+        if(!active) {
+
+        // Wait for button
+        OSSemPend(&spo2_button_sem,
+                  0,
+                  OS_OPT_PEND_BLOCKING,
+                  &ts,
+                  &os_err);
+
+        if(os_err == OS_ERR_NONE) {
+
+            //WAKEUP
+            spo2_wake();
+            
+            active = DEF_TRUE;
+        }
+
+    } else {
+
+        // Was button pressed?
+        OSSemPend(&spo2_button_sem,
+                  0,
+                  OS_OPT_PEND_NON_BLOCKING,
+                  &ts,
+                  &os_err);
+
+        if(os_err == OS_ERR_NONE) {
+
+            //SLEEP
+            spo2_sleep();
+            active = DEF_FALSE;
+            OSTimeDlyHMSM(0, 0, 0, 100, OS_OPT_TIME_HMSM_STRICT, &os_err);
+            continue;
+        }
+        
+        
+        
+        
+        
         samples_available = sample_available(SPO2_ADDRESS, &samples_available_num, &spo2_err);
-        if (samples_available)
-        {
+        
+        if(!samples_available){
+            OSTimeDlyHMSM(0, 0, 0, 5, OS_OPT_TIME_HMSM_STRICT, &os_err);
+            continue;
+        }
+        
             sample = (spo2 *)OSMemGet(&SpO2Mem, &os_err);
             if (os_err != OS_ERR_NONE)
             {
                 uart_send_string((CPU_INT08U *)"os_mem_get failed\r\n");
-                OSTimeDlyHMSM(0, 0, 0, 10, OS_OPT_TIME_HMSM_STRICT, &os_err);
+                OSTimeDlyHMSM(0, 0, 0, 5, OS_OPT_TIME_HMSM_STRICT, &os_err);
                 continue;
             }
 
@@ -568,7 +616,7 @@ static void App_TaskSPO2(void *p_arg)
             if (spo2_err != SPO2_ERR_NONE)
             {
                 OSMemPut(&SpO2Mem, (void *)sample, &os_err);
-                OSTimeDlyHMSM(0, 0, 0, 10, OS_OPT_TIME_HMSM_STRICT, &os_err);
+                OSTimeDlyHMSM(0, 0, 0, 5, OS_OPT_TIME_HMSM_STRICT, &os_err);
                 continue;
             }
 
@@ -585,10 +633,11 @@ static void App_TaskSPO2(void *p_arg)
             {
                 OSMemPut(&SpO2Mem, (void *)sample, &os_err);
             }
-        }
+        
 
         OSTimeDlyHMSM(0, 0, 0, 1, OS_OPT_TIME_HMSM_STRICT, &os_err);
     }
+}
 }
 
 /*

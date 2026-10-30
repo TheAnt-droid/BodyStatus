@@ -276,4 +276,30 @@ CPU_BOOLEAN sample_available(CPU_INT08U slave_addr, CPU_INT08U *num_samples_avai
     return 0;
 }
 
+SPO2_ERROR spo2_sleep(void) {
+    return spo2_write_register(SPO2_ADDRESS,
+                               MODE_Config_Reg,
+                               MODE_Config_Val_Sleep);
+}
+
+SPO2_ERROR spo2_wake(void) {
+
+    SPO2_ERROR err;
+
+    // FIFO zurücksetzen
+    err = spo2_write_register(SPO2_ADDRESS, FIFO_RD_PTR_REG, 0x00);
+    if(err != SPO2_ERR_NONE) return err;
+
+    err = spo2_write_register(SPO2_ADDRESS, FIFO_WR_PTR_REG, 0x00);
+    if(err != SPO2_ERR_NONE) return err;
+
+    err = spo2_write_register(SPO2_ADDRESS, FIFO_OVF_COUNTER_REG, 0x00);
+    if(err != SPO2_ERR_NONE) return err;
+
+    // Sensor aufwecken
+    return spo2_write_register(SPO2_ADDRESS,
+                               MODE_Config_Reg,
+                               MODE_Config_Val);
+}
+
 /* [] END OF FILE */

@@ -16,7 +16,7 @@
 
 /*---- Register Addresses ----*/
 #define FIFO_Config_Reg 0x08u     // Adress for configuring FIFO
-#define MODE_Config_Reg 0x09u     // Adress for configuring MODE
+#define MODE_Config_Reg 0x09u     // Adress for configuring MODE 
 #define SPO2_Config_Reg 0x0Au     // Adress for configuring SPO2
 #define LED_PA_1_Config_Reg 0x0Cu // Adress for configuring RED LED
 #define LED_PA_2_Config_Reg 0x0Du // Adress for configuring IR LED
@@ -31,7 +31,8 @@
 
 /*---- Config Values ----*/
 #define FIFO_Config_Val 0x57u     // 010(Sample AVG:4samples) 1(RollOver) 0111(FiFo Full Behaviour)
-#define MODE_Config_Val 0x03u     // 0(Shutdown) 0(Reset) 000(Reserved) 011(Mode:SpO2)
+#define MODE_Config_Val 0x03u     // 0(Shutdown) 0(Reset) 000(Reserved) 011(Mode:SpO2) -> WAKE
+#define MODE_Config_Val_Sleep 0x83u // 1(Shutdown) 0(Reset) 000(Reserved) 011(Mode:SpO2) -> WAKE
 #define SPO2_Config_Val 0x2Bu     // 0(Reserved) 01(ADC Range:4096) 010(Sample Rate:200Hz) 11(ADC Res:18bit)
 #define LED_PA_1_Config_Val 0x1Fu // 00011111(LED Current:6.2mA)
 #define LED_PA_2_Config_Val 0x1Fu // 00011111 (LED Current:6.2mA)

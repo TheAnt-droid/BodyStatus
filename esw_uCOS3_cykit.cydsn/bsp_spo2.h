@@ -25,6 +25,8 @@ void spo2_config(CPU_INT08U slave_addr, SPO2_ERROR *spo2_err);
 
 void spo2_read_fifo_sample(CPU_INT08U slave_addr, CPU_INT32U *red, CPU_INT32U *ir, SPO2_ERROR *spo2_err);
 CPU_BOOLEAN sample_available(CPU_INT08U slave_addr, CPU_INT08U *num_samples_available, SPO2_ERROR *spo2_err);
+SPO2_ERROR spo2_sleep(void);
+SPO2_ERROR spo2_wake(void);
 
 #endif
 /* [] END OF FILE */
