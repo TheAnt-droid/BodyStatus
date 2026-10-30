@@ -440,61 +440,6 @@ static  void  App_TaskBUTTON (void *p_arg)
 * Note(s)     : none
 *********************************************************************************************************
 */
-static void App_TaskSPO2(void *p_arg){
-    /* prevent compiler warnings */
-    (void)p_arg;
-     
-    OS_ERR       os_err;
-    SPO2_ERROR   spo2_err = SPO2_ERR_NONE;
-     
-    static spo2 *sample;
-    CPU_INT08U samples_available_num;
-    CPU_BOOLEAN samples_available;
-
-    while(DEF_TRUE){
-        samples_available = sample_available(SPO2_ADDRESS, &samples_available_num, &spo2_err);
-        if(samples_available){
-            sample = (spo2 *)OSMemGet(&SpO2Mem, &os_err);
-            if(os_err != OS_ERR_NONE){
-                uart_send_string((CPU_INT08U *)"os_mem_get failed\r\n");
-                OSTimeDlyHMSM(0, 0, 0, 10, OS_OPT_TIME_HMSM_STRICT, &os_err);
-                continue; 
-            }
-            
-            spo2_read_fifo_sample(SPO2_ADDRESS, &sample->red, &sample->ir, &spo2_err);
-            if(spo2_err != SPO2_ERR_NONE){
-                OSMemPut(&SpO2Mem, (void *)sample, &os_err);
-                OSTimeDlyHMSM(0, 0, 0, 10, OS_OPT_TIME_HMSM_STRICT, &os_err);
-                continue;
-            }
-            if(sample->ir>FINGER_THRESHOLD && sample->red>FINGER_THRESHOLD){
-            OSTaskQPost(&App_TaskSPO2CALC_TCB, sample, sizeof(*sample), OS_OPT_POST_FIFO, &os_err);
-            if(os_err != OS_ERR_NONE){
-                OSMemPut(&SpO2Mem, (void *)sample, &os_err);
-                
-            }
-            }else{
-                OSMemPut(&SpO2Mem, (void *)sample, &os_err);
-            }
-        }
-         
-        OSTimeDlyHMSM(0, 0, 0, 1, OS_OPT_TIME_HMSM_STRICT, &os_err);
-    }
-}
-
-/*
-*********************************************************************************************************
-*                                          App_TaskSPO2CALC()
-*
-* Description :
-*
-* Argument(s) : p_arg   is the argument passed to 'App_TaskSPO2()' by 'OSTaskCreate()'.
-*
-* Return(s)   : none
-*
-* Note(s)     : none
-*********************************************************************************************************
-*/
 void uint32_to_str(CPU_INT32U val, char *p_buf) {
     char temp[12];
     int i = 0, j = 0;
@@ -582,6 +527,64 @@ void float_to_str(float val, char *p_buf, int decimal_places) {
     p_buf[j] = '\0';
 }
 
+static void App_TaskSPO2(void *p_arg){
+    /* prevent compiler warnings */
+    (void)p_arg;
+     
+    OS_ERR       os_err;
+    SPO2_ERROR   spo2_err = SPO2_ERR_NONE;
+     
+    static spo2 *sample;
+    CPU_INT08U samples_available_num;
+    CPU_BOOLEAN samples_available;
+
+    while(DEF_TRUE){
+        samples_available = sample_available(SPO2_ADDRESS, &samples_available_num, &spo2_err);
+        if(samples_available){
+            sample = (spo2 *)OSMemGet(&SpO2Mem, &os_err);
+            if(os_err != OS_ERR_NONE){
+                uart_send_string((CPU_INT08U *)"os_mem_get failed\r\n");
+                OSTimeDlyHMSM(0, 0, 0, 10, OS_OPT_TIME_HMSM_STRICT, &os_err);
+                continue; 
+            }
+            
+            spo2_read_fifo_sample(SPO2_ADDRESS, &sample->red, &sample->ir, &spo2_err);
+            if(spo2_err != SPO2_ERR_NONE){
+                OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+                OSTimeDlyHMSM(0, 0, 0, 10, OS_OPT_TIME_HMSM_STRICT, &os_err);
+                continue;
+            }
+            
+            if(sample->ir>FINGER_THRESHOLD && sample->red>FINGER_THRESHOLD){
+            OSTaskQPost(&App_TaskSPO2CALC_TCB, sample, sizeof(*sample), OS_OPT_POST_FIFO, &os_err);
+            
+            if(os_err != OS_ERR_NONE){
+                OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+                
+            }
+            }else{
+                OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+            }
+        }
+         
+        OSTimeDlyHMSM(0, 0, 0, 1, OS_OPT_TIME_HMSM_STRICT, &os_err);
+    }
+}
+
+/*
+*********************************************************************************************************
+*                                          App_TaskSPO2CALC()
+*
+* Description :
+*
+* Argument(s) : p_arg   is the argument passed to 'App_TaskSPO2()' by 'OSTaskCreate()'.
+*
+* Return(s)   : none
+*
+* Note(s)     : none
+*********************************************************************************************************
+*/
+
 
 
 static void App_TaskSPO2CALC(void *p_arg){
@@ -593,8 +596,6 @@ static void App_TaskSPO2CALC(void *p_arg){
     CPU_TS ts;
     
     static spo2 *sample;
-    
-    
 
     spo2_buffer buffer;
     buffer.buffer_idx=0;
@@ -608,42 +609,63 @@ static void App_TaskSPO2CALC(void *p_arg){
     
     float ratio;
     CPU_INT08U spo2;
-    
+    CPU_INT16U heartrate;
     
     while(DEF_TRUE){
         
         sample=OSTaskQPend(0,OS_OPT_PEND_BLOCKING, &p_msg, &ts,&os_err);
-        
+            
         if(os_err==OS_ERR_NONE && sample!=DEF_NULL ){
             spo2_add_sample(sample->red,sample->ir,&buffer);
+            
             OSMemPut(&SpO2Mem, (void *)sample, &os_err);
             if (os_err != OS_ERR_NONE) {
                 uart_send_string((CPU_INT08U *)"ERROR: OSMemPut failed\r\n");
             }
 
             if(buffer.samples_count>0){
-                if (spo2_calc_dc(buffer,&red_dc,&ir_dc)){
-                    spo2_calc_ac(buffer,&red_ac,&ir_ac);
+                if (spo2_calc_dc(&buffer,&red_dc,&ir_dc)){
+                    spo2_calc_ac(&buffer,&red_ac,&ir_ac);
                     
                     spo2_calc_ratio(red_dc,ir_dc,red_ac,ir_ac,&ratio);
                     
                     spo2_calc_percent(ratio,&spo2);
-                    
-                    
-                    char red_str[12], ir_str[12];
                     char spo2_str[20];
+            uint32_to_str(spo2, spo2_str);
+            
+            uart_send_string((CPU_INT08U *)" SpO2: ");
+            uart_send_string((CPU_INT08U *)spo2_str);
+            uart_send_string((CPU_INT08U *)"\r\n");
+                    
+                    /*char hr_str[12];
+                    char spo2_str[20];
+                    
+                    
                     uint32_to_str(spo2, spo2_str);
-                    uint32_to_str(red_dc, red_str);
-                    uint32_to_str(ir_dc, ir_str);            
-                    uart_send_string((CPU_INT08U *)"RED=");
-                    uart_send_string((CPU_INT08U *)red_str);
-                    uart_send_string((CPU_INT08U *)" IR=");
-                    uart_send_string((CPU_INT08U *)ir_str);
-                    uart_send_string((CPU_INT08U *)"SpO2: ");
+                    uint32_to_str(heartrate, hr_str);
+                    
+                 char ir_str[40];
+                uint32_to_str(sample->ir, ir_str);
+                uart_send_string((CPU_INT08U *)"IR_RAW: ");
+                uart_send_string((CPU_INT08U *)ir_str);
+                    
+                    uart_send_string((CPU_INT08U *)"HR: ");
+                    uart_send_string((CPU_INT08U *)hr_str);
+                    uart_send_string((CPU_INT08U *)" SpO2: ");
                     uart_send_string((CPU_INT08U *)spo2_str);
-                    uart_send_string((CPU_INT08U *)"\r\n"); 
+                    uart_send_string((CPU_INT08U *)"\r\n"); */
                 }
             }
+            if(buffer.samples_count>100u){
+                calculate_heartrate(&buffer,&heartrate);
+                char hr_str[12];
+                uint32_to_str(heartrate, hr_str);
+                uart_send_string((CPU_INT08U *)"HR: ");
+                uart_send_string((CPU_INT08U *)hr_str);
+            }
+            
+            
+            
         }
     
         OSTimeDlyHMSM(0, 0, 0, 1, 

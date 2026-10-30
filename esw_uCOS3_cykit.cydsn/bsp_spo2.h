@@ -9,66 +9,12 @@
  *
  * ========================================
 */
+#ifndef  BSP_SPO2_H
+#define  BSP_SPO2_H
 /*---- INCLUDES ----*/
 #include <cpu.h>
 #include <I2C_spo2.h>
-
-/*---- Register Addresses ----*/
-#define FIFO_Config_Reg 0x08u //Adress for configuring FIFO
-#define MODE_Config_Reg 0x09u //Adress for configuring MODE
-#define SPO2_Config_Reg 0x0Au //Adress for configuring SPO2
-#define LED_PA_1_Config_Reg 0x0Cu //Adress for configuring RED LED
-#define LED_PA_2_Config_Reg 0x0Du //Adress for configuring IR LED
-
-#define SPO2_ADDRESS 0x57u //MAX30102 address from datasheet
-#define SPO2_ID_REG 0xFFu //MAX30102 Register containing ID
-
-#define FIFO_DATA_REG 0x07u //Adress where measured data is stored
-#define FIFO_RD_PTR_REG 0x06u // Adress where read index is stored
-#define FIFO_WR_PTR_REG 0x04u //Adress where write index is stored
-#define FIFO_OVF_COUNTER_REG 0x05u //Adress where overflow counter is stored
-
-/*---- Config Values ----*/
-#define FIFO_Config_Val 0x77u //011(Sample AVG:8samples) 1(RollOver) 0111(FiFo Full Behaviour)
-#define MODE_Config_Val 0x03u //0(Shutdown) 0(Reset) 000(Reserved) 011(Mode:SpO2)
-#define SPO2_Config_Val 0x23u //0(Reserved) 01(ADC Range:4096) 000(Sample Rate:50Hz) 11(ADC Res:18bit)
-#define LED_PA_1_Config_Val 0x1Fu //00011111(LED Current:6.2mA)
-#define LED_PA_2_Config_Val 0x1Fu //00011111 (LED Current:6.2mA)
-
-/*---- Other Values ----*/
-#define SPO2_ID_VAL 0x15u //MAX30102 ID from datasheet
-
-#define FIFO_SAMPLE_BUFFER 32u //This many samples get saved in the FIFO buffer before rollover.
-#define SAMPLE_BUFFER_SIZE 100u
-#define FINGER_THRESHOLD 5000u
-
-/*---- Structs ----*/
-typedef struct{
-    CPU_INT32U red;
-    CPU_INT32U ir;
-}spo2;
-
-typedef struct{
-    CPU_INT16U buffer_idx;
-    CPU_INT16U samples_count;
-    CPU_INT32U red[SAMPLE_BUFFER_SIZE];
-    CPU_INT32U ir[SAMPLE_BUFFER_SIZE];
-}spo2_buffer;
-
-
-/*---- Error Codes ----*/
-typedef enum{
-    SPO2_ERR_NONE=0,
-    SPO2_ERR_SENSOR_READ,
-    SPO2_ERR_MEMORY,
-    SPO2_ERR_QUEUE_POST,
-    SPO2_ERR_INVALID_SAMPLE,
-    SPO2_ERR_VAL,
-    SPO2_ERR_MASTER_SEND,
-    SPO2_ERR_MASTER_WRITE,
-    SPO2_ERR_MASTER_READ,
-    SPO2_ERR_NO_CONNECTION,
-}SPO2_ERROR;
+#include <bsp_oximeter_cfg.h>
 
 
 CPU_INT08U spo2_read_register(CPU_INT08U slave_addr,CPU_INT08U reg, CPU_INT08U *value);
@@ -80,10 +26,6 @@ void spo2_config(CPU_INT08U slave_addr,SPO2_ERROR *spo2_err);
 
 void spo2_read_fifo_sample(CPU_INT08U slave_addr, CPU_INT32U *red, CPU_INT32U *ir,SPO2_ERROR *spo2_err);
 CPU_BOOLEAN sample_available(CPU_INT08U slave_addr,CPU_INT08U *num_samples_available,SPO2_ERROR *spo2_err);
-void spo2_add_sample(CPU_INT32U red, CPU_INT32U ir, spo2_buffer *buffer);
-CPU_BOOLEAN spo2_calc_dc(spo2_buffer buffer,CPU_INT32U *avg_red, CPU_INT32U *avg_ir);
-void spo2_calc_ac(spo2_buffer buffer,CPU_INT32U *ac_red, CPU_INT32U *ac_ir);
-void spo2_calc_ratio(CPU_INT32U dc_red, CPU_INT32U dc_ir,CPU_INT32U ac_red, CPU_INT32U ac_ir, float *ratio);
-void spo2_calc_percent(float ratio, CPU_INT08U *spo2);
 
+#endif
 /* [] END OF FILE */
