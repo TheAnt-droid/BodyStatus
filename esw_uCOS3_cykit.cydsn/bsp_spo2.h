@@ -29,7 +29,7 @@
 #define FIFO_OVF_COUNTER_REG 0x05u //Adress where overflow counter is stored
 
 /*---- Config Values ----*/
-#define FIFO_Config_Val 0x17u //000(Sample AVG) 1(RollOver) 0111(FiFo Full Behaviour)
+#define FIFO_Config_Val 0x77u //011(Sample AVG:8samples) 1(RollOver) 0111(FiFo Full Behaviour)
 #define MODE_Config_Val 0x03u //0(Shutdown) 0(Reset) 000(Reserved) 011(Mode:SpO2)
 #define SPO2_Config_Val 0x23u //0(Reserved) 01(ADC Range:4096) 000(Sample Rate:50Hz) 11(ADC Res:18bit)
 #define LED_PA_1_Config_Val 0x1Fu //00011111(LED Current:6.2mA)
