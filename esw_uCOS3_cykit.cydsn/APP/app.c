@@ -596,6 +596,8 @@ static void App_TaskSPO2CALC(void *p_arg){
     CPU_TS ts;
     
     static spo2 *sample;
+    static oxi_results results;
+    CPU_INT16U results_index=0;
 
     spo2_buffer buffer;
     buffer.buffer_idx=0;
@@ -630,42 +632,34 @@ static void App_TaskSPO2CALC(void *p_arg){
                     spo2_calc_ratio(red_dc,ir_dc,red_ac,ir_ac,&ratio);
                     
                     spo2_calc_percent(ratio,&spo2);
+                    calculate_heartrate(&buffer,&heartrate);
+                    
+                    results.spo2+=spo2;
+                results.hr+=heartrate;
+                results_index++;
+                
+                if(results_index>=EFFECTIVE_SAMPLING_FREQ){ //For output every second
+                    results.spo2/=results_index; //Average of 1 second of samples
+                    results.hr/=results_index; //Average of 1 second of samples
+                    
+                    
+                    //Send to LED Task- Does not exist yet, so UART output instead :)
+                    char hr_str[20];
+                    uint32_to_str(results.hr, hr_str);
                     char spo2_str[20];
-            uint32_to_str(spo2, spo2_str);
-            
-            uart_send_string((CPU_INT08U *)" SpO2: ");
-            uart_send_string((CPU_INT08U *)spo2_str);
-            uart_send_string((CPU_INT08U *)"\r\n");
-                    
-                    /*char hr_str[12];
-                    char spo2_str[20];
-                    
-                    
-                    uint32_to_str(spo2, spo2_str);
-                    uint32_to_str(heartrate, hr_str);
-                    
-                 char ir_str[40];
-                uint32_to_str(sample->ir, ir_str);
-                uart_send_string((CPU_INT08U *)"IR_RAW: ");
-                uart_send_string((CPU_INT08U *)ir_str);
-                    
+                    uint32_to_str(results.spo2, spo2_str);
                     uart_send_string((CPU_INT08U *)"HR: ");
                     uart_send_string((CPU_INT08U *)hr_str);
                     uart_send_string((CPU_INT08U *)" SpO2: ");
                     uart_send_string((CPU_INT08U *)spo2_str);
-                    uart_send_string((CPU_INT08U *)"\r\n"); */
+                    uart_send_string((CPU_INT08U *)"\r\n");
+                    results.spo2=0;
+                    results.hr=0;
+                    results_index=0;
+                    
+                }  
                 }
-            }
-            if(buffer.samples_count>100u){
-                calculate_heartrate(&buffer,&heartrate);
-                char hr_str[12];
-                uint32_to_str(heartrate, hr_str);
-                uart_send_string((CPU_INT08U *)"HR: ");
-                uart_send_string((CPU_INT08U *)hr_str);
-            }
-            
-            
-            
+           }  
         }
     
         OSTimeDlyHMSM(0, 0, 0, 1, 

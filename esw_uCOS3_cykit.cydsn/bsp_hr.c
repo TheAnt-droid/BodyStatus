@@ -64,7 +64,7 @@ void calculate_heartrate(spo2_buffer *buffer, CPU_INT16U *heartrate){
         }
     }
     
-    if (peak_count < 2) {
+    if (peak_count < NUM_PEAKS_FOR_HR) {
         return;
     }
 
@@ -75,7 +75,7 @@ void calculate_heartrate(spo2_buffer *buffer, CPU_INT16U *heartrate){
     }
     
     CPU_INT32U calculated_hr = (60u * EFFECTIVE_SAMPLING_FREQ) / avg_peak_diff;
-    if (calculated_hr < 40u || calculated_hr > 250u) {
+    if (calculated_hr < LOW_HR_BORDER || calculated_hr > HIGH_HR_BORDER) {
         *heartrate = 0;
         return;
     }

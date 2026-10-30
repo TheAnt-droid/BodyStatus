@@ -37,20 +37,31 @@
 #define LED_PA_2_Config_Val 0x1Fu //00011111 (LED Current:6.2mA)
 
 /*---- Other Values ----*/
+#define EFFECTIVE_SAMPLING_FREQ 50u //DEPENDS ON CONFIGURED FS AND SAMPLE AVG!
 #define SPO2_ID_VAL 0x15u //MAX30102 ID from datasheet
 
 #define FIFO_SAMPLE_BUFFER 32u //This many samples get saved in the FIFO buffer before rollover.
 #define SAMPLE_BUFFER_SIZE 200u
+/*---- Heart Rate Values ----*/    
 #define FINGER_THRESHOLD 5000u
 #define MIN_PEAK_DISTANCE 15
 #define PEAK_THRESHOLD 200
-#define EFFECTIVE_SAMPLING_FREQ 50u //DEPENDS ON CONFIGURED FS AND SAMPLE AVG!
+#define LOW_HR_BORDER 30u
+#define HIGH_HR_BORDER 300u
+
+#define NUM_PEAKS_FOR_HR (SAMPLE_BUFFER_SIZE/EFFECTIVE_SAMPLING_FREQ)
+
 
 /*---- Structs ----*/
 typedef struct{
     CPU_INT32U red;
     CPU_INT32U ir;
 }spo2;
+
+typedef struct{
+    CPU_INT32U spo2;
+    CPU_INT32U hr;
+}oxi_results;
 
 typedef struct{
     CPU_INT16U buffer_idx;
