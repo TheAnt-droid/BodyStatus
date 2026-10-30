@@ -36,3 +36,6 @@
 # Betriebssystem-Dateien
 .DS_Store
 Thumbs.db
+esw_uCOS3_cykit.cydsn/.vscode/c_cpp_properties.json
+esw_uCOS3_cykit.cydsn/.vscode/launch.json
+esw_uCOS3_cykit.cydsn/.vscode/settings.json

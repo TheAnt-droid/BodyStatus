@@ -25,11 +25,10 @@
 *********************************************************************************************************
 */
 
-#ifndef  APP_CFG_MODULE_PRESENT
-#define  APP_CFG_MODULE_PRESENT
-    
-#include <stdio.h>
+#ifndef APP_CFG_MODULE_PRESENT
+#define APP_CFG_MODULE_PRESENT
 
+#include <stdio.h>
 
 /*
 *********************************************************************************************************
@@ -37,8 +36,7 @@
 *********************************************************************************************************
 */
 
-#define  APP_CFG_PROBE_COM_EN                           DEF_ENABLED
-
+#define APP_CFG_PROBE_COM_EN DEF_ENABLED
 
 /*
 *********************************************************************************************************
@@ -46,11 +44,11 @@
 *********************************************************************************************************
 */
 
-#define  APP_CFG_TASK_START_PRIO                        2u
-#define  APP_CFG_TASK_LED_PRIO                          6u
-#define  APP_CFG_TASK_BUTTON_PRIO                       5u
-#define  APP_CFG_TASK_SPO2_PRIO                         3u
-#define  APP_CFG_TASK_SPO2CALC_PRIO                         4u
+#define APP_CFG_TASK_START_PRIO 2u
+#define APP_CFG_TASK_LED_PRIO 6u
+#define APP_CFG_TASK_BUTTON_PRIO 5u
+#define APP_CFG_TASK_SPO2_PRIO 3u
+#define APP_CFG_TASK_SPO2CALC_PRIO 4u
 
 /*
 *********************************************************************************************************
@@ -59,12 +57,11 @@
 *********************************************************************************************************
 */
 
-#define  APP_CFG_TASK_START_STK_SIZE                    128u
-#define  APP_CFG_TASK_LED_STK_SIZE                      64u
-#define  APP_CFG_TASK_BUTTON_STK_SIZE                   64u
-#define  APP_CFG_TASK_SPO2_STK_SIZE                     128u
-#define  APP_CFG_TASK_SPO2CALC_STK_SIZE                 1024u 
-
+#define APP_CFG_TASK_START_STK_SIZE 128u
+#define APP_CFG_TASK_LED_STK_SIZE 64u
+#define APP_CFG_TASK_BUTTON_STK_SIZE 64u
+#define APP_CFG_TASK_SPO2_STK_SIZE 128u
+#define APP_CFG_TASK_SPO2CALC_STK_SIZE 1024u
 
 /*
 *********************************************************************************************************
@@ -72,33 +69,31 @@
 *********************************************************************************************************
 */
 
-#define  APP_CFG_TASK_START_STK_SIZE_PCT_FULL           90u
-#define  APP_CFG_TASK_START_STK_SIZE_LIMIT         (APP_CFG_TASK_START_STK_SIZE    * (100u - APP_CFG_TASK_START_STK_SIZE_PCT_FULL))    / 100u
+#define APP_CFG_TASK_START_STK_SIZE_PCT_FULL 90u
+#define APP_CFG_TASK_START_STK_SIZE_LIMIT (APP_CFG_TASK_START_STK_SIZE * (100u - APP_CFG_TASK_START_STK_SIZE_PCT_FULL)) / 100u
 
-#define  APP_CFG_TASK_LED_STK_SIZE_PCT_FULL             90u
-#define  APP_CFG_TASK_LED_STK_SIZE_LIMIT           (APP_CFG_TASK_LED_STK_SIZE  * (100u - APP_CFG_TASK_LED_STK_SIZE_PCT_FULL))  / 100u
-  
-#define  APP_CFG_TASK_BUTTON_STK_SIZE_PCT_FULL             90u
-#define  APP_CFG_TASK_BUTTON_STK_SIZE_LIMIT           (APP_CFG_TASK_BUTTON_STK_SIZE  * (100u - APP_CFG_TASK_BUTTON_STK_SIZE_PCT_FULL))  / 100u
-  
-#define  APP_CFG_TASK_SPO2_STK_SIZE_PCT_FULL             90u
-#define  APP_CFG_TASK_SPO2_STK_SIZE_LIMIT           (APP_CFG_TASK_SPO2_STK_SIZE  * (100u - APP_CFG_TASK_SPO2_STK_SIZE_PCT_FULL))  / 100u
-  
-#define  APP_CFG_TASK_SPO2CALC_STK_SIZE_PCT_FULL             90u
-#define  APP_CFG_TASK_SPO2CALC_STK_SIZE_LIMIT           (APP_CFG_TASK_SPO2CALC_STK_SIZE  * (100u - APP_CFG_TASK_SPO2CALC_STK_SIZE_PCT_FULL))  / 100u
-  
+#define APP_CFG_TASK_LED_STK_SIZE_PCT_FULL 90u
+#define APP_CFG_TASK_LED_STK_SIZE_LIMIT (APP_CFG_TASK_LED_STK_SIZE * (100u - APP_CFG_TASK_LED_STK_SIZE_PCT_FULL)) / 100u
+
+#define APP_CFG_TASK_BUTTON_STK_SIZE_PCT_FULL 90u
+#define APP_CFG_TASK_BUTTON_STK_SIZE_LIMIT (APP_CFG_TASK_BUTTON_STK_SIZE * (100u - APP_CFG_TASK_BUTTON_STK_SIZE_PCT_FULL)) / 100u
+
+#define APP_CFG_TASK_SPO2_STK_SIZE_PCT_FULL 90u
+#define APP_CFG_TASK_SPO2_STK_SIZE_LIMIT (APP_CFG_TASK_SPO2_STK_SIZE * (100u - APP_CFG_TASK_SPO2_STK_SIZE_PCT_FULL)) / 100u
+
+#define APP_CFG_TASK_SPO2CALC_STK_SIZE_PCT_FULL 90u
+#define APP_CFG_TASK_SPO2CALC_STK_SIZE_LIMIT (APP_CFG_TASK_SPO2CALC_STK_SIZE * (100u - APP_CFG_TASK_SPO2CALC_STK_SIZE_PCT_FULL)) / 100u
 
 /*
 *********************************************************************************************************
 *                                          uC/LIB CONFIGURATION
 *********************************************************************************************************
 */
-#define  LIB_MEM_CFG_ARG_CHK_EXT_EN                     DEF_DISABLED
-#define  LIB_MEM_CFG_OPTIMIZE_ASM_EN                    DEF_DISABLED
-#define  LIB_MEM_CFG_ALLOC_EN                           DEF_DISABLED
-#define  LIB_MEM_CFG_HEAP_SIZE                          1024u
-#define  LIB_STR_CFG_FP_EN                              DEF_DISABLED
-
+#define LIB_MEM_CFG_ARG_CHK_EXT_EN DEF_DISABLED
+#define LIB_MEM_CFG_OPTIMIZE_ASM_EN DEF_DISABLED
+#define LIB_MEM_CFG_ALLOC_EN DEF_DISABLED
+#define LIB_MEM_CFG_HEAP_SIZE 1024u
+#define LIB_STR_CFG_FP_EN DEF_DISABLED
 
 /*
 *********************************************************************************************************
@@ -106,15 +101,14 @@
 *********************************************************************************************************
 */
 
-#define  TRACE_LEVEL_OFF                                0
-#define  TRACE_LEVEL_INFO                               1
-#define  TRACE_LEVEL_DEBUG                              2
+#define TRACE_LEVEL_OFF 0
+#define TRACE_LEVEL_INFO 1
+#define TRACE_LEVEL_DEBUG 2
 
-#define  APP_TRACE_LEVEL                                TRACE_LEVEL_OFF
-#define  APP_TRACE                                      printf
+#define APP_TRACE_LEVEL TRACE_LEVEL_OFF
+#define APP_TRACE printf
 
-#define  APP_TRACE_INFO(x)            ((APP_TRACE_LEVEL >= TRACE_LEVEL_INFO)  ? (void)(APP_TRACE x) : (void)0)
-#define  APP_TRACE_DEBUG(x)           ((APP_TRACE_LEVEL >= TRACE_LEVEL_DEBUG) ? (void)(APP_TRACE x) : (void)0)
-
+#define APP_TRACE_INFO(x) ((APP_TRACE_LEVEL >= TRACE_LEVEL_INFO) ? (void)(APP_TRACE x) : (void)0)
+#define APP_TRACE_DEBUG(x) ((APP_TRACE_LEVEL >= TRACE_LEVEL_DEBUG) ? (void)(APP_TRACE x) : (void)0)
 
 #endif
