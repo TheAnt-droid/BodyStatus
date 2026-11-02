@@ -237,7 +237,7 @@ static  void  App_ObjCreate (void)
 
 /*
 *********************************************************************************************************
-*                                          App_TaskLED()
+*                                          App_TaskLEDFUCK()
 *
 * Description : LED Task pends on a semaphore which is controlled by App_TaskButton(). If the button is
 *               pressed the semaphore is constantly posted and this task can toggle the LED (P2_1, J1 Pin 2).
