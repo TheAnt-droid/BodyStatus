@@ -255,7 +255,7 @@ static void App_TaskCreate(void)
                      (void *)0,
                      (OS_OPT)(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
                      (OS_ERR *)&os_err);
-        /* create UART task */
+        /* create SPO2CALC task */
         OSTaskCreate((OS_TCB *)&App_TaskSPO2CALC_TCB,
                      (CPU_CHAR *)"TaskSPO2CALC",
                      (OS_TASK_PTR)App_TaskSPO2CALC,
@@ -438,206 +438,98 @@ static void App_TaskBUTTON(void *p_arg)
 * Note(s)     : none
 *********************************************************************************************************
 */
-void uint32_to_str(CPU_INT32U val, char *p_buf)
-{
-    char temp[12];
-    int i = 0, j = 0;
 
-    if (val == 0)
-    {
-        p_buf[0] = '0';
-        p_buf[1] = '\0';
-        return;
-    }
-
-    while (val > 0)
-    {
-        temp[i++] = (val % 10) + '0';
-        val /= 10;
-    }
-
-    // Reverse into output buffer
-    while (i > 0)
-    {
-        p_buf[j++] = temp[--i];
-    }
-    p_buf[j] = '\0';
-}
-void float_to_str(float val, char *p_buf, int decimal_places)
-{
-    int j = 0;
-
-    // 1. Handle negative numbers
-    if (val < 0.0f)
-    {
-        p_buf[j++] = '-';
-        val = -val;
-    }
-
-    // 2. Extract integer part
-    long int_part = (long)val;
-
-    // 3. Extract and round fractional part
-    float remainder = val - (float)int_part;
-    long mult = 1;
-    for (int p = 0; p < decimal_places; p++)
-    {
-        mult *= 10;
-    }
-    long frac_part = (long)(remainder * (float)mult + 0.5f); // Round up
-
-    // Handle carry-over if rounding rolls over the fractional part
-    if (frac_part >= mult)
-    {
-        int_part += 1;
-        frac_part = 0;
-    }
-
-    // 4. Convert integer part to string (into a temporary stack buffer)
-    char temp[12];
-    int i = 0;
-    if (int_part == 0)
-    {
-        temp[i++] = '0';
-    }
-    else
-    {
-        long temp_val = int_part;
-        while (temp_val > 0)
-        {
-            temp[i++] = (temp_val % 10) + '0';
-            temp_val /= 10;
-        }
-    }
-
-    // Copy reversed integer part to output buffer
-    while (i > 0)
-    {
-        p_buf[j++] = temp[--i];
-    }
-
-    // 5. Append decimal point and fractional part if requested
-    if (decimal_places > 0)
-    {
-        p_buf[j++] = '.';
-
-        char frac_temp[10];
-        int frac_i = 0;
-
-        for (int p = 0; p < decimal_places; p++)
-        {
-            frac_temp[frac_i++] = (frac_part % 10) + '0';
-            frac_part /= 10;
-        }
-
-        // Copy reversed fractional part to output buffer
-        while (frac_i > 0)
-        {
-            p_buf[j++] = frac_temp[--frac_i];
-        }
-    }
-
-    // Null-terminate the final string
-    p_buf[j] = '\0';
-}
 
 static void App_TaskSPO2(void *p_arg)
 {
     /* prevent compiler warnings */
     (void)p_arg;
 
+    /*Task Variables*/
     OS_ERR os_err;
-    CPU_TS ts;
-    CPU_BOOLEAN active=DEF_FALSE;
     SPO2_ERROR spo2_err = SPO2_ERR_NONE;
-
+    
+    CPU_TS ts;
+    
+    CPU_BOOLEAN active=DEF_FALSE;
+    
     static spo2 *sample;
     CPU_INT08U samples_available_num;
     CPU_BOOLEAN samples_available;
-
+    
+    /* start of the endless loop */
     while (DEF_TRUE)
     {
         
         if(!active) {
+            /*When Inactive, wait for button to be pressed. Does nothing else.*/
+            OSSemPend(&spo2_button_sem,0,OS_OPT_PEND_BLOCKING,&ts,&os_err);
 
-        // Wait for button
-        OSSemPend(&spo2_button_sem,
-                  0,
-                  OS_OPT_PEND_BLOCKING,
-                  &ts,
-                  &os_err);
+            if(os_err == OS_ERR_NONE) {
+                /*If button was pressed, wake up the sensor and set to active.*/
+                spo2_wake();
+                active = DEF_TRUE;
+            }
 
-        if(os_err == OS_ERR_NONE) {
+        } else {
 
-            //WAKEUP
-            spo2_wake();
+            /*If Active, check if button is pressed. If not, continues with other code, because measurement is currently active.*/
+            OSSemPend(&spo2_button_sem,0,OS_OPT_PEND_NON_BLOCKING,&ts,&os_err);
+            if(os_err == OS_ERR_NONE) {
+                /*If button is pressed, send sensor to sleep and set to inactive.*/
+                spo2_sleep();
+                active = DEF_FALSE;
+                /*Measurement code should not be executed, so delay and continue, so the task starts again from the top.*/
+                OSTimeDlyHMSM(0, 0, 0, 100, OS_OPT_TIME_HMSM_STRICT, &os_err);
+                continue;
+            }
+            /*Are samples available? How many?*/
+            samples_available = sample_available(SPO2_ADDRESS, &samples_available_num, &spo2_err);
             
-            active = DEF_TRUE;
-        }
-
-    } else {
-
-        // Was button pressed?
-        OSSemPend(&spo2_button_sem,
-                  0,
-                  OS_OPT_PEND_NON_BLOCKING,
-                  &ts,
-                  &os_err);
-
-        if(os_err == OS_ERR_NONE) {
-
-            //SLEEP
-            spo2_sleep();
-            active = DEF_FALSE;
-            OSTimeDlyHMSM(0, 0, 0, 100, OS_OPT_TIME_HMSM_STRICT, &os_err);
-            continue;
-        }
-        
-        
-        
-        
-        
-        samples_available = sample_available(SPO2_ADDRESS, &samples_available_num, &spo2_err);
-        
-        if(!samples_available){
-            OSTimeDlyHMSM(0, 0, 0, 5, OS_OPT_TIME_HMSM_STRICT, &os_err);
-            continue;
-        }
-        
+            if(!samples_available){
+                /*If there are no samples available, no need to continue with code. Task starts again from the top.*/
+                OSTimeDlyHMSM(0, 0, 0, 5, OS_OPT_TIME_HMSM_STRICT, &os_err);
+                continue;
+            }
+            /*Reserve memory block for samples*/
             sample = (spo2 *)OSMemGet(&SpO2Mem, &os_err);
-            if (os_err != OS_ERR_NONE)
-            {
+            
+            if (os_err != OS_ERR_NONE){
+                /*Error handling*/
                 uart_send_string((CPU_INT08U *)"os_mem_get failed\r\n");
                 OSTimeDlyHMSM(0, 0, 0, 5, OS_OPT_TIME_HMSM_STRICT, &os_err);
                 continue;
             }
-
+            /*Read sensor data and store it in struct.*/
             spo2_read_fifo_sample(SPO2_ADDRESS, &sample->red, &sample->ir, &spo2_err);
-            if (spo2_err != SPO2_ERR_NONE)
-            {
+            if (spo2_err != SPO2_ERR_NONE){
+                /*Error handling*/
                 OSMemPut(&SpO2Mem, (void *)sample, &os_err);
                 OSTimeDlyHMSM(0, 0, 0, 5, OS_OPT_TIME_HMSM_STRICT, &os_err);
                 continue;
             }
-
+            
+            /*Check if finger is present*/
             if (sample->ir > FINGER_THRESHOLD && sample->red > FINGER_THRESHOLD)
             {
+                /*Only send data, if there is a finger, otherwise we would send ambient light data*/
                 OSTaskQPost(&App_TaskSPO2CALC_TCB, sample, sizeof(*sample), OS_OPT_POST_FIFO, &os_err);
 
-                if (os_err != OS_ERR_NONE)
-                {
+                if (os_err != OS_ERR_NONE){
+                    /*Error Handling*/
                     OSMemPut(&SpO2Mem, (void *)sample, &os_err);
                 }
             }
             else
             {
+                /*No finger -> No need for the data.*/
                 OSMemPut(&SpO2Mem, (void *)sample, &os_err);
             }
         
-
-        OSTimeDlyHMSM(0, 0, 0, 1, OS_OPT_TIME_HMSM_STRICT, &os_err);
+            /* initiate scheduler */
+            OSTimeDlyHMSM(0, 0, 0, 1, OS_OPT_TIME_HMSM_STRICT, &os_err);
+        }
     }
-}
 }
 
 /*
@@ -658,7 +550,8 @@ static void App_TaskSPO2CALC(void *p_arg)
 {
     /* prevent compiler warnings */
     (void)p_arg;
-
+    
+    /*Task Variables*/
     OS_ERR os_err;
     OS_MSG_SIZE p_msg;
     CPU_TS ts;
@@ -680,41 +573,46 @@ static void App_TaskSPO2CALC(void *p_arg)
     float ratio;
     CPU_INT08U spo2;
     CPU_INT16U heartrate;
-
+    
+    /* start of the endless loop */
     while (DEF_TRUE)
     {
-
+        /*Wait for message*/
         sample = OSTaskQPend(0, OS_OPT_PEND_BLOCKING, &p_msg, &ts, &os_err);
 
-        if (os_err == OS_ERR_NONE && sample != DEF_NULL)
-        {
+        if (os_err == OS_ERR_NONE && sample != DEF_NULL){
+            /*If message received -> add the received samples to a buffer*/
             spo2_add_sample(sample->red, sample->ir, &buffer);
-
+            
+            /*Release Memory. After saving into buffer, it is no longer needed*/
             OSMemPut(&SpO2Mem, (void *)sample, &os_err);
-            if (os_err != OS_ERR_NONE)
-            {
+            if (os_err != OS_ERR_NONE){
+                /*Error Handling*/
                 uart_send_string((CPU_INT08U *)"ERROR: OSMemPut failed\r\n");
             }
 
             if (buffer.samples_count > 0)
             {
-                if (spo2_calc_dc(&buffer, &red_dc, &ir_dc))
-                {
+                /*Once there are samples in the buffer we can start calculation*/
+                if (spo2_calc_dc(&buffer, &red_dc, &ir_dc)){
+                    /*If DC calc success, do AC calc*/
                     spo2_calc_ac(&buffer, &red_ac, &ir_ac);
-
+                    /*Ratio Calculation*/
                     spo2_calc_ratio(red_dc, ir_dc, red_ac, ir_ac, &ratio);
-
+                    /*Calculate Percentage for SPO2*/
                     spo2_calc_percent(ratio, &spo2);
+                    /*Calculate Heartrate*/
                     calculate_heartrate(&buffer, &heartrate);
-
+                    
+                    /*Add new value to results struct*/
                     results.spo2 += spo2;
                     results.hr += heartrate;
                     results_index++;
-
-                    if (results_index >= EFFECTIVE_SAMPLING_FREQ)
-                    {                                  // For output every second
-                        results.spo2 /= results_index; // Average of 1 second of samples
-                        results.hr /= results_index;   // Average of 1 second of samples
+                    
+                    if (results_index >= EFFECTIVE_SAMPLING_FREQ){ /*For output every second*/
+                        /*Average of 1 second of samples*/
+                        results.spo2 /= results_index; 
+                        results.hr /= results_index;   
 
                         // Send to LED Task- Does not exist yet, so UART output instead :)
                         char hr_str[20];
@@ -726,6 +624,8 @@ static void App_TaskSPO2CALC(void *p_arg)
                         uart_send_string((CPU_INT08U *)" SpO2: ");
                         uart_send_string((CPU_INT08U *)spo2_str);
                         uart_send_string((CPU_INT08U *)"\r\n");
+                        
+                        /*Reset Results after successful send*/
                         results.spo2 = 0;
                         results.hr = 0;
                         results_index = 0;
@@ -733,7 +633,7 @@ static void App_TaskSPO2CALC(void *p_arg)
                 }
             }
         }
-
+        /* initiate scheduler */
         OSTimeDlyHMSM(0, 0, 0, 1,
                       OS_OPT_TIME_HMSM_STRICT,
                       &os_err);

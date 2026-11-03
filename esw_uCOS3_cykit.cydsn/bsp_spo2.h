@@ -11,6 +11,7 @@
  */
 #ifndef BSP_SPO2_H
 #define BSP_SPO2_H
+    
 /*---- INCLUDES ----*/
 #include <cpu.h>
 #include <I2C_spo2.h>
@@ -19,7 +20,7 @@
 CPU_INT08U spo2_read_register(CPU_INT08U slave_addr, CPU_INT08U reg, CPU_INT08U *value);
 CPU_INT08U spo2_write_register(CPU_INT08U slave_addr, CPU_INT08U reg, CPU_INT08U config_value);
 
-CPU_INT08U spo2_check_connection(CPU_INT08U slave_addr);
+
 void Check_Sensor(CPU_INT08U slave_addr, CPU_INT08U sensor_reg, CPU_INT08U sensor_id, SPO2_ERROR *spo2_err);
 void spo2_config(CPU_INT08U slave_addr, SPO2_ERROR *spo2_err);
 

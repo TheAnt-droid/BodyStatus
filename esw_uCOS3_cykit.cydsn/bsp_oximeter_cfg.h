@@ -61,17 +61,17 @@ typedef struct
 
 typedef struct
 {
-    CPU_INT32U spo2;
-    CPU_INT32U hr;
-} oxi_results;
-
-typedef struct
-{
     CPU_INT16U buffer_idx;
     CPU_INT16U samples_count;
     CPU_INT32U red[SAMPLE_BUFFER_SIZE];
     CPU_INT32U ir[SAMPLE_BUFFER_SIZE];
 } spo2_buffer;
+
+typedef struct
+{
+    CPU_INT32U spo2;
+    CPU_INT32U hr;
+} oxi_results;
 
 /*---- Error Codes ----*/
 typedef enum
