@@ -43,12 +43,25 @@
 /*
 *********************************************************************************************************
 *                                            TASK PRIORITIES
+*
+* Note(s) : (1) Priority plan with OS_CFG_PRIO_MAX = 16 (os_cfg.h), lower number = higher priority:
+*                    0      reserved: ISR handler task (handbook appendix B)
+*                    1      tick task       (os_cfg_app.h)
+*                    2      timer task      (os_cfg_app.h)
+*                    3      start task      - only initialisation, then sleeps
+*                    4      button task     - short, must react immediately
+*                    5, 6   SpO2 tasks      - reading the sensor FIFO is time critical (branch spo2)
+*                    7      LED task        - heartbeat pulse must stay in time
+*                    8      environment     - measures every few seconds, not time critical
+*                    9..13  free
+*                    14     statistic task  (os_cfg_app.h, OS_CFG_PRIO_MAX-2 as recommended in appendix B)
+*                    15     idle task       (OS_CFG_PRIO_MAX-1, set by the kernel)
 *********************************************************************************************************
 */
 
-#define  APP_CFG_TASK_START_PRIO                        2u
-#define  APP_CFG_TASK_LED_PRIO                          4u
-#define  APP_CFG_TASK_BUTTON_PRIO                       5u
+#define  APP_CFG_TASK_START_PRIO                        3u
+#define  APP_CFG_TASK_BUTTON_PRIO                       4u
+#define  APP_CFG_TASK_LED_PRIO                          7u
 
 
 /*
