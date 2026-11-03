@@ -33,6 +33,10 @@
 
 #define  USE_BSP_TOGGLE                             1u
 
+#define  APP_ENV_STARTUP_DLY_MS                     3u          /* BME688 start-up time 2 ms (datasheet  */
+                                                                /* table 1) + 1 tick margin, see Note 2  */
+                                                                /* of App_EnvSelfTest()                  */
+
 /*
 *********************************************************************************************************
 *                                            LOCAL VARIABLES
@@ -64,6 +68,9 @@ static  void  App_TaskBUTTON (void *p_arg);
 
 static  void  App_TaskCreate (void);
 static  void  App_ObjCreate  (void);
+
+static  void  App_EnvSelfTest (void);
+
 
 /*
 *********************************************************************************************************
@@ -144,6 +151,8 @@ static  void  App_TaskStart (void *p_arg)
 #ifdef CPU_CFG_INT_DIS_MEAS_EN
   CPU_IntDisMeasMaxCurReset();
 #endif      
+
+  App_EnvSelfTest();                                            /* Check BME688 on SPI                  */
 
   App_TaskCreate();                                             /* Create application tasks.                        */
 
@@ -232,6 +241,49 @@ static  void  App_ObjCreate (void)
   
   /* create button semaphore to synchronize button press events */
   OSSemCreate(&button_sem,"SEM_BUT",0,&os_err);
+}
+
+
+/*
+*********************************************************************************************************
+*                                          App_EnvSelfTest()
+*
+* Description : Checks once at start-up whether the BME688 (Environment 3 Click, slot 1) answers on the
+*               SPI bus.
+*
+* Argument(s) : none.
+*
+* Return(s)   : none.
+*
+* Caller(s)   : App_TaskStart().
+*
+* Note(s)     : (1) Test function for the first hardware test of the SPI driver. It will be replaced
+*                   by the environment task.
+*               (2) The sensor needs 2 ms after power-on before the first communication (datasheet,
+*                   table 1, t_startup). An OS delay ends with a tick interrupt, so it can be up to one
+*                   tick (1 ms) shorter than requested -> 3 ms guarantees at least 2 ms.
+*               (3) Check the result with a breakpoint on the marked line (env_err == ENV_ERR_NONE)
+*                   and with the logic analyzer (MISO answers 0x61 to the control byte 0xD0).
+*********************************************************************************************************
+*/
+
+static  void  App_EnvSelfTest (void)
+{
+  OS_ERR   os_err;
+  ENV_ERR  env_err;
+
+
+  OSTimeDlyHMSM(0u, 0u, 0u, APP_ENV_STARTUP_DLY_MS,             /* Wait for sensor start-up (Note 2)    */
+                OS_OPT_TIME_HMSM_STRICT,
+                &os_err);
+  if (os_err != OS_ERR_NONE) {
+    CPU_SW_EXCEPTION(;);                                        /* Unexpected OS error: stop here       */
+  }
+
+  env_err = env_check_id();                                     /* Read chip id + variant id            */
+  if (env_err != ENV_ERR_NONE) {                                /* Breakpoint here (Note 3)             */
+    CPU_SW_EXCEPTION(;);                                        /* Sensor not found: stop here          */
+  }
 }
 
 
