@@ -38,6 +38,7 @@
 
 #include <bsp_uart.h>
 #include <bsp_gpio.h>
+#include <bsp_spi.h>
 
 
 /*
@@ -152,6 +153,7 @@ void  BSP_PostInit (void)
 {
     init_gpio();
     init_uart();
+    init_spi();
 }
 
 
