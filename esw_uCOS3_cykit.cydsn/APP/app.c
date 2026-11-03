@@ -41,6 +41,20 @@
 #define  APP_ENV_POLL_DLY_MS                       10u          /* Then check every 10 ms for new data   */
 #define  APP_ENV_POLL_MAX                          20u          /* Give up after 20 checks (200 ms)      */
 
+                                                                /* ---- Event flags of App_Flags ------- */
+                                                                /* Interface between the tasks, Note 1   */
+#define  APP_FLAG_MEAS_ACTIVE              (OS_FLAGS)0x01u      /* Set/cleared by button: measuring on   */
+#define  APP_FLAG_ENV_VALID                (OS_FLAGS)0x02u      /* Set by env task: values are valid     */
+#define  APP_FLAG_ENV_OK                   (OS_FLAGS)0x04u      /* Set by env task: room climate is OK   */
+#define  APP_FLAG_ENV_ALL                  (APP_FLAG_ENV_VALID | APP_FLAG_ENV_OK)
+ 
+#define  APP_FLAGS_INIT                    (OS_FLAGS)0x00u      /* All flags cleared after reset         */
+
+/* Note 1: Event flags are used instead of a semaphore because several tasks only
+*          READ the state (measuring on/off, room climate OK). A pend without OS_OPT_PEND_FLAG_CONSUME does
+*          not change the flags, so no task "steals" the event from another one.
+*/
+
 /*
 *********************************************************************************************************
 *                                            LOCAL VARIABLES
@@ -48,6 +62,9 @@
 */
 
 OS_SEM button_sem;
+
+static  OS_FLAG_GRP  App_Flags;                                 /* Shared state of the application      */
+
 
 static  OS_TCB   App_TaskStartTCB;
 static  CPU_STK  App_TaskStartStk[APP_CFG_TASK_START_STK_SIZE];
@@ -74,7 +91,7 @@ static  void  App_TaskCreate (void);
 static  void  App_ObjCreate  (void);
 
 static  void  App_EnvSelfTest (void);
-
+static  void  App_ErrCheck (OS_ERR  err);
 
 /*
 *********************************************************************************************************
@@ -150,22 +167,29 @@ static  void  App_TaskStart (void *p_arg)
 
 #if (OS_CFG_STAT_TASK_EN > 0u)
   OSStatTaskCPUUsageInit(&err);
-#endif    
-
+  App_ErrCheck(err);
+#endif
+ 
 #ifdef CPU_CFG_INT_DIS_MEAS_EN
   CPU_IntDisMeasMaxCurReset();
-#endif      
-
+#endif
+ 
   App_EnvSelfTest();                                            /* Check BME688 on SPI                  */
-
-  App_TaskCreate();                                             /* Create application tasks.                        */
-
-  App_ObjCreate();                                              /* Create kernel objects                            */
-
+ 
+  App_ObjCreate();                                              /* Kernel objects BEFORE the tasks that */
+                                                                /* use them                             */
+  App_TaskCreate();                                             /* Create application tasks.            */
+ 
+                                                                /* TEST ONLY until TheAnt's button task */
+                                                                /* sets this flag: start measuring      */
+  OSFlagPost(&App_Flags, APP_FLAG_MEAS_ACTIVE, OS_OPT_POST_FLAG_SET, &err);
+  App_ErrCheck(err);
+ 
   while (DEF_TRUE) {                                            /* Task body, always written as an infinite loop.   */
-    OSTimeDlyHMSM(0, 0, 0, 100, 
-                  OS_OPT_TIME_HMSM_STRICT, 
+    OSTimeDlyHMSM(0, 0, 0, 100,
+                  OS_OPT_TIME_HMSM_STRICT,
                   &err);
+    App_ErrCheck(err);
   }
 }
 
@@ -205,6 +229,8 @@ static  void  App_TaskCreate (void)
                (void        *)0,
                (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
                (OS_ERR      *)&os_err);
+  App_ErrCheck(os_err);
+
   /* create Button task */
   OSTaskCreate((OS_TCB      *)&App_TaskButton_TCB,
                (CPU_CHAR    *)"TaskBUT",
@@ -219,6 +245,7 @@ static  void  App_TaskCreate (void)
                (void        *)0,
                (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
                (OS_ERR      *)&os_err);
+  App_ErrCheck(os_err);
 }
 
 
@@ -242,9 +269,40 @@ static  void  App_ObjCreate (void)
 {
   /* declare and define function local variables */
   OS_ERR  os_err;
-  
+ 
   /* create button semaphore to synchronize button press events */
   OSSemCreate(&button_sem,"SEM_BUT",0,&os_err);
+  App_ErrCheck(os_err);
+ 
+  /* create event flag group shared by button, environment and LED tasks */
+  OSFlagCreate(&App_Flags, "FLG_APP", APP_FLAGS_INIT, &os_err);
+  App_ErrCheck(os_err);
+}
+
+
+/*
+*********************************************************************************************************
+*                                          App_ErrCheck()
+*
+* Description : Central check of the error code returned by an OS call.
+*
+* Argument(s) : err     Error code of the OS call.
+*
+* Return(s)   : none
+*
+* Caller(s)   : all application functions after an OS call.
+*
+* Note(s)     : (1) Expected errors (e.g. OS_ERR_TIMEOUT) must be handled by the caller BEFORE calling
+*                   this function. Everything else is a programming error: CPU_SW_EXCEPTION() (uC-CPU,
+*                   cpu_core.h) stops here, so a breakpoint on it shows the faulty call in the call stack.
+*********************************************************************************************************
+*/
+ 
+static  void  App_ErrCheck (OS_ERR  err)
+{
+  if (err != OS_ERR_NONE) {                                     /* Unexpected error -> stop, see Note 1 */
+    CPU_SW_EXCEPTION(;);
+  }
 }
 
 
