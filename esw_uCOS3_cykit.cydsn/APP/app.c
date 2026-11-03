@@ -36,6 +36,10 @@
 #define  APP_ENV_STARTUP_DLY_MS                     3u          /* BME688 start-up time 2 ms (datasheet  */
                                                                 /* table 1) + 1 tick margin, see Note 2  */
                                                                 /* of App_EnvSelfTest()                  */
+#define  APP_ENV_MEAS_DLY_MS                      100u          /* First wait after start: heater-on     */
+                                                                /* time of heater step 0 (100 ms)        */
+#define  APP_ENV_POLL_DLY_MS                       10u          /* Then check every 10 ms for new data   */
+#define  APP_ENV_POLL_MAX                          20u          /* Give up after 20 checks (200 ms)      */
 
 /*
 *********************************************************************************************************
@@ -249,7 +253,7 @@ static  void  App_ObjCreate (void)
 *                                          App_EnvSelfTest()
 *
 * Description : Checks once at start-up whether the BME688 (Environment 3 Click, slot 1) answers on the
-*               SPI bus and reads its calibration values.
+*               SPI bus, reads its calibration values and performs one measurement (raw values).
 *
 * Argument(s) : none.
 *
@@ -266,14 +270,20 @@ static  void  App_ObjCreate (void)
 *                   and with the logic analyzer (MISO answers 0x61 to the control byte 0xD0).
 *               (4) The calibration values are a local variable: no global variable is needed, the
 *                   environment task will later keep them the same way in its own stack.
+*               (5) The datasheet gives no total measurement time. The task therefore waits at least the
+*                   heater-on time with an OS delay and then checks new_data in short OS delays. The
+*                   number of checks is limited, so the function cannot wait forever. The CPU is
+*                   released during every wait ("Thou shalt release the CPU").
 *********************************************************************************************************
 */
  
 static  void  App_EnvSelfTest (void)
 {
-  OS_ERR     os_err;
-  ENV_ERR    env_err;
-  ENV_CALIB  calib;
+  OS_ERR      os_err;
+  ENV_ERR     env_err;
+  ENV_CALIB   calib;
+  ENV_RAW     raw;
+  CPU_INT08U  poll;
  
  
   OSTimeDlyHMSM(0u, 0u, 0u, APP_ENV_STARTUP_DLY_MS,             /* Wait for sensor start-up (Note 2)    */
@@ -289,10 +299,48 @@ static  void  App_EnvSelfTest (void)
   }
  
   env_err = env_read_calib(&calib);                             /* Read calibration values (Note 4)     */
-  if (env_err != ENV_ERR_NONE) {                                /* Breakpoint here: check "calib"       */
+  if (env_err != ENV_ERR_NONE) {
     CPU_SW_EXCEPTION(;);                                        /* Read failed: stop here               */
   }
+ 
+  env_err = env_config(&calib);                                 /* Oversampling, filter, gas heater     */
+  if (env_err != ENV_ERR_NONE) {
+    CPU_SW_EXCEPTION(;);
+  }
+ 
+  env_err = env_start_meas();                                   /* Start one measurement (forced mode)  */
+  if (env_err != ENV_ERR_NONE) {
+    CPU_SW_EXCEPTION(;);
+  }
+ 
+  OSTimeDlyHMSM(0u, 0u, 0u, APP_ENV_MEAS_DLY_MS,                /* Wait at least the heater-on time     */
+                OS_OPT_TIME_HMSM_STRICT,                        /* (Note 5)                             */
+                &os_err);
+  if (os_err != OS_ERR_NONE) {
+    CPU_SW_EXCEPTION(;);
+  }
+ 
+  raw.new_data = DEF_NO;                                        /* Check for new data, limited (Note 5) */
+  for (poll = 0u; (poll < APP_ENV_POLL_MAX) && (raw.new_data == DEF_NO); poll++) {
+    env_err = env_read_raw(&raw);
+    if (env_err != ENV_ERR_NONE) {
+      CPU_SW_EXCEPTION(;);
+    }
+    if (raw.new_data == DEF_NO) {                               /* Not finished yet: release the CPU    */
+      OSTimeDlyHMSM(0u, 0u, 0u, APP_ENV_POLL_DLY_MS,
+                    OS_OPT_TIME_HMSM_STRICT,
+                    &os_err);
+      if (os_err != OS_ERR_NONE) {
+        CPU_SW_EXCEPTION(;);
+      }
+    }
+  }
+ 
+  if (raw.new_data == DEF_NO) {                                 /* Breakpoint here: check "raw", "poll" */
+    CPU_SW_EXCEPTION(;);                                        /* No data within the time limit        */
+  }
 }
+
 
 /*
 *********************************************************************************************************

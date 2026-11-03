@@ -165,6 +165,108 @@ typedef struct {
 
 /*
 *********************************************************************************************************
+*                          MEASUREMENT CONTROL REGISTERS (table 22, ch. 5.3.1, 5.3.3, 5.3.4)
+*
+* Note(s) : (1) All control and data registers are on SPI page 1 (full address 0x00 ... 0x7F).
+*********************************************************************************************************
+*/
+
+#define ENV_REG_RES_HEAT_0      0x5Au   /* Target heater resistance of heater step 0 (5.3.4.2)         */
+#define ENV_REG_GAS_WAIT_0      0x64u   /* Heater-on time of heater step 0 (5.3.4.3)                   */
+#define ENV_REG_CTRL_GAS_1      0x71u   /* run_gas, nb_conv<3:0> (5.3.4.6, 5.3.4.7, see settings Note 2)*/
+#define ENV_REG_CTRL_HUM        0x72u   /* osrs_h<2:0> (5.3.3.1)                                       */
+#define ENV_REG_CTRL_MEAS       0x74u   /* osrs_t<7:5>, osrs_p<4:2>, mode<1:0> (5.3.3.2, 5.3.3.3)      */
+#define ENV_REG_CONFIG          0x75u   /* filter<4:2>, spi_3w_en<0> (5.3.3.4)                         */
+
+                                        /* ---------------- Bit fields ------------------------------- */
+#define ENV_OSRS_T_SHIFT        5u      /* ctrl_meas: osrs_t<7:5>                                      */
+#define ENV_OSRS_P_SHIFT        2u      /* ctrl_meas: osrs_p<4:2>                                      */
+#define ENV_FILTER_SHIFT        2u      /* config:    filter<4:2>                                      */
+#define ENV_RUN_GAS             0x20u   /* ctrl_gas_1: run_gas = bit 5 (Note 2 of settings)            */
+#define ENV_MODE_SLEEP          0x00u   /* mode<1:0> = 00 (table 12)                                   */
+#define ENV_MODE_FORCED         0x01u   /* mode<1:0> = 01: one measurement, then back to sleep         */
+
+/*
+*********************************************************************************************************
+*                                   MEASUREMENT SETTINGS (ch. 3.5)
+*
+* Note(s) : (1) The settings are the example of the datasheet, "Quick start - Forced mode" (ch. 3.5):
+*               humidity x1, temperature x2, pressure x16, heater 300 degC for 100 ms, IIR filter off.
+*           (2) Datasheet ch. 5.3.4.7 and table 22 give run_gas at bit 4, and the quick start calls the
+*               bit "run_gas_l" - the name used for the predecessor BME680. With bit 4 the hardware test
+*               showed no gas measurement (gas_valid_r = 0, heat_stab_r = 0). With bit 5 (0x20) the gas
+*               measurement runs (gas_valid_r = 1, heat_stab_r = 1, test 03.11.2026). Bit 5 is used.
+*           (3) gas_wait<7:6> = multiplication factor (01 = x4), gas_wait<5:0> = time in 1 ms steps
+*               (5.3.4.3): 0x59 = 01 011001b = 4 x 25 ms = 100 ms (value from the quick start example).
+*           (4) The heater resistance depends on the ambient temperature (ch. 3.6). A fixed room
+*               temperature is used here; the error is small because the heater runs at 300 degC.
+*********************************************************************************************************
+*/
+
+#define ENV_OSRS_H              0x01u   /* Humidity oversampling x1    (5.3.3.1, Note 1)               */
+#define ENV_OSRS_T              0x02u   /* Temperature oversampling x2 (5.3.3.2, Note 1)               */
+#define ENV_OSRS_P              0x05u   /* Pressure oversampling x16   (5.3.3.3, Note 1)               */
+#define ENV_FILTER_OFF          0x00u   /* IIR filter coefficient 0    (5.3.3.4)                       */
+#define ENV_NB_CONV_STEP_0      0x00u   /* Forced mode uses heater step 0 (5.3.4.6)                    */
+
+#define ENV_HEAT_TARGET_DEGC    300     /* Heater target temperature in degC (Note 1)                  */
+#define ENV_HEAT_AMB_DEGC       25      /* Assumed ambient temperature in degC (Note 4)                */
+#define ENV_GAS_WAIT_100MS      0x59u   /* Heater-on time 100 ms (Note 3)                              */
+
+/*
+*********************************************************************************************************
+*                                  DATA REGISTERS, FIELD 0 (ch. 5.3.5, 5.3.6)
+*
+* Note(s) : (1) In forced mode only field 0 is used (ch. 5.3.5). Field 0 is read with one multi-byte read
+*               from meas_status_0 (0x1D) up to gas_r_lsb (0x2D).
+*           (2) Temperature and pressure are 20 bit: msb = bits 19:12, lsb = bits 11:4, xlsb<7:4> = 3:0.
+*           (3) Gas ADC value is 10 bit: gas_r_msb = bits 9:2, gas_r_lsb<7:6> = bits 1:0.
+*********************************************************************************************************
+*/
+
+#define ENV_FIELD0_START        0x1Du   /* meas_status_0                                               */
+#define ENV_FIELD0_LEN          17u     /* 0x1D ... 0x2D                                               */
+#define ENV_REG_MEAS_STATUS_0   0x1Du   /* new_data<7>, gas_measuring<6>, measuring<5> (5.3.6)          */
+#define ENV_REG_PRESS_MSB       0x1Fu   /* Note 2                                                      */
+#define ENV_REG_PRESS_LSB       0x20u
+#define ENV_REG_PRESS_XLSB      0x21u
+#define ENV_REG_TEMP_MSB        0x22u   /* Note 2                                                      */
+#define ENV_REG_TEMP_LSB        0x23u
+#define ENV_REG_TEMP_XLSB       0x24u
+#define ENV_REG_HUM_MSB         0x25u   /* 16 bit: msb = bits 15:8, lsb = bits 7:0 (5.3.5.3)           */
+#define ENV_REG_HUM_LSB         0x26u
+#define ENV_REG_GAS_R_MSB       0x2Cu   /* Note 3                                                      */
+#define ENV_REG_GAS_R_LSB       0x2Du   /* gas_r<7:6>, gas_valid_r<5>, heat_stab_r<4>, gas_range_r<3:0> */
+
+#define ENV_NEW_DATA            0x80u   /* meas_status: new_data<7> (5.3.6.1)                          */
+#define ENV_GAS_VALID           0x20u   /* gas_r_lsb:   gas_valid_r<5> (5.3.6.5)                       */
+#define ENV_HEAT_STAB           0x10u   /* gas_r_lsb:   heat_stab_r<4> (5.3.6.6)                       */
+#define ENV_GAS_RANGE_MASK      0x0Fu   /* gas_r_lsb:   gas_range_r<3:0> (5.3.5.5)                     */
+
+#define ENV_MSB_SHIFT_20BIT     12u     /* Note 2: msb -> bits 19:12                                   */
+#define ENV_LSB_SHIFT_20BIT     4u      /* Note 2: lsb -> bits 11:4, xlsb<7:4> -> bits 3:0             */
+#define ENV_GAS_MSB_SHIFT       2u      /* Note 3: gas_r_msb -> bits 9:2                               */
+#define ENV_GAS_LSB_SHIFT       6u      /* Note 3: gas_r_lsb<7:6> -> bits 1:0                          */
+
+/*
+*********************************************************************************************************
+*                                         RAW DATA TYPE
+*********************************************************************************************************
+*/
+
+typedef struct {
+    CPU_INT32U   press_adc;             /* Raw pressure, 20 bit                                        */
+    CPU_INT32U   temp_adc;              /* Raw temperature, 20 bit                                     */
+    CPU_INT16U   hum_adc;               /* Raw humidity, 16 bit                                        */
+    CPU_INT16U   gas_adc;               /* Raw gas resistance, 10 bit                                  */
+    CPU_INT08U   gas_range;             /* Gas ADC range, 4 bit                                        */
+    CPU_BOOLEAN  new_data;              /* DEF_YES: field 0 contains a new measurement                 */
+    CPU_BOOLEAN  gas_valid;             /* DEF_YES: real gas measurement                               */
+    CPU_BOOLEAN  heat_stab;             /* DEF_YES: heater reached its target temperature              */
+} ENV_RAW;
+
+/*
+*********************************************************************************************************
 *                                          ERROR CODES
 *********************************************************************************************************
 */

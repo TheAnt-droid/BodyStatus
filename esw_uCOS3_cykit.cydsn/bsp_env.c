@@ -13,6 +13,7 @@
 */
 
 #include <bsp_env.h>
+#include <bsp_env_calc.h>
 
 /*
 *********************************************************************************************************
@@ -24,6 +25,7 @@ static ENV_ERR env_raw_read     (CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U l
 static ENV_ERR env_raw_write    (CPU_INT08U reg, CPU_INT08U val);
 static ENV_ERR env_select_page  (CPU_INT08U reg);
 static CPU_INT16U env_u16       (CPU_INT08U msb, CPU_INT08U lsb);
+static CPU_INT32U env_u20       (CPU_INT08U msb, CPU_INT08U lsb, CPU_INT08U xlsb);
 
 /*
 *********************************************************************************************************
@@ -253,6 +255,158 @@ ENV_ERR env_read_calib(ENV_CALIB *p_calib)
 
 /*
 *********************************************************************************************************
+*                                            env_config()
+*
+* Description : Writes the measurement settings (oversampling, filter, gas heater step 0) into the
+*               BME688. The sensor stays in sleep mode; a measurement is started with env_start_meas().
+*
+* Argument(s) : p_calib     calibration values (needed to calculate the heater resistance code).
+*
+* Return(s)   : ENV_ERR_NONE    settings written.
+*               ENV_ERR_ARG     p_calib is a null pointer.
+*               ENV_ERR_SPI     SPI transfer failed.
+*
+* Caller(s)   : Application (once after env_read_calib()).
+*
+* Note(s)     : (1) Order as in the datasheet (ch. 3.5, figure 3): oversampling first, osrs_h before
+*                   osrs_t / osrs_p, then the gas heater, the mode register last.
+*               (2) Settings see "MEASUREMENT SETTINGS" in bsp_env_cfg.h.
+*               (3) All registers are on SPI page 1, so the page is switched only once.
+*********************************************************************************************************
+*/
+
+ENV_ERR env_config(const ENV_CALIB *p_calib)
+{
+    CPU_INT08U  res_heat;
+    ENV_ERR     err;
+
+
+    if (p_calib == (const ENV_CALIB *)0) {                      /* Check argument                       */
+        return (ENV_ERR_ARG);
+    }
+
+    err = env_write_reg(ENV_REG_CTRL_HUM, ENV_OSRS_H);          /* Humidity oversampling (Note 1)       */
+    if (err != ENV_ERR_NONE) {
+        return (err);
+    }
+    err = env_write_reg(ENV_REG_CTRL_MEAS,                      /* Temp. + pressure oversampling, sleep */
+                        (CPU_INT08U)((ENV_OSRS_T << ENV_OSRS_T_SHIFT) |
+                                     (ENV_OSRS_P << ENV_OSRS_P_SHIFT) |
+                                      ENV_MODE_SLEEP));
+    if (err != ENV_ERR_NONE) {
+        return (err);
+    }
+    err = env_write_reg(ENV_REG_CONFIG,                         /* IIR filter off, 4-wire SPI           */
+                        (CPU_INT08U)(ENV_FILTER_OFF << ENV_FILTER_SHIFT));
+    if (err != ENV_ERR_NONE) {
+        return (err);
+    }
+
+    res_heat = env_calc_res_heat(p_calib,                       /* Heater: 300 degC -> register code    */
+                                 ENV_HEAT_TARGET_DEGC,
+                                 ENV_HEAT_AMB_DEGC);
+    err = env_write_reg(ENV_REG_RES_HEAT_0, res_heat);
+    if (err != ENV_ERR_NONE) {
+        return (err);
+    }
+    err = env_write_reg(ENV_REG_GAS_WAIT_0, ENV_GAS_WAIT_100MS); /* Heater-on time 100 ms               */
+    if (err != ENV_ERR_NONE) {
+        return (err);
+    }
+
+    return (env_write_reg(ENV_REG_CTRL_GAS_1,                   /* Enable gas, use heater step 0        */
+                          (CPU_INT08U)(ENV_RUN_GAS | ENV_NB_CONV_STEP_0)));
+}
+
+/*
+*********************************************************************************************************
+*                                          env_start_meas()
+*
+* Description : Starts one measurement (temperature, pressure, humidity, gas) in forced mode.
+*
+* Argument(s) : none.
+*
+* Return(s)   : ENV_ERR_NONE or ENV_ERR_SPI.
+*
+* Caller(s)   : Application.
+*
+* Note(s)     : (1) The oversampling bits are in the same register as the mode bits, so they are written
+*                   again together with mode = forced (ch. 3.5, step 8).
+*               (2) The function does not wait. The measurement takes longer than one OS tick (heater
+*                   alone 100 ms), so the calling task waits with an OS delay and then calls
+*                   env_read_raw() ("Thou shalt release the CPU").
+*               (3) After the measurement the sensor goes back to sleep mode by itself (table 12).
+*********************************************************************************************************
+*/
+
+ENV_ERR env_start_meas(CPU_VOID)
+{
+    return (env_write_reg(ENV_REG_CTRL_MEAS,                    /* Note 1                               */
+                          (CPU_INT08U)((ENV_OSRS_T << ENV_OSRS_T_SHIFT) |
+                                       (ENV_OSRS_P << ENV_OSRS_P_SHIFT) |
+                                        ENV_MODE_FORCED)));
+}
+
+/*
+*********************************************************************************************************
+*                                           env_read_raw()
+*
+* Description : Reads the raw measurement data and the status bits of field 0.
+*
+* Argument(s) : p_raw   structure that receives the raw data.
+*
+* Return(s)   : ENV_ERR_NONE    data read (check p_raw->new_data before using the values).
+*               ENV_ERR_ARG     p_raw is a null pointer.
+*               ENV_ERR_SPI     SPI transfer failed.
+*
+* Caller(s)   : Application, after env_start_meas() and an OS delay.
+*
+* Note(s)     : (1) All of field 0 is read with one multi-byte read, so status and values belong to the
+*                   same measurement (the sensor uses shadow registers, ch. 5.3.5).
+*               (2) new_data = DEF_NO means the measurement is not finished yet: wait and read again.
+*               (3) gas_valid and heat_stab must both be DEF_YES for a usable gas value (ch. 3.7).
+*********************************************************************************************************
+*/
+
+ENV_ERR env_read_raw(ENV_RAW *p_raw)
+{
+    CPU_INT08U  fld[ENV_FIELD0_LEN];
+    CPU_INT08U  gas_lsb;
+    ENV_ERR     err;
+
+
+    if (p_raw == (ENV_RAW *)0) {                                /* Check argument                       */
+        return (ENV_ERR_ARG);
+    }
+
+    err = env_read_regs(ENV_FIELD0_START, &fld[0], ENV_FIELD0_LEN);     /* Read field 0 (Note 1)       */
+    if (err != ENV_ERR_NONE) {
+        return (err);
+    }
+                                                                /* Status (Note 2)                      */
+    p_raw->new_data  = ((fld[ENV_REG_MEAS_STATUS_0 - ENV_FIELD0_START] & ENV_NEW_DATA) != 0u) ? DEF_YES : DEF_NO;
+
+    p_raw->press_adc = env_u20(fld[ENV_REG_PRESS_MSB  - ENV_FIELD0_START],    /* 20 bit pressure      */
+                               fld[ENV_REG_PRESS_LSB  - ENV_FIELD0_START],
+                               fld[ENV_REG_PRESS_XLSB - ENV_FIELD0_START]);
+    p_raw->temp_adc  = env_u20(fld[ENV_REG_TEMP_MSB   - ENV_FIELD0_START],    /* 20 bit temperature   */
+                               fld[ENV_REG_TEMP_LSB   - ENV_FIELD0_START],
+                               fld[ENV_REG_TEMP_XLSB  - ENV_FIELD0_START]);
+    p_raw->hum_adc   = env_u16(fld[ENV_REG_HUM_MSB    - ENV_FIELD0_START],    /* 16 bit humidity      */
+                               fld[ENV_REG_HUM_LSB    - ENV_FIELD0_START]);
+
+    gas_lsb          = fld[ENV_REG_GAS_R_LSB - ENV_FIELD0_START];             /* 10 bit gas + status  */
+    p_raw->gas_adc   = (CPU_INT16U)(((CPU_INT16U)fld[ENV_REG_GAS_R_MSB - ENV_FIELD0_START] << ENV_GAS_MSB_SHIFT) |
+                                    ((CPU_INT16U)gas_lsb >> ENV_GAS_LSB_SHIFT));
+    p_raw->gas_range = (CPU_INT08U)(gas_lsb & ENV_GAS_RANGE_MASK);
+    p_raw->gas_valid = ((gas_lsb & ENV_GAS_VALID) != 0u) ? DEF_YES : DEF_NO;  /* Note 3               */
+    p_raw->heat_stab = ((gas_lsb & ENV_HEAT_STAB) != 0u) ? DEF_YES : DEF_NO;
+
+    return (ENV_ERR_NONE);
+}
+
+/*
+*********************************************************************************************************
 *                                          env_raw_read()
 *
 * Description : Reads registers on the currently active page (no page switch).
@@ -407,6 +561,33 @@ static ENV_ERR env_select_page(CPU_INT08U reg)
 static CPU_INT16U env_u16(CPU_INT08U msb, CPU_INT08U lsb)
 {
     return ((CPU_INT16U)(((CPU_INT16U)msb << ENV_BYTE_BITS) | lsb));
+}
+
+/*
+*********************************************************************************************************
+*                                             env_u20()
+*
+* Description : Combines three register bytes into one 20 bit value (temperature, pressure).
+*
+* Argument(s) : msb     bits 19:12.
+*
+*               lsb     bits 11:4.
+*
+*               xlsb    bits 3:0 in xlsb<7:4>.
+*
+* Return(s)   : (msb << 12) | (lsb << 4) | (xlsb >> 4)
+*
+* Caller(s)   : env_read_raw().
+*
+* Note(s)     : (1) Datasheet ch. 5.3.5.1 / 5.3.5.2.
+*********************************************************************************************************
+*/
+
+static CPU_INT32U env_u20(CPU_INT08U msb, CPU_INT08U lsb, CPU_INT08U xlsb)
+{
+    return (((CPU_INT32U)msb  << ENV_MSB_SHIFT_20BIT) |
+            ((CPU_INT32U)lsb  << ENV_LSB_SHIFT_20BIT) |
+            ((CPU_INT32U)xlsb >> ENV_LSB_SHIFT_20BIT));
 }
 
 /* [] END OF FILE */
