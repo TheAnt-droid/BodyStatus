@@ -253,7 +253,8 @@ static  void  App_ObjCreate (void)
 *                                          App_EnvSelfTest()
 *
 * Description : Checks once at start-up whether the BME688 (Environment 3 Click, slot 1) answers on the
-*               SPI bus, reads its calibration values and performs one measurement (raw values).
+*               SPI bus, reads its calibration values, performs one measurement and converts the raw
+*               values into degC, Pa, %rH and Ohm.
 *
 * Argument(s) : none.
 *
@@ -283,6 +284,7 @@ static  void  App_EnvSelfTest (void)
   ENV_ERR     env_err;
   ENV_CALIB   calib;
   ENV_RAW     raw;
+  ENV_DATA    data;
   CPU_INT08U  poll;
  
  
@@ -339,6 +341,9 @@ static  void  App_EnvSelfTest (void)
   if (raw.new_data == DEF_NO) {                                 /* Breakpoint here: check "raw", "poll" */
     CPU_SW_EXCEPTION(;);                                        /* No data within the time limit        */
   }
+  if (env_calc_data(&calib, &raw, &data) != DEF_OK) {           /* Convert into degC, Pa, %rH, Ohm      */
+    CPU_SW_EXCEPTION(;);                                        /* Breakpoint on this "if" + F10:       */
+  }                                                             /* then check "data"                    */
 }
 
 

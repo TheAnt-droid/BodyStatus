@@ -267,6 +267,25 @@ typedef struct {
 
 /*
 *********************************************************************************************************
+*                                     COMPENSATED DATA TYPE
+*
+* Note(s) : (1) Units as delivered by the integer formulas of the datasheet (ch. 3.6, 3.7). Integer
+*               fixed point values instead of float: e.g. 2264 = 22.64 degC, 46621 = 46.621 %rH.
+*********************************************************************************************************
+*/
+
+typedef struct {
+    CPU_INT32S   temp_c100;             /* Temperature in 0.01 degC                                    */
+    CPU_INT32U   press_pa;              /* Pressure in Pa (1 hPa = 100 Pa)                             */
+    CPU_INT32U   hum_m1000;             /* Relative humidity in 0.001 %rH                              */
+    CPU_INT32U   gas_ohm;               /* Gas resistance in Ohm                                       */
+    CPU_BOOLEAN  gas_ok;                /* DEF_YES: gas_valid and heat_stab were set (ch. 3.7)         */
+} ENV_DATA;
+
+#define ENV_HUM_M1000_MAX       100000u /* 100.000 %rH: upper limit of the humidity value              */
+
+/*
+*********************************************************************************************************
 *                                          ERROR CODES
 *********************************************************************************************************
 */
