@@ -23,6 +23,7 @@
 static ENV_ERR env_raw_read     (CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U len);
 static ENV_ERR env_raw_write    (CPU_INT08U reg, CPU_INT08U val);
 static ENV_ERR env_select_page  (CPU_INT08U reg);
+static CPU_INT16U env_u16       (CPU_INT08U msb, CPU_INT08U lsb);
 
 /*
 *********************************************************************************************************
@@ -148,6 +149,104 @@ ENV_ERR env_check_id(CPU_VOID)
     if (id != ENV_VARIANT_ID_VAL) {                             /* Expected 0x01 (Note 2)               */
         return (ENV_ERR_VARIANT_ID);
     }
+
+    return (ENV_ERR_NONE);
+}
+
+/*
+*********************************************************************************************************
+*                                          env_read_calib()
+*
+* Description : Reads the factory calibration values of the BME688 into a structure.
+*
+* Argument(s) : p_calib     structure that receives the calibration values.
+*
+* Return(s)   : ENV_ERR_NONE    calibration values read.
+*               ENV_ERR_ARG     p_calib is a null pointer.
+*               ENV_ERR_SPI     SPI transfer failed.
+*
+* Caller(s)   : Application (once at start, the values never change).
+*
+* Note(s)     : (1) The values are spread over three register blocks (bsp_env_cfg.h). Each block is
+*                   read with one multi-byte read; env_read_regs() switches the SPI page if needed.
+*               (2) The index into a block buffer is "register address - first address of the block",
+*                   so every value can be compared 1:1 with the address in tables 13 to 16.
+*               (3) The casts to a signed type re-interpret the bits read from the sensor (two's
+*                   complement), see the Note on the data types in bsp_env_cfg.h.
+*               (4) The buffers are local variables: the function is re-entrant as long as the SPI bus
+*                   itself is only used by one task.
+*********************************************************************************************************
+*/
+
+ENV_ERR env_read_calib(ENV_CALIB *p_calib)
+{
+    CPU_INT08U  blk1[ENV_CALIB1_LEN];
+    CPU_INT08U  blk2[ENV_CALIB2_LEN];
+    CPU_INT08U  blk3[ENV_CALIB3_LEN];
+    ENV_ERR     err;
+
+
+    if (p_calib == (ENV_CALIB *)0) {                            /* Check argument                       */
+        return (ENV_ERR_ARG);
+    }
+
+    err = env_read_regs(ENV_CALIB1_START, &blk1[0], ENV_CALIB1_LEN);    /* Block 1, page 0 (Note 1)    */
+    if (err != ENV_ERR_NONE) {
+        return (err);
+    }
+    err = env_read_regs(ENV_CALIB2_START, &blk2[0], ENV_CALIB2_LEN);    /* Block 2, page 0             */
+    if (err != ENV_ERR_NONE) {
+        return (err);
+    }
+    err = env_read_regs(ENV_CALIB3_START, &blk3[0], ENV_CALIB3_LEN);    /* Block 3, page 1             */
+    if (err != ENV_ERR_NONE) {
+        return (err);
+    }
+
+                                                                /* Temperature (table 13, Notes 2, 3)   */
+    p_calib->par_t1 =              env_u16(blk2[ENV_REG_PAR_T1_MSB - ENV_CALIB2_START],
+                                           blk2[ENV_REG_PAR_T1_LSB - ENV_CALIB2_START]);
+    p_calib->par_t2 = (CPU_INT16S) env_u16(blk1[ENV_REG_PAR_T2_MSB - ENV_CALIB1_START],
+                                           blk1[ENV_REG_PAR_T2_LSB - ENV_CALIB1_START]);
+    p_calib->par_t3 = (CPU_INT08S) blk1[ENV_REG_PAR_T3 - ENV_CALIB1_START];
+
+                                                                /* Pressure (table 14)                  */
+    p_calib->par_p1 =              env_u16(blk1[ENV_REG_PAR_P1_MSB - ENV_CALIB1_START],
+                                           blk1[ENV_REG_PAR_P1_LSB - ENV_CALIB1_START]);
+    p_calib->par_p2 = (CPU_INT16S) env_u16(blk1[ENV_REG_PAR_P2_MSB - ENV_CALIB1_START],
+                                           blk1[ENV_REG_PAR_P2_LSB - ENV_CALIB1_START]);
+    p_calib->par_p3 = (CPU_INT08S) blk1[ENV_REG_PAR_P3 - ENV_CALIB1_START];
+    p_calib->par_p4 = (CPU_INT16S) env_u16(blk1[ENV_REG_PAR_P4_MSB - ENV_CALIB1_START],
+                                           blk1[ENV_REG_PAR_P4_LSB - ENV_CALIB1_START]);
+    p_calib->par_p5 = (CPU_INT16S) env_u16(blk1[ENV_REG_PAR_P5_MSB - ENV_CALIB1_START],
+                                           blk1[ENV_REG_PAR_P5_LSB - ENV_CALIB1_START]);
+    p_calib->par_p6 = (CPU_INT08S) blk1[ENV_REG_PAR_P6 - ENV_CALIB1_START];
+    p_calib->par_p7 = (CPU_INT08S) blk1[ENV_REG_PAR_P7 - ENV_CALIB1_START];
+    p_calib->par_p8 = (CPU_INT16S) env_u16(blk1[ENV_REG_PAR_P8_MSB - ENV_CALIB1_START],
+                                           blk1[ENV_REG_PAR_P8_LSB - ENV_CALIB1_START]);
+    p_calib->par_p9 = (CPU_INT16S) env_u16(blk1[ENV_REG_PAR_P9_MSB - ENV_CALIB1_START],
+                                           blk1[ENV_REG_PAR_P9_LSB - ENV_CALIB1_START]);
+    p_calib->par_p10 =             blk1[ENV_REG_PAR_P10 - ENV_CALIB1_START];
+
+                                                                /* Humidity (table 15), 12 bit values   */
+    p_calib->par_h1 = (CPU_INT16U)(((CPU_INT16U)blk2[ENV_REG_PAR_H1_MSB - ENV_CALIB2_START] << ENV_NIBBLE_BITS) |
+                                   (blk2[ENV_REG_PAR_H1_H2_LSB - ENV_CALIB2_START] & ENV_NIBBLE_MASK));
+    p_calib->par_h2 = (CPU_INT16U)(((CPU_INT16U)blk2[ENV_REG_PAR_H2_MSB - ENV_CALIB2_START] << ENV_NIBBLE_BITS) |
+                                   (blk2[ENV_REG_PAR_H1_H2_LSB - ENV_CALIB2_START] >> ENV_NIBBLE_BITS));
+    p_calib->par_h3 = (CPU_INT08S) blk2[ENV_REG_PAR_H3 - ENV_CALIB2_START];
+    p_calib->par_h4 = (CPU_INT08S) blk2[ENV_REG_PAR_H4 - ENV_CALIB2_START];
+    p_calib->par_h5 = (CPU_INT08S) blk2[ENV_REG_PAR_H5 - ENV_CALIB2_START];
+    p_calib->par_h6 =              blk2[ENV_REG_PAR_H6 - ENV_CALIB2_START];
+    p_calib->par_h7 = (CPU_INT08S) blk2[ENV_REG_PAR_H7 - ENV_CALIB2_START];
+
+                                                                /* Gas heater (table 16)                */
+    p_calib->par_g1 = (CPU_INT08S) blk2[ENV_REG_PAR_G1 - ENV_CALIB2_START];
+    p_calib->par_g2 = (CPU_INT16S) env_u16(blk2[ENV_REG_PAR_G2_MSB - ENV_CALIB2_START],
+                                           blk2[ENV_REG_PAR_G2_LSB - ENV_CALIB2_START]);
+    p_calib->par_g3 = (CPU_INT08S) blk2[ENV_REG_PAR_G3 - ENV_CALIB2_START];
+    p_calib->res_heat_range = (CPU_INT08U)((blk3[ENV_REG_RES_HEAT_RANGE - ENV_CALIB3_START] &
+                                            ENV_RES_HEAT_RANGE_MASK) >> ENV_RES_HEAT_RANGE_SHIFT);
+    p_calib->res_heat_val   = (CPU_INT08S) blk3[ENV_REG_RES_HEAT_VAL - ENV_CALIB3_START];
 
     return (ENV_ERR_NONE);
 }
@@ -285,6 +384,29 @@ static ENV_ERR env_select_page(CPU_INT08U reg)
     }
 
     return (env_raw_write(ENV_REG_STATUS, status_new));         /* Switch page (Note 4)                 */
+}
+
+/*
+*********************************************************************************************************
+*                                             env_u16()
+*
+* Description : Combines two register bytes into one 16 bit value.
+*
+* Argument(s) : msb     most significant byte.
+*
+*               lsb     least significant byte.
+*
+* Return(s)   : (msb << 8) | lsb
+*
+* Caller(s)   : env_read_calib().
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
+static CPU_INT16U env_u16(CPU_INT08U msb, CPU_INT08U lsb)
+{
+    return ((CPU_INT16U)(((CPU_INT16U)msb << ENV_BYTE_BITS) | lsb));
 }
 
 /* [] END OF FILE */

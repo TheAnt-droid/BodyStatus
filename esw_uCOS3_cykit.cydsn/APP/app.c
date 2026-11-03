@@ -249,7 +249,7 @@ static  void  App_ObjCreate (void)
 *                                          App_EnvSelfTest()
 *
 * Description : Checks once at start-up whether the BME688 (Environment 3 Click, slot 1) answers on the
-*               SPI bus.
+*               SPI bus and reads its calibration values.
 *
 * Argument(s) : none.
 *
@@ -257,35 +257,42 @@ static  void  App_ObjCreate (void)
 *
 * Caller(s)   : App_TaskStart().
 *
-* Note(s)     : (1) Test function for the first hardware test of the SPI driver. It will be replaced
+* Note(s)     : (1) Test function for the first hardware tests of the SPI driver. It will be replaced
 *                   by the environment task.
 *               (2) The sensor needs 2 ms after power-on before the first communication (datasheet,
 *                   table 1, t_startup). An OS delay ends with a tick interrupt, so it can be up to one
 *                   tick (1 ms) shorter than requested -> 3 ms guarantees at least 2 ms.
-*               (3) Check the result with a breakpoint on the marked line (env_err == ENV_ERR_NONE)
+*               (3) Check the result with a breakpoint on the marked lines (env_err == ENV_ERR_NONE)
 *                   and with the logic analyzer (MISO answers 0x61 to the control byte 0xD0).
+*               (4) The calibration values are a local variable: no global variable is needed, the
+*                   environment task will later keep them the same way in its own stack.
 *********************************************************************************************************
 */
-
+ 
 static  void  App_EnvSelfTest (void)
 {
-  OS_ERR   os_err;
-  ENV_ERR  env_err;
-
-
+  OS_ERR     os_err;
+  ENV_ERR    env_err;
+  ENV_CALIB  calib;
+ 
+ 
   OSTimeDlyHMSM(0u, 0u, 0u, APP_ENV_STARTUP_DLY_MS,             /* Wait for sensor start-up (Note 2)    */
                 OS_OPT_TIME_HMSM_STRICT,
                 &os_err);
   if (os_err != OS_ERR_NONE) {
     CPU_SW_EXCEPTION(;);                                        /* Unexpected OS error: stop here       */
   }
-
+ 
   env_err = env_check_id();                                     /* Read chip id + variant id            */
   if (env_err != ENV_ERR_NONE) {                                /* Breakpoint here (Note 3)             */
     CPU_SW_EXCEPTION(;);                                        /* Sensor not found: stop here          */
   }
+ 
+  env_err = env_read_calib(&calib);                             /* Read calibration values (Note 4)     */
+  if (env_err != ENV_ERR_NONE) {                                /* Breakpoint here: check "calib"       */
+    CPU_SW_EXCEPTION(;);                                        /* Read failed: stop here               */
+  }
 }
-
 
 /*
 *********************************************************************************************************
