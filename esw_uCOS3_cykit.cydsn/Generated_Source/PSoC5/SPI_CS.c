@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: CS_1.c  
+* File Name: SPI_CS.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "CS_1.h"
+#include "SPI_CS.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 CS_1__PORT == 15 && ((CS_1__MASK & 0xC0) != 0))
+	 SPI_CS__PORT == 15 && ((SPI_CS__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: CS_1_Write
+* Function Name: SPI_CS_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet CS_1_SUT.c usage_CS_1_Write
+*  \snippet SPI_CS_SUT.c usage_SPI_CS_Write
 *******************************************************************************/
-void CS_1_Write(uint8 value)
+void SPI_CS_Write(uint8 value)
 {
-    uint8 staticBits = (CS_1_DR & (uint8)(~CS_1_MASK));
-    CS_1_DR = staticBits | ((uint8)(value << CS_1_SHIFT) & CS_1_MASK);
+    uint8 staticBits = (SPI_CS_DR & (uint8)(~SPI_CS_MASK));
+    SPI_CS_DR = staticBits | ((uint8)(value << SPI_CS_SHIFT) & SPI_CS_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: CS_1_SetDriveMode
+* Function Name: SPI_CS_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,16 @@ void CS_1_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet CS_1_SUT.c usage_CS_1_SetDriveMode
+*  \snippet SPI_CS_SUT.c usage_SPI_CS_SetDriveMode
 *******************************************************************************/
-void CS_1_SetDriveMode(uint8 mode)
+void SPI_CS_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(CS_1_0, mode);
+	CyPins_SetPinDriveMode(SPI_CS_0, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: CS_1_Read
+* Function Name: SPI_CS_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +108,16 @@ void CS_1_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet CS_1_SUT.c usage_CS_1_Read  
+*  \snippet SPI_CS_SUT.c usage_SPI_CS_Read  
 *******************************************************************************/
-uint8 CS_1_Read(void)
+uint8 SPI_CS_Read(void)
 {
-    return (CS_1_PS & CS_1_MASK) >> CS_1_SHIFT;
+    return (SPI_CS_PS & SPI_CS_MASK) >> SPI_CS_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: CS_1_ReadDataReg
+* Function Name: SPI_CS_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +126,8 @@ uint8 CS_1_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred CS_1_Read() API because the 
-* CS_1_ReadDataReg() reads the data register instead of the status 
+* preferred SPI_CS_Read() API because the 
+* SPI_CS_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +136,19 @@ uint8 CS_1_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet CS_1_SUT.c usage_CS_1_ReadDataReg 
+*  \snippet SPI_CS_SUT.c usage_SPI_CS_ReadDataReg 
 *******************************************************************************/
-uint8 CS_1_ReadDataReg(void)
+uint8 SPI_CS_ReadDataReg(void)
 {
-    return (CS_1_DR & CS_1_MASK) >> CS_1_SHIFT;
+    return (SPI_CS_DR & SPI_CS_MASK) >> SPI_CS_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(CS_1_INTSTAT) 
+#if defined(SPI_CS_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: CS_1_SetInterruptMode
+    * Function Name: SPI_CS_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +161,12 @@ uint8 CS_1_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use CS_1_INTR_ALL to configure the
+    *  component. Or you may use SPI_CS_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - CS_1_0_INTR       (First pin in the list)
-    *  - CS_1_1_INTR       (Second pin in the list)
+    *  - SPI_CS_0_INTR       (First pin in the list)
+    *  - SPI_CS_1_INTR       (Second pin in the list)
     *  - ...
-    *  - CS_1_INTR_ALL     (All pins in Pins component)
+    *  - SPI_CS_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +182,19 @@ uint8 CS_1_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet CS_1_SUT.c usage_CS_1_SetInterruptMode
+    *  \snippet SPI_CS_SUT.c usage_SPI_CS_SetInterruptMode
     *******************************************************************************/
-    void CS_1_SetInterruptMode(uint16 position, uint16 mode)
+    void SPI_CS_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & CS_1_0_INTR) != 0u) 
+		if((position & SPI_CS_0_INTR) != 0u) 
 		{ 
-			 CS_1_0_INTTYPE_REG = (uint8)mode; 
+			 SPI_CS_0_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: CS_1_ClearInterrupt
+    * Function Name: SPI_CS_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +211,11 @@ uint8 CS_1_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet CS_1_SUT.c usage_CS_1_ClearInterrupt
+    *  \snippet SPI_CS_SUT.c usage_SPI_CS_ClearInterrupt
     *******************************************************************************/
-    uint8 CS_1_ClearInterrupt(void)
+    uint8 SPI_CS_ClearInterrupt(void)
     {
-        return (CS_1_INTSTAT & CS_1_MASK) >> CS_1_SHIFT;
+        return (SPI_CS_INTSTAT & SPI_CS_MASK) >> SPI_CS_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 
