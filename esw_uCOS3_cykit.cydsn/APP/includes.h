@@ -66,7 +66,9 @@
 #include  <bsp_gpio.h>
 #include  <bsp_spi.h>
 #include  <bsp_os.h>
-
+#include <PWMBLUE.h>
+#include <PWMGREEN.h>
+#include <PWMRED.h>
 
 /*
 *********************************************************************************************************

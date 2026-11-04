@@ -41,6 +41,7 @@
 
 OS_SEM button_sem;
 
+
 static  OS_TCB   App_TaskStartTCB;
 static  CPU_STK  App_TaskStartStk[APP_CFG_TASK_START_STK_SIZE];
 
@@ -85,7 +86,9 @@ static  void  App_ObjCreate  (void);
 int  main (void)
 {
   OS_ERR  os_err;
-
+  PWM_B_Start();
+  PWM_G_Start();
+  PWM_R_Start();
 
   BSP_PreInit();                                              /* Perform BSP pre-initialization.                      */
 
@@ -255,43 +258,125 @@ static  void  App_ObjCreate (void)
 */
 
 
-static  void  App_TaskLED (void *p_arg)
+static  void  App_TaskLEDFUCK (void *p_arg)
 {
   /* declare and define task local variables */
   OS_ERR       os_err;
+  OS_ERR       os_err_Env;
   CPU_TS         ts;
+  OS_MSG_SIZE msg_size;
+  oxi_results *oximeter;
+  CPU_INT32U spo2=0;
+  CPU_INT32U hr=0;
+  CPU_INT32U flash=100;
+  CPU_INT08U redLED_ON=255;
+  CPU_INT08U redLED_OFF=0;
+
   
   /* prevent compiler warnings */
   (void)p_arg;
   
   /* start of the endless loop */
   while (DEF_TRUE) {
-    /* pend on semaphore - blocking */
-    OSSemPend(&button_sem,0,OS_OPT_PEND_BLOCKING,&ts,&os_err);
-#if USE_BSP_TOGGLE
-    /* toggle LED (P2_1, J1 Pin 2) */
-    BSP_LED_Toggle(P2_1);
-    /* initiate scheduler */
-    OSTimeDlyHMSM(0, 0, 1, 0, 
-                  OS_OPT_TIME_HMSM_STRICT, 
-                  &os_err);
-#else
-    /* turn LED (P2_1, J1 Pin 2) off */ 
-    BSP_LED_Off(P2_1);
-    /* initiate scheduler */
-    OSTimeDlyHMSM(0, 0, 1, 0, 
-                  OS_OPT_TIME_HMSM_STRICT, 
-                  &os_err);
-    /* turn LED (P2_1, J1 Pin 2) on */
-    BSP_LED_On(P2_1);
-    /* initiate scheduler */
-    OSTimeDlyHMSM(0, 0, 1, 0, 
-                  OS_OPT_TIME_HMSM_STRICT, 
-                  &os_err);
-#endif
+      
+   OSSemPend(&LED_sem,0,OS_OPT_PEND_NON_BLOCKING,&ts,&os_err_Env);
+  
+      if(os_err_Env==OS_ERR_NONE) PWM_G_WriteCompare(greenLED_ON);
+      if()
+   if(hr==0){
+    PMW_R_WriteCompare(0); //Rote LED aus wenn kein herzschlag
+    oximeter = (oxi_results*)OSQPend(&Sensor_Queue, 0, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //wartet unendlich auf neue daten
+    if(os_err==OS_ERR_NONE && oximeter != NULL){ //schaut auf fehler bei der übertragung
+      spo2=oximeter->spo2;
+      hr= oximeter->hr;
+      OSMemPut(&SpO2Mem, (void *)sample, &os_err); //memory zurück
+      CPU_INT32U buffer_spo2=(spo2>100)? 100:spo2;
+      PWM_B_WriteCompare((CPU_INT08U)((buffer_spo2*255)/100))//schreibt sofort auf Blaue LED
+    }
+    continue; // springt sofort zum anfang zurück und prüft auf hr
   }
-}
+  //falls hr>0
+   CPU_INT32U beat_duration = 60000/hr;
+      if(beat_duration<=flash){
+      flash=beat_duration/2;
+        if(flash<10) flash=10;
+      }
+      CPU_INT32U RedLED_rest= beat_duration
+      
+      PWM_R_WriteCompare(redLED_ON);
+      
+      oximter=(oxi_results*)OSQPend(&Sensor_Queue, (OS_TICK)flash, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //solange die rote LED an ist, wartet sie und bekommt dann neue daten
+      if(os_err==OS_ERR_NONE && oximeter != NULL){
+      spo2=oximeter->spo2;
+      hr= oximeter->hr;
+      OSMemPut(&SpO2Mem, (void *)sample, &os_err); //memory zurück
+      CPU_INT32U buffer_spo2=(spo2>100)? 100:spo2;
+      PWM_B_WriteCompare((CPU_INT08U)((buffer_spo2*255)/100))
+      }
+      if(hr==0) continue; //sofort abbrechen und wieder von vorne anfangen
+      
+      PWM_R_WriteCompare(redLED_OFF); //sonst normal ausschalten 
+      oximter=(oxi_results*)OSQPend(&Sensor_Queue, (OS_TICK)RedLED_rest, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //solange die rote LED aus, wartet sie und bekommt dann neue daten
+      if(os_err==OS_ERR_NONE && oximeter != NULL){
+      spo2=oximeter->spo2;
+      hr= oximeter->hr;
+      OSMemPut(&SpO2Mem, (void *)sample, &os_err); //memory zurück
+      CPU_INT32U buffer_spo2=(spo2>100)? 100:spo2;
+      PWM_B_WriteCompare((CPU_INT08U)((buffer_spo2*255)/100))
+      }
+      
+      }
+      
+    }
+    
+    
+  
 
+
+/*
+*********************************************************************************************************
+*                                          App_TaskENV_LED()
+*
+* Description : BueLed Task checks the state of a GND-connected button. On button press increase the
+*               value for the PWM output of the Blue LED and check for an overflow. If an overflow is 
+*               detected post a semaphore. Otherwise, do not post a semaphore and check the button state again,
+*               increase the value for the PWM output and check for an overflow.
+*               If Button is not pressed, put Output of Blue_LED, Green_LED and Red_LED to 0. 
+*
+* Argument(s) : p_arg   is the argument passed to 'App_TaskBlueLED()' by 'OSTaskCreate()'.
+*
+* Return(s)   : none
+*
+* Note(s)     : none
+*********************************************************************************************************
+*/
+static void App_TaskENV_LED(void *p_arg)
+{
+  OS_ERR os_err;
+  CPU_INT08U greenLED_ON=255;
+  CPU_INT08U greenLED_OFF=0;
+  CPU_TS         ts;
+  (void)p_arg;
+  
+  while(DEF_TRUE){
+    OSSemPend(&ENV_sem,0,OS_OPT_PEND_NON_BLOCKING,&ts,&os_err);
+      
+      PWM_G_WriteCompare(greenLED_ON);
+      
+        if(os_err==OS_ERR_PEND_WOULD_BLOCK){
+        if(greenLED_state) PWM_G_WriteCompare(greenLED_OFF);
+        
+      }
+      
+      OSTimeDlyHMSM(0, 0, 0, 20, 
+                  OS_OPT_TIME_HMSM_STRICT, 
+                  &os_err);
+      }
+   
+     
+ 
+  }
+  
 /*
 *********************************************************************************************************
 *                                          App_TaskButton()
