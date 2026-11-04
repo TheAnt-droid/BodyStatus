@@ -18,6 +18,8 @@
 
 #include <includes.h>
 #include <cyapicallbacks.h>
+#include <os_cfg_app.h>                                         /* OS_CFG_TICK_RATE_HZ for ms -> ticks   */
+
 
 /*
 *********************************************************************************************************
@@ -35,11 +37,29 @@
 
 #define  APP_ENV_STARTUP_DLY_MS                     3u          /* BME688 start-up time 2 ms (datasheet  */
                                                                 /* table 1) + 1 tick margin, see Note 2  */
-                                                                /* of App_EnvSelfTest()                  */
+                                                                /* of App_EnvInit()                  */
 #define  APP_ENV_MEAS_DLY_MS                      100u          /* First wait after start: heater-on     */
                                                                 /* time of heater step 0 (100 ms)        */
 #define  APP_ENV_POLL_DLY_MS                       10u          /* Then check every 10 ms for new data   */
 #define  APP_ENV_POLL_MAX                          20u          /* Give up after 20 checks (200 ms)      */
+
+#define  APP_MS_PER_S                            1000u
+#define  APP_MS_TO_TICKS(ms)                     (((ms) * OS_CFG_TICK_RATE_HZ) / APP_MS_PER_S)
+#define  APP_PEND_FOREVER                  (OS_TICK)0u          /* Timeout 0 = wait forever              */
+ 
+#define  APP_ENV_PERIOD_MS                       3000u          /* One measurement every 3 s             */
+ 
+                                                                /* ---- Acceptable indoor range -------- */
+#define  APP_ENV_TEMP_MIN_C100          ((CPU_INT32S)1900)      /* 19.00 degC  AStV par. 28 (1) Z 1      */
+#define  APP_ENV_TEMP_MAX_C100          ((CPU_INT32S)2500)      /* 25.00 degC  AStV par. 28 (1) Z 1      */
+#define  APP_ENV_HUM_MIN_M1000                  40000u          /* 40.000 %rH  AStV par. 28 (5) Z 1      */
+#define  APP_ENV_HUM_MAX_M1000                  70000u          /* 70.000 %rH  AStV par. 28 (5) Z 1      */
+#define  APP_ENV_PRESS_MIN_PA                   95000u          /*  950 hPa    plausibility only         */
+#define  APP_ENV_PRESS_MAX_PA                  105000u          /* 1050 hPa    plausibility only         */
+ 
+#define  APP_PERCENT                              100u
+#define  APP_ENV_GAS_WARMUP_CNT                     5u          /* Gas: first 5 values only baseline     */
+#define  APP_ENV_GAS_MIN_PCT                       50u          /* Bad air: R < 50 % of the baseline     */
 
                                                                 /* ---- Event flags of App_Flags ------- */
                                                                 /* Interface between the tasks, Note 1   */
@@ -75,6 +95,9 @@ static  CPU_STK  App_TaskLEDStk[APP_CFG_TASK_LED_STK_SIZE];
 static  OS_TCB   App_TaskButton_TCB;
 static  CPU_STK  App_TaskButtonStk[APP_CFG_TASK_BUTTON_STK_SIZE];
 
+static  OS_TCB   App_TaskEnvTCB;
+static  CPU_STK  App_TaskEnvStk[APP_CFG_TASK_ENV_STK_SIZE];
+
 
 /*
 *********************************************************************************************************
@@ -90,7 +113,11 @@ static  void  App_TaskBUTTON (void *p_arg);
 static  void  App_TaskCreate (void);
 static  void  App_ObjCreate  (void);
 
-static  void  App_EnvSelfTest (void);
+static  void         App_TaskEnv     (void *p_arg);
+static  CPU_BOOLEAN  App_EnvInit     (ENV_CALIB *p_calib);
+static  CPU_BOOLEAN  App_EnvMeasure  (const ENV_CALIB *p_calib, ENV_DATA *p_data);
+static  CPU_BOOLEAN  App_EnvEvaluate (const ENV_DATA *p_data, CPU_INT32U *p_gas_base, CPU_INT08U *p_gas_cnt);
+
 static  void  App_ErrCheck (OS_ERR  err);
 
 /*
@@ -174,8 +201,6 @@ static  void  App_TaskStart (void *p_arg)
   CPU_IntDisMeasMaxCurReset();
 #endif
  
-  App_EnvSelfTest();                                            /* Check BME688 on SPI                  */
- 
   App_ObjCreate();                                              /* Kernel objects BEFORE the tasks that */
                                                                 /* use them                             */
   App_TaskCreate();                                             /* Create application tasks.            */
@@ -246,6 +271,23 @@ static  void  App_TaskCreate (void)
                (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
                (OS_ERR      *)&os_err);
   App_ErrCheck(os_err);
+  
+  /* create environment task */
+  OSTaskCreate((OS_TCB      *)&App_TaskEnvTCB,
+               (CPU_CHAR    *)"TaskENV",
+               (OS_TASK_PTR  )App_TaskEnv,
+               (void        *)0,
+               (OS_PRIO      )APP_CFG_TASK_ENV_PRIO,
+               (CPU_STK     *)&App_TaskEnvStk[0],
+               (CPU_STK_SIZE )APP_CFG_TASK_ENV_STK_SIZE_LIMIT,
+               (CPU_STK_SIZE )APP_CFG_TASK_ENV_STK_SIZE,
+               (OS_MSG_QTY   )0u,
+               (OS_TICK      )0u,
+               (void        *)0,
+               (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+               (OS_ERR      *)&os_err);
+  App_ErrCheck(os_err);
+ 
 }
 
 
@@ -308,100 +350,259 @@ static  void  App_ErrCheck (OS_ERR  err)
 
 /*
 *********************************************************************************************************
-*                                          App_EnvSelfTest()
+*                                          App_TaskEnv()
 *
-* Description : Checks once at start-up whether the BME688 (Environment 3 Click, slot 1) answers on the
-*               SPI bus, reads its calibration values, performs one measurement and converts the raw
-*               values into degC, Pa, %rH and Ohm.
+* Description : Environment task. While APP_FLAG_MEAS_ACTIVE is set, it measures temperature, pressure,
+*               humidity and gas resistance every APP_ENV_PERIOD_MS with the BME688 (Environment 3 Click,
+*               SPI, slot 1), checks them against the acceptable indoor range and reports the result
+*               with the event flags APP_FLAG_ENV_VALID and APP_FLAG_ENV_OK.
 *
-* Argument(s) : none.
+* Argument(s) : p_arg   is the argument passed to 'App_TaskEnv()' by 'OSTaskCreate()'.
 *
-* Return(s)   : none.
+* Return(s)   : none
 *
-* Caller(s)   : App_TaskStart().
-*
-* Note(s)     : (1) Test function for the first hardware tests of the SPI driver. It will be replaced
-*                   by the environment task.
-*               (2) The sensor needs 2 ms after power-on before the first communication (datasheet,
-*                   table 1, t_startup). An OS delay ends with a tick interrupt, so it can be up to one
-*                   tick (1 ms) shorter than requested -> 3 ms guarantees at least 2 ms.
-*               (3) Check the result with a breakpoint on the marked lines (env_err == ENV_ERR_NONE)
-*                   and with the logic analyzer (MISO answers 0x61 to the control byte 0xD0).
-*               (4) The calibration values are a local variable: no global variable is needed, the
-*                   environment task will later keep them the same way in its own stack.
-*               (5) The datasheet gives no total measurement time. The task therefore waits at least the
-*                   heater-on time with an OS delay and then checks new_data in short OS delays. The
-*                   number of checks is limited, so the function cannot wait forever. The CPU is
-*                   released during every wait ("Thou shalt release the CPU").
+* Note(s)     : (1) All data (calibration, measured values, gas baseline) are local variables on the
+*                   task stack: only this task needs them, so no global variable is necessary.
+*               (2) The flags are only READ by other tasks, therefore no OS_OPT_PEND_FLAG_CONSUME.
+*                   First a NON-blocking check: if measuring is off, the ENV flags are cleared (the LED must
+*                   not show old values) and the task then waits BLOCKING until measuring is on again.
+*                   So there is still exactly one endless loop and the CPU is released while waiting.
+*               (3) Sensor errors (no answer, no new data) are an expected runtime case (e.g. bad contact):
+*                   no exception, the ENV flags are cleared and the sensor is initialised again in the next
+*                   cycle. Only OS errors are programming errors -> App_ErrCheck().
+*               (4) The flags are posted so that other tasks never see "VALID + OK" for bad values:
+*                   for bad values OK is cleared first and only then VALID is set.
 *********************************************************************************************************
 */
  
-static  void  App_EnvSelfTest (void)
+static  void  App_TaskEnv (void *p_arg)
 {
-  OS_ERR      os_err;
-  ENV_ERR     env_err;
-  ENV_CALIB   calib;
-  ENV_RAW     raw;
-  ENV_DATA    data;
-  CPU_INT08U  poll;
+  OS_ERR       err;
+  CPU_TS       ts;
+  ENV_CALIB    calib;
+  ENV_DATA     data;
+  CPU_INT32U   gas_base;
+  CPU_INT08U   gas_cnt;
+  CPU_BOOLEAN  env_ready;
+ 
+ 
+  (void)p_arg;
+ 
+  gas_base  = 0u;                                               /* No gas baseline yet                  */
+  gas_cnt   = 0u;
+  env_ready = App_EnvInit(&calib);                              /* Check sensor, calibration, config    */
+ 
+  while (DEF_TRUE) {
+                                                                /* Measuring on? (Note 2)               */
+    OSFlagPend(&App_Flags, APP_FLAG_MEAS_ACTIVE, APP_PEND_FOREVER,
+               (OS_OPT_PEND_FLAG_SET_ALL | OS_OPT_PEND_NON_BLOCKING), &ts, &err);
+    if (err == OS_ERR_PEND_WOULD_BLOCK) {                       /* No: clear old result ...             */
+      OSFlagPost(&App_Flags, APP_FLAG_ENV_ALL, OS_OPT_POST_FLAG_CLR, &err);
+      App_ErrCheck(err);
+      OSFlagPend(&App_Flags, APP_FLAG_MEAS_ACTIVE, APP_PEND_FOREVER,  /* ... and wait until it is on    */
+                 (OS_OPT_PEND_FLAG_SET_ALL | OS_OPT_PEND_BLOCKING), &ts, &err);
+    }
+    App_ErrCheck(err);
+ 
+    if (env_ready == DEF_FAIL) {                                /* Sensor not ready: try again (Note 3) */
+      env_ready = App_EnvInit(&calib);
+    }
+ 
+    if ((env_ready == DEF_OK) && (App_EnvMeasure(&calib, &data) == DEF_OK)) {
+      if (App_EnvEvaluate(&data, &gas_base, &gas_cnt) == DEF_OK) {
+        OSFlagPost(&App_Flags, APP_FLAG_ENV_ALL, OS_OPT_POST_FLAG_SET, &err);    /* Valid + OK          */
+      } else {
+        OSFlagPost(&App_Flags, APP_FLAG_ENV_OK, OS_OPT_POST_FLAG_CLR, &err);     /* Not OK (Note 4) ... */
+        App_ErrCheck(err);
+        OSFlagPost(&App_Flags, APP_FLAG_ENV_VALID, OS_OPT_POST_FLAG_SET, &err);  /* ... but valid       */
+      }
+      App_ErrCheck(err);
+    } else {                                                    /* Measurement failed (Note 3)          */
+      env_ready = DEF_FAIL;
+      OSFlagPost(&App_Flags, APP_FLAG_ENV_ALL, OS_OPT_POST_FLAG_CLR, &err);
+      App_ErrCheck(err);
+    }
+ 
+    OSTimeDly(APP_MS_TO_TICKS(APP_ENV_PERIOD_MS), OS_OPT_TIME_DLY, &err);   /* Release CPU until next   */
+    App_ErrCheck(err);                                                      /* measurement              */
+  }
+}
+ 
+ 
+/*
+*********************************************************************************************************
+*                                          App_EnvInit()
+*
+* Description : Checks whether the BME688 answers on the SPI bus, reads its calibration values and
+*               writes the measurement settings.
+*
+* Argument(s) : p_calib   Calibration values (output).
+*
+* Return(s)   : DEF_OK    sensor ready.
+*               DEF_FAIL  sensor does not answer correctly (wrong slot, bad contact, ...).
+*
+* Caller(s)   : App_TaskEnv()
+*
+* Note(s)     : (1) Each step is only executed if the previous one was successful.
+*               (2) The sensor needs 2 ms after power-on before the first communication (datasheet,
+*                   table 1, t_startup). An OS delay ends with a tick interrupt, so it can be up to one
+*                   tick (1 ms) shorter than requested -> 3 ms guarantees at least 2 ms.
+*********************************************************************************************************
+*/
+ 
+static  CPU_BOOLEAN  App_EnvInit (ENV_CALIB *p_calib)
+{
+  OS_ERR       os_err;
+  ENV_ERR      env_err;
+  CPU_BOOLEAN  result;
  
  
   OSTimeDlyHMSM(0u, 0u, 0u, APP_ENV_STARTUP_DLY_MS,             /* Wait for sensor start-up (Note 2)    */
                 OS_OPT_TIME_HMSM_STRICT,
                 &os_err);
-  if (os_err != OS_ERR_NONE) {
-    CPU_SW_EXCEPTION(;);                                        /* Unexpected OS error: stop here       */
-  }
+  App_ErrCheck(os_err);
  
   env_err = env_check_id();                                     /* Read chip id + variant id            */
-  if (env_err != ENV_ERR_NONE) {                                /* Breakpoint here (Note 3)             */
-    CPU_SW_EXCEPTION(;);                                        /* Sensor not found: stop here          */
+  if (env_err == ENV_ERR_NONE) {
+    env_err = env_read_calib(p_calib);                          /* Read calibration values              */
+  }
+  if (env_err == ENV_ERR_NONE) {
+    env_err = env_config(p_calib);                              /* Oversampling, filter, gas heater     */
   }
  
-  env_err = env_read_calib(&calib);                             /* Read calibration values (Note 4)     */
-  if (env_err != ENV_ERR_NONE) {
-    CPU_SW_EXCEPTION(;);                                        /* Read failed: stop here               */
+  if (env_err == ENV_ERR_NONE) {
+    result = DEF_OK;
+  } else {
+    result = DEF_FAIL;
   }
+  return (result);
+}
  
-  env_err = env_config(&calib);                                 /* Oversampling, filter, gas heater     */
-  if (env_err != ENV_ERR_NONE) {
-    CPU_SW_EXCEPTION(;);
-  }
+ 
+/*
+*********************************************************************************************************
+*                                          App_EnvMeasure()
+*
+* Description : Performs one measurement in forced mode and converts the raw values into degC, Pa, %rH
+*               and Ohm.
+*
+* Argument(s) : p_calib   Calibration values from App_EnvInit().
+*               p_data    Converted values (output).
+*
+* Return(s)   : DEF_OK    p_data contains new values.
+*               DEF_FAIL  SPI error or no new data within the time limit.
+*
+* Caller(s)   : App_TaskEnv()
+*
+* Note(s)     : (1) The datasheet gives no total measurement time. The task therefore waits at least the
+*                   heater-on time with an OS delay and then checks new_data in short OS delays. The
+*                   number of checks is limited, so the function cannot wait forever. The CPU is
+*                   released during every wait ("Thou shalt release the CPU").
+*               (2) The raw values are only needed here -> local variable.
+*********************************************************************************************************
+*/
+ 
+static  CPU_BOOLEAN  App_EnvMeasure (const ENV_CALIB *p_calib, ENV_DATA *p_data)
+{
+  OS_ERR       os_err;
+  ENV_ERR      env_err;
+  ENV_RAW      raw;
+  CPU_INT08U   poll;
+  CPU_BOOLEAN  result;
+ 
+ 
+  result       = DEF_FAIL;
+  raw.new_data = DEF_NO;
  
   env_err = env_start_meas();                                   /* Start one measurement (forced mode)  */
-  if (env_err != ENV_ERR_NONE) {
-    CPU_SW_EXCEPTION(;);
-  }
+  if (env_err == ENV_ERR_NONE) {
+    OSTimeDlyHMSM(0u, 0u, 0u, APP_ENV_MEAS_DLY_MS,              /* Wait at least the heater-on time     */
+                  OS_OPT_TIME_HMSM_STRICT,                      /* (Note 1)                             */
+                  &os_err);
+    App_ErrCheck(os_err);
  
-  OSTimeDlyHMSM(0u, 0u, 0u, APP_ENV_MEAS_DLY_MS,                /* Wait at least the heater-on time     */
-                OS_OPT_TIME_HMSM_STRICT,                        /* (Note 5)                             */
-                &os_err);
-  if (os_err != OS_ERR_NONE) {
-    CPU_SW_EXCEPTION(;);
-  }
- 
-  raw.new_data = DEF_NO;                                        /* Check for new data, limited (Note 5) */
-  for (poll = 0u; (poll < APP_ENV_POLL_MAX) && (raw.new_data == DEF_NO); poll++) {
-    env_err = env_read_raw(&raw);
-    if (env_err != ENV_ERR_NONE) {
-      CPU_SW_EXCEPTION(;);
-    }
-    if (raw.new_data == DEF_NO) {                               /* Not finished yet: release the CPU    */
-      OSTimeDlyHMSM(0u, 0u, 0u, APP_ENV_POLL_DLY_MS,
-                    OS_OPT_TIME_HMSM_STRICT,
-                    &os_err);
-      if (os_err != OS_ERR_NONE) {
-        CPU_SW_EXCEPTION(;);
+    for (poll = 0u;                                             /* Check for new data, limited (Note 1) */
+         (poll < APP_ENV_POLL_MAX) && (raw.new_data == DEF_NO) && (env_err == ENV_ERR_NONE);
+         poll++) {
+      env_err = env_read_raw(&raw);
+      if ((env_err == ENV_ERR_NONE) && (raw.new_data == DEF_NO)) {  /* Not finished: release the CPU   */
+        OSTimeDlyHMSM(0u, 0u, 0u, APP_ENV_POLL_DLY_MS,
+                      OS_OPT_TIME_HMSM_STRICT,
+                      &os_err);
+        App_ErrCheck(os_err);
       }
     }
+ 
+    if ((env_err == ENV_ERR_NONE) && (raw.new_data == DEF_YES)) {
+      result = env_calc_data(p_calib, &raw, p_data);            /* Convert into degC, Pa, %rH, Ohm      */
+    }
+  }
+  return (result);
+}
+ 
+ 
+/*
+*********************************************************************************************************
+*                                          App_EnvEvaluate()
+*
+* Description : Checks whether all measured values are in the acceptable indoor range.
+*
+* Argument(s) : p_data       Converted values from App_EnvMeasure().
+*               p_gas_base   Gas baseline in Ohm (input/output, kept by the task).
+*               p_gas_cnt    Number of valid gas values so far (input/output, kept by the task).
+*
+* Return(s)   : DEF_OK    all values acceptable.
+*               DEF_FAIL  at least one value outside the range.
+*
+* Caller(s)   : App_TaskEnv()
+*
+* Note(s)     : (1) Temperature 19-25 degC and humidity 40-70 %rH: Austrian workplace regulation
+*                   (AStV par. 28). Pressure 950-1050 hPa: only a plausibility check, the weather is no
+*                   indoor air quality problem.
+*               (2) Gas: the datasheet (ch. 3.3) gives no absolute limit - more VOC lowers the resistance.
+*                   The baseline is the highest resistance measured so far (= cleanest air). It rises with
+*                   the burn-in of a new sensor. The first APP_ENV_GAS_WARMUP_CNT values only build the
+*                   baseline. After that the air is bad if R < APP_ENV_GAS_MIN_PCT % of the baseline.
+*               (3) (base / 100) * 50 instead of (base * 50) / 100: no overflow of CPU_INT32U even for
+*                   very high resistances; the lost precision (< 100 Ohm) does not matter.
+*               (4) Gas value not valid (heater not stable): this cycle the gas is not evaluated.
+*********************************************************************************************************
+*/
+ 
+static  CPU_BOOLEAN  App_EnvEvaluate (const ENV_DATA *p_data, CPU_INT32U *p_gas_base, CPU_INT08U *p_gas_cnt)
+{
+  CPU_BOOLEAN  result;
+ 
+ 
+  result = DEF_OK;
+ 
+  if ((p_data->temp_c100 < APP_ENV_TEMP_MIN_C100) ||            /* Temperature (Note 1)                 */
+      (p_data->temp_c100 > APP_ENV_TEMP_MAX_C100)) {
+    result = DEF_FAIL;
+  }
+  if ((p_data->hum_m1000 < APP_ENV_HUM_MIN_M1000) ||            /* Humidity (Note 1)                    */
+      (p_data->hum_m1000 > APP_ENV_HUM_MAX_M1000)) {
+    result = DEF_FAIL;
+  }
+  if ((p_data->press_pa < APP_ENV_PRESS_MIN_PA) ||              /* Pressure (Note 1)                    */
+      (p_data->press_pa > APP_ENV_PRESS_MAX_PA)) {
+    result = DEF_FAIL;
   }
  
-  if (raw.new_data == DEF_NO) {                                 /* Breakpoint here: check "raw", "poll" */
-    CPU_SW_EXCEPTION(;);                                        /* No data within the time limit        */
+  if (p_data->gas_ok == DEF_YES) {                              /* Gas (Note 2, Note 4)                 */
+    if (p_data->gas_ohm > *p_gas_base) {                        /* Cleaner air than before: new base    */
+      *p_gas_base = p_data->gas_ohm;
+    }
+    if (*p_gas_cnt < APP_ENV_GAS_WARMUP_CNT) {                  /* Warm-up: only build the baseline     */
+      (*p_gas_cnt)++;
+    } else if (p_data->gas_ohm < ((*p_gas_base / APP_PERCENT) * APP_ENV_GAS_MIN_PCT)) {  /* Note 3     */
+      result = DEF_FAIL;
+    } else {
+      ;                                                         /* Gas OK                               */
+    }
   }
-  if (env_calc_data(&calib, &raw, &data) != DEF_OK) {           /* Convert into degC, Pa, %rH, Ohm      */
-    CPU_SW_EXCEPTION(;);                                        /* Breakpoint on this "if" + F10:       */
-  }                                                             /* then check "data"                    */
+ 
+  return (result);
 }
 
 

@@ -62,6 +62,7 @@
 #define  APP_CFG_TASK_START_PRIO                        3u
 #define  APP_CFG_TASK_BUTTON_PRIO                       4u
 #define  APP_CFG_TASK_LED_PRIO                          7u
+#define  APP_CFG_TASK_ENV_PRIO                          8u
 
 
 /*
@@ -74,6 +75,8 @@
 #define  APP_CFG_TASK_START_STK_SIZE                    128u
 #define  APP_CFG_TASK_LED_STK_SIZE                      64u
 #define  APP_CFG_TASK_BUTTON_STK_SIZE                   64u
+#define  APP_CFG_TASK_ENV_STK_SIZE                      256u    /* calib/raw/data structs + calculation */
+                                                                /* functions; check StkUsed in the TCB  */
 
 
 /*
@@ -90,7 +93,9 @@
   
 #define  APP_CFG_TASK_BUTTON_STK_SIZE_PCT_FULL             90u
 #define  APP_CFG_TASK_BUTTON_STK_SIZE_LIMIT           (APP_CFG_TASK_BUTTON_STK_SIZE  * (100u - APP_CFG_TASK_BUTTON_STK_SIZE_PCT_FULL))  / 100u
-    
+
+#define  APP_CFG_TASK_ENV_STK_SIZE_PCT_FULL             90u
+#define  APP_CFG_TASK_ENV_STK_SIZE_LIMIT           (APP_CFG_TASK_ENV_STK_SIZE  * (100u - APP_CFG_TASK_ENV_STK_SIZE_PCT_FULL))  / 100u
 
 /*
 *********************************************************************************************************
