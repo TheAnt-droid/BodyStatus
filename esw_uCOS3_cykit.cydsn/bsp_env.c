@@ -21,6 +21,8 @@
 *********************************************************************************************************
 */
 
+static ENV_ERR env_read_regs    (CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U len);
+static ENV_ERR env_write_reg    (CPU_INT08U reg, CPU_INT08U val);
 static ENV_ERR env_raw_read     (CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U len);
 static ENV_ERR env_raw_write    (CPU_INT08U reg, CPU_INT08U val);
 static ENV_ERR env_select_page  (CPU_INT08U reg);
@@ -43,7 +45,7 @@ static CPU_INT32U env_u20       (CPU_INT08U msb, CPU_INT08U lsb, CPU_INT08U xlsb
 *               ENV_ERR_ARG     invalid argument (see Note 2).
 *               ENV_ERR_SPI     SPI transfer failed.
 *
-* Caller(s)   : Application, env_check_id().
+* Caller(s)   : env_check_id(), env_read_calib(), env_read_raw().
 *
 * Note(s)     : (1) The sensor increments the address itself, so several registers are read with one
 *                   control byte (datasheet ch. 6.3, picture 11).
@@ -52,7 +54,7 @@ static CPU_INT32U env_u20       (CPU_INT08U msb, CPU_INT08U lsb, CPU_INT08U xlsb
 *********************************************************************************************************
 */
 
-ENV_ERR env_read_regs(CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U len)
+static ENV_ERR env_read_regs(CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U len)
 {
     CPU_INT16U  last_reg;
     ENV_ERR     err;
@@ -89,13 +91,13 @@ ENV_ERR env_read_regs(CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U len)
 * Return(s)   : ENV_ERR_NONE    register written.
 *               ENV_ERR_SPI     SPI transfer failed.
 *
-* Caller(s)   : Application.
+* Caller(s)   : env_config(), env_start_meas().
 *
 * Note(s)     : none.
 *********************************************************************************************************
 */
 
-ENV_ERR env_write_reg(CPU_INT08U reg, CPU_INT08U val)
+static ENV_ERR env_write_reg(CPU_INT08U reg, CPU_INT08U val)
 {
     ENV_ERR err;
 
