@@ -5,8 +5,8 @@
 *
 * Filename      : app.c
 * Version       : V1.00
-* Programmer(s) : 
-                  
+* Programmer(s) :
+
 *********************************************************************************************************
 */
 
@@ -25,13 +25,23 @@
 *********************************************************************************************************
 */
 
-#define  APP_USER_IF_SIGN_ON                        0u
-#define  APP_USER_IF_VER_TICK_RATE                  1u
-#define  APP_USER_IF_CPU                            2u
-#define  APP_USER_IF_CTXSW                          3u
-#define  APP_USER_IF_STATE_MAX                      4u
+#define APP_USER_IF_SIGN_ON 0u
+#define APP_USER_IF_VER_TICK_RATE 1u
+#define APP_USER_IF_CPU 2u
+#define APP_USER_IF_CTXSW 3u
+#define APP_USER_IF_STATE_MAX 4u
 
-#define  USE_BSP_TOGGLE                             1u
+#define USE_BSP_TOGGLE 1u
+
+#define SPO2_MEM_BLOCKS 32u
+#define OXI_MEM_BLOCKS 32u
+
+
+/*
+*********************************************************************************************************
+*                                            LOCAL STRUCS
+*********************************************************************************************************
+*/
 
 /*
 *********************************************************************************************************
@@ -39,17 +49,31 @@
 *********************************************************************************************************
 */
 
-OS_SEM button_sem;
+static OS_FLAG_GRP App_Flags;
 
-static  OS_TCB   App_TaskStartTCB;
-static  CPU_STK  App_TaskStartStk[APP_CFG_TASK_START_STK_SIZE];
 
-static  OS_TCB   App_TaskLED_TCB;
-static  CPU_STK  App_TaskLEDStk[APP_CFG_TASK_LED_STK_SIZE];
+static OS_MEM SpO2Mem;
+static spo2 SpO2MemPool[SPO2_MEM_BLOCKS];
 
-static  OS_TCB   App_TaskButton_TCB;
-static  CPU_STK  App_TaskButtonStk[APP_CFG_TASK_BUTTON_STK_SIZE];
+static OS_MEM OxiResMem;
+static oxi_results OxiResMemPool[OXI_MEM_BLOCKS];
 
+static CPU_BOOLEAN spo2_init_success = DEF_TRUE;
+
+static OS_TCB App_TaskStartTCB;
+static CPU_STK App_TaskStartStk[APP_CFG_TASK_START_STK_SIZE];
+
+static OS_TCB App_TaskLED_TCB;
+static CPU_STK App_TaskLEDStk[APP_CFG_TASK_LED_STK_SIZE];
+
+static OS_TCB App_TaskButton_TCB;
+static CPU_STK App_TaskButtonStk[APP_CFG_TASK_BUTTON_STK_SIZE];
+
+static OS_TCB App_TaskSPO2_TCB;
+static CPU_STK App_TaskSPO2Stk[APP_CFG_TASK_SPO2_STK_SIZE];
+
+static OS_TCB App_TaskSPO2CALC_TCB;
+static CPU_STK App_TaskSPO2CALCStk[APP_CFG_TASK_SPO2CALC_STK_SIZE];
 
 /*
 *********************************************************************************************************
@@ -57,13 +81,15 @@ static  CPU_STK  App_TaskButtonStk[APP_CFG_TASK_BUTTON_STK_SIZE];
 *********************************************************************************************************
 */
 
-static  void  App_TaskStart  (void *p_arg);
+static void App_TaskStart(void *p_arg);
 
-static  void  App_TaskLED (void *p_arg);
-static  void  App_TaskBUTTON (void *p_arg);
+static void App_TaskLED(void *p_arg);
+static void App_TaskBUTTON(void *p_arg);
+static void App_TaskSPO2(void *p_arg);
+static void App_TaskSPO2CALC(void *p_arg);
 
-static  void  App_TaskCreate (void);
-static  void  App_ObjCreate  (void);
+static void App_TaskCreate(void);
+static void App_ObjCreate(void);
 
 /*
 *********************************************************************************************************
@@ -82,34 +108,47 @@ static  void  App_ObjCreate  (void);
 *********************************************************************************************************
 */
 
-int  main (void)
+int main(void)
 {
-  OS_ERR  os_err;
+    OS_ERR os_err;
+    SPO2_ERROR spo2_err;
 
+    BSP_PreInit(); /* Perform BSP pre-initialization.                      */
 
-  BSP_PreInit();                                              /* Perform BSP pre-initialization.                      */
+    CPU_Init(); /* Initialize the uC/CPU services                       */
 
-  CPU_Init();                                                 /* Initialize the uC/CPU services                       */
+    OSInit(&os_err); /* Init uC/OS-III.                                      */
 
-  OSInit(&os_err);                                            /* Init uC/OS-III.                                      */
+    I2C_spo2_Start();
+    Check_Sensor(SPO2_ADDRESS, SPO2_ID_REG, SPO2_ID_VAL, &spo2_err);
+    if (spo2_err == SPO2_ERR_NONE)
+    {
+        spo2_config(SPO2_ADDRESS, &spo2_err);
+    }
+    if (spo2_err != SPO2_ERR_NONE)
+    {
+        I2C_spo2_Stop();
+        spo2_init_success = DEF_FALSE;
+    }else{
+        spo2_sleep();
+    }
 
-  OSTaskCreate((OS_TCB      *)&App_TaskStartTCB,              /* Create the start task                                */
-               (CPU_CHAR    *)"Start",
-               (OS_TASK_PTR  )App_TaskStart, 
-               (void        *)0,
-               (OS_PRIO      )APP_CFG_TASK_START_PRIO,
-               (CPU_STK     *)&App_TaskStartStk[0],
-               (CPU_STK_SIZE )APP_CFG_TASK_START_STK_SIZE_LIMIT,
-               (CPU_STK_SIZE )APP_CFG_TASK_START_STK_SIZE,
-               (OS_MSG_QTY   )0u,
-               (OS_TICK      )0u,
-               (void        *)0,
-               (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
-               (OS_ERR      *)&os_err);
+    OSTaskCreate((OS_TCB *)&App_TaskStartTCB, /* Create the start task                                */
+                 (CPU_CHAR *)"Start",
+                 (OS_TASK_PTR)App_TaskStart,
+                 (void *)0,
+                 (OS_PRIO)APP_CFG_TASK_START_PRIO,
+                 (CPU_STK *)&App_TaskStartStk[0],
+                 (CPU_STK_SIZE)APP_CFG_TASK_START_STK_SIZE_LIMIT,
+                 (CPU_STK_SIZE)APP_CFG_TASK_START_STK_SIZE,
+                 (OS_MSG_QTY)0u,
+                 (OS_TICK)0u,
+                 (void *)0,
+                 (OS_OPT)(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+                 (OS_ERR *)&os_err);
 
-  OSStart(&os_err);                                            /* Start multitasking (i.e. give control to uC/OS-III).  */
+    OSStart(&os_err); /* Start multitasking (i.e. give control to uC/OS-III).  */
 }
-
 
 /*
 *********************************************************************************************************
@@ -127,35 +166,35 @@ int  main (void)
 *********************************************************************************************************
 */
 
-static  void  App_TaskStart (void *p_arg)
+static void App_TaskStart(void *p_arg)
 {
-  OS_ERR       err;
-     
- (void)p_arg;
+    OS_ERR err;
 
-  BSP_PostInit();                                               /* Perform BSP post-initialization functions.       */
-  
-  BSP_CPU_TickInit();                                           /* Perfrom Tick Initialization                      */
+    (void)p_arg;
+
+    BSP_PostInit(); /* Perform BSP post-initialization functions.       */
+
+    BSP_CPU_TickInit(); /* Perfrom Tick Initialization                      */
 
 #if (OS_CFG_STAT_TASK_EN > 0u)
-  OSStatTaskCPUUsageInit(&err);
-#endif    
+    OSStatTaskCPUUsageInit(&err);
+#endif
 
 #ifdef CPU_CFG_INT_DIS_MEAS_EN
-  CPU_IntDisMeasMaxCurReset();
-#endif      
+    CPU_IntDisMeasMaxCurReset();
+#endif
 
-  App_TaskCreate();                                             /* Create application tasks.                        */
+    App_TaskCreate(); /* Create application tasks.                        */
 
-  App_ObjCreate();                                              /* Create kernel objects                            */
+    App_ObjCreate(); /* Create kernel objects                            */
 
-  while (DEF_TRUE) {                                            /* Task body, always written as an infinite loop.   */
-    OSTimeDlyHMSM(0, 0, 0, 100, 
-                  OS_OPT_TIME_HMSM_STRICT, 
-                  &err);
-  }
+    while (DEF_TRUE)
+    { /* Task body, always written as an infinite loop.   */
+        OSTimeDlyHMSM(0, 0, 0, 100,
+                      OS_OPT_TIME_HMSM_STRICT,
+                      &err);
+    }
 }
-
 
 /*
 *********************************************************************************************************
@@ -173,41 +212,71 @@ static  void  App_TaskStart (void *p_arg)
 *********************************************************************************************************
 */
 
-static  void  App_TaskCreate (void)
+static void App_TaskCreate(void)
 {
-  /* declare and define function local variables */
-  OS_ERR  os_err;
-  
-  /* create LED task */
-  OSTaskCreate((OS_TCB      *)&App_TaskLED_TCB,
-               (CPU_CHAR    *)"TaskLED",
-               (OS_TASK_PTR  )App_TaskLED, 
-               (void        *)0,
-               (OS_PRIO      )APP_CFG_TASK_LED_PRIO,
-               (CPU_STK     *)&App_TaskLEDStk[0],
-               (CPU_STK_SIZE )APP_CFG_TASK_LED_STK_SIZE_LIMIT,
-               (CPU_STK_SIZE )APP_CFG_TASK_LED_STK_SIZE,
-               (OS_MSG_QTY   )0u,
-               (OS_TICK      )0u,
-               (void        *)0,
-               (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
-               (OS_ERR      *)&os_err);
-  /* create Button task */
-  OSTaskCreate((OS_TCB      *)&App_TaskButton_TCB,
-               (CPU_CHAR    *)"TaskBUT",
-               (OS_TASK_PTR  )App_TaskBUTTON, 
-               (void        *)0,
-               (OS_PRIO      )APP_CFG_TASK_BUTTON_PRIO,
-               (CPU_STK     *)&App_TaskButtonStk[0],
-               (CPU_STK_SIZE )APP_CFG_TASK_BUTTON_STK_SIZE_LIMIT,
-               (CPU_STK_SIZE )APP_CFG_TASK_BUTTON_STK_SIZE,
-               (OS_MSG_QTY   )0u,
-               (OS_TICK      )0u,
-               (void        *)0,
-               (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
-               (OS_ERR      *)&os_err);
-}
+    /* declare and define function local variables */
+    OS_ERR os_err;
 
+    /* create LED task */
+    OSTaskCreate((OS_TCB *)&App_TaskLED_TCB,
+                 (CPU_CHAR *)"TaskLED",
+                 (OS_TASK_PTR)App_TaskLED,
+                 (void *)0,
+                 (OS_PRIO)APP_CFG_TASK_LED_PRIO,
+                 (CPU_STK *)&App_TaskLEDStk[0],
+                 (CPU_STK_SIZE)APP_CFG_TASK_LED_STK_SIZE_LIMIT,
+                 (CPU_STK_SIZE)APP_CFG_TASK_LED_STK_SIZE,
+                 (OS_MSG_QTY)0u,
+                 (OS_TICK)0u,
+                 (void *)0,
+                 (OS_OPT)(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+                 (OS_ERR *)&os_err);
+    /* create Button task */
+    OSTaskCreate((OS_TCB *)&App_TaskButton_TCB,
+                 (CPU_CHAR *)"TaskBUT",
+                 (OS_TASK_PTR)App_TaskBUTTON,
+                 (void *)0,
+                 (OS_PRIO)APP_CFG_TASK_BUTTON_PRIO,
+                 (CPU_STK *)&App_TaskButtonStk[0],
+                 (CPU_STK_SIZE)APP_CFG_TASK_BUTTON_STK_SIZE_LIMIT,
+                 (CPU_STK_SIZE)APP_CFG_TASK_BUTTON_STK_SIZE,
+                 (OS_MSG_QTY)0u,
+                 (OS_TICK)0u,
+                 (void *)0,
+                 (OS_OPT)(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+                 (OS_ERR *)&os_err);
+    if (spo2_init_success)
+    {
+        /* create SPO2 task */
+        OSTaskCreate((OS_TCB *)&App_TaskSPO2_TCB,
+                     (CPU_CHAR *)"TaskSPO2",
+                     (OS_TASK_PTR)App_TaskSPO2,
+                     (void *)0,
+                     (OS_PRIO)APP_CFG_TASK_SPO2_PRIO,
+                     (CPU_STK *)&App_TaskSPO2Stk[0],
+                     (CPU_STK_SIZE)APP_CFG_TASK_SPO2_STK_SIZE_LIMIT,
+                     (CPU_STK_SIZE)APP_CFG_TASK_SPO2_STK_SIZE,
+                     (OS_MSG_QTY)0u,
+                     (OS_TICK)0u,
+                     (void *)0,
+                     (OS_OPT)(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+                     (OS_ERR *)&os_err);
+        /* create SPO2CALC task */
+        OSTaskCreate((OS_TCB *)&App_TaskSPO2CALC_TCB,
+                     (CPU_CHAR *)"TaskSPO2CALC",
+                     (OS_TASK_PTR)App_TaskSPO2CALC,
+                     (void *)0,
+                     (OS_PRIO)APP_CFG_TASK_SPO2CALC_PRIO,
+                     (CPU_STK *)&App_TaskSPO2CALCStk[0],
+                     (CPU_STK_SIZE)APP_CFG_TASK_SPO2CALC_STK_SIZE_LIMIT,
+                     (CPU_STK_SIZE)APP_CFG_TASK_SPO2CALC_STK_SIZE,
+                     (OS_MSG_QTY)32u,
+                     (OS_TICK)0u,
+                     (void *)0,
+                     (OS_OPT)(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+                     (OS_ERR *)&os_err);
+    }
+}
 
 /*
 *********************************************************************************************************
@@ -225,15 +294,29 @@ static  void  App_TaskCreate (void)
 *********************************************************************************************************
 */
 
-static  void  App_ObjCreate (void)
+static void App_ObjCreate(void)
 {
-  /* declare and define function local variables */
-  OS_ERR  os_err;
-  
-  /* create button semaphore to synchronize button press events */
-  OSSemCreate(&button_sem,"SEM_BUT",0,&os_err);
-}
+    /* declare and define function local variables */
+    OS_ERR os_err;    
+    
+    
 
+    OSMemCreate(&SpO2Mem,
+                "Spo2MEM",
+                SpO2MemPool,
+                SPO2_MEM_BLOCKS,
+                sizeof(spo2),
+                &os_err);
+    
+    
+    OSMemCreate(&OxiResMem,
+                "OxiMEM",
+                OxiResMemPool,
+                OXI_MEM_BLOCKS,
+                sizeof(oxi_results),
+                &os_err);
+    
+}
 
 /*
 *********************************************************************************************************
@@ -254,42 +337,42 @@ static  void  App_ObjCreate (void)
 *********************************************************************************************************
 */
 
-
-static  void  App_TaskLED (void *p_arg)
+static void App_TaskLED(void *p_arg)
 {
-  /* declare and define task local variables */
-  OS_ERR       os_err;
-  CPU_TS         ts;
-  
-  /* prevent compiler warnings */
-  (void)p_arg;
-  
-  /* start of the endless loop */
-  while (DEF_TRUE) {
-    /* pend on semaphore - blocking */
-    OSSemPend(&button_sem,0,OS_OPT_PEND_BLOCKING,&ts,&os_err);
+    /* declare and define task local variables */
+    OS_ERR os_err;
+    CPU_TS ts;
+
+    /* prevent compiler warnings */
+    (void)p_arg;
+
+    /* start of the endless loop */
+    while (DEF_TRUE)
+    {
+        /* pend on semaphore - blocking */
+        //OSSemPend(&spo2_button_sem, 0, OS_OPT_PEND_BLOCKING, &ts, &os_err);
 #if USE_BSP_TOGGLE
-    /* toggle LED (P2_1, J1 Pin 2) */
-    BSP_LED_Toggle(P2_1);
-    /* initiate scheduler */
-    OSTimeDlyHMSM(0, 0, 1, 0, 
-                  OS_OPT_TIME_HMSM_STRICT, 
-                  &os_err);
+        /* toggle LED (P2_1, J1 Pin 2) */
+        //BSP_LED_Toggle(P2_1);
+        /* initiate scheduler */
+        OSTimeDlyHMSM(0, 0, 1, 0,
+                      OS_OPT_TIME_HMSM_STRICT,
+                      &os_err);
 #else
-    /* turn LED (P2_1, J1 Pin 2) off */ 
-    BSP_LED_Off(P2_1);
-    /* initiate scheduler */
-    OSTimeDlyHMSM(0, 0, 1, 0, 
-                  OS_OPT_TIME_HMSM_STRICT, 
-                  &os_err);
-    /* turn LED (P2_1, J1 Pin 2) on */
-    BSP_LED_On(P2_1);
-    /* initiate scheduler */
-    OSTimeDlyHMSM(0, 0, 1, 0, 
-                  OS_OPT_TIME_HMSM_STRICT, 
-                  &os_err);
+        /* turn LED (P2_1, J1 Pin 2) off */
+        BSP_LED_Off(P2_1);
+        /* initiate scheduler */
+        OSTimeDlyHMSM(0, 0, 1, 0,
+                      OS_OPT_TIME_HMSM_STRICT,
+                      &os_err);
+        /* turn LED (P2_1, J1 Pin 2) on */
+        BSP_LED_On(P2_1);
+        /* initiate scheduler */
+        OSTimeDlyHMSM(0, 0, 1, 0,
+                      OS_OPT_TIME_HMSM_STRICT,
+                      &os_err);
 #endif
-  }
+    }
 }
 
 /*
@@ -307,60 +390,63 @@ static  void  App_TaskLED (void *p_arg)
 *********************************************************************************************************
 */
 
-
-static  void  App_TaskBUTTON (void *p_arg)
+static void App_TaskBUTTON(void *p_arg)
 {
-  /* declare and define task local variables */
-  OS_ERR       os_err;
-  CPU_INT08S    button_status = 0;
-  static CPU_BOOLEAN button_pressed = 0;
-  
-  /* prevent compiler warnings */
-  (void)p_arg;
-  
-  /* start of the endless loop */ 
-  while (DEF_TRUE) {
-    /* check is button is pressed */
-    button_status = BSP_PB_StatusGet(P2_2);
-    /* check the button status (pressed ... 0 or not pressed ... 1) */
-    if(button_status){
-      /* if button not pressed reset button_pressed variable (Button State)*/
-      button_pressed = 0;
-    }
-    else if(!button_status){
-      /* if button is pressed check button_pressed variable */
-      if(!button_pressed){
-        /* if button_pressed (Button State) was not pressed before - post 
-        semaphore */
-        OSSemPost(&button_sem,OS_OPT_POST_ALL,&os_err);
-      }
-      else{
-        /* if button_pressed (Button State) was pressed before - post semaphore
-        and set to 1 that only one pend is accepted*/
-        OSSemSet(&button_sem,1,&os_err);
-      }
-      /* in both cases set button_pressed (Button State) to 1 */
-      button_pressed = 1;
-    }
-    else{
-      /* error */
-    }
-    /* initiate scheduler */
-    OSTimeDlyHMSM(0, 0, 0, 100, 
-                  OS_OPT_TIME_HMSM_STRICT, 
-                  &os_err);
-  }
-}
+    /* declare and define task local variables */
+    OS_ERR os_err;
+    CPU_INT08S button_status = 0;
+    static CPU_BOOLEAN button_pressed = 0;
 
+    /* prevent compiler warnings */
+    (void)p_arg;
+
+    /* start of the endless loop */
+    while (DEF_TRUE)
+    {
+        /* check is button is pressed */
+        button_status = BSP_PB_StatusGet(P2_2);
+        /* check the button status (pressed ... 0 or not pressed ... 1) */
+        if (button_status)
+        {
+            /* if button not pressed reset button_pressed variable (Button State)*/
+            button_pressed = 0;
+        }
+        else if (!button_status)
+        {
+            /* if button is pressed check button_pressed variable */
+            if (!button_pressed)
+            {
+                /* if button_pressed (Button State) was not pressed before - post
+                semaphore */
+                
+                //Flag
+            }
+            else
+            {
+                /* if button_pressed (Button State) was pressed before - post semaphore
+                and set to 1 that only one pend is accepted*/
+                //Flag
+            }
+            /* in both cases set button_pressed (Button State) to 1 */
+            button_pressed = 1;
+        }
+        else
+        {
+            /* error */
+        }
+        /* initiate scheduler */
+        OSTimeDlyHMSM(0, 0, 0, 100,
+                      OS_OPT_TIME_HMSM_STRICT,
+                      &os_err);
+    }
+}
 /*
 *********************************************************************************************************
-*                                          App_TaskCOM()
+*                                          App_TaskSPO2()
 *
-* Description : COM Task checks for available bytes within the UART receive buffer. If correct string is
-*               available (e.g. PC -> uC: #abc$ or #Hellor World$), process the message and output a
-*               pre-defined string via UART and append the user-defined string via the UART interface.
+* Description :
 *
-* Argument(s) : p_arg   is the argument passed to 'App_TaskCOM()' by 'OSTaskCreate()'.
+* Argument(s) : p_arg   is the argument passed to 'App_TaskSPO2()' by 'OSTaskCreate()'.
 *
 * Return(s)   : none
 *
@@ -368,90 +454,212 @@ static  void  App_TaskBUTTON (void *p_arg)
 *********************************************************************************************************
 */
 
-static  void  App_TaskCOM (void *p_arg)
+
+static void App_TaskSPO2(void *p_arg)
 {
-  /* declare and define task local variables */
-  OS_ERR       os_err;
-  CPU_INT08U   rec_byte = 0x00;
-  CPU_INT08U   rx_msg[UART_1_RX_BUFFER_SIZE] = {0};
-  CPU_INT08U   idx = 0x00;
-  CPU_INT08U   rec_byte_cnt = 0x00;
-  CPU_BOOLEAN  str_available = DEF_FALSE;
-  
-  /* prevent compiler warnings */
-  (void)p_arg;
-  (void)Start_of_Packet;
-  (void)End_of_Packet;
-  
-  /* start of the endless loop */
-  while (DEF_TRUE) {
-    /* check if a byte is available */
-    rec_byte = uart_get_byte();
-    /* check if the received byte is '#'*/
-    if(rec_byte == Start_of_Packet){
-      /* if received byte was correct */
-      while(DEF_TRUE){
-        /* receive byte by byte */
-        rec_byte = uart_get_byte();
-        /* check is byte is something meaningful */
-        if(rec_byte){
-          /* save byte into software receive buffer and increment idx */
-          rx_msg[idx++] = rec_byte;
+    /* prevent compiler warnings */
+    (void)p_arg;
+
+    /*Task Variables*/
+    OS_ERR os_err;
+    SPO2_ERROR spo2_err = SPO2_ERR_NONE;
+    
+    CPU_TS ts;
+    
+    CPU_BOOLEAN active=DEF_FALSE;
+    
+    static spo2 *sample;
+    CPU_INT08U samples_available_num;
+    CPU_BOOLEAN samples_available;
+    
+    /* start of the endless loop */
+    while (DEF_TRUE)
+    {
+        
+        if(!active) {
+
+            /*When Inactive, wait for button to be pressed. Does nothing else.*/
+            //OSSemPend(&spo2_button_sem,0,OS_OPT_PEND_BLOCKING,&ts,&os_err);
+
+            if(os_err == OS_ERR_NONE) {
+                /*If button was pressed, wake up the sensor and set to active.*/
+                spo2_wake();
+                active = DEF_TRUE;
+            }
+
+        } else {
+
+            /*If Active, check if button is pressed. If not, continues with other code, because measurement is currently active.*/
+            //OSSemPend(&spo2_button_sem,0,OS_OPT_PEND_NON_BLOCKING,&ts,&os_err);
+            if(os_err == OS_ERR_NONE) {
+                /*If button is pressed, send sensor to sleep and set to inactive.*/
+                spo2_sleep();
+                active = DEF_FALSE;
+                /*Measurement code should not be executed, so delay and continue, so the task starts again from the top.*/
+                OSTimeDlyHMSM(0, 0, 0, 100, OS_OPT_TIME_HMSM_STRICT, &os_err);
+                continue;
+            }
+            /*Are samples available? How many?*/
+            samples_available = sample_available(SPO2_ADDRESS, &samples_available_num, &spo2_err);
+            
+            if(!samples_available){
+                /*If there are no samples available, no need to continue with code. Task starts again from the top.*/
+                OSTimeDlyHMSM(0, 0, 0, 5, OS_OPT_TIME_HMSM_STRICT, &os_err);
+                continue;
+            }
+            /*Reserve memory block for samples*/
+            sample = (spo2 *)OSMemGet(&SpO2Mem, &os_err);
+            
+            if (os_err != OS_ERR_NONE){
+                /*Error handling*/
+                uart_send_string((CPU_INT08U *)"os_mem_get failed\r\n");
+                OSTimeDlyHMSM(0, 0, 0, 5, OS_OPT_TIME_HMSM_STRICT, &os_err);
+                continue;
+            }
+            /*Read sensor data and store it in struct.*/
+            spo2_read_fifo_sample(SPO2_ADDRESS, &sample->red, &sample->ir, &spo2_err);
+            if (spo2_err != SPO2_ERR_NONE){
+                /*Error handling*/
+                OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+                OSTimeDlyHMSM(0, 0, 0, 5, OS_OPT_TIME_HMSM_STRICT, &os_err);
+                continue;
+            }
+            
+            /*Check if finger is present*/
+            if (sample->ir > FINGER_THRESHOLD && sample->red > FINGER_THRESHOLD)
+            {
+                /*Only send data, if there is a finger, otherwise we would send ambient light data*/
+                OSTaskQPost(&App_TaskSPO2CALC_TCB, sample, sizeof(*sample), OS_OPT_POST_FIFO, &os_err);
+
+                if (os_err != OS_ERR_NONE){
+                    /*Error Handling*/
+                    OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+                }
+            }
+            else
+            {
+                /*No finger -> No need for the data.*/
+                OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+            }
+        
+            /* initiate scheduler */
+            OSTimeDlyHMSM(0, 0, 0, 1, OS_OPT_TIME_HMSM_STRICT, &os_err);
+        }
+    }
+}
+
+/*
+*********************************************************************************************************
+*                                          App_TaskSPO2CALC()
+*
+* Description :
+*
+* Argument(s) : p_arg   is the argument passed to 'App_TaskSPO2()' by 'OSTaskCreate()'.
+*
+* Return(s)   : none
+*
+* Note(s)     : none
+*********************************************************************************************************
+*/
+
+static void App_TaskSPO2CALC(void *p_arg)
+{
+    /* prevent compiler warnings */
+    (void)p_arg;
+    
+    /*Task Variables*/
+    OS_ERR os_err;
+    OS_MSG_SIZE p_msg;
+    CPU_TS ts;
+
+    static spo2 *sample;
+    static oxi_results *results;
+    CPU_INT16U results_index = 0;
+
+    spo2_buffer buffer;
+    buffer.buffer_idx = 0;
+    buffer.samples_count = 0;
+
+    CPU_INT32U red_dc;
+    CPU_INT32U ir_dc;
+
+    CPU_INT32U red_ac;
+    CPU_INT32U ir_ac;
+
+    float ratio;
+    CPU_INT08U spo2;
+    CPU_INT16U heartrate;
+    
+    /* start of the endless loop */
+    while (DEF_TRUE)
+    {
+        /*Wait for message*/
+        sample = OSTaskQPend(0, OS_OPT_PEND_BLOCKING, &p_msg, &ts, &os_err);
+
+        if (os_err == OS_ERR_NONE && sample != DEF_NULL){
+            /*If message received -> add the received samples to a buffer*/
+            spo2_add_sample(sample->red, sample->ir, &buffer);
+            
+            /*Release Memory. After saving into buffer, it is no longer needed*/
+            OSMemPut(&SpO2Mem, (void *)sample, &os_err);
+            if (os_err != OS_ERR_NONE){
+                /*Error Handling*/
+                uart_send_string((CPU_INT08U *)"ERROR: OSMemPut failed\r\n");
+            }
+
+            if (buffer.samples_count > 0)
+            {
+                /*Once there are samples in the buffer we can start calculation*/
+                if (spo2_calc_dc(&buffer, &red_dc, &ir_dc)){
+                    /*If DC calc success, do AC calc*/
+                    spo2_calc_ac(&buffer, &red_ac, &ir_ac);
+                    /*Ratio Calculation*/
+                    spo2_calc_ratio(red_dc, ir_dc, red_ac, ir_ac, &ratio);
+                    /*Calculate Percentage for SPO2*/
+                    spo2_calc_percent(ratio, &spo2);
+                    /*Calculate Heartrate*/
+                    calculate_heartrate(&buffer, &heartrate);
+                    
+                    /*Add new value to results struct*/
+                    results->spo2 += spo2;
+                    results->hr += heartrate;
+                    results_index++;
+                    
+                    if (results_index >= EFFECTIVE_SAMPLING_FREQ){ /*For output every second*/
+                        /*Average of 1 second of samples*/
+                        results->spo2 /= results_index; 
+                        results->hr /= results_index;   
+                        OSMemGet(&OxiResMem,&os_err);
+                        
+                        /*Send to LED Task*/
+                        OSTaskQPost(&App_TaskLED_TCB, results, sizeof(*results), OS_OPT_POST_FIFO, &os_err);
+                        if(os_err!=OS_ERR_NONE){
+                            OSMemPut(&OxiResMem,(void *)results,&os_err);
+                        }
+                        // Send to LED Task- Does not exist yet, so UART output instead :)
+                        /*char hr_str[20];
+                        uint32_to_str(results->hr, hr_str);
+                        char spo2_str[20];
+                        uint32_to_str(results->spo2, spo2_str);
+                        uart_send_string((CPU_INT08U *)"HR: ");
+                        uart_send_string((CPU_INT08U *)hr_str);
+                        uart_send_string((CPU_INT08U *)" SpO2: ");
+                        uart_send_string((CPU_INT08U *)spo2_str);
+                        uart_send_string((CPU_INT08U *)"\r\n");*/
+                        
+                        /*Reset Results after successful send*/
+                        results->spo2 = 0;
+                        results->hr = 0;
+                        results_index = 0;
+                    }
+                }
+            }
         }
         /* initiate scheduler */
-        OSTimeDlyHMSM(0, 0, 0, 20, 
-                      OS_OPT_TIME_HMSM_STRICT, 
+        OSTimeDlyHMSM(0, 0, 0, 1,
+                      OS_OPT_TIME_HMSM_STRICT,
                       &os_err);
-        /* check if received byte is '$' */
-        if(rx_msg[idx-1]==End_of_Packet){
-          /* if end of packet is reached -> break */
-          break;
-        }
-      }
-      /* message received, calculate received bytes, -2 because of '#' & '$' */
-      rec_byte_cnt = idx-2;
-      /* signal that a string is available */
-      str_available = DEF_TRUE;
     }
-    /* if received byte wasn't start of packet */
-    else{
-      /* reset software receive buffer */
-      memset(&rx_msg[0],0,sizeof(rx_msg));
-      /* reset string available signal */
-      str_available = DEF_FALSE;
-      /* reset received byte variable */
-      rec_byte = 0x00;
-      /* reset idx */
-      idx = 0x00;
-    }
-    /* check if message is available */
-    if(str_available){
-      /* send pre-defined bytes via UART interface */
-      uart_send_byte('C');
-      uart_send_byte('Y');
-      uart_send_byte('8');
-      uart_send_byte('K');
-      uart_send_byte('I');
-      uart_send_byte('T');
-      uart_send_byte(':');
-      /* send received message without '#' and '$' */
-      for(idx=0;idx<=rec_byte_cnt;idx++){
-        uart_send_byte(rx_msg[idx]);
-      }
-      /* reset software receive buffer */
-      memset(&rx_msg[0],0,sizeof(rx_msg));
-      /* reset string available signal */
-      str_available = DEF_FALSE;
-      /* reset received byte variable */
-      rec_byte = 0x00;
-      /* reset idx */
-      idx = 0x00;
-    }
-    /* initiate scheduler */
-    OSTimeDlyHMSM(0, 0, 0, 100, 
-                  OS_OPT_TIME_HMSM_STRICT, 
-                  &os_err);
-  }
 }
 
 /* END OF FILE */

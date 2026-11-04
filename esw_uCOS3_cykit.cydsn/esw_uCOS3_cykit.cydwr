@@ -254,10 +254,12 @@
       <Data key="8d318d8b-cf7b-4b6b-b02c-ab1c5c49d0ba" value="push_button" />
       <Data key="9ac44954-25c7-4792-9f06-dd28ac4abcee" value="CS_1" />
       <Data key="83b2fde2-60ad-45b6-9e5c-cb3baa6e3f9a" value="SCLK_1" />
+      <Data key="95c737b6-f76a-4af3-90b6-5578b0000aea" value="SCL_spo2" />
       <Data key="264be2d3-9481-494b-8d9c-c1905a45e9cc" value="Pin_1" />
       <Data key="3008a664-3b5f-4e62-909b-37270b037897" value="Pin_2" />
       <Data key="1425177d-0d0e-4468-8bcc-e638e5509a9b" value="Rx_1" />
       <Data key="aebd1c44-8d23-413c-92af-251f5ba1ba6c" value="MISO_1" />
+      <Data key="e851a3b9-efb8-48be-bbb8-b303b216c393" value="SDA_spo2" />
       <Data key="ed092b9b-d398-4703-be89-cebf998501f6" value="Tx_1" />
       <Data key="ff67644d-f9b8-4858-af2a-b7ceb765e501" value="MOSI_1" />
     </Group>
@@ -3356,7 +3358,7 @@
         <Data key="Port Format" value="12,3" />
       </Group>
     </Group>
-    <Group key="83b2fde2-60ad-45b6-9e5c-cb3baa6e3f9a">
+    <Group key="95c737b6-f76a-4af3-90b6-5578b0000aea">
       <Group key="0">
         <Data key="Port Format" value="12,0" />
       </Group>
@@ -3387,17 +3389,24 @@
         <Data key="Port Format" value="12,2" />
       </Group>
     </Group>
+    <Group key="e851a3b9-efb8-48be-bbb8-b303b216c393">
+      <Group key="0">
+        <Data key="Port Format" value="12,1" />
+      </Group>
+    </Group>
     <Group key="ed092b9b-d398-4703-be89-cebf998501f6">
       <Group key="0">
         <Data key="Port Format" value="12,7" />
       </Group>
     </Group>
-    <Group key="ff67644d-f9b8-4858-af2a-b7ceb765e501">
-      <Group key="0">
-        <Data key="Port Format" value="12,1" />
+    <Group key="UnAssigned Pins">
+      <Group key="83b2fde2-60ad-45b6-9e5c-cb3baa6e3f9a">
+        <Data key="0" value="134375754442043134" />
+      </Group>
+      <Group key="ff67644d-f9b8-4858-af2a-b7ceb765e501">
+        <Data key="0" value="134375754245095452" />
       </Group>
     </Group>
-    <Group key="UnAssigned Pins" />
   </Group>
   <Group key="PlaceDir">
     <Data key="count" value="0" />
