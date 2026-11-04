@@ -36,6 +36,7 @@
 #define SPO2_MEM_BLOCKS 32u
 #define OXI_MEM_BLOCKS 32u
 
+
 /*
 *********************************************************************************************************
 *                                            LOCAL STRUCS
@@ -48,7 +49,8 @@
 *********************************************************************************************************
 */
 
-OS_SEM spo2_button_sem;
+static OS_FLAG_GRP App_Flags;
+
 
 static OS_MEM SpO2Mem;
 static spo2 SpO2MemPool[SPO2_MEM_BLOCKS];
@@ -295,10 +297,9 @@ static void App_TaskCreate(void)
 static void App_ObjCreate(void)
 {
     /* declare and define function local variables */
-    OS_ERR os_err;
-
-    /* create button semaphore to synchronize button press events */
-    OSSemCreate(&spo2_button_sem, "SEM_SPO2", 0, &os_err);
+    OS_ERR os_err;    
+    
+    
 
     OSMemCreate(&SpO2Mem,
                 "Spo2MEM",
@@ -417,13 +418,14 @@ static void App_TaskBUTTON(void *p_arg)
             {
                 /* if button_pressed (Button State) was not pressed before - post
                 semaphore */
-                OSSemPost(&spo2_button_sem, OS_OPT_POST_ALL, &os_err);
+                
+                //Flag
             }
             else
             {
                 /* if button_pressed (Button State) was pressed before - post semaphore
                 and set to 1 that only one pend is accepted*/
-                OSSemSet(&spo2_button_sem, 1, &os_err);
+                //Flag
             }
             /* in both cases set button_pressed (Button State) to 1 */
             button_pressed = 1;
@@ -475,8 +477,9 @@ static void App_TaskSPO2(void *p_arg)
     {
         
         if(!active) {
+
             /*When Inactive, wait for button to be pressed. Does nothing else.*/
-            OSSemPend(&spo2_button_sem,0,OS_OPT_PEND_BLOCKING,&ts,&os_err);
+            //OSSemPend(&spo2_button_sem,0,OS_OPT_PEND_BLOCKING,&ts,&os_err);
 
             if(os_err == OS_ERR_NONE) {
                 /*If button was pressed, wake up the sensor and set to active.*/
@@ -487,7 +490,7 @@ static void App_TaskSPO2(void *p_arg)
         } else {
 
             /*If Active, check if button is pressed. If not, continues with other code, because measurement is currently active.*/
-            OSSemPend(&spo2_button_sem,0,OS_OPT_PEND_NON_BLOCKING,&ts,&os_err);
+            //OSSemPend(&spo2_button_sem,0,OS_OPT_PEND_NON_BLOCKING,&ts,&os_err);
             if(os_err == OS_ERR_NONE) {
                 /*If button is pressed, send sensor to sleep and set to inactive.*/
                 spo2_sleep();
