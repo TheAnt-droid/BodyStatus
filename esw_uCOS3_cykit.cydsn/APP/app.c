@@ -34,6 +34,7 @@
 #define USE_BSP_TOGGLE 1u
 
 #define SPO2_MEM_BLOCKS 32u
+#define OXI_MEM_BLOCKS 32u
 
 /*
 *********************************************************************************************************
@@ -51,6 +52,9 @@ OS_SEM spo2_button_sem;
 
 static OS_MEM SpO2Mem;
 static spo2 SpO2MemPool[SPO2_MEM_BLOCKS];
+
+static OS_MEM OxiResMem;
+static oxi_results OxiResMemPool[OXI_MEM_BLOCKS];
 
 static CPU_BOOLEAN spo2_init_success = DEF_TRUE;
 
@@ -302,6 +306,15 @@ static void App_ObjCreate(void)
                 SPO2_MEM_BLOCKS,
                 sizeof(spo2),
                 &os_err);
+    
+    
+    OSMemCreate(&OxiResMem,
+                "OxiMEM",
+                OxiResMemPool,
+                OXI_MEM_BLOCKS,
+                sizeof(oxi_results),
+                &os_err);
+    
 }
 
 /*
@@ -557,7 +570,7 @@ static void App_TaskSPO2CALC(void *p_arg)
     CPU_TS ts;
 
     static spo2 *sample;
-    static oxi_results results;
+    static oxi_results *results;
     CPU_INT16U results_index = 0;
 
     spo2_buffer buffer;
@@ -605,29 +618,35 @@ static void App_TaskSPO2CALC(void *p_arg)
                     calculate_heartrate(&buffer, &heartrate);
                     
                     /*Add new value to results struct*/
-                    results.spo2 += spo2;
-                    results.hr += heartrate;
+                    results->spo2 += spo2;
+                    results->hr += heartrate;
                     results_index++;
                     
                     if (results_index >= EFFECTIVE_SAMPLING_FREQ){ /*For output every second*/
                         /*Average of 1 second of samples*/
-                        results.spo2 /= results_index; 
-                        results.hr /= results_index;   
-
+                        results->spo2 /= results_index; 
+                        results->hr /= results_index;   
+                        OSMemGet(&OxiResMem,&os_err);
+                        
+                        /*Send to LED Task*/
+                        OSTaskQPost(&App_TaskLED_TCB, results, sizeof(*results), OS_OPT_POST_FIFO, &os_err);
+                        if(os_err!=OS_ERR_NONE){
+                            OSMemPut(&OxiResMem,(void *)results,&os_err);
+                        }
                         // Send to LED Task- Does not exist yet, so UART output instead :)
-                        char hr_str[20];
-                        uint32_to_str(results.hr, hr_str);
+                        /*char hr_str[20];
+                        uint32_to_str(results->hr, hr_str);
                         char spo2_str[20];
-                        uint32_to_str(results.spo2, spo2_str);
+                        uint32_to_str(results->spo2, spo2_str);
                         uart_send_string((CPU_INT08U *)"HR: ");
                         uart_send_string((CPU_INT08U *)hr_str);
                         uart_send_string((CPU_INT08U *)" SpO2: ");
                         uart_send_string((CPU_INT08U *)spo2_str);
-                        uart_send_string((CPU_INT08U *)"\r\n");
+                        uart_send_string((CPU_INT08U *)"\r\n");*/
                         
                         /*Reset Results after successful send*/
-                        results.spo2 = 0;
-                        results.hr = 0;
+                        results->spo2 = 0;
+                        results->hr = 0;
                         results_index = 0;
                     }
                 }
