@@ -331,12 +331,12 @@ static  void  App_TaskLED (void *p_arg)
       PWM_R_WriteCompare(redLED_ON);
       
       oximeter=(oxi_results*)OSTaskQPend((OS_TICK)flash, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //solange die rote LED an ist, wartet sie und bekommt dann neue daten
-      OximterData(oximeter,&os_err,&hr,&spo2);
+      OximeterData(oximeter,&os_err,&hr,&spo2);
       if(hr==0) continue; //sofort abbrechen und wieder von vorne anfangen
       
       PWM_R_WriteCompare(redLED_OFF); //sonst normal ausschalten 
       oximter=(oxi_results*)OSTaskQPend((OS_TICK)RedLED_rest, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //solange die rote LED aus, wartet sie und bekommt dann neue daten
-      OximterData(oximeter,&os_err,&hr,&spo2);
+      OximeterData(oximeter,&os_err,&hr,&spo2);
       
       }
       
@@ -382,7 +382,7 @@ static void App_TaskENV_LED(void *p_arg)
     CPU_BOOLEAN meas_active = ((env_flag_meas & APP_FLAG_MEAS_ACTIVE)!=0);  
     CPU_BOOLEAN status_active = ((env_flag_status & APP_FLAG_ENV_ALL)!=0);
     if(!meas_active){
-      PMW_G_WriteCompare(greenLED_OFF);
+      PWM_G_WriteCompare(greenLED_OFF);
       blink_counter=0;
     }
     else{
