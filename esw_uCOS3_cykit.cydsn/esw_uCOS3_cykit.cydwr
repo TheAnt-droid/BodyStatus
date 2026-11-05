@@ -3351,6 +3351,11 @@
     </Group>
   </Group>
   <Group key="Pin2">
+    <Group key="06fa3179-eb0d-4970-93d3-5d8ec2cd2a2d">
+      <Group key="0">
+        <Data key="Port Format" value="2,1" />
+      </Group>
+    </Group>
     <Group key="8d318d8b-cf7b-4b6b-b02c-ab1c5c49d0ba">
       <Group key="0">
         <Data key="Port Format" value="2,2" />
@@ -3410,6 +3415,11 @@
     <Group key="ed092b9b-d398-4703-be89-cebf998501f6">
       <Group key="0">
         <Data key="Port Format" value="12,7" />
+      </Group>
+    </Group>
+    <Group key="fd9418e4-700f-4f19-b652-4810f084b83d">
+      <Group key="0">
+        <Data key="Port Format" value="1,2" />
       </Group>
     </Group>
     <Group key="ff67644d-f9b8-4858-af2a-b7ceb765e501">
