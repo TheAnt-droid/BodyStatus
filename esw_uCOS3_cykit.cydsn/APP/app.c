@@ -589,7 +589,7 @@ static void App_TaskSPO2(void *p_arg)
 
             if(!samples_available){
                 /* no samples available: delay and start again from the top */
-                OSTimeDlyHMSM(0, 0, 0, 5, OS_OPT_TIME_HMSM_STRICT, &os_err);
+                OSTimeDlyHMSM(0, 0, 0, 10, OS_OPT_TIME_HMSM_STRICT, &os_err);
                 continue;
             }
             /* reserve a memory block for the sample */
@@ -601,8 +601,11 @@ static void App_TaskSPO2(void *p_arg)
                 OSTimeDlyHMSM(0, 0, 0, 5, OS_OPT_TIME_HMSM_STRICT, &os_err);
                 continue;
             }
+            while(samples_available>0){
             /* read the sensor data into the memory block */
             spo2_read_fifo_sample(SPO2_ADDRESS, &sample->red, &sample->ir, &spo2_err);
+            samples_available--;
+            }
             if (spo2_err != SPO2_ERR_NONE){
                 /* error handling: give the block back */
                 OSMemPut(&SpO2Mem, (void *)sample, &os_err);
@@ -628,7 +631,7 @@ static void App_TaskSPO2(void *p_arg)
             }
 
             /* release the CPU */
-            OSTimeDlyHMSM(0, 0, 0, 1, OS_OPT_TIME_HMSM_STRICT, &os_err);
+            OSTimeDlyHMSM(0, 0, 0, 20, OS_OPT_TIME_HMSM_STRICT, &os_err);
         }
     }
 }
@@ -716,8 +719,8 @@ static void App_TaskSPO2CALC(void *p_arg)
                 App_UartPrint("ERROR: OSMemPut failed\r\n");
             }
 
-            if (buffer.samples_count > 0)
-            {
+            if (buffer.samples_count >=SAMPLE_BUFFER_SIZE)
+            {  
                 /* samples in the buffer: start the calculation */
                 if (spo2_calc_dc(&buffer, &red_dc, &ir_dc)){
                     /* DC calculation successful: AC calculation */
@@ -762,10 +765,6 @@ static void App_TaskSPO2CALC(void *p_arg)
                 }
             }
         }
-        /* release the CPU */
-        OSTimeDlyHMSM(0, 0, 0, 1,
-                      OS_OPT_TIME_HMSM_STRICT,
-                      &os_err);
     }
 }
 
