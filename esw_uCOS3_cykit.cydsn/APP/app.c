@@ -315,9 +315,9 @@ static  void  App_TaskLED (void *p_arg)
   /* start of the endless loop */
   while (DEF_TRUE) {
    if(hr==0){
-    PMW_R_WriteCompare(0); //Rote LED aus wenn kein herzschlag
+    PWM_R_WriteCompare(0); //Rote LED aus wenn kein herzschlag
     oximeter = (oxi_results*)OSTaskQPend(0, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //wartet unendlich auf neue daten
-    OximterData(oximeter,&os_err,&hr,&spo2);
+    OximeterData(oximeter,&os_err,&hr,&spo2);
     continue; // springt sofort zum anfang zurück und prüft auf hr
   }
   //falls hr>0

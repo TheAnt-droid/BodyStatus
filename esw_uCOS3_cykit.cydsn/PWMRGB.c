@@ -19,7 +19,7 @@ void init_pwm(void)
   PWM_R_Start();
 }
 
-static void OximterData(oxi_results *oximeter, OS_ERR *p_err, CPU_INT32U *hr_ptr,  CPU_INT32U *spo2_ptr);
+static void OximeterData(oxi_results *oximeter, OS_ERR *p_err, CPU_INT32U *hr_ptr,  CPU_INT32U *spo2_ptr);
 {
   if(*p_err==OS_ERR_NONE && oximeter !=NULL){
     *spo2_ptr = oximeter->spo2;
