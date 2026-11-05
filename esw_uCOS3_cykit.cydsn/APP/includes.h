@@ -71,6 +71,7 @@
 #include  <bsp_spo2.h>
 #include  <bsp_spo2_calc.h>
 #include  <bsp_hr.h>
+#include  <bsp_pwm.h>
 
 
 /*

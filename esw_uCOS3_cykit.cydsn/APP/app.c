@@ -134,6 +134,9 @@ static  CPU_STK       App_TaskSPO2CALCStk[APP_CFG_TASK_SPO2CALC_STK_SIZE];
 static  OS_TCB        App_TaskLED_TCB;
 static  CPU_STK       App_TaskLEDStk[APP_CFG_TASK_LED_STK_SIZE];
 
+static  OS_TCB        App_TaskLEDENV_TCB;
+static  CPU_STK       App_TaskLEDEStk[APP_CFG_TASK_LEDE_STK_SIZE];
+
 static  OS_TCB        App_TaskEnvTCB;
 static  CPU_STK       App_TaskEnvStk[APP_CFG_TASK_ENV_STK_SIZE];
 
@@ -151,6 +154,7 @@ static  void         App_TaskBUTTON   (void *p_arg);
 static  void         App_TaskSPO2     (void *p_arg);
 static  void         App_TaskSPO2CALC (void *p_arg);
 static  void         App_TaskLED      (void *p_arg);
+static  void         App_TaskLEDE_ENV   (void *p_arg);
 
 static  void         App_TaskEnv      (void *p_arg);
 static  CPU_BOOLEAN  App_EnvInit      (ENV_CALIB *p_calib);
@@ -370,7 +374,22 @@ static void App_TaskCreate(void)
                  (OS_OPT)(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
                  (OS_ERR *)&os_err);
     App_ErrCheck(os_err);
-
+   /* create LED_ENV task */
+      OSTaskCreate((OS_TCB      *)&App_TaskLEDENV_TCB,
+                   (CPU_CHAR    *)"TaskLED_ENV",
+                   (OS_TASK_PTR  )App_TaskLEDE_ENV, 
+                   (void        *)0,
+                   (OS_PRIO      )APP_CFG_TASK_LEDE_PRIO,
+                   (CPU_STK     *)&App_TaskLEDEStk[0],
+                   (CPU_STK_SIZE )APP_CFG_TASK_LEDE_STK_SIZE_LIMIT,
+                   (CPU_STK_SIZE )APP_CFG_TASK_LEDE_STK_SIZE,
+                   (OS_MSG_QTY   )0u,
+                   (OS_TICK      )0u,
+                   (void        *)0,
+                   (OS_OPT       )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+                   (OS_ERR      *)&os_err);
+    App_ErrCheck(os_err);
+    
     /* create environment task */
     OSTaskCreate((OS_TCB *)&App_TaskEnvTCB,
                  (CPU_CHAR *)"TaskENV",
@@ -785,24 +804,120 @@ static void App_TaskSPO2CALC(void *p_arg)
 * Note(s)     : none
 *********************************************************************************************************
 */
-
-static void App_TaskLED(void *p_arg)
+void OximeterData(oxi_results *oximeter, OS_ERR *p_err, CPU_INT32U *hr_ptr,  CPU_INT32U *spo2_ptr)
 {
-    /* declare and define task local variables */
-    OS_ERR os_err;
-
-    /* prevent compiler warnings */
-    (void)p_arg;
-
-    /* start of the endless loop */
-    while (DEF_TRUE)
-    {
-        /* release the CPU */
-        OSTimeDlyHMSM(0, 0, 1, 0,
-                      OS_OPT_TIME_HMSM_STRICT,
-                      &os_err);
-    }
+  if(*p_err==OS_ERR_NONE && oximeter !=NULL){
+    *spo2_ptr = oximeter->spo2;
+    *hr_ptr = oximeter-> hr;
+    OSMemPut(&SpO2Mem, (void *)oximeter, p_err);
+    CPU_INT32U buffer_spo2=(*spo2_ptr >100)?100 : *spo2_ptr;
+    LED_spo2(&buffer_spo2);
+  }
 }
+
+static  void  App_TaskLED (void *p_arg)
+{
+  /* declare and define task local variables */
+  OS_ERR       os_err;
+  OS_ERR       os_err_Env;
+  CPU_TS         ts;
+  OS_MSG_SIZE msg_size;
+  oxi_results *oximeter;
+  CPU_INT32U spo2=0;
+  CPU_INT32U hr=0;
+  CPU_INT32U flash=100;
+
+  
+  /* prevent compiler warnings */
+  (void)p_arg;
+  
+  /* start of the endless loop */
+  while (DEF_TRUE) {
+   if(hr==0){
+    
+    LED_off("r"); //Rote LED aus wenn kein herzschlag
+    oximeter = (oxi_results*)OSTaskQPend(0, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //wartet unendlich auf neue daten
+    OximeterData(oximeter,&os_err,&hr,&spo2);
+    continue; // springt sofort zum anfang zurück und prüft auf hr
+  }
+  //falls hr>0
+   CPU_INT32U beat_duration = 60000/hr;
+      if(beat_duration<=flash){
+      flash=beat_duration/2;
+        if(flash<10) flash=10;
+      }
+      CPU_INT32U RedLED_rest= beat_duration-flash;
+      
+      LED_on("r");
+      
+      oximeter=(oxi_results*)OSTaskQPend((OS_TICK)flash, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //solange die rote LED an ist, wartet sie und bekommt dann neue daten
+      OximeterData(oximeter,&os_err,&hr,&spo2);
+      if(hr==0) continue; //sofort abbrechen und wieder von vorne anfangen
+      
+      LED_off("r"); //sonst normal ausschalten 
+      oximeter=(oxi_results*)OSTaskQPend((OS_TICK)RedLED_rest, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //solange die rote LED aus, wartet sie und bekommt dann neue daten
+      OximeterData(oximeter,&os_err,&hr,&spo2);
+      
+      }
+      
+    }
+/*
+*********************************************************************************************************
+*                                          App_TaskENV_LED()
+*
+* Description : BueLed Task checks the state of a GND-connected button. On button press increase the
+*               value for the PWM output of the Blue LED and check for an overflow. If an overflow is 
+*               detected post a semaphore. Otherwise, do not post a semaphore and check the button state again,
+*               increase the value for the PWM output and check for an overflow.
+*               If Button is not pressed, put Output of Blue_LED, Green_LED and Red_LED to 0. 
+*
+* Argument(s) : p_arg   is the argument passed to 'App_TaskBlueLED()' by 'OSTaskCreate()'.
+*
+* Return(s)   : none
+*
+* Note(s)     : none
+*********************************************************************************************************
+*/
+static void App_TaskLEDE_ENV(void *p_arg)
+{
+  OS_ERR os_err;
+  CPU_TS         ts;
+  OS_FLAGS env_flag_meas;
+  OS_FLAGS env_flag_status;
+  static CPU_INT08U blink_counter=0;
+  CPU_BOOLEAN led_blink_state=DEF_FALSE;
+  (void)p_arg;
+  
+  while(DEF_TRUE){
+    env_flag_status=OSFlagPend(&App_Flags, APP_FLAG_ENV_ALL,(OS_TICK)0, OS_OPT_NONE, &ts, &os_err);
+    env_flag_meas=OSFlagPend(&App_Flags, APP_FLAG_MEAS_ACTIVE,(OS_TICK)0, OS_OPT_NONE, &ts, &os_err);
+    CPU_BOOLEAN meas_active = ((env_flag_meas & APP_FLAG_MEAS_ACTIVE)!=0);  
+    CPU_BOOLEAN status_active = ((env_flag_status & APP_FLAG_ENV_ALL)!=0);
+    if(!meas_active){
+      LED_off("g");
+      blink_counter=0;
+    }
+    else{
+      if(status_active){
+        blink_counter++;
+        if(blink_counter>=25){
+          blink_counter=0;
+          led_blink_state=!led_blink_state;
+        }
+        if(led_blink_state){
+          LED_on("g");
+        } else{
+          LED_off("g");
+        }
+      }
+    }
+    
+      OSTimeDlyHMSM(0, 0, 0, 20, 
+                  OS_OPT_TIME_HMSM_STRICT, 
+                  &os_err);
+      }
+  }
+
 
 /*
 *********************************************************************************************************
