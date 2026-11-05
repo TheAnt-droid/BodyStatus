@@ -1,175 +1,71 @@
-/* ========================================
- *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
- *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
- *
- * ========================================
+/*
+*********************************************************************************************************
+*                                         BSP - GPIO (Click Shield)
+*
+* Filename      : bsp_gpio.c
+*
+* Description   : Push button SW1 of the Click Shield (P2_2, switch S1 on "BTN").
+*********************************************************************************************************
 */
 
 #include <bsp_gpio.h>
 
 /*
 *********************************************************************************************************
-*                                       init_gpio()
+*                                             init_gpio()
 *
-* Description : This function initializes the Pin_1 GPIO module (P1_6, J1 Pin 23), the
-*               Pin_2 GPIO module (P2_0, J1 Pin 1 and P2_1, J1 Pin 2) and the push button
-*               GPIO module (P2_2, J1 Pin 3). On P2_1 a blue on-board LED is connected. On
-*               P2_2 on side of a GND-connected button is connected.
+* Description : Configures the push button pin as input with internal pull-up.
 *
 * Argument(s) : none.
 *
 * Return(s)   : none.
 *
-* Caller(s)   : Application.
+* Caller(s)   : BSP_PostInit().
 *
-* Note(s)     : Not re-entrant.
+* Note(s)     : (1) SW1 connects the pin directly to GND, the shield has no pull-up resistor. With the
+*                   resistive pull-up the pin reads high when released and low when pressed. (A strong
+*                   high output would be short-circuited to GND on every press.)
+*               (2) The same drive mode is set in TopDesign; set here again so the start state is
+*                   defined in code too.
 *********************************************************************************************************
 */
 
 CPU_VOID init_gpio(CPU_VOID)
 {
-  Pin_1_SetDriveMode(Pin_1_DM_STRONG);
-  Pin_2_SetDriveMode(Pin_2_DM_STRONG);
-  push_button_SetDriveMode(push_button_DM_STRONG);
-  push_button_Write(1);
+    push_button_SetDriveMode(push_button_DM_RES_UP);            /* Input with pull-up (Note 1)          */
+    push_button_Write(GPIO_PB_RELEASED);                        /* Data register 1 = pull-up active     */
 }
 
 /*
 *********************************************************************************************************
-*                                       gpio_high()
+*                                             gpio_read()
 *
-* Description : This function set based on a chosen port (PORT1, PORT2) the digital level
-*               of a chosen pin (P1_6, P2_0, P2_1) on digital high (~ 5V).
+* Description : Reads the level of a GPIO pin.
 *
-* Argument(s) : port ... indicates which port should be addressed (PORT1, PORT2)
-*               pin  ... indicates which pin of the chosen port is addressed (P1_6, P2_0, P2_1)
+* Argument(s) : port    port identifier (only PORT2).
 *
-* Return(s)   : 0 ... if no error occurred
-*               >1... if an error occurred
+*               pin     pin identifier (only P2_2).
 *
-* Caller(s)   : Application.
+* Return(s)   : 0 / 1           pin level (push button: 0 = pressed, 1 = released).
+*               GPIO_READ_ERR   unknown port or pin.
 *
-* Note(s)     : Not re-entrant.
-*********************************************************************************************************
-*/
-
-CPU_INT08U gpio_high(CPU_INT08U port, CPU_INT08U pin)
-{
-  CPU_INT08U err = 0;
-  
-  if(port == PORT1){
-    if(pin == P1_6){
-      Pin_1_Write(HIGH);
-    }
-    else{
-      err++;
-    }
-  }
-  else if(port == PORT2){
-    if(pin == P2_0){
-      Pin_2_Write(P2_0); 
-    }
-    else if(pin == P2_1){
-      Pin_2_Write(P2_1);
-    }
-    else{
-      err++;
-    }
-  }
-  else{
-    err++;
-  }
-  return err;    
-}
-
-/*
-*********************************************************************************************************
-*                                       gpio_low()
+* Caller(s)   : BSP_PB_StatusGet().
 *
-* Description : This function resets based on a chosen port (PORT1, PORT2) the digital level
-*               of a chosen pin (P1_6, P2_0, P2_1) on digital low (0V).
-*
-* Argument(s) : port ... indicates which port should be addressed (PORT1, PORT2)
-*               pin  ... indicates which pin of the chosen port is addressed (P1_6, P2_0, P2_1)
-*
-* Return(s)   : 0 ... if no error occurred
-*               >1... if an error occurred
-*
-* Caller(s)   : Application.
-*
-* Note(s)     : Not re-entrant.
-*********************************************************************************************************
-*/
-
-CPU_INT08U gpio_low(CPU_INT08U port, CPU_INT08U pin)
-{
-  CPU_INT08U err = 0;
-  
-  if(port == PORT1){
-    if(pin == P1_6){
-      Pin_1_Write(LOW);
-    }
-    else{
-      err++;
-    }
-  }
-  else if(port == PORT2){
-    if(pin == P2_0){
-      Pin_2_Write(!(P2_0)); 
-    }
-    else if(pin == P2_1){
-      Pin_2_Write(!(P2_1));
-    }
-    else{
-      err++;
-    }
-  }
-  else{
-    err++;
-  }
-  return err;   
-}
-
-/*
-*********************************************************************************************************
-*                                       gpio_read()
-*
-* Description : This function reads the digital level of a chosen port (PORT2) and pin (P2_2).
-*
-* Argument(s) : port ... indicates which port should be addressed (PORT2)
-*               pin  ... indicates which pin of the chosen port is addressed (P2_2)
-*
-* Return(s)   : 0 ... if no error occurred
-*               -1... if an error occurred
-*
-* Caller(s)   : Application.
-*
-* Note(s)     : Not re-entrant.
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
 CPU_INT08S gpio_read(CPU_INT08U port, CPU_INT08U pin)
 {
-  CPU_INT08S err = 0;
-  
-  if(port == PORT2){
-    if(pin == P2_2){
-      err = push_button_Read();    
-    }
-    else{
-      err = -1;
-    }
-  }
-  else{
-    err = -1;
-  }
-  return err;
-}
+    CPU_INT08S result;
 
+
+    if ((port == PORT2) && (pin == P2_2)) {
+        result = (CPU_INT08S)push_button_Read();
+    } else {
+        result = GPIO_READ_ERR;
+    }
+    return (result);
+}
 
 /* [] END OF FILE */

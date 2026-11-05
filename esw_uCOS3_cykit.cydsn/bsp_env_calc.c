@@ -4,21 +4,18 @@
 *
 * Filename      : bsp_env_calc.c
 *
-* Description   : Integer formulas of the BME688 datasheet (BST-BME688-DS000-00 Rev. 1.0, ch. 3.6, 3.7).
+* Description   : Integer formulas of the BME688 datasheet (BST-BME688-DS000-00 Rev. 1.0, ch. 3.6, 3.7):
+*                 raw values -> degC, Pa, %rH, Ohm, and heater temperature -> register code.
 *
-* Note(s)       : (1) The integer variants of the datasheet formulas are used: the Cortex-M3 has no
-*                     floating point unit, so double/float would be emulated in software (slow, more stack).
-*                 (2) The numbers inside the formulas (e.g. 784, 154009, 3276800) are the constants of the
-*                     datasheet formulas. They are kept exactly as printed so that every line can be
-*                     compared 1:1 with the datasheet; giving them names would not explain them better.
+* Note(s)       : (1) Integer instead of float formulas: the Cortex-M3 has no FPU, float would be
+*                     emulated in software (slow, more stack).
+*                 (2) The numbers inside the formulas (e.g. 784, 154009) are the datasheet constants. They
+*                     stay as printed, so every line can be compared 1:1 with the datasheet; a name would
+*                     not explain them better.
 *                 (3) Re-entrant: only local variables, no SPI access.
-*                 (4) Shifts: the datasheet uses ">>" and "<<" on signed values. Right shifts (">>") are kept:
-*                     for negative values the C standard leaves them "implementation-defined", and the ARM
-*                     GCC of PSoC Creator shifts arithmetically (sign is kept), as the formulas expect.
-*                     Left shifts ("<<") of values that can be negative (e.g. par_p4, par_p7) are written as
-*                     multiplications, because a left shift of a negative value is undefined in C.
-*                 (5) The formulas were checked with the raw values of the hardware test 03.11.2026:
-*                     integer and floating point variant both give 22.64 degC, 1007.8 hPa, 46.6 %rH.
+*                 (4) Shifts: ">>" of signed values is kept (ARM GCC shifts arithmetically, as the formulas
+*                     expect). "<<" of values that can be negative is written as a multiplication,
+*                     because a left shift of a negative value is undefined in C.
 *********************************************************************************************************
 */
 
@@ -39,25 +36,20 @@ static CPU_INT32U env_calc_gas   (CPU_INT16U gas_adc, CPU_INT08U gas_range);
 *********************************************************************************************************
 *                                        env_calc_res_heat()
 *
-* Description : Converts a heater target temperature into the register code for res_heat_x.
+* Description : Converts a heater target temperature into the register code for res_heat_x (ch. 3.6).
 *
-* Argument(s) : p_calib         calibration values (par_g1, par_g2, par_g3, res_heat_range, res_heat_val).
+* Argument(s) : p_calib         calibration values (par_g1..3, res_heat_range, res_heat_val).
 *
-*               target_degc     heater target temperature in degC (typically 200 ... 400).
+*               target_degc     heater target temperature in degC.
 *
 *               amb_degc        ambient temperature in degC.
 *
-* Return(s)   : Register code for res_heat_x (0 if p_calib is a null pointer).
+* Return(s)   : Register code (0 if p_calib is a null pointer).
 *
 * Caller(s)   : env_config().
 *
-* Note(s)     : (1) Integer formula of datasheet ch. 3.6, "Gas sensor heating and measurement",
-*                   table 16. Variable names as in the datasheet.
-*               (2) Value range check with typical calibration values: the largest intermediate value
-*                   (var2) is about 4e8 and fits into a signed 32 bit integer (max. 2.1e9).
-*               (3) The datasheet writes "<< 8" and ">> 1". Here "* 256" and "/ 2" are used: shifting a
-*                   negative signed value is not well defined in C (var1 is negative if par_g3 < 0).
-*                   For the positive values that occur in practice the result is the same.
+* Note(s)     : (1) "<< 8" -> "* 256" and ">> 1" -> "/ 2" (file Note 4).
+*               (2) The largest intermediate value (var2, about 4e8) fits into CPU_INT32S.
 *********************************************************************************************************
 */
 
@@ -74,11 +66,11 @@ CPU_INT08U env_calc_res_heat(const ENV_CALIB *p_calib, CPU_INT32S target_degc, C
     if (p_calib == (const ENV_CALIB *)0) {                      /* Check argument                       */
         return (0u);
     }
-                                                                /* Datasheet formula (Notes 1, 2)       */
-    var1 = ((amb_degc * (CPU_INT32S)p_calib->par_g3) / 10) * 256;               /* "<< 8" of the sheet */
-    var2 = ((CPU_INT32S)p_calib->par_g1 + 784) *
+
+    var1 = ((amb_degc * (CPU_INT32S)p_calib->par_g3) / 10) * 256;               /* Note 1              */
+    var2 = ((CPU_INT32S)p_calib->par_g1 + 784) *                                /* Note 2              */
            (((((((CPU_INT32S)p_calib->par_g2 + 154009) * target_degc * 5) / 100) + 3276800) / 10));
-    var3 = var1 + (var2 / 2);                                                   /* "var2 >> 1"         */
+    var3 = var1 + (var2 / 2);                                                   /* Note 1              */
     var4 = var3 / ((CPU_INT32S)p_calib->res_heat_range + 4);
     var5 = (131 * (CPU_INT32S)p_calib->res_heat_val) + 65536;
     res_heat_x100 = ((var4 / var5) - 250) * 34;
@@ -90,23 +82,22 @@ CPU_INT08U env_calc_res_heat(const ENV_CALIB *p_calib, CPU_INT32S target_degc, C
 *********************************************************************************************************
 *                                          env_calc_data()
 *
-* Description : Converts one set of raw values into temperature, pressure, humidity and gas resistance.
+* Description : Converts the raw values of one measurement into temperature, pressure, humidity and gas
+*               resistance.
 *
-* Argument(s) : p_calib     calibration values (env_read_calib()).
+* Argument(s) : p_calib     calibration values.
 *
-*               p_raw       raw values of one measurement (env_read_raw()).
+*               p_raw       raw values of one measurement.
 *
-*               p_data      structure that receives the compensated values.
+*               p_data      structure that receives the converted values.
 *
 * Return(s)   : DEF_OK      values calculated.
-*               DEF_FAIL    null pointer or p_raw contains no new data.
+*               DEF_FAIL    null pointer or no new data.
 *
-* Caller(s)   : Application, after env_read_raw() returned new data.
+* Caller(s)   : App_EnvMeasure().
 *
-* Note(s)     : (1) Order is fixed by the formulas: temperature first, because pressure needs t_fine and
-*                   humidity needs the compensated temperature (ch. 3.6).
-*               (2) The gas resistance is only meaningful if gas_valid and heat_stab are set (ch. 3.7);
-*                   the result of this check is stored in gas_ok.
+* Note(s)     : (1) Temperature first: pressure needs t_fine, humidity the compensated temperature.
+*               (2) The gas value is only usable if gas_valid and heat_stab are both set (ch. 3.7).
 *********************************************************************************************************
 */
 
@@ -138,19 +129,19 @@ CPU_BOOLEAN env_calc_data(const ENV_CALIB *p_calib, const ENV_RAW *p_raw, ENV_DA
 *********************************************************************************************************
 *                                          env_calc_temp()
 *
-* Description : Temperature compensation, integer formula of datasheet ch. 3.6, table 13.
+* Description : Temperature compensation (ch. 3.6, table 13).
 *
-* Argument(s) : p_calib     calibration values (par_t1, par_t2, par_t3).
+* Argument(s) : p_calib     calibration values (par_t1..3).
 *
 *               temp_adc    raw temperature (20 bit).
 *
-*               p_t_fine    receives t_fine (needed by the pressure formula).
+*               p_t_fine    receives t_fine (intermediate value, needed for the pressure).
 *
 * Return(s)   : Temperature in 0.01 degC.
 *
 * Caller(s)   : env_calc_data().
 *
-* Note(s)     : (1) "(int32_t)par_t3 << 4" of the datasheet is written as "* 16" (file Note 4).
+* Note(s)     : (1) "par_t3 << 4" -> "* 16" (file Note 4).
 *********************************************************************************************************
 */
 
@@ -175,9 +166,9 @@ static CPU_INT32S env_calc_temp(const ENV_CALIB *p_calib, CPU_INT32U temp_adc, C
 *********************************************************************************************************
 *                                          env_calc_press()
 *
-* Description : Pressure compensation, integer formula of datasheet ch. 3.6, table 14.
+* Description : Pressure compensation (ch. 3.6, table 14).
 *
-* Argument(s) : p_calib     calibration values (par_p1 ... par_p10).
+* Argument(s) : p_calib     calibration values (par_p1..10).
 *
 *               press_adc   raw pressure (20 bit).
 *
@@ -187,11 +178,9 @@ static CPU_INT32S env_calc_temp(const ENV_CALIB *p_calib, CPU_INT32U temp_adc, C
 *
 * Caller(s)   : env_calc_data().
 *
-* Note(s)     : (1) Left shifts of signed parameters are written as multiplications (file Note 4):
-*                   "<< 1" -> "* 2", "<< 16" -> "* 65536", "<< 5" -> "* 32", "<< 7" -> "* 128".
-*               (2) press_comp is unsigned in the middle part of the formula, as in the datasheet (casts to
-*                   uint32_t): the multiplication by 3125 would overflow a signed 32 bit value.
-*               (3) var1 is 0 only for invalid calibration data; the division is protected anyway.
+* Note(s)     : (1) "<< n" of signed parameters -> "* 2^n" (file Note 4).
+*               (2) press_comp is unsigned as in the datasheet: "* 3125" would overflow a signed value.
+*               (3) var1 = 0 only with invalid calibration data; protects the division.
 *********************************************************************************************************
 */
 
@@ -238,23 +227,21 @@ static CPU_INT32U env_calc_press(const ENV_CALIB *p_calib, CPU_INT32U press_adc,
 *********************************************************************************************************
 *                                           env_calc_hum()
 *
-* Description : Humidity compensation, integer formula of datasheet ch. 3.6, table 15.
+* Description : Humidity compensation (ch. 3.6, table 15).
 *
-* Argument(s) : p_calib     calibration values (par_h1 ... par_h7).
+* Argument(s) : p_calib     calibration values (par_h1..7).
 *
 *               hum_adc     raw humidity (16 bit).
 *
-*               temp_c100   compensated temperature in 0.01 degC ("temp_scaled" in the datasheet).
+*               temp_c100   compensated temperature in 0.01 degC.
 *
-* Return(s)   : Relative humidity in 0.001 %rH, limited to 0 ... 100.000 %rH.
+* Return(s)   : Relative humidity in 0.001 %rH, limited to 0 ... 100 %rH.
 *
 * Caller(s)   : env_calc_data().
 *
-* Note(s)     : (1) The datasheet prints two final lines; the second one (result * 1000) is used, it gives
-*                   the humidity in 0.001 %rH.
+* Note(s)     : (1) Variant "* 1000" of the datasheet -> result in 0.001 %rH.
 *               (2) "par_h1 << 4" -> "* 16", "par_h6 << 7" -> "* 128" (file Note 4).
-*               (3) Limiting to 0 ... 100 %rH is an addition: a relative humidity outside this range is
-*                   physically impossible and would only come from measurement noise at the limits.
+*               (3) Limit added: values outside 0 ... 100 %rH are physically impossible (noise).
 *********************************************************************************************************
 */
 
@@ -295,7 +282,7 @@ static CPU_INT32U env_calc_hum(const ENV_CALIB *p_calib, CPU_INT16U hum_adc, CPU
 *********************************************************************************************************
 *                                           env_calc_gas()
 *
-* Description : Gas resistance, integer formula of datasheet ch. 3.7, table 17.
+* Description : Gas resistance (ch. 3.7, table 17).
 *
 * Argument(s) : gas_adc     raw gas value (10 bit).
 *
@@ -305,9 +292,8 @@ static CPU_INT32U env_calc_hum(const ENV_CALIB *p_calib, CPU_INT16U hum_adc, CPU
 *
 * Caller(s)   : env_calc_data().
 *
-* Note(s)     : (1) As in the datasheet: first * 10000, divide, then * 100 instead of * 1000000, so the
-*                   intermediate value does not overflow.
-*               (2) var2 is at least 4096 - 3 * 512 = 2560 > 0, so the division is always valid.
+* Note(s)     : (1) "* 10000 ... * 100" instead of "* 1000000" as in the datasheet: no overflow.
+*               (2) var2 >= 4096 - 3 * 512 = 2560, so the division is always valid.
 *********************************************************************************************************
 */
 

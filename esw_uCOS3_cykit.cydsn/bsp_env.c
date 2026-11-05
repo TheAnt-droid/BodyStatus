@@ -5,15 +5,16 @@
 * Filename      : bsp_env.c
 *
 * Description   : Register access to the BME688 via SPI (mikroBUS slot 1 of the Click Shield).
-*                 Source: Bosch Sensortec, BME688 Datasheet, BST-BME688-DS000-00 Rev. 1.0 (04/2021).
+*                 Public functions first, internal helper functions (static) below.
 *
-* Note(s)       : (1) Not re-entrant: only one task may use this driver (and the SPI bus). If a second
-*                     task needs SPI later, protect the bus with a mutex.
+* Note(s)       : (1) Not re-entrant: only one task may use this driver and the SPI bus. If a second
+*                     task needs SPI, the bus must be protected with a mutex.
 *********************************************************************************************************
 */
 
 #include <bsp_env.h>
 #include <bsp_env_calc.h>
+#include <bsp_spi.h>
 
 /*
 *********************************************************************************************************
@@ -21,114 +22,32 @@
 *********************************************************************************************************
 */
 
-static ENV_ERR env_read_regs    (CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U len);
-static ENV_ERR env_write_reg    (CPU_INT08U reg, CPU_INT08U val);
-static ENV_ERR env_raw_read     (CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U len);
-static ENV_ERR env_raw_write    (CPU_INT08U reg, CPU_INT08U val);
-static ENV_ERR env_select_page  (CPU_INT08U reg);
-static CPU_INT16U env_u16       (CPU_INT08U msb, CPU_INT08U lsb);
-static CPU_INT32U env_u20       (CPU_INT08U msb, CPU_INT08U lsb, CPU_INT08U xlsb);
-
-/*
-*********************************************************************************************************
-*                                          env_read_regs()
-*
-* Description : Reads one or more consecutive registers of the BME688.
-*
-* Argument(s) : reg     full 8-bit register address (see bsp_env_cfg.h, Note 1).
-*
-*               p_buf   buffer for the read bytes.
-*
-*               len     number of registers to read (at least 1).
-*
-* Return(s)   : ENV_ERR_NONE    registers read.
-*               ENV_ERR_ARG     invalid argument (see Note 2).
-*               ENV_ERR_SPI     SPI transfer failed.
-*
-* Caller(s)   : env_check_id(), env_read_calib(), env_read_raw().
-*
-* Note(s)     : (1) The sensor increments the address itself, so several registers are read with one
-*                   control byte (datasheet ch. 6.3, picture 11).
-*               (2) All registers of one read must be on the same memory page, because the page cannot
-*                   be switched in the middle of a transaction.
-*********************************************************************************************************
-*/
-
-static ENV_ERR env_read_regs(CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U len)
-{
-    CPU_INT16U  last_reg;
-    ENV_ERR     err;
-
-
-    if ((p_buf == (CPU_INT08U *)0) || (len == 0u)) {            /* Check arguments                      */
-        return (ENV_ERR_ARG);
-    }
-
-    last_reg = (CPU_INT16U)((CPU_INT16U)reg + len - 1u);        /* Must stay on the same page (Note 2)  */
-    if ((last_reg > DEF_INT_08U_MAX_VAL) ||
-        ((reg & ENV_REG_PAGE_SEL_BIT) != ((CPU_INT08U)last_reg & ENV_REG_PAGE_SEL_BIT))) {
-        return (ENV_ERR_ARG);
-    }
-
-    err = env_select_page(reg);                                 /* Switch to the page of the register   */
-    if (err != ENV_ERR_NONE) {
-        return (err);
-    }
-
-    return (env_raw_read(reg, p_buf, len));                     /* Read registers (Note 1)              */
-}
-
-/*
-*********************************************************************************************************
-*                                          env_write_reg()
-*
-* Description : Writes one register of the BME688.
-*
-* Argument(s) : reg     full 8-bit register address (see bsp_env_cfg.h, Note 1).
-*
-*               val     value to write.
-*
-* Return(s)   : ENV_ERR_NONE    register written.
-*               ENV_ERR_SPI     SPI transfer failed.
-*
-* Caller(s)   : env_config(), env_start_meas().
-*
-* Note(s)     : none.
-*********************************************************************************************************
-*/
-
-static ENV_ERR env_write_reg(CPU_INT08U reg, CPU_INT08U val)
-{
-    ENV_ERR err;
-
-
-    err = env_select_page(reg);                                 /* Switch to the page of the register   */
-    if (err != ENV_ERR_NONE) {
-        return (err);
-    }
-
-    return (env_raw_write(reg, val));                           /* Write register                       */
-}
+static ENV_ERR    env_read_regs    (CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U len);
+static ENV_ERR    env_write_reg    (CPU_INT08U reg, CPU_INT08U val);
+static ENV_ERR    env_select_page  (CPU_INT08U reg);
+static ENV_ERR    env_raw_read     (CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U len);
+static ENV_ERR    env_raw_write    (CPU_INT08U reg, CPU_INT08U val);
+static CPU_INT16U env_u16          (CPU_INT08U msb, CPU_INT08U lsb);
+static CPU_INT32U env_u20          (CPU_INT08U msb, CPU_INT08U lsb, CPU_INT08U xlsb);
 
 /*
 *********************************************************************************************************
 *                                           env_check_id()
 *
-* Description : Checks whether a BME688 answers on the SPI bus by reading chip id and variant id.
+* Description : Checks whether a BME688 answers on the SPI bus (chip id and variant id).
 *
 * Argument(s) : none.
 *
 * Return(s)   : ENV_ERR_NONE        BME688 found.
 *               ENV_ERR_SPI         SPI transfer failed.
 *               ENV_ERR_CHIP_ID     wrong chip id (Note 1).
-*               ENV_ERR_VARIANT_ID  chip id correct, but no BME688 variant (Note 2).
+*               ENV_ERR_VARIANT_ID  chip id correct, but not the BME688 variant (Note 2).
 *
-* Caller(s)   : Application (once at start, before configuring the sensor).
+* Caller(s)   : App_EnvInit().
 *
-* Note(s)     : (1) If MISO does not reach the PSoC (switch S2 "SPI Bridge" = OFF, COMM SEL jumpers on
-*                   I2C, wrong pins), typically 0x00 or 0xFF is read instead of 0x61.
-*               (2) The BME680 has the same chip id. The variant id 0x01 identifies the BME688
-*                   (datasheet ch. 5.3.2.1).
+* Note(s)     : (1) 0x00 or 0xFF instead of 0x61 usually means MISO does not arrive (switch S2,
+*                   COMM SEL jumpers, pins).
+*               (2) Variant id 0x01 = BME688 (datasheet ch. 5.3.2.1).
 *********************************************************************************************************
 */
 
@@ -142,7 +61,7 @@ ENV_ERR env_check_id(CPU_VOID)
     if (err != ENV_ERR_NONE) {
         return (err);
     }
-    if (id != ENV_CHIP_ID_VAL) {                                /* Expected 0x61 (Note 1)               */
+    if (id != ENV_CHIP_ID_VAL) {                                /* Note 1                               */
         return (ENV_ERR_CHIP_ID);
     }
 
@@ -150,7 +69,7 @@ ENV_ERR env_check_id(CPU_VOID)
     if (err != ENV_ERR_NONE) {
         return (err);
     }
-    if (id != ENV_VARIANT_ID_VAL) {                             /* Expected 0x01 (Note 2)               */
+    if (id != ENV_VARIANT_ID_VAL) {                             /* Note 2                               */
         return (ENV_ERR_VARIANT_ID);
     }
 
@@ -161,7 +80,7 @@ ENV_ERR env_check_id(CPU_VOID)
 *********************************************************************************************************
 *                                          env_read_calib()
 *
-* Description : Reads the factory calibration values of the BME688 into a structure.
+* Description : Reads the factory calibration values of the BME688.
 *
 * Argument(s) : p_calib     structure that receives the calibration values.
 *
@@ -169,16 +88,12 @@ ENV_ERR env_check_id(CPU_VOID)
 *               ENV_ERR_ARG     p_calib is a null pointer.
 *               ENV_ERR_SPI     SPI transfer failed.
 *
-* Caller(s)   : Application (once at start, the values never change).
+* Caller(s)   : App_EnvInit().
 *
-* Note(s)     : (1) The values are spread over three register blocks (bsp_env_cfg.h). Each block is
-*                   read with one multi-byte read; env_read_regs() switches the SPI page if needed.
-*               (2) The index into a block buffer is "register address - first address of the block",
-*                   so every value can be compared 1:1 with the address in tables 13 to 16.
-*               (3) The casts to a signed type re-interpret the bits read from the sensor (two's
-*                   complement), see the Note on the data types in bsp_env_cfg.h.
-*               (4) The buffers are local variables: the function is re-entrant as long as the SPI bus
-*                   itself is only used by one task.
+* Note(s)     : (1) Each of the three register blocks is read at once (bsp_env_cfg.h).
+*               (2) Buffer index = register address - first address of the block, so every line can be
+*                   compared directly with the address in the datasheet tables.
+*               (3) The casts to signed types re-interpret the register bits as two's complement.
 *********************************************************************************************************
 */
 
@@ -194,27 +109,27 @@ ENV_ERR env_read_calib(ENV_CALIB *p_calib)
         return (ENV_ERR_ARG);
     }
 
-    err = env_read_regs(ENV_CALIB1_START, &blk1[0], ENV_CALIB1_LEN);    /* Block 1, page 0 (Note 1)    */
+    err = env_read_regs(ENV_CALIB1_START, &blk1[0], ENV_CALIB1_LEN);    /* Read blocks (Note 1)        */
     if (err != ENV_ERR_NONE) {
         return (err);
     }
-    err = env_read_regs(ENV_CALIB2_START, &blk2[0], ENV_CALIB2_LEN);    /* Block 2, page 0             */
+    err = env_read_regs(ENV_CALIB2_START, &blk2[0], ENV_CALIB2_LEN);
     if (err != ENV_ERR_NONE) {
         return (err);
     }
-    err = env_read_regs(ENV_CALIB3_START, &blk3[0], ENV_CALIB3_LEN);    /* Block 3, page 1             */
+    err = env_read_regs(ENV_CALIB3_START, &blk3[0], ENV_CALIB3_LEN);
     if (err != ENV_ERR_NONE) {
         return (err);
     }
 
-                                                                /* Temperature (table 13, Notes 2, 3)   */
+                                                                /* Temperature (Notes 2, 3)             */
     p_calib->par_t1 =              env_u16(blk2[ENV_REG_PAR_T1_MSB - ENV_CALIB2_START],
                                            blk2[ENV_REG_PAR_T1_LSB - ENV_CALIB2_START]);
     p_calib->par_t2 = (CPU_INT16S) env_u16(blk1[ENV_REG_PAR_T2_MSB - ENV_CALIB1_START],
                                            blk1[ENV_REG_PAR_T2_LSB - ENV_CALIB1_START]);
     p_calib->par_t3 = (CPU_INT08S) blk1[ENV_REG_PAR_T3 - ENV_CALIB1_START];
 
-                                                                /* Pressure (table 14)                  */
+                                                                /* Pressure                             */
     p_calib->par_p1 =              env_u16(blk1[ENV_REG_PAR_P1_MSB - ENV_CALIB1_START],
                                            blk1[ENV_REG_PAR_P1_LSB - ENV_CALIB1_START]);
     p_calib->par_p2 = (CPU_INT16S) env_u16(blk1[ENV_REG_PAR_P2_MSB - ENV_CALIB1_START],
@@ -232,7 +147,7 @@ ENV_ERR env_read_calib(ENV_CALIB *p_calib)
                                            blk1[ENV_REG_PAR_P9_LSB - ENV_CALIB1_START]);
     p_calib->par_p10 =             blk1[ENV_REG_PAR_P10 - ENV_CALIB1_START];
 
-                                                                /* Humidity (table 15), 12 bit values   */
+                                                                /* Humidity, h1/h2 are 12 bit           */
     p_calib->par_h1 = (CPU_INT16U)(((CPU_INT16U)blk2[ENV_REG_PAR_H1_MSB - ENV_CALIB2_START] << ENV_NIBBLE_BITS) |
                                    (blk2[ENV_REG_PAR_H1_H2_LSB - ENV_CALIB2_START] & ENV_NIBBLE_MASK));
     p_calib->par_h2 = (CPU_INT16U)(((CPU_INT16U)blk2[ENV_REG_PAR_H2_MSB - ENV_CALIB2_START] << ENV_NIBBLE_BITS) |
@@ -243,7 +158,7 @@ ENV_ERR env_read_calib(ENV_CALIB *p_calib)
     p_calib->par_h6 =              blk2[ENV_REG_PAR_H6 - ENV_CALIB2_START];
     p_calib->par_h7 = (CPU_INT08S) blk2[ENV_REG_PAR_H7 - ENV_CALIB2_START];
 
-                                                                /* Gas heater (table 16)                */
+                                                                /* Gas heater                           */
     p_calib->par_g1 = (CPU_INT08S) blk2[ENV_REG_PAR_G1 - ENV_CALIB2_START];
     p_calib->par_g2 = (CPU_INT16S) env_u16(blk2[ENV_REG_PAR_G2_MSB - ENV_CALIB2_START],
                                            blk2[ENV_REG_PAR_G2_LSB - ENV_CALIB2_START]);
@@ -259,21 +174,19 @@ ENV_ERR env_read_calib(ENV_CALIB *p_calib)
 *********************************************************************************************************
 *                                            env_config()
 *
-* Description : Writes the measurement settings (oversampling, filter, gas heater step 0) into the
-*               BME688. The sensor stays in sleep mode; a measurement is started with env_start_meas().
+* Description : Writes the measurement settings (oversampling, filter, gas heater step 0). The sensor
+*               stays in sleep mode; env_start_meas() starts a measurement.
 *
-* Argument(s) : p_calib     calibration values (needed to calculate the heater resistance code).
+* Argument(s) : p_calib     calibration values (for the heater resistance code).
 *
 * Return(s)   : ENV_ERR_NONE    settings written.
 *               ENV_ERR_ARG     p_calib is a null pointer.
 *               ENV_ERR_SPI     SPI transfer failed.
 *
-* Caller(s)   : Application (once after env_read_calib()).
+* Caller(s)   : App_EnvInit().
 *
-* Note(s)     : (1) Order as in the datasheet (ch. 3.5, figure 3): oversampling first, osrs_h before
-*                   osrs_t / osrs_p, then the gas heater, the mode register last.
-*               (2) Settings see "MEASUREMENT SETTINGS" in bsp_env_cfg.h.
-*               (3) All registers are on SPI page 1, so the page is switched only once.
+* Note(s)     : (1) Order as recommended in the datasheet (ch. 3.5): osrs_h first, then osrs_t and osrs_p
+*                   together in one write; the mode register last.
 *********************************************************************************************************
 */
 
@@ -292,13 +205,11 @@ ENV_ERR env_config(const ENV_CALIB *p_calib)
         return (err);
     }
     err = env_write_reg(ENV_REG_CTRL_MEAS,                      /* Temp. + pressure oversampling, sleep */
-                        (CPU_INT08U)((ENV_OSRS_T << ENV_OSRS_T_SHIFT) |
-                                     (ENV_OSRS_P << ENV_OSRS_P_SHIFT) |
-                                      ENV_MODE_SLEEP));
+                        (CPU_INT08U)(ENV_CTRL_MEAS_OSRS | ENV_MODE_SLEEP));
     if (err != ENV_ERR_NONE) {
         return (err);
     }
-    err = env_write_reg(ENV_REG_CONFIG,                         /* IIR filter off, 4-wire SPI           */
+    err = env_write_reg(ENV_REG_CONFIG,                         /* IIR filter off                       */
                         (CPU_INT08U)(ENV_FILTER_OFF << ENV_FILTER_SHIFT));
     if (err != ENV_ERR_NONE) {
         return (err);
@@ -316,7 +227,7 @@ ENV_ERR env_config(const ENV_CALIB *p_calib)
         return (err);
     }
 
-    return (env_write_reg(ENV_REG_CTRL_GAS_1,                   /* Enable gas, use heater step 0        */
+    return (env_write_reg(ENV_REG_CTRL_GAS_1,                   /* Gas on, use heater step 0            */
                           (CPU_INT08U)(ENV_RUN_GAS | ENV_NB_CONV_STEP_0)));
 }
 
@@ -324,49 +235,41 @@ ENV_ERR env_config(const ENV_CALIB *p_calib)
 *********************************************************************************************************
 *                                          env_start_meas()
 *
-* Description : Starts one measurement (temperature, pressure, humidity, gas) in forced mode.
+* Description : Starts one measurement in forced mode. Afterwards the sensor returns to sleep by itself.
 *
 * Argument(s) : none.
 *
 * Return(s)   : ENV_ERR_NONE or ENV_ERR_SPI.
 *
-* Caller(s)   : Application.
+* Caller(s)   : App_EnvMeasure().
 *
-* Note(s)     : (1) The oversampling bits are in the same register as the mode bits, so they are written
-*                   again together with mode = forced (ch. 3.5, step 8).
-*               (2) The function does not wait. The measurement takes longer than one OS tick (heater
-*                   alone 100 ms), so the calling task waits with an OS delay and then calls
-*                   env_read_raw() ("Thou shalt release the CPU").
-*               (3) After the measurement the sensor goes back to sleep mode by itself (table 12).
+* Note(s)     : (1) Oversampling and mode share one register, so the oversampling is written again.
+*               (2) Does not wait for the result: the caller waits with an OS delay and then calls
+*                   env_read_raw() (no blocking in the BSP).
 *********************************************************************************************************
 */
 
 ENV_ERR env_start_meas(CPU_VOID)
 {
     return (env_write_reg(ENV_REG_CTRL_MEAS,                    /* Note 1                               */
-                          (CPU_INT08U)((ENV_OSRS_T << ENV_OSRS_T_SHIFT) |
-                                       (ENV_OSRS_P << ENV_OSRS_P_SHIFT) |
-                                        ENV_MODE_FORCED)));
+                          (CPU_INT08U)(ENV_CTRL_MEAS_OSRS | ENV_MODE_FORCED)));
 }
 
 /*
 *********************************************************************************************************
 *                                           env_read_raw()
 *
-* Description : Reads the raw measurement data and the status bits of field 0.
+* Description : Reads the raw values and status bits of field 0.
 *
 * Argument(s) : p_raw   structure that receives the raw data.
 *
-* Return(s)   : ENV_ERR_NONE    data read (check p_raw->new_data before using the values).
+* Return(s)   : ENV_ERR_NONE    data read (use the values only if p_raw->new_data = DEF_YES).
 *               ENV_ERR_ARG     p_raw is a null pointer.
 *               ENV_ERR_SPI     SPI transfer failed.
 *
-* Caller(s)   : Application, after env_start_meas() and an OS delay.
+* Caller(s)   : App_EnvMeasure().
 *
-* Note(s)     : (1) All of field 0 is read with one multi-byte read, so status and values belong to the
-*                   same measurement (the sensor uses shadow registers, ch. 5.3.5).
-*               (2) new_data = DEF_NO means the measurement is not finished yet: wait and read again.
-*               (3) gas_valid and heat_stab must both be DEF_YES for a usable gas value (ch. 3.7).
+* Note(s)     : (1) The whole field is read at once, so status and values belong to the same measurement.
 *********************************************************************************************************
 */
 
@@ -385,7 +288,7 @@ ENV_ERR env_read_raw(ENV_RAW *p_raw)
     if (err != ENV_ERR_NONE) {
         return (err);
     }
-                                                                /* Status (Note 2)                      */
+
     p_raw->new_data  = ((fld[ENV_REG_MEAS_STATUS_0 - ENV_FIELD0_START] & ENV_NEW_DATA) != 0u) ? DEF_YES : DEF_NO;
 
     p_raw->press_adc = env_u20(fld[ENV_REG_PRESS_MSB  - ENV_FIELD0_START],    /* 20 bit pressure      */
@@ -401,10 +304,131 @@ ENV_ERR env_read_raw(ENV_RAW *p_raw)
     p_raw->gas_adc   = (CPU_INT16U)(((CPU_INT16U)fld[ENV_REG_GAS_R_MSB - ENV_FIELD0_START] << ENV_GAS_MSB_SHIFT) |
                                     ((CPU_INT16U)gas_lsb >> ENV_GAS_LSB_SHIFT));
     p_raw->gas_range = (CPU_INT08U)(gas_lsb & ENV_GAS_RANGE_MASK);
-    p_raw->gas_valid = ((gas_lsb & ENV_GAS_VALID) != 0u) ? DEF_YES : DEF_NO;  /* Note 3               */
+    p_raw->gas_valid = ((gas_lsb & ENV_GAS_VALID) != 0u) ? DEF_YES : DEF_NO;
     p_raw->heat_stab = ((gas_lsb & ENV_HEAT_STAB) != 0u) ? DEF_YES : DEF_NO;
 
     return (ENV_ERR_NONE);
+}
+
+/*
+*********************************************************************************************************
+*                                          env_read_regs()
+*
+* Description : Reads one or more consecutive registers (switches the SPI page if needed).
+*
+* Argument(s) : reg     full 8-bit address of the first register.
+*
+*               p_buf   buffer for the read bytes.
+*
+*               len     number of registers (at least 1).
+*
+* Return(s)   : ENV_ERR_NONE    registers read.
+*               ENV_ERR_ARG     invalid argument or registers on two pages (Note 1).
+*               ENV_ERR_SPI     SPI transfer failed.
+*
+* Caller(s)   : env_check_id(), env_read_calib(), env_read_raw().
+*
+* Note(s)     : (1) The page cannot be switched during a transfer, so all registers must be on one page.
+*********************************************************************************************************
+*/
+
+static ENV_ERR env_read_regs(CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U len)
+{
+    CPU_INT16U  last_reg;
+    ENV_ERR     err;
+
+
+    if ((p_buf == (CPU_INT08U *)0) || (len == 0u)) {            /* Check arguments                      */
+        return (ENV_ERR_ARG);
+    }
+
+    last_reg = (CPU_INT16U)((CPU_INT16U)reg + len - 1u);        /* Same page for all? (Note 1)          */
+    if ((last_reg > DEF_INT_08U_MAX_VAL) ||
+        ((reg & ENV_REG_PAGE_SEL_BIT) != ((CPU_INT08U)last_reg & ENV_REG_PAGE_SEL_BIT))) {
+        return (ENV_ERR_ARG);
+    }
+
+    err = env_select_page(reg);
+    if (err != ENV_ERR_NONE) {
+        return (err);
+    }
+
+    return (env_raw_read(reg, p_buf, len));
+}
+
+/*
+*********************************************************************************************************
+*                                          env_write_reg()
+*
+* Description : Writes one register (switches the SPI page if needed).
+*
+* Argument(s) : reg     full 8-bit register address.
+*
+*               val     value to write.
+*
+* Return(s)   : ENV_ERR_NONE or ENV_ERR_SPI.
+*
+* Caller(s)   : env_config(), env_start_meas().
+*
+* Note(s)     : none.
+*********************************************************************************************************
+*/
+
+static ENV_ERR env_write_reg(CPU_INT08U reg, CPU_INT08U val)
+{
+    ENV_ERR err;
+
+
+    err = env_select_page(reg);
+    if (err != ENV_ERR_NONE) {
+        return (err);
+    }
+
+    return (env_raw_write(reg, val));
+}
+
+/*
+*********************************************************************************************************
+*                                         env_select_page()
+*
+* Description : Activates the SPI page of the given register.
+*
+* Argument(s) : reg     full 8-bit address of the register that is accessed next.
+*
+* Return(s)   : ENV_ERR_NONE or ENV_ERR_SPI.
+*
+* Caller(s)   : env_read_regs(), env_write_reg().
+*
+* Note(s)     : (1) The current page is read from the sensor instead of being kept in a variable: no
+*                   global variable needed, and always correct, even after a sensor reset.
+*               (2) The status register is reachable from both pages, so it can always be accessed.
+*               (3) Only the page bit is changed, the other status bits are kept.
+*********************************************************************************************************
+*/
+
+static ENV_ERR env_select_page(CPU_INT08U reg)
+{
+    CPU_INT08U  status;
+    CPU_INT08U  status_new;
+    ENV_ERR     err;
+
+
+    err = env_raw_read(ENV_REG_STATUS, &status, 1u);            /* Read current page (Notes 1, 2)       */
+    if (err != ENV_ERR_NONE) {
+        return (err);
+    }
+
+    if ((reg & ENV_REG_PAGE_SEL_BIT) != 0u) {                   /* Register on page 0                   */
+        status_new = (CPU_INT08U)(status & (CPU_INT08U)~ENV_STATUS_MEM_PAGE);
+    } else {                                                    /* Register on page 1                   */
+        status_new = (CPU_INT08U)(status | ENV_STATUS_MEM_PAGE);
+    }
+
+    if (status_new == status) {                                 /* Already on the right page            */
+        return (ENV_ERR_NONE);
+    }
+
+    return (env_raw_write(ENV_REG_STATUS, status_new));         /* Switch page (Note 3)                 */
 }
 
 /*
@@ -413,19 +437,18 @@ ENV_ERR env_read_raw(ENV_RAW *p_raw)
 *
 * Description : Reads registers on the currently active page (no page switch).
 *
-* Argument(s) : reg     full 8-bit register address, only the lower 7 bits are sent.
+* Argument(s) : reg     register address, only the lower 7 bits are sent.
 *
 *               p_buf   buffer for the read bytes.
 *
-*               len     number of registers to read.
+*               len     number of registers.
 *
 * Return(s)   : ENV_ERR_NONE or ENV_ERR_SPI.
 *
 * Caller(s)   : env_read_regs(), env_select_page().
 *
-* Note(s)     : (1) Control byte = 7-bit address with bit 7 = 1 (read), datasheet ch. 6.3. The byte
-*                   received while sending it has no meaning.
-*               (2) Each dummy byte clocks one register value in.
+* Note(s)     : (1) Control byte = address with bit 7 = 1 (read). The sensor then sends the registers one
+*                   after the other (auto-increment): one dummy byte clocks in one register.
 *********************************************************************************************************
 */
 
@@ -436,16 +459,16 @@ static ENV_ERR env_raw_read(CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U len)
     CPU_BOOLEAN ok;
 
 
-    spi_select();                                               /* CS low: start of transaction         */
+    spi_select();                                               /* CS low: start of transfer            */
 
     ok = spi_transfer((CPU_INT08U)((reg & ENV_SPI_ADDR_MASK) | ENV_SPI_RW_READ),
-                      &ignored);                                /* Send control byte (Note 1)           */
+                      &ignored);                                /* Control byte (Note 1)                */
 
-    for (i = 0u; (i < len) && (ok == DEF_OK); i++) {            /* Read data bytes (Note 2)             */
+    for (i = 0u; (i < len) && (ok == DEF_OK); i++) {            /* Data bytes (Note 1)                  */
         ok = spi_transfer(SPI_DUMMY_BYTE, &p_buf[i]);
     }
 
-    spi_deselect();                                             /* CS high: end of transaction          */
+    spi_deselect();                                             /* CS high: end of transfer             */
 
     if (ok != DEF_OK) {
         return (ENV_ERR_SPI);
@@ -459,7 +482,7 @@ static ENV_ERR env_raw_read(CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U len)
 *
 * Description : Writes one register on the currently active page (no page switch).
 *
-* Argument(s) : reg     full 8-bit register address, only the lower 7 bits are sent.
+* Argument(s) : reg     register address, only the lower 7 bits are sent.
 *
 *               val     value to write.
 *
@@ -467,8 +490,7 @@ static ENV_ERR env_raw_read(CPU_INT08U reg, CPU_INT08U *p_buf, CPU_INT08U len)
 *
 * Caller(s)   : env_write_reg(), env_select_page().
 *
-* Note(s)     : (1) Control byte = 7-bit address with bit 7 = 0 (write), datasheet ch. 6.3, picture 10.
-*                   The masking clears bit 7, so no extra write bit is needed.
+* Note(s)     : (1) Control byte = address with bit 7 = 0 (write); the mask clears bit 7.
 *********************************************************************************************************
 */
 
@@ -478,15 +500,15 @@ static ENV_ERR env_raw_write(CPU_INT08U reg, CPU_INT08U val)
     CPU_BOOLEAN ok;
 
 
-    spi_select();                                               /* CS low: start of transaction         */
+    spi_select();                                               /* CS low: start of transfer            */
 
-    ok = spi_transfer((CPU_INT08U)(reg & ENV_SPI_ADDR_MASK),    /* Send control byte (Note 1)           */
+    ok = spi_transfer((CPU_INT08U)(reg & ENV_SPI_ADDR_MASK),    /* Control byte (Note 1)                */
                       &ignored);
     if (ok == DEF_OK) {
-        ok = spi_transfer(val, &ignored);                       /* Send data byte                       */
+        ok = spi_transfer(val, &ignored);                       /* Data byte                            */
     }
 
-    spi_deselect();                                             /* CS high: end of transaction          */
+    spi_deselect();                                             /* CS high: end of transfer             */
 
     if (ok != DEF_OK) {
         return (ENV_ERR_SPI);
@@ -496,65 +518,17 @@ static ENV_ERR env_raw_write(CPU_INT08U reg, CPU_INT08U val)
 
 /*
 *********************************************************************************************************
-*                                         env_select_page()
-*
-* Description : Activates the SPI memory page on which the given register lies.
-*
-* Argument(s) : reg     full 8-bit register address of the register that is accessed next.
-*
-* Return(s)   : ENV_ERR_NONE or ENV_ERR_SPI.
-*
-* Caller(s)   : env_read_regs(), env_write_reg().
-*
-* Note(s)     : (1) Full address 0x80..0xFF -> page 0 (spi_mem_page = 0),
-*                   full address 0x00..0x7F -> page 1 (spi_mem_page = 1), table 21.
-*               (2) The status register is reachable from both pages (ch. 5.3.1.4), so it can be
-*                   accessed without switching first.
-*               (3) The current page is read from the sensor instead of being stored in a variable.
-*                   This costs one short SPI read, but needs no global variable and stays correct
-*                   even after a sensor reset.
-*               (4) Read-modify-write, so that the other bits of the status register are kept.
-*********************************************************************************************************
-*/
-
-static ENV_ERR env_select_page(CPU_INT08U reg)
-{
-    CPU_INT08U  status;
-    CPU_INT08U  status_new;
-    ENV_ERR     err;
-
-
-    err = env_raw_read(ENV_REG_STATUS, &status, 1u);            /* Read current page (Notes 2, 3)       */
-    if (err != ENV_ERR_NONE) {
-        return (err);
-    }
-
-    if ((reg & ENV_REG_PAGE_SEL_BIT) != 0u) {                   /* Register on page 0 (Note 1)          */
-        status_new = (CPU_INT08U)(status & (CPU_INT08U)~ENV_STATUS_MEM_PAGE);
-    } else {                                                    /* Register on page 1 (Note 1)          */
-        status_new = (CPU_INT08U)(status | ENV_STATUS_MEM_PAGE);
-    }
-
-    if (status_new == status) {                                 /* Already on the right page            */
-        return (ENV_ERR_NONE);
-    }
-
-    return (env_raw_write(ENV_REG_STATUS, status_new));         /* Switch page (Note 4)                 */
-}
-
-/*
-*********************************************************************************************************
 *                                             env_u16()
 *
-* Description : Combines two register bytes into one 16 bit value.
+* Description : Combines two register bytes into one 16 bit value: (msb << 8) | lsb.
 *
-* Argument(s) : msb     most significant byte.
+* Argument(s) : msb     high byte.
 *
-*               lsb     least significant byte.
+*               lsb     low byte.
 *
-* Return(s)   : (msb << 8) | lsb
+* Return(s)   : 16 bit value.
 *
-* Caller(s)   : env_read_calib().
+* Caller(s)   : env_read_calib(), env_read_raw().
 *
 * Note(s)     : none.
 *********************************************************************************************************
@@ -577,11 +551,11 @@ static CPU_INT16U env_u16(CPU_INT08U msb, CPU_INT08U lsb)
 *
 *               xlsb    bits 3:0 in xlsb<7:4>.
 *
-* Return(s)   : (msb << 12) | (lsb << 4) | (xlsb >> 4)
+* Return(s)   : 20 bit value.
 *
 * Caller(s)   : env_read_raw().
 *
-* Note(s)     : (1) Datasheet ch. 5.3.5.1 / 5.3.5.2.
+* Note(s)     : none.
 *********************************************************************************************************
 */
 

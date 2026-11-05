@@ -12,7 +12,6 @@
 #define BSP_ENV_H
 
 #include <cpu.h>
-#include <bsp_spi.h>
 #include <bsp_env_cfg.h>
 
 /*

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Pin_1.h  
+* File Name: SDA_spo2.h  
 * Version 2.20
 *
 * Description:
@@ -15,8 +15,8 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PINS_Pin_1_ALIASES_H) /* Pins Pin_1_ALIASES_H */
-#define CY_PINS_Pin_1_ALIASES_H
+#if !defined(CY_PINS_SDA_spo2_ALIASES_H) /* Pins SDA_spo2_ALIASES_H */
+#define CY_PINS_SDA_spo2_ALIASES_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
@@ -25,12 +25,12 @@
 /***************************************
 *              Constants        
 ***************************************/
-#define Pin_1_0			(Pin_1__0__PC)
-#define Pin_1_0_INTR	((uint16)((uint16)0x0001u << Pin_1__0__SHIFT))
+#define SDA_spo2_0			(SDA_spo2__0__PC)
+#define SDA_spo2_0_INTR	((uint16)((uint16)0x0001u << SDA_spo2__0__SHIFT))
 
-#define Pin_1_INTR_ALL	 ((uint16)(Pin_1_0_INTR))
+#define SDA_spo2_INTR_ALL	 ((uint16)(SDA_spo2_0_INTR))
 
-#endif /* End Pins Pin_1_ALIASES_H */
+#endif /* End Pins SDA_spo2_ALIASES_H */
 
 
 /* [] END OF FILE */

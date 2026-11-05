@@ -28,13 +28,12 @@
 */
 
 #define SPI_CS_ACTIVE           0u      /* Chip select is active low (BME688 datasheet ch. 6.3)        */
-#define SPI_CS_INACTIVE         1u      /* Idle level of CS, also set as initial state in TopDesign    */
+#define SPI_CS_INACTIVE         1u      /* Idle level of CS (also initial state in TopDesign)          */
 
-#define SPI_DUMMY_BYTE          0x00u   /* Sent while reading: SPI always shifts in and out at once    */
+#define SPI_DUMMY_BYTE          0x00u   /* Sent while reading (SPI sends and receives at once)         */
 
-#define SPI_BYTE_WAIT_LOOPS_MAX 1000u   /* Upper bound for waiting on one received byte. One byte at   */
-                                        /* 1 Mbit/s takes 8 us, the loop runs far faster -> 1000       */
-                                        /* passes only run out if the SPI hardware hangs.              */
+#define SPI_BYTE_WAIT_LOOPS_MAX 1000u   /* Max. wait loops per byte; only reached if the SPI hardware  */
+                                        /* hangs (one byte takes 8 us at 1 Mbit/s)                     */
 
 /*
 *********************************************************************************************************

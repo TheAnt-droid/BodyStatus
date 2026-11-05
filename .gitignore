@@ -36,3 +36,6 @@
 # Betriebssystem-Dateien
 .DS_Store
 Thumbs.db
+
+# Editor-Einstellungen (VS Code), pro Benutzer
+**/.vscode/

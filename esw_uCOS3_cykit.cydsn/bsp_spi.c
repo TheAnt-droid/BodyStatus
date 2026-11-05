@@ -22,9 +22,8 @@
 *
 * Caller(s)   : BSP_PostInit().
 *
-* Note(s)     : (1) CS is also configured as "initial drive state = high" in TopDesign, so the sensor
-*                   is not selected between reset and this call. Setting it here again keeps the
-*                   start state correct even if the TopDesign setting is changed by mistake.
+* Note(s)     : (1) CS is also "initial drive state = high" in TopDesign, so the sensor is not selected
+*                   between reset and this call. Set here again so the start state is defined in code too.
 *********************************************************************************************************
 */
 
@@ -44,12 +43,11 @@ CPU_VOID init_spi(CPU_VOID)
 *
 * Return(s)   : none.
 *
-* Caller(s)   : Sensor drivers (bsp_env.c).
+* Caller(s)   : env_raw_read(), env_raw_write().
 *
-* Note(s)     : (1) Old bytes in the receive FIFO would otherwise be read as the answer of the new
-*                   transaction.
-*               (2) CS is driven by software and not by the SPIM component, so that CS stays low for
-*                   the whole multi-byte transfer (needed for the auto-increment read of the BME688).
+* Note(s)     : (1) Otherwise old bytes would be read as the answer of the new transfer.
+*               (2) CS is driven by software, not by SPIM_1, so it stays low for a whole multi-byte
+*                   transfer (auto-increment read of the BME688).
 *********************************************************************************************************
 */
 
@@ -69,7 +67,7 @@ CPU_VOID spi_select(CPU_VOID)
 *
 * Return(s)   : none.
 *
-* Caller(s)   : Sensor drivers (bsp_env.c).
+* Caller(s)   : env_raw_read(), env_raw_write().
 *
 * Note(s)     : none.
 *********************************************************************************************************
@@ -93,16 +91,13 @@ CPU_VOID spi_deselect(CPU_VOID)
 * Return(s)   : DEF_OK      byte transferred.
 *               DEF_FAIL    invalid pointer or no byte received within SPI_BYTE_WAIT_LOOPS_MAX.
 *
-* Caller(s)   : Sensor drivers (bsp_env.c).
+* Caller(s)   : env_raw_read(), env_raw_write().
 *
-* Note(s)     : (1) SPI is full duplex: for every byte sent, one byte is received. This is also how a
-*                   read works - a dummy byte is sent to clock in the answer.
-*               (2) The function waits actively for the received byte. This is a deliberate exception
-*                   to "no blocking functions in the BSP": one byte takes a few microseconds, far less
-*                   than one OS tick (1 ms), so suspending the task with an OS call is not possible
-*                   here. The wait is bounded, so the function cannot hang forever.
-*               (3) Not re-entrant: all calls of one transaction must come from the same task. Protect
-*                   the bus with a mutex if a second task ever uses SPI.
+* Note(s)     : (1) SPI is full duplex: every byte sent clocks in one byte. To read, a dummy byte is sent.
+*               (2) Deliberate exception to "no blocking in the BSP": one byte takes a few microseconds,
+*                   far less than one OS tick (1 ms), so an OS delay is not possible. The wait is
+*                   limited by SPI_BYTE_WAIT_LOOPS_MAX, so it cannot hang.
+*               (3) Not re-entrant: a second SPI user would need a mutex.
 *********************************************************************************************************
 */
 
