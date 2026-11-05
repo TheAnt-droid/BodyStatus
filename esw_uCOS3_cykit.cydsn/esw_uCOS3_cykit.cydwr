@@ -251,6 +251,7 @@
   <Data key="DataVersionKey" value="2" />
   <Group key="DWRInstGuidMapping">
     <Group key="Pin">
+      <Data key="06fa3179-eb0d-4970-93d3-5d8ec2cd2a2d" value="Pin_B" />
       <Data key="8d318d8b-cf7b-4b6b-b02c-ab1c5c49d0ba" value="push_button" />
       <Data key="9ac44954-25c7-4792-9f06-dd28ac4abcee" value="SPI_CS" />
       <Data key="83b2fde2-60ad-45b6-9e5c-cb3baa6e3f9a" value="SCLK_1" />
@@ -260,7 +261,9 @@
       <Data key="1425177d-0d0e-4468-8bcc-e638e5509a9b" value="Rx_1" />
       <Data key="aebd1c44-8d23-413c-92af-251f5ba1ba6c" value="MISO_1" />
       <Data key="e851a3b9-efb8-48be-bbb8-b303b216c393" value="SDA_spo2" />
+      <Data key="ed0bc4cd-4afe-4588-9638-cf7466e4530d" value="Pin_R" />
       <Data key="ed092b9b-d398-4703-be89-cebf998501f6" value="Tx_1" />
+      <Data key="fd9418e4-700f-4f19-b652-4810f084b83d" value="Pin_G" />
       <Data key="ff67644d-f9b8-4858-af2a-b7ceb765e501" value="MOSI_1" />
     </Group>
   </Group>
@@ -3397,6 +3400,11 @@
     <Group key="e851a3b9-efb8-48be-bbb8-b303b216c393">
       <Group key="0">
         <Data key="Port Format" value="12,1" />
+      </Group>
+    </Group>
+    <Group key="ed0bc4cd-4afe-4588-9638-cf7466e4530d">
+      <Group key="0">
+        <Data key="Port Format" value="2,7" />
       </Group>
     </Group>
     <Group key="ed092b9b-d398-4703-be89-cebf998501f6">
