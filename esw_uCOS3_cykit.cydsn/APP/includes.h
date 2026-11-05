@@ -65,6 +65,8 @@
 #include  <bsp_uart.h>
 #include  <bsp_gpio.h>
 #include  <bsp_spi.h>
+#include  <bsp_env.h>
+#include  <bsp_env_calc.h>
 #include  <bsp_os.h>
 #include  <bsp_spo2.h>
 #include  <bsp_spo2_calc.h>

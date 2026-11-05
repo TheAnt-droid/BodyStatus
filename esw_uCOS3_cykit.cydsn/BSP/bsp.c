@@ -1,6 +1,6 @@
 /*
 *********************************************************************************************************
-*                                     MICIRUM BOARD SUPPORT PACKAGE
+*                                     MICRIUM BOARD SUPPORT PACKAGE
 *
 *                             (c) Copyright 2012; Micrium, Inc.; Weston, FL
 *
@@ -18,7 +18,7 @@
 *
 *                                           CYPRESS PSoC5
 *                                              with the
-*                                     CY8CKIT-050 Development Kit
+*                                     CY8CKIT-059 Development Kit
 *
 * Filename      : bsp.c
 * Version       : V1.00
@@ -38,6 +38,7 @@
 
 #include <bsp_uart.h>
 #include <bsp_gpio.h>
+#include <bsp_spi.h>
 
 
 /*
@@ -152,6 +153,7 @@ void  BSP_PostInit (void)
 {
     init_gpio();
     init_uart();
+    init_spi();
 }
 
 
@@ -209,156 +211,25 @@ CPU_INT32U  BSP_CPU_ClkFreq (void)
 
 /*
 *********************************************************************************************************
-*********************************************************************************************************
-*                                              LED FUNCTIONS
-*********************************************************************************************************
-*********************************************************************************************************
-*/
-
-
-/*
-*********************************************************************************************************
-*                                             BSP_LED_On()
-*
-* Description : Turn ON any pin on the board.
-*
-* Argument(s) : led     The ID of the pin to control:
-*
-*                       P1_6    turns ON P1_6 on J1 Pin 23 on the board
-*                       P2_0    turns ON P2_0 on J1 Pin  1 on the board
-*                       P2_1    turns ON P2_1 on J1 Pin  2 on the board (Blue LED)
-*
-* Return(s)   : none.
-*
-* Caller(s)   : Application.
-*
-* Note(s)     : none.
-*********************************************************************************************************
-*/
-
-CPU_INT08U  BSP_LED_On (CPU_INT08U led)
-{
-  CPU_INT08U err = 0;
-  
-  if(led == P1_6){
-    err = gpio_high(PORT1,P1_6);
-  }
-  else if(led == P2_0){
-    err = gpio_high(PORT2,P2_0);
-  }
-  else if(led == P2_1){
-    err = gpio_high(PORT2,P2_1);
-  }
-  else{
-    err++;
-  }
-  return err;
-}
-
-
-/*
-*********************************************************************************************************
-*                                              BSP_LED_Off()
-*
-* Description : Turn OFF any pin on the board.
-*
-* Argument(s) : led     The ID of the pin to control:
-*
-*                       P1_6    turns OFF P1_6 on J1 Pin 23 on the board
-*                       P2_0    turns OFF P2_0 on J1 Pin  1 on the board
-*                       P2_1    turns OFF P2_1 on J1 Pin  2 on the board (Blue LED)
-*
-* Return(s)   : none.
-*
-* Caller(s)   : Application.
-*
-* Note(s)     : none.
-*********************************************************************************************************
-*/
-
-CPU_INT08U  BSP_LED_Off (CPU_INT08U led)
-{
-  CPU_INT08U err = 0;
-  
-  if(led == P1_6){
-    err = gpio_low(PORT1,P1_6);
-  }
-  else if(led == P2_0){
-    err = gpio_low(PORT2,P2_0);
-  }
-  else if(led == P2_1){
-    err = gpio_low(PORT2,P2_1);
-  }
-  else{
-    err++;
-  }
-  return err;
-}
-
-
-/*
-*********************************************************************************************************
-*                                            BSP_LED_Toggle()
-*
-* Description : Turn TOGGLE any pin on the board.
-*
-* Argument(s) : led     The ID of the pin to control:
-*
-*                       P1_6    turns TOGGLE P1_6 on J1 Pin 23 on the board
-*                       P2_0    turns TOGGLE P2_0 on J1 Pin  1 on the board
-*                       P2_1    turns TOGGLE P2_1 on J1 Pin  2 on the board (Blue LED)
-*
-* Return(s)   : none.
-*
-* Caller(s)   : Application.
-*
-* Note(s)     : Not re-entrant.
-*********************************************************************************************************
-*/
-
-CPU_INT08U  BSP_LED_Toggle (CPU_INT08U led)
-{
-  CPU_INT08U err = 0;
-  static CPU_BOOLEAN toggle_status = 0;
-  
-  if(!toggle_status){
-    err = BSP_LED_On(led);
-    toggle_status = 1;
-  }
-  else if(toggle_status){
-    err = BSP_LED_Off(led);
-    toggle_status = 0;
-  }
-  return err;
-}
-
-
-/*
-*********************************************************************************************************
 *                                            BSP_PB_StatusGet()
 *
-* Description : Get the current status of the push button.
+* Description : Get the current level of the push button.
 *
-* Argument(s) : pb    Push button identifier.
+* Argument(s) : pb    Push button identifier:
 *
-*                           P2_2 Board SW1 (on J1 Pin 3)
+*                           P2_2    SW1 of the Click Shield (switch S1 on "BTN")
 *
-* Return(s)   : DEF_ON    If the push button is pressed.
-*               DEF_OFF   If the push button is not pressed
-*               -1        If error occured
+* Return(s)   : 0     button pressed  (pin pulled to GND).
+*               1     button released (internal pull-up).
+*               -1    unknown push button identifier.
 *
-* Caller(s)   : application
+* Caller(s)   : App_TaskBUTTON().
 *
-* Note(s)     : none.
+* Note(s)     : (1) Returns the raw pin level (low-active), NOT DEF_ON / DEF_OFF.
 *********************************************************************************************************
 */
 
 CPU_INT08S  BSP_PB_StatusGet (CPU_INT08U  pb)
 {
-  if(pb == P2_2){
-    return gpio_read(PORT2, P2_2);    
-  }
-  else{
-    return -1;
-  }
+    return (gpio_read(PORT2, pb));                              /* -1 if pb is not P2_2                 */
 }
