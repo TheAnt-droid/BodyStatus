@@ -219,7 +219,7 @@ int main(void)
     }else{
         spo2_sleep();
     }
-
+    init_pwm();
     OSTaskCreate((OS_TCB *)&App_TaskStartTCB,                   /* Create the start task                */
                  (CPU_CHAR *)"Start",
                  (OS_TASK_PTR)App_TaskStart,
@@ -837,6 +837,7 @@ static  void  App_TaskLED (void *p_arg)
     
     LED_off("r"); //Rote LED aus wenn kein herzschlag
     oximeter = (oxi_results*)OSTaskQPend(0, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //wartet unendlich auf neue daten
+    
     OximeterData(oximeter,&os_err,&hr,&spo2);
     continue; // springt sofort zum anfang zurück und prüft auf hr
   }
@@ -851,7 +852,11 @@ static  void  App_TaskLED (void *p_arg)
       LED_on("r");
       
       oximeter=(oxi_results*)OSTaskQPend((OS_TICK)flash, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //solange die rote LED an ist, wartet sie und bekommt dann neue daten
-      OximeterData(oximeter,&os_err,&hr,&spo2);
+        if (os_err == OS_ERR_TIMEOUT){
+            hr=0;
+            oximeter->spo2=0;
+        }  
+    OximeterData(oximeter,&os_err,&hr,&spo2);
       if(hr==0) continue; //sofort abbrechen und wieder von vorne anfangen
       
       LED_off("r"); //sonst normal ausschalten 
@@ -884,23 +889,27 @@ static void App_TaskLEDE_ENV(void *p_arg)
   CPU_TS         ts;
   OS_FLAGS env_flag_meas;
   OS_FLAGS env_flag_status;
-  static CPU_INT08U blink_counter=0;
+  static CPU_INT32U blink_counter=0;
   CPU_BOOLEAN led_blink_state=DEF_FALSE;
   (void)p_arg;
   
   while(DEF_TRUE){
-    env_flag_status=OSFlagPend(&App_Flags, APP_FLAG_ENV_ALL,(OS_TICK)0, OS_OPT_NONE, &ts, &os_err);
-    env_flag_meas=OSFlagPend(&App_Flags, APP_FLAG_MEAS_ACTIVE,(OS_TICK)0, OS_OPT_NONE, &ts, &os_err);
+    env_flag_status=OSFlagPend(&App_Flags, APP_FLAG_ENV_ALL,(OS_TICK)0, (OS_OPT_PEND_NON_BLOCKING | OS_OPT_PEND_FLAG_SET_ANY ), &ts, &os_err);
+    env_flag_meas=OSFlagPend(&App_Flags, APP_FLAG_MEAS_ACTIVE,(OS_TICK)0, (OS_OPT_PEND_NON_BLOCKING | OS_OPT_PEND_FLAG_SET_ANY), &ts, &os_err);
     CPU_BOOLEAN meas_active = ((env_flag_meas & APP_FLAG_MEAS_ACTIVE)!=0);  
     CPU_BOOLEAN status_active = ((env_flag_status & APP_FLAG_ENV_ALL)!=0);
+    App_UartPrint(status_active ? "1" : "0");
     if(!meas_active){
       LED_off("g");
       blink_counter=0;
     }
-    else{
+    else{ 
+        env_flag_status = OSFlagPend(&App_Flags, APP_FLAG_ENV_ALL, (OS_TICK)50, OS_OPT_PEND_BLOCKING, &ts, &os_err);
       if(status_active){
+        LED_on("g");
+      }else{
         blink_counter++;
-        if(blink_counter>=25){
+        if(blink_counter>=50){
           blink_counter=0;
           led_blink_state=!led_blink_state;
         }

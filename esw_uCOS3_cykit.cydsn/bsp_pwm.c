@@ -39,6 +39,7 @@ void LED_on(const char* color)
   }
 
 }
+
 void LED_spo2(CPU_INT32U *buffer_spo2){
   
 PWM_B_WriteCompare((CPU_INT08U)((*buffer_spo2*255)/100));
