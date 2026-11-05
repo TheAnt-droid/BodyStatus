@@ -826,6 +826,7 @@ static  void  App_TaskLED (void *p_arg)
   CPU_INT32U spo2=0;
   CPU_INT32U hr=0;
   CPU_INT32U flash=100;
+  CPU_INT32U no_data_ms=0;
 
   
   /* prevent compiler warnings */
@@ -852,16 +853,31 @@ static  void  App_TaskLED (void *p_arg)
       LED_on("r");
       
       oximeter=(oxi_results*)OSTaskQPend((OS_TICK)flash, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //solange die rote LED an ist, wartet sie und bekommt dann neue daten
-        if (os_err == OS_ERR_TIMEOUT){
-            hr=0;
-            oximeter->spo2=0;
-        }  
-    OximeterData(oximeter,&os_err,&hr,&spo2);
+        if (os_err == OS_ERR_TIMEOUT){       /* normal case: on-time over, no new value  */
+          no_data_ms += flash;             /* (oximeter is NULL here -> do not use it!) */
+      } else {
+          no_data_ms = 0;
+      }
+      OximeterData(oximeter,&os_err,&hr,&spo2);
       if(hr==0) continue; //sofort abbrechen und wieder von vorne anfangen
       
       LED_off("r"); //sonst normal ausschalten 
       oximeter=(oxi_results*)OSTaskQPend((OS_TICK)RedLED_rest, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //solange die rote LED aus, wartet sie und bekommt dann neue daten
+      
+    if (os_err == OS_ERR_TIMEOUT){
+          no_data_ms += RedLED_rest;
+      } else {
+          no_data_ms = 0;
+      }
       OximeterData(oximeter,&os_err,&hr,&spo2);
+
+      if (no_data_ms >= 2500){             /* no values for 2.5 s: finger away / measurement off */
+          CPU_INT32U spo2_off = 0;
+          hr = 0;
+          no_data_ms = 0;
+          LED_spo2(&spo2_off);             /* blue off, red is switched off at the top (hr == 0)  */
+      }
+      
       
       }
       
@@ -894,32 +910,36 @@ static void App_TaskLEDE_ENV(void *p_arg)
   (void)p_arg;
   
   while(DEF_TRUE){
-    env_flag_status=OSFlagPend(&App_Flags, APP_FLAG_ENV_ALL,(OS_TICK)0, (OS_OPT_PEND_NON_BLOCKING | OS_OPT_PEND_FLAG_SET_ANY ), &ts, &os_err);
-    env_flag_meas=OSFlagPend(&App_Flags, APP_FLAG_MEAS_ACTIVE,(OS_TICK)0, (OS_OPT_PEND_NON_BLOCKING | OS_OPT_PEND_FLAG_SET_ANY), &ts, &os_err);
-    CPU_BOOLEAN meas_active = ((env_flag_meas & APP_FLAG_MEAS_ACTIVE)!=0);  
-    CPU_BOOLEAN status_active = ((env_flag_status & APP_FLAG_ENV_ALL)!=0);
-    App_UartPrint(status_active ? "1" : "0");
-    if(!meas_active){
+    env_flag_status = OSFlagPend(&App_Flags, (APP_FLAG_MEAS_ACTIVE | APP_FLAG_ENV_ALL), (OS_TICK)0,
+                                 (OS_OPT_PEND_FLAG_SET_ANY | OS_OPT_PEND_NON_BLOCKING), &ts, &os_err);
+    if (os_err == OS_ERR_PEND_WOULD_BLOCK) {     /* none of the flags set: expected, not an error */
+        env_flag_status = 0;
+    } else {
+        App_ErrCheck(os_err);
+    }
+
+    if (((env_flag_status & APP_FLAG_MEAS_ACTIVE) == 0u) ||   /* not measuring / no valid values */
+        ((env_flag_status & APP_FLAG_ENV_VALID)   == 0u)) {
       LED_off("g");
       blink_counter=0;
+      led_blink_state=DEF_FALSE;
     }
-    else{ 
-        env_flag_status = OSFlagPend(&App_Flags, APP_FLAG_ENV_ALL, (OS_TICK)50, OS_OPT_PEND_BLOCKING, &ts, &os_err);
-      if(status_active){
+    else if ((env_flag_status & APP_FLAG_ENV_OK) != 0u) {     /* valid + OK: permanently on */
+      LED_on("g");
+    }
+    else {                                                     /* valid but not OK: blink */
+      blink_counter++;
+      if(blink_counter>=25){                                   /* 25 x 20 ms = 0.5 s */
+        blink_counter=0;
+        led_blink_state=!led_blink_state;
+      }
+      if(led_blink_state){
         LED_on("g");
-      }else{
-        blink_counter++;
-        if(blink_counter>=50){
-          blink_counter=0;
-          led_blink_state=!led_blink_state;
-        }
-        if(led_blink_state){
-          LED_on("g");
-        } else{
-          LED_off("g");
-        }
+      } else{
+        LED_off("g");
       }
     }
+    
     
       OSTimeDlyHMSM(0, 0, 0, 20, 
                   OS_OPT_TIME_HMSM_STRICT, 
