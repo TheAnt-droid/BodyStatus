@@ -90,9 +90,6 @@ static  void  App_ObjCreate  (void);
 int  main (void)
 {
   OS_ERR  os_err;
-  PWM_B_Start();
-  PWM_G_Start();
-  PWM_R_Start();
 
   BSP_PreInit();                                              /* Perform BSP pre-initialization.                      */
 
@@ -305,8 +302,6 @@ static  void  App_TaskLED (void *p_arg)
   CPU_INT32U spo2=0;
   CPU_INT32U hr=0;
   CPU_INT32U flash=100;
-  CPU_INT08U redLED_ON=255;
-  CPU_INT08U redLED_OFF=0;
 
   
   /* prevent compiler warnings */
@@ -315,7 +310,8 @@ static  void  App_TaskLED (void *p_arg)
   /* start of the endless loop */
   while (DEF_TRUE) {
    if(hr==0){
-    PWM_R_WriteCompare(0); //Rote LED aus wenn kein herzschlag
+    
+    LED_off("r"); //Rote LED aus wenn kein herzschlag
     oximeter = (oxi_results*)OSTaskQPend(0, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //wartet unendlich auf neue daten
     OximeterData(oximeter,&os_err,&hr,&spo2);
     continue; // springt sofort zum anfang zurück und prüft auf hr
@@ -328,13 +324,13 @@ static  void  App_TaskLED (void *p_arg)
       }
       CPU_INT32U RedLED_rest= beat_duration-flash;
       
-      PWM_R_WriteCompare(redLED_ON);
+      LED_on("r");
       
       oximeter=(oxi_results*)OSTaskQPend((OS_TICK)flash, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //solange die rote LED an ist, wartet sie und bekommt dann neue daten
       OximeterData(oximeter,&os_err,&hr,&spo2);
       if(hr==0) continue; //sofort abbrechen und wieder von vorne anfangen
       
-      PWM_R_WriteCompare(redLED_OFF); //sonst normal ausschalten 
+      LED_off("r"); //sonst normal ausschalten 
       oximter=(oxi_results*)OSTaskQPend((OS_TICK)RedLED_rest, OS_OPT_PEND_BLOCKING, &msg_size, &ts, &os_err ); //solange die rote LED aus, wartet sie und bekommt dann neue daten
       OximeterData(oximeter,&os_err,&hr,&spo2);
       
@@ -366,9 +362,6 @@ static  void  App_TaskLED (void *p_arg)
 static void App_TaskENV_LED(void *p_arg)
 {
   OS_ERR os_err;
-
-  CPU_INT08U greenLED_ON=255;
-  CPU_INT08U greenLED_OFF=0;
   CPU_TS         ts;
   OS_FLAGS env_flag_meas;
   OS_FLAGS env_flag_status;
@@ -382,7 +375,7 @@ static void App_TaskENV_LED(void *p_arg)
     CPU_BOOLEAN meas_active = ((env_flag_meas & APP_FLAG_MEAS_ACTIVE)!=0);  
     CPU_BOOLEAN status_active = ((env_flag_status & APP_FLAG_ENV_ALL)!=0);
     if(!meas_active){
-      PWM_G_WriteCompare(greenLED_OFF);
+      LED_off("g");
       blink_counter=0;
     }
     else{
@@ -393,9 +386,9 @@ static void App_TaskENV_LED(void *p_arg)
           led_blink_state=!led_blink_state;
         }
         if(led_blink_state){
-          PWM_G_WriteCompare(greenLED_ON);
+          LED_on("g");
         } else{
-          PWM_G_WriteCompare(greenLED_OFF);
+          LED_off("g");
         }
       }
     }
