@@ -1,30 +1,35 @@
-/* ========================================
- *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
- *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
- *
- * ========================================
- */
+/*
+*********************************************************************************************************
+*                                  OXIMETER 5 CLICK (MAX30102) - DRIVER
+*
+* Filename      : bsp_spo2.c
+*
+* Description   : I2C access to the MAX30102 on the Oximeter 5 Click (I2C_spo2, mikroBUS slot 2): register
+*                 read/write, sensor check, configuration, reading the FIFO, sleep and wake.
+*                 Pins (Click Shield): SCL P12_0, SDA P12_1
+*
+* Note(s)       : (1) Not re-entrant (I2C bus). The driver is only used by main() before the OS starts and
+*                     by App_TaskSPO2(), so no mutex is needed.
+*********************************************************************************************************
+*/
 #include <bsp_spo2.h>
 /*
 *********************************************************************************************************
 *                                       spo2_read_register()
 *
-* Description : Reads a register from the sensor
+* Description : Reads one register of the sensor.
 *
-* Argument(s) : slave_addr ... Adress of the sensor
-                reg ... Register Adress
-                *value ... Result from read
+* Argument(s) : slave_addr  I2C address of the sensor.
 *
-* Return(s)   : spo2_err
+*               reg         register address.
 *
-* Caller(s)   : Application.
+*               value       receives the register value.
 *
-* Note(s)     : Not re-entrant.
+* Return(s)   : SPO2_ERR_NONE, or the error of the failed I2C step.
+*
+* Caller(s)   : Check_Sensor(), sample_available()
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 CPU_INT08U spo2_read_register(CPU_INT08U slave_addr, CPU_INT08U reg, CPU_INT08U *value)
@@ -32,52 +37,39 @@ CPU_INT08U spo2_read_register(CPU_INT08U slave_addr, CPU_INT08U reg, CPU_INT08U 
     CPU_INT08U err_status;
     SPO2_ERROR spo2_err = SPO2_ERR_NONE;
 
-    if (value == NULL){
-        /*Error handling*/
+    if (value == NULL){                                         /* No target for the value              */
         spo2_err = SPO2_ERR_VAL;
         return spo2_err;
     }
-    /*Starts transmission to slave*/
+                                                                /* Start, slave address in write mode   */
     err_status = I2C_spo2_MasterSendStart(slave_addr, I2C_spo2_WRITE_XFER_MODE);
     
-    // Checks if error
-    if (err_status != I2C_spo2_MSTR_NO_ERROR)
+    if (err_status != I2C_spo2_MSTR_NO_ERROR)                   /* Error: stop the transfer             */
     {
         I2C_spo2_MasterSendStop();
         spo2_err = SPO2_ERR_MASTER_SEND;
         return spo2_err;
     }
-    /*Tells sensor which register it wants to read*/
-    err_status = I2C_spo2_MasterWriteByte(reg);
+    err_status = I2C_spo2_MasterWriteByte(reg);                 /* Register address                     */
 
-    // Checks if error
-    if (err_status != I2C_spo2_MSTR_NO_ERROR)
+    if (err_status != I2C_spo2_MSTR_NO_ERROR)                   /* Error: stop the transfer             */
     {
         I2C_spo2_MasterSendStop();
         spo2_err = SPO2_ERR_MASTER_WRITE;
         return spo2_err;
     }
-    /* Tells the sensor to "remember" which register it wants to read and restarts transmission in read mode. */
+                                                                /* Repeated start in read mode, the     */
+                                                                /* sensor keeps the register address    */
     err_status = I2C_spo2_MasterSendRestart(slave_addr, I2C_spo2_READ_XFER_MODE);
 
-    // Checks if error
-    if (err_status != I2C_spo2_MSTR_NO_ERROR)
+    if (err_status != I2C_spo2_MSTR_NO_ERROR)                   /* Error: stop the transfer             */
     {
         I2C_spo2_MasterSendStop();
         spo2_err = SPO2_ERR_MASTER_SEND;
         return spo2_err;
     }
-    /*Reads out register byte*/
-    *value = I2C_spo2_MasterReadByte(I2C_spo2_NAK_DATA);
+    *value = I2C_spo2_MasterReadByte(I2C_spo2_NAK_DATA);        /* Read one byte, NAK = last byte       */
 
-    // Checks if error
-    if (err_status != I2C_spo2_MSTR_NO_ERROR)
-    {
-        I2C_spo2_MasterSendStop();
-        spo2_err = SPO2_ERR_MASTER_READ;
-        return spo2_err;
-    }
-    /*Stops transmission*/
     I2C_spo2_MasterSendStop();
     return spo2_err;
 }
@@ -85,24 +77,26 @@ CPU_INT08U spo2_read_register(CPU_INT08U slave_addr, CPU_INT08U reg, CPU_INT08U 
 *********************************************************************************************************
 *                                       spo2_write_register()
 *
-* Description : Writes to register from the sensor
+* Description : Writes one register of the sensor.
 *
-* Argument(s) : slave_addr ... Adress of the sensor
-                reg ... Register Adress
-                config_value ... Value that should be written to register
+* Argument(s) : slave_addr    I2C address of the sensor.
 *
-* Return(s)   : spo2_err
+*               reg           register address.
 *
-* Caller(s)   : Application.
+*               config_value  value to write.
 *
-* Note(s)     : Not re-entrant.
+* Return(s)   : SPO2_ERR_NONE, or the error of the failed I2C step.
+*
+* Caller(s)   : spo2_config(), spo2_sleep(), spo2_wake()
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 CPU_INT08U spo2_write_register(CPU_INT08U slave_addr, CPU_INT08U reg, CPU_INT08U config_value)
 {
     CPU_INT08U err_status;
     SPO2_ERROR spo2_err = SPO2_ERR_NONE;
-    // Who do you want to write to?
+                                                                /* Start, slave address in write mode   */
     err_status = I2C_spo2_MasterSendStart(slave_addr, I2C_spo2_WRITE_XFER_MODE);
     if (err_status != I2C_spo2_MSTR_NO_ERROR)
     {
@@ -110,16 +104,14 @@ CPU_INT08U spo2_write_register(CPU_INT08U slave_addr, CPU_INT08U reg, CPU_INT08U
         spo2_err = SPO2_ERR_MASTER_SEND;
         return spo2_err;
     }
-    // Where do you want to write?
-    err_status = I2C_spo2_MasterWriteByte(reg);
+    err_status = I2C_spo2_MasterWriteByte(reg);                 /* Register address                     */
     if (err_status != I2C_spo2_MSTR_NO_ERROR)
     {
         I2C_spo2_MasterSendStop();
         spo2_err = SPO2_ERR_MASTER_WRITE;
         return spo2_err;
     }
-    // What do you want to write?
-    err_status = I2C_spo2_MasterWriteByte(config_value);
+    err_status = I2C_spo2_MasterWriteByte(config_value);        /* Value                                */
     if (err_status != I2C_spo2_MSTR_NO_ERROR)
     {
         I2C_spo2_MasterSendStop();
@@ -131,28 +123,28 @@ CPU_INT08U spo2_write_register(CPU_INT08U slave_addr, CPU_INT08U reg, CPU_INT08U
 }
 /*
 *********************************************************************************************************
-*                                       spo2_check connection()
+*                                       spo2_check_connection()
 *
-* Description : Checks if a sensor is connected
+* Description : Checks whether a device answers on the I2C address.
 *
-* Argument(s) : slave_addr ... Adress of the sensor
+* Argument(s) : slave_addr  I2C address of the sensor.
 *
-* Return(s)   : spo2_err
+* Return(s)   : SPO2_ERR_NONE, or SPO2_ERR_NO_CONNECTION (the I2C component is stopped then).
 *
-* Caller(s)   : Local.
+* Caller(s)   : Check_Sensor()
 *
-* Note(s)     : Not re-entrant.
+* Note(s)     : none.
 *********************************************************************************************************
 */
 static CPU_INT08U spo2_check_connection(CPU_INT08U slave_addr)
 {
     CPU_INT08U err_status;
     SPO2_ERROR spo2_err = SPO2_ERR_NONE;
-    /*Starts transmission to sensor*/
+                                                                /* Start: does a device acknowledge the */
+                                                                /* address?                             */
     err_status = I2C_spo2_MasterSendStart(slave_addr, I2C_spo2_WRITE_XFER_MODE);
 
-    if (err_status != I2C_spo2_MSTR_NO_ERROR){
-        /*If transmission not successful*/
+    if (err_status != I2C_spo2_MSTR_NO_ERROR){                  /* No answer                            */
         I2C_spo2_Stop();
         I2C_spo2_MasterSendStop();
         return SPO2_ERR_NO_CONNECTION;
@@ -165,32 +157,33 @@ static CPU_INT08U spo2_check_connection(CPU_INT08U slave_addr)
 *********************************************************************************************************
 *                                       Check_Sensor()
 *
-* Description : Checks if oximeter 5 click is connected
+* Description : Checks whether the Oximeter 5 Click is connected: the device answers and its ID register
+*               holds the expected ID.
 *
-* Argument(s) : slave_addr ... Adress of the sensor
-                sensor_reg ... register where sensor id is stored
-                sensor_id ... expected sensor id
-                *spo2_err ... error pointer
+* Argument(s) : slave_addr  I2C address of the sensor.
+*
+*               sensor_reg  register with the ID.
+*
+*               sensor_id   expected ID.
+*
+*               spo2_err    receives SPO2_ERR_NONE or the error.
 *
 * Return(s)   : none
 *
-* Caller(s)   : Application.
+* Caller(s)   : main()
 *
-* Note(s)     : Not re-entrant.
+* Note(s)     : none.
 *********************************************************************************************************
 */
 void Check_Sensor(CPU_INT08U slave_addr, CPU_INT08U sensor_reg, CPU_INT08U sensor_id, SPO2_ERROR *spo2_err)
 {
     CPU_INT08U read_id;
-    /*Is a sensor connected?*/
-    *spo2_err = spo2_check_connection(slave_addr);
-    if (*spo2_err != SPO2_ERR_NONE){
-        /*Error Handling*/
+    *spo2_err = spo2_check_connection(slave_addr);              /* Does a device answer?                */
+    if (*spo2_err != SPO2_ERR_NONE){                            /* No device                            */
         return;
     }
-    else
+    else                                                        /* Device answers: is it the MAX30102?  */
     {
-        /*If sensor connected check if it is the oximeter 5 click*/
         *spo2_err = spo2_read_register(slave_addr, sensor_reg, &read_id);
         if (*spo2_err != SPO2_ERR_NONE)
         {
@@ -210,63 +203,61 @@ void Check_Sensor(CPU_INT08U slave_addr, CPU_INT08U sensor_reg, CPU_INT08U senso
 *********************************************************************************************************
 *                                       spo2_config()
 *
-* Description : Configures the sensor 
+* Description : Configures FIFO, mode, SpO2 settings and LED currents (bsp_oximeter_cfg.h) and sets the
+*               FIFO indexes to 0.
 *
-* Argument(s) : slave_addr ... Adress of the sensor
-                *spo2_err ... error pointer
+* Argument(s) : slave_addr  I2C address of the sensor.
+*
+*               spo2_err    receives SPO2_ERR_NONE or the error of the first failed write.
 *
 * Return(s)   : none
 *
-* Caller(s)   : Application.
+* Caller(s)   : main()
 *
-* Note(s)     : Not re-entrant.
+* Note(s)     : none.
 *********************************************************************************************************
 */
 void spo2_config(CPU_INT08U slave_addr, SPO2_ERROR *spo2_err)
 {
-    /*Configures the FIFO*/
     *spo2_err = spo2_write_register(slave_addr, FIFO_Config_Reg, FIFO_Config_Val);
     if (*spo2_err != SPO2_ERR_NONE)
     {
         return;
     }
-    /*Configures the MODE*/
     *spo2_err = spo2_write_register(slave_addr, MODE_Config_Reg, MODE_Config_Val);
     if (*spo2_err != SPO2_ERR_NONE)
     {
         return;
     }
-    /*Configures the SPO2*/
     *spo2_err = spo2_write_register(slave_addr, SPO2_Config_Reg, SPO2_Config_Val);
     if (*spo2_err != SPO2_ERR_NONE)
     {
         return;
     }
-    /*Configures the RED LED*/
     *spo2_err = spo2_write_register(slave_addr, LED_PA_1_Config_Reg, LED_PA_1_Config_Val);
     if (*spo2_err != SPO2_ERR_NONE)
     {
         return;
     }
-    /*Configures the IR LED*/
     *spo2_err = spo2_write_register(slave_addr, LED_PA_2_Config_Reg, LED_PA_2_Config_Val);
     if (*spo2_err != SPO2_ERR_NONE)
     {
         return;
     }
     
-    /*Initially sets FIFO Read and Write index to 0*/
-    *spo2_err = spo2_write_register(slave_addr, FIFO_RD_PTR_REG, 0x00);
+                                                                /* Start with an empty FIFO: read/write */
+                                                                /* index and overflow counter = 0       */
+    *spo2_err = spo2_write_register(slave_addr, FIFO_RD_PTR_REG, FIFO_PTR_RESET);
     if (*spo2_err != SPO2_ERR_NONE)
     {
         return;
     }
-    *spo2_err = spo2_write_register(slave_addr, FIFO_WR_PTR_REG, 0x00);
+    *spo2_err = spo2_write_register(slave_addr, FIFO_WR_PTR_REG, FIFO_PTR_RESET);
     if (*spo2_err != SPO2_ERR_NONE)
     {
         return;
     }
-    *spo2_err = spo2_write_register(slave_addr, FIFO_OVF_COUNTER_REG, 0x00);
+    *spo2_err = spo2_write_register(slave_addr, FIFO_OVF_COUNTER_REG, FIFO_PTR_RESET);
     if (*spo2_err != SPO2_ERR_NONE)
     {
         return;
@@ -276,24 +267,27 @@ void spo2_config(CPU_INT08U slave_addr, SPO2_ERROR *spo2_err)
 *********************************************************************************************************
 *                                       spo2_read_fifo_sample()
 *
-* Description : Reads one samples out of the fifo
+* Description : Reads one sample (red and IR, 3 bytes each) from the FIFO.
 *
-* Argument(s) : slave_addr ... Adress of the sensor
-                *red ... value of red reading
-                *ir ... value of ir reading
-                *spo2_err ... error pointer
+* Argument(s) : slave_addr  I2C address of the sensor.
+*
+*               red         receives the red value.
+*
+*               ir          receives the IR value.
+*
+*               spo2_err    receives the error. Not changed on success, so the caller sets it first.
 *
 * Return(s)   : none
 *
-* Caller(s)   : Application.
+* Caller(s)   : App_TaskSPO2()
 *
-* Note(s)     : Not re-entrant.
+* Note(s)     : none.
 *********************************************************************************************************
 */
 void spo2_read_fifo_sample(CPU_INT08U slave_addr, CPU_INT32U *red, CPU_INT32U *ir, SPO2_ERROR *spo2_err)
 {
     CPU_INT08U err_status;
-    CPU_INT08U data[6];
+    CPU_INT08U data[FIFO_SAMPLE_BYTES];
 
     if ((red == NULL) || (ir == NULL))
     {
@@ -302,8 +296,7 @@ void spo2_read_fifo_sample(CPU_INT08U slave_addr, CPU_INT32U *red, CPU_INT32U *i
     }
 
     err_status = I2C_spo2_MasterSendStart(slave_addr, I2C_spo2_WRITE_XFER_MODE);
-    // Checks if error
-    if (err_status != I2C_spo2_MSTR_NO_ERROR)
+    if (err_status != I2C_spo2_MSTR_NO_ERROR)                   /* Error: stop the transfer             */
     {
         I2C_spo2_MasterSendStop();
         *spo2_err = SPO2_ERR_MASTER_SEND;
@@ -312,8 +305,7 @@ void spo2_read_fifo_sample(CPU_INT08U slave_addr, CPU_INT32U *red, CPU_INT32U *i
 
     err_status = I2C_spo2_MasterWriteByte(FIFO_DATA_REG);
 
-    // Checks if error
-    if (err_status != I2C_spo2_MSTR_NO_ERROR)
+    if (err_status != I2C_spo2_MSTR_NO_ERROR)                   /* Error: stop the transfer             */
     {
         I2C_spo2_MasterSendStop();
         *spo2_err = SPO2_ERR_MASTER_WRITE;
@@ -322,52 +314,56 @@ void spo2_read_fifo_sample(CPU_INT08U slave_addr, CPU_INT32U *red, CPU_INT32U *i
 
     err_status = I2C_spo2_MasterSendRestart(slave_addr, I2C_spo2_READ_XFER_MODE);
 
-    // Checks if error
-    if (err_status != I2C_spo2_MSTR_NO_ERROR)
+    if (err_status != I2C_spo2_MSTR_NO_ERROR)                   /* Error: stop the transfer             */
     {
         I2C_spo2_MasterSendStop();
         *spo2_err = SPO2_ERR_MASTER_SEND;
         return;
     }
 
-    for (int i = 0; i <= 4; i++)
-    {
-        /*Reads the first 5 bytes with ACK (to tell the sensor we want to read more bytes)*/
+    for (CPU_INT08U i = 0u; i < (FIFO_SAMPLE_BYTES - 1u); i++)  /* First 5 bytes with ACK: more bytes   */
+    {                                                           /* follow                               */
         data[i] = I2C_spo2_MasterReadByte(I2C_spo2_ACK_DATA);
     }
-    /*Reads the last byte with NAK (to tell the sensor we are done reading)*/
-    data[5] = I2C_spo2_MasterReadByte(I2C_spo2_NAK_DATA);
-    /*Terminates the transmission*/
+                                                                /* Last byte with NAK: end of the read  */
+    data[FIFO_SAMPLE_BYTES - 1u] = I2C_spo2_MasterReadByte(I2C_spo2_NAK_DATA);
     I2C_spo2_MasterSendStop();
     
-    /*Bit shifting to extract red and ir value from each byte*/
-    *red = (((CPU_INT32U)(data[0] & 0x03u)) << 16) | (((CPU_INT32U)data[1]) << 8) | ((CPU_INT32U)data[2]);
+                                                                /* 3 bytes per value, only the lower 18 */
+                                                                /* bits are data (18 bit ADC,           */
+                                                                /* SPO2_Config_Val)                     */
+    *red = (((CPU_INT32U)(data[FIFO_RED_IDX + FIFO_BYTE_MSB] & FIFO_MSB_MASK)) << FIFO_MSB_SHIFT) |
+           (((CPU_INT32U) data[FIFO_RED_IDX + FIFO_BYTE_MID]) << FIFO_MID_SHIFT) |
+            ((CPU_INT32U) data[FIFO_RED_IDX + FIFO_BYTE_LSB]);
 
-    *ir = (((CPU_INT32U)(data[3] & 0x03u)) << 16) | (((CPU_INT32U)data[4]) << 8) | ((CPU_INT32U)data[5]);
+    *ir  = (((CPU_INT32U)(data[FIFO_IR_IDX + FIFO_BYTE_MSB] & FIFO_MSB_MASK)) << FIFO_MSB_SHIFT) |
+           (((CPU_INT32U) data[FIFO_IR_IDX + FIFO_BYTE_MID]) << FIFO_MID_SHIFT) |
+            ((CPU_INT32U) data[FIFO_IR_IDX + FIFO_BYTE_LSB]);
 }
 /*
 *********************************************************************************************************
 *                                       sample_available()
 *
-* Description : Checks if a samples is available
+* Description : Checks with the FIFO read and write index whether new samples are in the FIFO.
 *
-* Argument(s) : slave_addr ... Adress of the sensor
-                *num_samples_available ... number of samples that are ready
-                *spo2_err ... error pointer
+* Argument(s) : slave_addr              I2C address of the sensor.
 *
-* Return(s)   : BOOLEAN
+*               num_samples_available   receives the number of new samples (only set if there are any).
 *
-* Caller(s)   : Application.
+*               spo2_err                receives SPO2_ERR_NONE or the error.
 *
-* Note(s)     : Not re-entrant.
+* Return(s)   : 1 if there are new samples, otherwise 0 (also on an error).
+*
+* Caller(s)   : App_TaskSPO2()
+*
+* Note(s)     : none.
 *********************************************************************************************************
 */
 CPU_BOOLEAN sample_available(CPU_INT08U slave_addr, CPU_INT08U *num_samples_available, SPO2_ERROR *spo2_err)
 {
     CPU_INT08U read_idx;
     CPU_INT08U write_idx;
-    CPU_INT08U ovf;
-    /*Checks read and write value*/
+                                                                /* Read and write index of the FIFO     */
     *spo2_err = spo2_read_register(slave_addr, FIFO_RD_PTR_REG, &read_idx);
     if (*spo2_err != SPO2_ERR_NONE)
     {
@@ -379,20 +375,19 @@ CPU_BOOLEAN sample_available(CPU_INT08U slave_addr, CPU_INT08U *num_samples_avai
         return 0;
     }
 
-    /*If read is smaller than write, then there are samples available*/
-    if (read_idx < write_idx)
+    if (read_idx < write_idx)                                   /* Read < write: new samples            */
     {
         *num_samples_available = write_idx - read_idx;
         return 1;
     }
-    /*If read is bigger than write, there are samples available, but the buffer has looped around*/
+                                                                /* Read > write: new samples, the write */
+                                                                /* index has wrapped around             */
     if (read_idx > write_idx)
     {
         *num_samples_available = FIFO_SAMPLE_BUFFER - read_idx + write_idx;
         return 1;
     }
-    /*If they are the same, no new samples*/
-    if (read_idx == write_idx)
+    if (read_idx == write_idx)                                  /* Read == write: no new samples        */
     {
         return 0;
     }
@@ -402,15 +397,15 @@ CPU_BOOLEAN sample_available(CPU_INT08U slave_addr, CPU_INT08U *num_samples_avai
 *********************************************************************************************************
 *                                       spo2_sleep()
 *
-* Description : Sends the sensor to sleep mode
+* Description : Puts the sensor into shutdown mode (LEDs off) while nothing is measured.
 *
 * Argument(s) : none
 *
-* Return(s)   : spo2_error
+* Return(s)   : SPO2_ERR_NONE or the error of spo2_write_register().
 *
-* Caller(s)   : Application.
+* Caller(s)   : main(), App_TaskSPO2()
 *
-* Note(s)     : Not re-entrant.
+* Note(s)     : none.
 *********************************************************************************************************
 */
 SPO2_ERROR spo2_sleep(void) {
@@ -422,33 +417,33 @@ SPO2_ERROR spo2_sleep(void) {
 *********************************************************************************************************
 *                                       spo2_wake()
 *
-* Description : Wakes the sensor
+* Description : Clears the FIFO indexes and wakes the sensor up, so the measurement starts without old
+*               samples.
 *
 * Argument(s) : none
 *
-* Return(s)   : spo2_error
+* Return(s)   : SPO2_ERR_NONE or the error of the first failed write.
 *
-* Caller(s)   : Application.
+* Caller(s)   : App_TaskSPO2()
 *
-* Note(s)     : Not re-entrant.
+* Note(s)     : none.
 *********************************************************************************************************
 */
 SPO2_ERROR spo2_wake(void) {
 
     SPO2_ERROR err;
 
-    // Reset FIFO
-    err = spo2_write_register(SPO2_ADDRESS, FIFO_RD_PTR_REG, 0x00);
+                                                                /* Start with an empty FIFO             */
+    err = spo2_write_register(SPO2_ADDRESS, FIFO_RD_PTR_REG, FIFO_PTR_RESET);
     if(err != SPO2_ERR_NONE) return err;
 
-    err = spo2_write_register(SPO2_ADDRESS, FIFO_WR_PTR_REG, 0x00);
+    err = spo2_write_register(SPO2_ADDRESS, FIFO_WR_PTR_REG, FIFO_PTR_RESET);
     if(err != SPO2_ERR_NONE) return err;
 
-    err = spo2_write_register(SPO2_ADDRESS, FIFO_OVF_COUNTER_REG, 0x00);
+    err = spo2_write_register(SPO2_ADDRESS, FIFO_OVF_COUNTER_REG, FIFO_PTR_RESET);
     if(err != SPO2_ERR_NONE) return err;
 
-    // Wake Sensor
-    return spo2_write_register(SPO2_ADDRESS,
+    return spo2_write_register(SPO2_ADDRESS,                    /* Wake up                              */
                                MODE_Config_Reg,
                                MODE_Config_Val);
 }

@@ -1,13 +1,11 @@
-/* ========================================
- *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
- *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
- *
- * ========================================
+/*
+*********************************************************************************************************
+*                                OXIMETER 5 CLICK (MAX30102) - HEART RATE
+*
+* Filename      : bsp_hr.h
+*
+* Description   : Heart rate from the IR samples in the ring buffer, see bsp_hr.c.
+*********************************************************************************************************
 */
 #ifndef  BSP_HR_H
 #define  BSP_HR_H

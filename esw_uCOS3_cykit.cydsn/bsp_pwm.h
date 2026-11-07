@@ -38,8 +38,8 @@
 */
 
 void init_pwm (void);
-void LED_off  (const char *color);
-void LED_on   (const char *color);
+void LED_off  (const CPU_CHAR *color);
+void LED_on   (const CPU_CHAR *color);
 void LED_spo2 (CPU_INT32U *buffer_spo2);
 
 #endif

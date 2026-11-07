@@ -111,7 +111,7 @@
 *
 * Caller(s)   : Application.
 *
-* Note(s)     : (1) This funtion initializes peripherals required before the OS is initialized (e.g interrupt controller
+* Note(s)     : (1) This function initializes peripherals required before the OS is initialized (e.g interrupt controller
 *                   external memory.
 *********************************************************************************************************
 */
@@ -146,7 +146,7 @@ void BSP_PreInit (void)
 *
 * Caller(s)   : Application.
 *
-* Note(s)     : (1) This funtion initilize peripherlas that requires the OS to be initialized.
+* Note(s)     : (1) This function initializes peripherals that require the OS to be initialized.
 *********************************************************************************************************
 */
 

@@ -34,7 +34,7 @@ void init_pwm(void)
     PWM_G_Start();
     PWM_B_Start();
 
-    PWM_R_WriteCompare(PWM_DUTY_OFF);                           /* LED off after reset (Note 1)         */
+    PWM_R_WriteCompare(PWM_DUTY_OFF);                           /* LED off after reset                  */
     PWM_G_WriteCompare(PWM_DUTY_OFF);
     PWM_B_WriteCompare(PWM_DUTY_OFF);
 }
@@ -55,7 +55,7 @@ void init_pwm(void)
 *********************************************************************************************************
 */
 
-void LED_off(const char *color)
+void LED_off(const CPU_CHAR *color)
 {
     if (strcmp(color, "r") == 0)
     {
@@ -67,7 +67,7 @@ void LED_off(const char *color)
     }
 }
 
-void LED_on(const char *color)
+void LED_on(const CPU_CHAR *color)
 {
     if (strcmp(color, "r") == 0)
     {

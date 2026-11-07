@@ -5,8 +5,8 @@
 * Filename      : bsp_spi.h
 *
 * Description   : Wrapper around the PSoC SPI master SPIM_1 and the chip select pin SPI_CS.
-*                 Only this file talks to the generated SPI APIs - sensor drivers (bsp_env.c)
-*                 use the functions below.
+*                 Only this file talks to the generated SPI APIs, the sensor driver (bsp_env.c)
+*                 uses the functions below.
 *
 * Pins (Click Shield, SPI of mikroBUS slot 1):
 *                 MOSI P2_3, MISO P12_2 (via switch S2 "SPI Bridge" = ON), SCLK P12_3, CS P12_4
