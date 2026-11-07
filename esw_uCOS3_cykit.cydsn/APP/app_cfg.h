@@ -49,9 +49,10 @@
 *                    3      start task      - only initialisation, then sleeps
 *                    4      button task     - short, must react immediately
 *                    5, 6   SpO2 tasks      - reading the sensor FIFO is time critical
-*                    7      LED task        - heartbeat pulse must stay in time
-*                    8      environment     - measures every few seconds, not time critical
-*                    9..13  free
+*                    7      LED task        - red/blue, heartbeat pulse must stay in time
+*                    8      LED_ENV task    - green, reads the flags every 20 ms
+*                    9      environment     - measures every 3 s, not time critical
+*                    10..13 free
 *                    14     statistic task  (os_cfg_app.h, OS_CFG_PRIO_MAX-2 as recommended in appendix B)
 *                    15     idle task       (OS_CFG_PRIO_MAX-1, set by the kernel)
 *********************************************************************************************************
@@ -62,7 +63,8 @@
 #define APP_CFG_TASK_SPO2_PRIO 5u
 #define APP_CFG_TASK_SPO2CALC_PRIO 6u
 #define APP_CFG_TASK_LED_PRIO 7u
-#define APP_CFG_TASK_ENV_PRIO 8u
+#define APP_CFG_TASK_LEDE_PRIO 8u
+#define APP_CFG_TASK_ENV_PRIO 9u
 
 /*
 *********************************************************************************************************
@@ -72,10 +74,11 @@
 */
 
 #define APP_CFG_TASK_START_STK_SIZE 128u
-#define APP_CFG_TASK_LED_STK_SIZE 64u
 #define APP_CFG_TASK_BUTTON_STK_SIZE 64u
 #define APP_CFG_TASK_SPO2_STK_SIZE 128u
-#define APP_CFG_TASK_SPO2CALC_STK_SIZE 512u
+#define APP_CFG_TASK_SPO2CALC_STK_SIZE 1024u                    /* local spo2_buffer alone is 402 entries */
+#define APP_CFG_TASK_LED_STK_SIZE 128u
+#define APP_CFG_TASK_LEDE_STK_SIZE 64u
 #define APP_CFG_TASK_ENV_STK_SIZE 256u
 
 
@@ -90,6 +93,9 @@
 
 #define APP_CFG_TASK_LED_STK_SIZE_PCT_FULL 90u
 #define APP_CFG_TASK_LED_STK_SIZE_LIMIT (APP_CFG_TASK_LED_STK_SIZE * (100u - APP_CFG_TASK_LED_STK_SIZE_PCT_FULL)) / 100u
+
+#define APP_CFG_TASK_LEDE_STK_SIZE_PCT_FULL 90u
+#define APP_CFG_TASK_LEDE_STK_SIZE_LIMIT (APP_CFG_TASK_LEDE_STK_SIZE * (100u - APP_CFG_TASK_LEDE_STK_SIZE_PCT_FULL)) / 100u
 
 #define APP_CFG_TASK_BUTTON_STK_SIZE_PCT_FULL 90u
 #define APP_CFG_TASK_BUTTON_STK_SIZE_LIMIT (APP_CFG_TASK_BUTTON_STK_SIZE * (100u - APP_CFG_TASK_BUTTON_STK_SIZE_PCT_FULL)) / 100u

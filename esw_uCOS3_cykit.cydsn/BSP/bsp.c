@@ -39,6 +39,7 @@
 #include <bsp_uart.h>
 #include <bsp_gpio.h>
 #include <bsp_spi.h>
+#include <bsp_pwm.h>
 
 
 /*
@@ -110,7 +111,7 @@
 *
 * Caller(s)   : Application.
 *
-* Note(s)     : (1) This funtion initializes peripherals required before the OS is initialized (e.g interrupt controller
+* Note(s)     : (1) This function initializes peripherals required before the OS is initialized (e.g interrupt controller
 *                   external memory.
 *********************************************************************************************************
 */
@@ -145,7 +146,7 @@ void BSP_PreInit (void)
 *
 * Caller(s)   : Application.
 *
-* Note(s)     : (1) This funtion initilize peripherlas that requires the OS to be initialized.
+* Note(s)     : (1) This function initializes peripherals that require the OS to be initialized.
 *********************************************************************************************************
 */
 
@@ -154,6 +155,7 @@ void  BSP_PostInit (void)
     init_gpio();
     init_uart();
     init_spi();
+    init_pwm();
 }
 
 

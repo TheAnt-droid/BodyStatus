@@ -27,7 +27,7 @@
 
 #define ENV_SPI_RW_READ         0x80u   /* Control byte bit 7: 1 = read, 0 = write                     */
 #define ENV_SPI_ADDR_MASK       0x7Fu   /* Only 7 address bits are sent                                */
-#define ENV_REG_PAGE_SEL_BIT    0x80u   /* Full address bit 7: 1 -> page 0, 0 -> page 1 (Note 1)       */
+#define ENV_REG_PAGE_SEL_BIT    0x80u   /* Full address bit 7: 1 -> page 0, 0 -> page 1                */
 
 /*
 *********************************************************************************************************
@@ -79,9 +79,9 @@
                                         /* ---- Block 2: 0xE1 ... 0xEE (page 0) ---------------------- */
 #define ENV_CALIB2_START        0xE1u
 #define ENV_CALIB2_LEN          14u
-#define ENV_REG_PAR_H2_MSB      0xE1u   /* Note 3                                                      */
+#define ENV_REG_PAR_H2_MSB      0xE1u   /* 8 high bits of par_h2                                       */
 #define ENV_REG_PAR_H1_H2_LSB   0xE2u   /* <3:0> = par_h1 low nibble, <7:4> = par_h2 low nibble        */
-#define ENV_REG_PAR_H1_MSB      0xE3u
+#define ENV_REG_PAR_H1_MSB      0xE3u   /* 8 high bits of par_h1                                       */
 #define ENV_REG_PAR_H3          0xE4u
 #define ENV_REG_PAR_H4          0xE5u
 #define ENV_REG_PAR_H5          0xE6u
@@ -103,8 +103,8 @@
 #define ENV_RES_HEAT_RANGE_SHIFT 4u
 
                                         /* ---- Bit handling ----------------------------------------- */
-#define ENV_BYTE_BITS           8u      /* Note 2                                                      */
-#define ENV_NIBBLE_BITS         4u      /* Note 3                                                      */
+#define ENV_BYTE_BITS           8u      /* 16 bit value = (MSB << 8) | LSB                             */
+#define ENV_NIBBLE_BITS         4u      /* par_h1 / par_h2: 4 low bits                                 */
 #define ENV_NIBBLE_MASK         0x0Fu
 
 /*
@@ -163,7 +163,8 @@ typedef struct {
 #define ENV_OSRS_T_SHIFT        5u
 #define ENV_OSRS_P_SHIFT        2u
 #define ENV_FILTER_SHIFT        2u
-#define ENV_RUN_GAS             0x20u   /* run_gas = bit 5, see settings Note 2                        */
+#define ENV_RUN_GAS             0x20u   /* run_gas: the datasheet gives bit 4 (ch. 5.3.4.7), but the   */
+                                        /* hardware test only measured gas with bit 5                  */
 #define ENV_MODE_SLEEP          0x00u   /* mode = 00: sleep                                            */
 #define ENV_MODE_FORCED         0x01u   /* mode = 01: one measurement, then back to sleep              */
 
@@ -173,16 +174,12 @@ typedef struct {
 *
 * Note(s) : (1) Values of the datasheet example "Quick start - Forced mode": humidity x1, temperature x2,
 *               pressure x16, heater 300 degC for 100 ms. IIR filter off (= reset value).
-*           (2) The datasheet gives run_gas at bit 4 (ch. 5.3.4.7). With bit 4 the hardware
-*               test showed no gas measurement, with bit 5 it works -> bit 5 is used.
-*           (3) gas_wait = factor<7:6> x time<5:0> ms: 0x59 = 01 011001b = 4 x 25 ms = 100 ms.
+*           (2) gas_wait = factor<7:6> x time<5:0> ms: 0x59 = 01 011001b = 4 x 25 ms = 100 ms.
 *               Enough: the heater needs about 20-30 ms to reach its target temperature (ch. 3.6).
-*           (4) The heater code depends slightly on the ambient temperature; a fixed room temperature
-*               is good enough because the heater runs at 300 degC.
 *********************************************************************************************************
 */
 
-#define ENV_OSRS_H              0x01u   /* Humidity oversampling x1 (Note 1)                           */
+#define ENV_OSRS_H              0x01u   /* Humidity oversampling x1                                    */
 #define ENV_OSRS_T              0x02u   /* Temperature oversampling x2                                 */
 #define ENV_OSRS_P              0x05u   /* Pressure oversampling x16                                   */
 #define ENV_FILTER_OFF          0x00u   /* IIR filter off                                              */
@@ -192,8 +189,9 @@ typedef struct {
                                         /* ctrl_meas without mode bits                                 */
 
 #define ENV_HEAT_TARGET_DEGC    300     /* Heater target temperature in degC                           */
-#define ENV_HEAT_AMB_DEGC       25      /* Assumed ambient temperature in degC (Note 4)                */
-#define ENV_GAS_WAIT_100MS      0x59u   /* Heater-on time 100 ms (Note 3)                              */
+#define ENV_HEAT_AMB_DEGC       25      /* Assumed ambient temperature in degC. The heater code only   */
+                                        /* depends slightly on it, a fixed value is enough at 300 degC */
+#define ENV_GAS_WAIT_100MS      0x59u   /* Heater-on time 100 ms                                       */
 
 /*
 *********************************************************************************************************
@@ -208,15 +206,15 @@ typedef struct {
 #define ENV_FIELD0_START        0x1Du
 #define ENV_FIELD0_LEN          17u
 #define ENV_REG_MEAS_STATUS_0   0x1Du   /* new_data<7>                                                 */
-#define ENV_REG_PRESS_MSB       0x1Fu   /* Note 2                                                      */
+#define ENV_REG_PRESS_MSB       0x1Fu   /* 20 bit                                                      */
 #define ENV_REG_PRESS_LSB       0x20u
 #define ENV_REG_PRESS_XLSB      0x21u
-#define ENV_REG_TEMP_MSB        0x22u   /* Note 2                                                      */
+#define ENV_REG_TEMP_MSB        0x22u   /* 20 bit                                                      */
 #define ENV_REG_TEMP_LSB        0x23u
 #define ENV_REG_TEMP_XLSB       0x24u
 #define ENV_REG_HUM_MSB         0x25u   /* 16 bit                                                      */
 #define ENV_REG_HUM_LSB         0x26u
-#define ENV_REG_GAS_R_MSB       0x2Cu   /* Note 3                                                      */
+#define ENV_REG_GAS_R_MSB       0x2Cu   /* 10 bit                                                      */
 #define ENV_REG_GAS_R_LSB       0x2Du   /* gas_r<7:6>, gas_valid<5>, heat_stab<4>, gas_range<3:0>      */
 
 #define ENV_NEW_DATA            0x80u   /* Measurement finished                                        */
@@ -224,10 +222,10 @@ typedef struct {
 #define ENV_HEAT_STAB           0x10u   /* Heater reached its target temperature                       */
 #define ENV_GAS_RANGE_MASK      0x0Fu
 
-#define ENV_MSB_SHIFT_20BIT     12u     /* Note 2                                                      */
-#define ENV_LSB_SHIFT_20BIT     4u
-#define ENV_GAS_MSB_SHIFT       2u      /* Note 3                                                      */
-#define ENV_GAS_LSB_SHIFT       6u
+#define ENV_MSB_SHIFT_20BIT     12u     /* 20 bit values: msb -> bits 19:12                            */
+#define ENV_LSB_SHIFT_20BIT     4u      /*                lsb -> bits 11:4                             */
+#define ENV_GAS_MSB_SHIFT       2u      /* 10 bit gas value: msb -> bits 9:2                           */
+#define ENV_GAS_LSB_SHIFT       6u      /*                   lsb<7:6> -> bits 1:0                      */
 
 /*
 *********************************************************************************************************

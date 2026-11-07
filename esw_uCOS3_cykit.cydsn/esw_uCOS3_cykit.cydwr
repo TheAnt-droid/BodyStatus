@@ -256,9 +256,12 @@
       <Data key="83b2fde2-60ad-45b6-9e5c-cb3baa6e3f9a" value="SCLK_1" />
       <Data key="95c737b6-f76a-4af3-90b6-5578b0000aea" value="SCL_spo2" />
       <Data key="264be2d3-9481-494b-8d9c-c1905a45e9cc" value="Pin_1" />
+      <Data key="2082d8fd-1b79-4bec-a6b2-f238f8189086" value="Pin_R" />
       <Data key="3008a664-3b5f-4e62-909b-37270b037897" value="Pin_2" />
+      <Data key="31548ebe-c277-4a84-ae81-e8862cf1a49a" value="Pin_B" />
       <Data key="1425177d-0d0e-4468-8bcc-e638e5509a9b" value="Rx_1" />
       <Data key="aebd1c44-8d23-413c-92af-251f5ba1ba6c" value="MISO_1" />
+      <Data key="df3454b4-da04-4ac7-a41a-e3493d92d47a" value="Pin_G" />
       <Data key="e851a3b9-efb8-48be-bbb8-b303b216c393" value="SDA_spo2" />
       <Data key="ed092b9b-d398-4703-be89-cebf998501f6" value="Tx_1" />
       <Data key="ff67644d-f9b8-4858-af2a-b7ceb765e501" value="MOSI_1" />
@@ -3373,6 +3376,11 @@
         <Data key="Port Format" value="1,6" />
       </Group>
     </Group>
+    <Group key="2082d8fd-1b79-4bec-a6b2-f238f8189086">
+      <Group key="0">
+        <Data key="Port Format" value="2,7" />
+      </Group>
+    </Group>
     <Group key="3008a664-3b5f-4e62-909b-37270b037897">
       <Group key="0">
         <Data key="Port Format" value="2,0" />
@@ -3384,6 +3392,11 @@
         <Data key="Port Format" value="2,2" />
       </Group>
     </Group>
+    <Group key="31548ebe-c277-4a84-ae81-e8862cf1a49a">
+      <Group key="0">
+        <Data key="Port Format" value="2,1" />
+      </Group>
+    </Group>
     <Group key="1425177d-0d0e-4468-8bcc-e638e5509a9b">
       <Group key="0">
         <Data key="Port Format" value="12,6" />
@@ -3392,6 +3405,11 @@
     <Group key="aebd1c44-8d23-413c-92af-251f5ba1ba6c">
       <Group key="0">
         <Data key="Port Format" value="12,2" />
+      </Group>
+    </Group>
+    <Group key="df3454b4-da04-4ac7-a41a-e3493d92d47a">
+      <Group key="0">
+        <Data key="Port Format" value="1,2" />
       </Group>
     </Group>
     <Group key="e851a3b9-efb8-48be-bbb8-b303b216c393">

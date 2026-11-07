@@ -1,42 +1,42 @@
-/* ========================================
- *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
- *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
- *
- * ========================================
- */
+/*
+*********************************************************************************************************
+*                             OXIMETER 5 CLICK (MAX30102) - SPO2 CALCULATION
+*
+* Filename      : bsp_spo2_calc.c
+*
+* Description   : Ring buffer for the red/IR samples and SpO2 from their DC and AC parts. Used only by
+*                 App_TaskSPO2CALC().
+*********************************************************************************************************
+*/
 #include <bsp_spo2_calc.h>
 /*
 *********************************************************************************************************
 *                                       spo2_get_chronological_index()
 *
-* Description : Gets the chronological index of a ring buffer
+* Description : Converts a position in time order (0 = oldest sample) into the index of the ring buffer.
 *
-* Argument(s) : *buffer ... the ring buffer
-                idx ... non chronological index
+* Argument(s) : buffer      the ring buffer.
 *
-* Return(s)   : spo2_error
+*               idx         position in time order.
 *
-* Caller(s)   : Local.
+* Return(s)   : Index into buffer->red[] / buffer->ir[].
 *
-* Note(s)     : Not re-entrant.
+* Caller(s)   : spo2_calc_dc(), spo2_calc_ac(), calculate_heartrate() (bsp_hr.c)
+*
+* Note(s)     : (1) Re-entrant: works only on the parameters.
 *********************************************************************************************************
 */
-static CPU_INT16U spo2_get_chronological_index(const spo2_buffer *buffer,CPU_INT16U idx)
+CPU_INT16U spo2_get_chronological_index(const spo2_buffer *buffer, CPU_INT16U idx)
 {
     CPU_INT16U oldest_idx;
-    /*If sample count is smaller than buffer size, the oldest index is still on position 0*/
+                                                                /* Buffer not full yet: the oldest      */
+                                                                /* sample is still at position 0        */
     if (buffer->samples_count < SAMPLE_BUFFER_SIZE)
     {
         oldest_idx = 0;
     }
-    else
-    {
-        /*If sample count is bigger than buffer size, the oldest index is no longer position 0*/
+    else                                                        /* Buffer full: the oldest sample is    */
+    {                                                           /* the next one to be overwritten       */
         oldest_idx = buffer->buffer_idx;
     }
 
@@ -46,17 +46,19 @@ static CPU_INT16U spo2_get_chronological_index(const spo2_buffer *buffer,CPU_INT
 *********************************************************************************************************
 *                                       spo2_add_sample()
 *
-* Description : Adds the newest sample to a buffer
+* Description : Writes the newest sample into the ring buffer. When it is full, the oldest one is overwritten.
 *
-* Argument(s) : red ... value of red 
-                ir ... value of ir 
-                *buffer ... pointer to buffer
+* Argument(s) : red         red value.
+*
+*               ir          IR value.
+*
+*               buffer      the ring buffer.
 *
 * Return(s)   : none
 *
-* Caller(s)   : Application.
+* Caller(s)   : App_TaskSPO2CALC()
 *
-* Note(s)     : Not re-entrant.
+* Note(s)     : (1) Re-entrant: works only on the parameters.
 *********************************************************************************************************
 */
 void spo2_add_sample(CPU_INT32U red, CPU_INT32U ir, spo2_buffer *buffer)
@@ -66,13 +68,13 @@ void spo2_add_sample(CPU_INT32U red, CPU_INT32U ir, spo2_buffer *buffer)
     buffer->ir[buffer->buffer_idx] = ir;
 
     buffer->buffer_idx++;
-    if (buffer->buffer_idx >= SAMPLE_BUFFER_SIZE){
-        /*Resets the index, so the loop starts again (Ring buffer)*/
+    if (buffer->buffer_idx >= SAMPLE_BUFFER_SIZE){              /* End of the array: start again at 0   */
+                                                                /* (ring buffer)                        */
         buffer->buffer_idx = 0;
     }
 
-    if (buffer->samples_count < SAMPLE_BUFFER_SIZE){
-        /*As long as samples count is smaller than the buffer size, increase samples count*/
+    if (buffer->samples_count < SAMPLE_BUFFER_SIZE){            /* Count up to SAMPLE_BUFFER_SIZE, then */
+                                                                /* the buffer is full                   */
         buffer->samples_count++;
     }
 }
@@ -80,18 +82,19 @@ void spo2_add_sample(CPU_INT32U red, CPU_INT32U ir, spo2_buffer *buffer)
 *********************************************************************************************************
 *                                       spo2_calc_dc()
 *
-* Description : Calculates the DC value for ir and red
+* Description : DC part = average of the red and of the IR values in the buffer.
 *
-* Argument(s) : *buffer ... Pointer to buffer
-                *avg_red ... Pointer to average red value
-                *avg_ir ... Pointer to average ir value
-                
+* Argument(s) : buffer      the ring buffer.
 *
-* Return(s)   : BOOLEAN
+*               avg_red     receives the red average.
 *
-* Caller(s)   : Application.
+*               avg_ir      receives the IR average.
 *
-* Note(s)     : Not re-entrant.
+* Return(s)   : 1 if calculated, 0 if the buffer has no valid number of samples.
+*
+* Caller(s)   : App_TaskSPO2CALC()
+*
+* Note(s)     : (1) Re-entrant: works only on the parameters.
 *********************************************************************************************************
 */
 CPU_BOOLEAN spo2_calc_dc(spo2_buffer *buffer, CPU_INT32U *avg_red, CPU_INT32U *avg_ir)
@@ -99,20 +102,19 @@ CPU_BOOLEAN spo2_calc_dc(spo2_buffer *buffer, CPU_INT32U *avg_red, CPU_INT32U *a
     CPU_INT64U red_sum = 0;
     CPU_INT64U ir_sum = 0;
     if (buffer->samples_count == 0 || buffer->samples_count > SAMPLE_BUFFER_SIZE){
-        /*If no or not enough samples have been collected, dont do calculation*/
+                                                                /* No samples or invalid count: no      */
+                                                                /* calculation                          */
         return 0;
     }
 
-    for (CPU_INT16U i = 0; i < buffer->samples_count; i++)
+    for (CPU_INT16U i = 0; i < buffer->samples_count; i++)      /* Sum of all samples in the buffer     */
     {
-        /*Sum up samples inside buffer*/
         CPU_INT16U index = spo2_get_chronological_index(buffer, i);
 
         red_sum += buffer->red[index];
         ir_sum += buffer->ir[index];
     }
-    /*Calculate average*/
-    *avg_red = red_sum / buffer->samples_count;
+    *avg_red = red_sum / buffer->samples_count;                 /* Average                              */
     *avg_ir = ir_sum / buffer->samples_count;
 
     return 1;
@@ -121,32 +123,32 @@ CPU_BOOLEAN spo2_calc_dc(spo2_buffer *buffer, CPU_INT32U *avg_red, CPU_INT32U *a
 *********************************************************************************************************
 *                                       spo2_calc_ac()
 *
-* Description : Calculates the AC value for ir and red
+* Description : AC part = maximum minus minimum (peak to peak) of the red and of the IR values in the buffer.
 *
-* Argument(s) : *buffer ... Pointer to buffer
-                *ac_red ... Pointer to ac red value
-                *ac_ir ... Pointer to ac ir value
-                
+* Argument(s) : buffer      the ring buffer.
+*
+*               ac_red      receives the red AC part.
+*
+*               ac_ir       receives the IR AC part.
 *
 * Return(s)   : none
 *
-* Caller(s)   : Application.
+* Caller(s)   : App_TaskSPO2CALC()
 *
-* Note(s)     : Not re-entrant.
+* Note(s)     : (1) Re-entrant: works only on the parameters.
 *********************************************************************************************************
 */
 void spo2_calc_ac(spo2_buffer *buffer, CPU_INT32U *ac_red, CPU_INT32U *ac_ir)
 {
 
     CPU_INT32U max_red = 0;
-    CPU_INT32U min_red = 0xFFFFFFFFu;
+    CPU_INT32U min_red = DEF_INT_32U_MAX_VAL;
 
     CPU_INT32U max_ir = 0;
-    CPU_INT32U min_ir = 0xFFFFFFFFu;
+    CPU_INT32U min_ir = DEF_INT_32U_MAX_VAL;
 
-    for (CPU_INT16U i = 0; i < buffer->samples_count; i++)
+    for (CPU_INT16U i = 0; i < buffer->samples_count; i++)      /* Highest and lowest red and IR value  */
     {
-        /*Find highest and lowest ir and red*/
         CPU_INT16U index = spo2_get_chronological_index(buffer, i);
 
         if (buffer->red[index] < min_red)
@@ -161,34 +163,33 @@ void spo2_calc_ac(spo2_buffer *buffer, CPU_INT32U *ac_red, CPU_INT32U *ac_ir)
         if (buffer->ir[index] > max_ir)
             max_ir = buffer->ir[index];
     }
-    /*calculate AC*/
-    *ac_red = max_red - min_red;
+    *ac_red = max_red - min_red;                                /* AC = peak to peak                    */
     *ac_ir = max_ir - min_ir;
 }
 /*
 *********************************************************************************************************
 *                                       spo2_calc_ratio()
 *
-* Description : Calculates the ratio between AC and DC
+* Description : Ratio R = (AC_red / DC_red) / (AC_ir / DC_ir), calculated as
+*               (AC_red * DC_ir) / (DC_red * AC_ir).
 *
-* Argument(s) : dc_red ... red result from dc calc
-                dc_ir ... ir result from dc calc
-                ac_red ... red result from ac calc
-                ac_ir ... ir result from ac calc
-                *ratio ... pointer to ratio value
-                
+* Argument(s) : dc_red, dc_ir   DC parts from spo2_calc_dc().
+*
+*               ac_red, ac_ir   AC parts from spo2_calc_ac().
+*
+*               ratio           receives R, 0 if one of the products is 0 (no division by 0).
 *
 * Return(s)   : none
 *
-* Caller(s)   : Application.
+* Caller(s)   : App_TaskSPO2CALC()
 *
-* Note(s)     : Not re-entrant.
+* Note(s)     : (1) Re-entrant: works only on the parameters.
 *********************************************************************************************************
 */
-void spo2_calc_ratio(CPU_INT32U dc_red, CPU_INT32U dc_ir, CPU_INT32U ac_red, CPU_INT32U ac_ir, float *ratio)
+void spo2_calc_ratio(CPU_INT32U dc_red, CPU_INT32U dc_ir, CPU_INT32U ac_red, CPU_INT32U ac_ir, CPU_FP32 *ratio)
 {
-    float top = ac_red * dc_ir;
-    float bot = dc_red * ac_ir;
+    CPU_FP32 top = ac_red * dc_ir;
+    CPU_FP32 bot = dc_red * ac_ir;
     if (top != 0 && bot != 0)
     {
         *ratio = top / bot;
@@ -202,23 +203,24 @@ void spo2_calc_ratio(CPU_INT32U dc_red, CPU_INT32U dc_ir, CPU_INT32U ac_red, CPU
 *********************************************************************************************************
 *                                       spo2_calc_percent()
 *
-* Description : Calculates the percent value based on the ratio of AC and DC
+* Description : SpO2 in percent from the ratio R (calibration curve, see the comment in the function).
 *
-* Argument(s) : ratio ... value from ratio calc
-                *spo2 ... pointer to spo2 value
-                
+* Argument(s) : ratio       R from spo2_calc_ratio().
 *
-* Return(s)   : BOOLEAN
+*               spo2        receives SpO2 in percent.
 *
-* Caller(s)   : Application.
+* Return(s)   : none
 *
-* Note(s)     : Not re-entrant.
+* Caller(s)   : App_TaskSPO2CALC()
+*
+* Note(s)     : (1) Re-entrant: works only on the parameters.
 *********************************************************************************************************
 */
-void spo2_calc_percent(float ratio, CPU_INT08U *spo2)
+void spo2_calc_percent(CPU_FP32 ratio, CPU_INT08U *spo2)
 {
-    /*Prewritten Formula from online*/
-    *spo2 = -45.060f * ratio * ratio + 30.354f * ratio + 94.845f;
+                                                                /* Calibration curve, predefined        */
+                                                                /* formula from online                  */
+    *spo2 = SPO2_CAL_A * ratio * ratio + SPO2_CAL_B * ratio + SPO2_CAL_C;
 }
 
 /* [] END OF FILE */

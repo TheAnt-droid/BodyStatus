@@ -48,8 +48,7 @@ static CPU_INT32U env_calc_gas   (CPU_INT16U gas_adc, CPU_INT08U gas_range);
 *
 * Caller(s)   : env_config().
 *
-* Note(s)     : (1) "<< 8" -> "* 256" and ">> 1" -> "/ 2" (file Note 4).
-*               (2) The largest intermediate value (var2, about 4e8) fits into CPU_INT32S.
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
@@ -67,10 +66,10 @@ CPU_INT08U env_calc_res_heat(const ENV_CALIB *p_calib, CPU_INT32S target_degc, C
         return (0u);
     }
 
-    var1 = ((amb_degc * (CPU_INT32S)p_calib->par_g3) / 10) * 256;               /* Note 1              */
-    var2 = ((CPU_INT32S)p_calib->par_g1 + 784) *                                /* Note 2              */
+    var1 = ((amb_degc * (CPU_INT32S)p_calib->par_g3) / 10) * 256;               /* "<< 8" -> "* 256"   */
+    var2 = ((CPU_INT32S)p_calib->par_g1 + 784) *                                /* max. about 4e8, fits*/
            (((((((CPU_INT32S)p_calib->par_g2 + 154009) * target_degc * 5) / 100) + 3276800) / 10));
-    var3 = var1 + (var2 / 2);                                                   /* Note 1              */
+    var3 = var1 + (var2 / 2);                                                   /* ">> 1" -> "/ 2"     */
     var4 = var3 / ((CPU_INT32S)p_calib->res_heat_range + 4);
     var5 = (131 * (CPU_INT32S)p_calib->res_heat_val) + 65536;
     res_heat_x100 = ((var4 / var5) - 250) * 34;
@@ -96,8 +95,7 @@ CPU_INT08U env_calc_res_heat(const ENV_CALIB *p_calib, CPU_INT32S target_degc, C
 *
 * Caller(s)   : App_EnvMeasure().
 *
-* Note(s)     : (1) Temperature first: pressure needs t_fine, humidity the compensated temperature.
-*               (2) The gas value is only usable if gas_valid and heat_stab are both set (ch. 3.7).
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
@@ -115,11 +113,14 @@ CPU_BOOLEAN env_calc_data(const ENV_CALIB *p_calib, const ENV_RAW *p_raw, ENV_DA
         return (DEF_FAIL);
     }
 
-    p_data->temp_c100 = env_calc_temp(p_calib, p_raw->temp_adc, &t_fine);          /* Note 1           */
+                                                                /* Temperature first: pressure needs    */
+                                                                /* t_fine, humidity the temperature     */
+    p_data->temp_c100 = env_calc_temp(p_calib, p_raw->temp_adc, &t_fine);
     p_data->press_pa  = env_calc_press(p_calib, p_raw->press_adc, t_fine);
     p_data->hum_m1000 = env_calc_hum(p_calib, p_raw->hum_adc, p_data->temp_c100);
     p_data->gas_ohm   = env_calc_gas(p_raw->gas_adc, p_raw->gas_range);
-    p_data->gas_ok    = ((p_raw->gas_valid == DEF_YES) &&                          /* Note 2           */
+    p_data->gas_ok    = ((p_raw->gas_valid == DEF_YES) &&                          /* Usable only with */
+                                                                                   /* both bits (3.7)  */
                          (p_raw->heat_stab == DEF_YES)) ? DEF_YES : DEF_NO;
 
     return (DEF_OK);
@@ -141,7 +142,7 @@ CPU_BOOLEAN env_calc_data(const ENV_CALIB *p_calib, const ENV_RAW *p_raw, ENV_DA
 *
 * Caller(s)   : env_calc_data().
 *
-* Note(s)     : (1) "par_t3 << 4" -> "* 16" (file Note 4).
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
@@ -155,7 +156,7 @@ static CPU_INT32S env_calc_temp(const ENV_CALIB *p_calib, CPU_INT32U temp_adc, C
 
     var1   = ((CPU_INT32S)temp_adc >> 3) - ((CPU_INT32S)p_calib->par_t1 * 2);
     var2   = (var1 * (CPU_INT32S)p_calib->par_t2) >> 11;
-    var3   = ((((var1 >> 1) * (var1 >> 1)) >> 12) * ((CPU_INT32S)p_calib->par_t3 * 16)) >> 14;    /* Note 1 */
+    var3   = ((((var1 >> 1) * (var1 >> 1)) >> 12) * ((CPU_INT32S)p_calib->par_t3 * 16)) >> 14;    /* << 4  */
     t_fine = var2 + var3;
 
     *p_t_fine = t_fine;
@@ -178,9 +179,7 @@ static CPU_INT32S env_calc_temp(const ENV_CALIB *p_calib, CPU_INT32U temp_adc, C
 *
 * Caller(s)   : env_calc_data().
 *
-* Note(s)     : (1) "<< n" of signed parameters -> "* 2^n" (file Note 4).
-*               (2) press_comp is unsigned as in the datasheet: "* 3125" would overflow a signed value.
-*               (3) var1 = 0 only with invalid calibration data; protects the division.
+* Note(s)     : (1) "<< n" of signed parameters is written as "* 2^n".
 *********************************************************************************************************
 */
 
@@ -194,19 +193,22 @@ static CPU_INT32U env_calc_press(const ENV_CALIB *p_calib, CPU_INT32U press_adc,
 
     var1 = (t_fine >> 1) - 64000;
     var2 = ((((var1 >> 2) * (var1 >> 2)) >> 11) * (CPU_INT32S)p_calib->par_p6) >> 2;
-    var2 = var2 + ((var1 * (CPU_INT32S)p_calib->par_p5) * 2);                                 /* Note 1 */
-    var2 = (var2 >> 2) + ((CPU_INT32S)p_calib->par_p4 * 65536);                               /* Note 1 */
+    var2 = var2 + ((var1 * (CPU_INT32S)p_calib->par_p5) * 2);
+    var2 = (var2 >> 2) + ((CPU_INT32S)p_calib->par_p4 * 65536);
     var1 = (((((var1 >> 2) * (var1 >> 2)) >> 13) *
-             ((CPU_INT32S)p_calib->par_p3 * 32)) >> 3) +                                       /* Note 1 */
+             ((CPU_INT32S)p_calib->par_p3 * 32)) >> 3) +
            (((CPU_INT32S)p_calib->par_p2 * var1) >> 1);
     var1 = var1 >> 18;
     var1 = ((32768 + var1) * (CPU_INT32S)p_calib->par_p1) >> 15;
 
-    if (var1 == 0) {                                            /* Note 3                               */
+    if (var1 == 0) {                                            /* Only with invalid calibration data:  */
+                                                                /* protects the division               */
         return (0u);
     }
 
-    press_comp = (CPU_INT32U)(1048576 - (CPU_INT32S)press_adc);                               /* Note 2 */
+                                                                /* Unsigned as in the datasheet: * 3125 */
+                                                                /* would overflow a signed value        */
+    press_comp = (CPU_INT32U)(1048576 - (CPU_INT32S)press_adc);
     press_comp = (press_comp - (CPU_INT32U)(var2 >> 12)) * 3125u;
     if (press_comp >= (1u << 30)) {
         press_comp = (press_comp / (CPU_INT32U)var1) << 1;
@@ -220,7 +222,7 @@ static CPU_INT32U env_calc_press(const ENV_CALIB *p_calib, CPU_INT32U press_adc,
             (CPU_INT32S)(press_comp >> 8) * (CPU_INT32S)p_calib->par_p10) >> 17;
 
     return ((CPU_INT32U)((CPU_INT32S)press_comp +
-                         ((var1 + var2 + var3 + ((CPU_INT32S)p_calib->par_p7 * 128)) >> 4)));     /* Note 1 */
+                         ((var1 + var2 + var3 + ((CPU_INT32S)p_calib->par_p7 * 128)) >> 4)));
 }
 
 /*
@@ -239,9 +241,7 @@ static CPU_INT32U env_calc_press(const ENV_CALIB *p_calib, CPU_INT32U press_adc,
 *
 * Caller(s)   : env_calc_data().
 *
-* Note(s)     : (1) Variant "* 1000" of the datasheet -> result in 0.001 %rH.
-*               (2) "par_h1 << 4" -> "* 16", "par_h6 << 7" -> "* 128" (file Note 4).
-*               (3) Limit added: values outside 0 ... 100 %rH are physically impossible (noise).
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
@@ -256,20 +256,22 @@ static CPU_INT32U env_calc_hum(const ENV_CALIB *p_calib, CPU_INT16U hum_adc, CPU
     CPU_INT32S  hum_comp;
 
 
-    var1 = (CPU_INT32S)hum_adc - ((CPU_INT32S)p_calib->par_h1 * 16) -                         /* Note 2 */
+    var1 = (CPU_INT32S)hum_adc - ((CPU_INT32S)p_calib->par_h1 * 16) -                         /* << 4  */
            (((temp_c100 * (CPU_INT32S)p_calib->par_h3) / 100) >> 1);
     var2 = ((CPU_INT32S)p_calib->par_h2 *
             (((temp_c100 * (CPU_INT32S)p_calib->par_h4) / 100) +
              (((temp_c100 * ((temp_c100 * (CPU_INT32S)p_calib->par_h5) / 100)) >> 6) / 100) +
              (CPU_INT32S)(1 << 14))) >> 10;
     var3 = var1 * var2;
-    var4 = (((CPU_INT32S)p_calib->par_h6 * 128) +                                             /* Note 2 */
+    var4 = (((CPU_INT32S)p_calib->par_h6 * 128) +                                             /* << 7  */
             ((temp_c100 * (CPU_INT32S)p_calib->par_h7) / 100)) >> 4;
     var5 = ((var3 >> 14) * (var3 >> 14)) >> 10;
     var6 = (var4 * var5) >> 1;
-    hum_comp = (((var3 + var6) >> 10) * 1000) >> 12;                                          /* Note 1 */
+    hum_comp = (((var3 + var6) >> 10) * 1000) >> 12;            /* Datasheet variant "* 1000" -> result */
+                                                                /* in 0.001 %rH                         */
 
-    if (hum_comp < 0) {                                         /* Note 3                               */
+    if (hum_comp < 0) {                                         /* Limit to 0 ... 100 %rH: values       */
+                                                                /* outside are noise                    */
         return (0u);
     }
     if ((CPU_INT32U)hum_comp > ENV_HUM_M1000_MAX) {
@@ -292,8 +294,7 @@ static CPU_INT32U env_calc_hum(const ENV_CALIB *p_calib, CPU_INT16U hum_adc, CPU
 *
 * Caller(s)   : env_calc_data().
 *
-* Note(s)     : (1) "* 10000 ... * 100" instead of "* 1000000" as in the datasheet: no overflow.
-*               (2) var2 >= 4096 - 3 * 512 = 2560, so the division is always valid.
+* Note(s)     : none.
 *********************************************************************************************************
 */
 
@@ -306,9 +307,11 @@ static CPU_INT32U env_calc_gas(CPU_INT16U gas_adc, CPU_INT08U gas_range)
     var1 = 262144u >> gas_range;
     var2 = (CPU_INT32S)gas_adc - 512;
     var2 = var2 * 3;
-    var2 = 4096 + var2;                                         /* Note 2                               */
+    var2 = 4096 + var2;                                         /* >= 4096 - 3 * 512 = 2560, division   */
+                                                                /* always valid                         */
 
-    return (((10000u * var1) / (CPU_INT32U)var2) * 100u);      /* Note 1                               */
+    return (((10000u * var1) / (CPU_INT32U)var2) * 100u);      /* "* 10000 ... * 100" instead of       */
+                                                                /* "* 1000000": no overflow             */
 }
 
 /* [] END OF FILE */

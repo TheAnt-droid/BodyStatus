@@ -22,17 +22,17 @@
 *
 * Caller(s)   : BSP_PostInit().
 *
-* Note(s)     : (1) SW1 connects the pin directly to GND, the shield has no pull-up resistor. With the
-*                   resistive pull-up the pin reads high when released and low when pressed. (A strong
-*                   high output would be short-circuited to GND on every press.)
-*               (2) The same drive mode is set in TopDesign; set here again so the start state is
-*                   defined in code too.
+* Note(s)     : (1) The same drive mode is set in TopDesign, so the start state is also defined in code.
 *********************************************************************************************************
 */
 
 CPU_VOID init_gpio(CPU_VOID)
 {
-    push_button_SetDriveMode(push_button_DM_RES_UP);            /* Input with pull-up (Note 1)          */
+                                                                /* SW1 connects the pin directly to GND */
+                                                                /* and the shield has no pull-up. A     */
+                                                                /* strong high output would be shorted  */
+                                                                /* on every press.                      */
+    push_button_SetDriveMode(push_button_DM_RES_UP);            /* Input with resistive pull-up         */
     push_button_Write(GPIO_PB_RELEASED);                        /* Data register 1 = pull-up active     */
 }
 

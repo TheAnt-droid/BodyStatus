@@ -1,14 +1,12 @@
-/* ========================================
- *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
- *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
- *
- * ========================================
- */
+/*
+*********************************************************************************************************
+*                                  OXIMETER 5 CLICK (MAX30102) - DRIVER
+*
+* Filename      : bsp_spo2.h
+*
+* Description   : I2C access to the MAX30102 (I2C_spo2, mikroBUS slot 2), see bsp_spo2.c.
+*********************************************************************************************************
+*/
 #ifndef BSP_SPO2_H
 #define BSP_SPO2_H
     
