@@ -39,6 +39,7 @@
 #include <bsp_uart.h>
 #include <bsp_gpio.h>
 #include <bsp_spi.h>
+#include <bsp_pwm.h>
 
 
 /*
@@ -154,7 +155,7 @@ void  BSP_PostInit (void)
     init_gpio();
     init_uart();
     init_spi();
-    
+    init_pwm();
 }
 
 
